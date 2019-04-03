@@ -47,12 +47,6 @@ public class TestAmmoCubes {
         assertFalse(catchTaken);
     }
 
-
-    @Test
-    public void sum() {
-
-    }
-
     @Test
     public void takeZero() {
         boolean catchTaken = false;
