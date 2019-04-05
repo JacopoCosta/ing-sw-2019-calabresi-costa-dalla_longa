@@ -1,4 +1,6 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.board.cell;
+
+import it.polimi.ingsw.weaponry.Weapon;
 
 import java.util.List;
 

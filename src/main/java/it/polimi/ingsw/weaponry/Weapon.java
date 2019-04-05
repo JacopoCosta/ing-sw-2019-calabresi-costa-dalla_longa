@@ -1,4 +1,6 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.weaponry;
+
+import it.polimi.ingsw.ammo.AmmoCubes;
 
 import java.util.List;
 

@@ -1,4 +1,6 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.weaponry.effects;
+
+import it.polimi.ingsw.weaponry.Attack;
 
 public class Damage extends Effect {
     public Damage(int amount) {

@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.player;
 
 import java.util.List;
 

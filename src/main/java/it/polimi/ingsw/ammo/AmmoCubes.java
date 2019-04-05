@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.ammo;
 
 public class AmmoCubes {
     private int red;

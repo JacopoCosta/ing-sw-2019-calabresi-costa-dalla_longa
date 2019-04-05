@@ -1,4 +1,7 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.weaponry.effects;
+
+import it.polimi.ingsw.board.cell.Cell;
+import it.polimi.ingsw.weaponry.Attack;
 
 public class ForceMove extends Effect {
     private Cell destination;

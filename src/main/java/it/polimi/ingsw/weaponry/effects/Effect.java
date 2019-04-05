@@ -1,4 +1,6 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.weaponry.effects;
+
+import it.polimi.ingsw.weaponry.Attack;
 
 // an effect modifies the state of a player
 // a group of effects makes an attack

@@ -1,4 +1,7 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.weaponry;
+
+import it.polimi.ingsw.weaponry.effects.Effect;
+import it.polimi.ingsw.player.Player;
 
 import java.util.List;
 

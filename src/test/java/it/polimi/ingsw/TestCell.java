@@ -1,5 +1,8 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.board.cell.AmmoCell;
+import it.polimi.ingsw.board.cell.Cell;
+import it.polimi.ingsw.board.Room;
 import org.junit.Before;
 import org.junit.Test;
 

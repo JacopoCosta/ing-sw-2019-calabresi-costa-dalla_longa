@@ -1,4 +1,8 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.board;
+
+import it.polimi.ingsw.ammo.AmmoTile;
+import it.polimi.ingsw.powerups.PowerUp;
+import it.polimi.ingsw.weaponry.Weapon;
 
 import java.util.Collections;
 import java.util.List;

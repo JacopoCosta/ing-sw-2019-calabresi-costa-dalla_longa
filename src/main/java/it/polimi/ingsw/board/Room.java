@@ -1,4 +1,6 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.board;
+
+import it.polimi.ingsw.board.cell.Cell;
 
 import java.util.List;
 

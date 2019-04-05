@@ -1,8 +1,7 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.player.Player;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class TestPlayer {
 

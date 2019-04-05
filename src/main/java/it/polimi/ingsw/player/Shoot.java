@@ -1,4 +1,6 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.player;
+
+import it.polimi.ingsw.weaponry.Weapon;
 
 public class Shoot extends Activity {
 
