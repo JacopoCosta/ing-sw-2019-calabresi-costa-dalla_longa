@@ -1,6 +1,8 @@
 package it.polimi.ingsw.ammo;
 
 public class AmmoCubes {
+    private static final int MAX_AMMO_CUBES = 3; //maximum amount of cubes per color
+
     private int red;
     private int yellow;
     private int blue;
@@ -12,7 +14,7 @@ public class AmmoCubes {
     }
 
     public AmmoCubes(int red, int yellow, int blue) throws Exception {
-        if(red < 0 || yellow < 0 || blue < 0 || red > 3 || yellow > 3 || blue > 3)
+        if(red < 0 || yellow < 0 || blue < 0 || red > MAX_AMMO_CUBES || yellow > MAX_AMMO_CUBES || blue > MAX_AMMO_CUBES)
             throw new Exception();
 
         this.red = red;

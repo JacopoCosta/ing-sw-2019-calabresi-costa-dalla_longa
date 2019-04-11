@@ -12,6 +12,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Player {
+    private static final int KILL_THRESHOLD = 10; //maximum amount of damage before a Player is declared as "killed"
+    private static final int OVERKILL_THRESHOLD = 11; //maximum amount of damage before a Player is declared as "overkilled"
+
+    private static final int MAX_MARKINGS_PER_AUTHOR = 3; //maximum number of markings an "author" can give to another Player
+
     private String name;
     private int score;
     private int deathCount;
@@ -38,11 +43,11 @@ public class Player {
 
     // returns the total amount of damage points the player has taken
     public boolean isKilled() {
-        return this.damage.size() > 10;
+        return this.damage.size() > KILL_THRESHOLD;
     }
 
     public boolean isOverKilled() {
-        return this.damage.size() > 11;
+        return this.damage.size() > OVERKILL_THRESHOLD;
     }
 
     // returns the amount of damage points the player has taken by a given opponent
@@ -78,7 +83,7 @@ public class Player {
 
     // inflicts the player with a marking, but ONLY if the player has received fewer than 3 markings from that same author
     public void applyMarking(Player author) {
-        if(this.getMarkingsByAuthor(author) < 3)
+        if(this.getMarkingsByAuthor(author) < MAX_MARKINGS_PER_AUTHOR)
             this.markings.add(author);
     }
 
