@@ -1,7 +1,7 @@
 package it.polimi.ingsw.ammo;
 
 public class AmmoCubes {
-    private static final int MAX_AMMO_CUBES = 3; //maximum amount of cubes per color
+    private static final int MAX_AMMO_CUBES = 3; //maximum amount of cubes per colour
 
     private int red;
     private int yellow;

@@ -12,14 +12,18 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Player {
-    private static final int KILL_THRESHOLD = 10; //maximum amount of damage before a Player is declared as "killed"
-    private static final int OVERKILL_THRESHOLD = 11; //maximum amount of damage before a Player is declared as "overkilled"
+    private static final int KILL_THRESHOLD = 10; // maximum amount of damage before a Player is declared as "killed"
+    private static final int OVERKILL_THRESHOLD = 11; // maximum amount of damage before a Player is declared as "overkilled"
 
-    private static final int MAX_MARKINGS_PER_AUTHOR = 3; //maximum number of markings an "author" can give to another Player
+    private static final int MAX_MARKINGS_PER_AUTHOR = 3; // maximum number of markings an "author" can give to another Player
+    protected static final int EXECUTIONS_PER_TURN = 2; // number of executions a player needs to perform on each turn
 
     private String name;
     private int score;
     private int deathCount;
+    private boolean onFrenzy;
+    private boolean onFrenzyBeforeStartingPlayer;
+    private int executionsOnCurrentTurn = 0;
 
     private List<Player> damage;
     private List<Player> markings;
@@ -34,6 +38,9 @@ public class Player {
         this.name = name;
         this.score = 0;
         this.deathCount = 0;
+        this.onFrenzy = false;
+        this.onFrenzyBeforeStartingPlayer = false;
+        this.executionsOnCurrentTurn = 0;
         this.damage = new ArrayList<>();
         this.markings = new ArrayList<>();
         this.weapons = new ArrayList<>();
@@ -48,6 +55,10 @@ public class Player {
 
     public boolean isOverKilled() {
         return this.damage.size() > OVERKILL_THRESHOLD;
+    }
+
+    public int getDamage() {
+        return this.damage.size();
     }
 
     // returns the amount of damage points the player has taken by a given opponent
@@ -68,6 +79,38 @@ public class Player {
         return count;
     }
 
+    public boolean isOnFrenzy() {
+        return this.onFrenzy;
+    }
+
+    public boolean isOnFrenzyBeforeStartingPlayer() { // this is used to determine which executions the player should be allowed to pick from, after final frenzy has been triggered
+        return this.onFrenzyBeforeStartingPlayer;
+    }
+
+    public int getExecutionsOnCurrentTurn() {
+        return this.executionsOnCurrentTurn;
+    }
+
+    public List<Weapon> getWeapons() {
+        return this.weapons;
+    }
+
+    public List<PowerUp> getPowerUps() {
+        return this.powerUps;
+    }
+
+    public void activateFrenzy() {
+        this.onFrenzy = true;
+    }
+
+    public void endExecution() {
+        this.executionsOnCurrentTurn ++;
+    }
+
+    public void endTurn() {
+        this.executionsOnCurrentTurn = 0;
+    }
+
     // inflicts the player with a damage point
     public void applyDamage(Player author) {
         this.damage.add(author);
@@ -81,7 +124,7 @@ public class Player {
         }
     }
 
-    // inflicts the player with a marking, but ONLY if the player has received fewer than 3 markings from that same author
+    // inflicts the player with a marking, but ONLY if the player has received fewer than MAX_MARKINGS_PER_AUTHOR markings from that same author
     public void applyMarking(Player author) {
         if(this.getMarkingsByAuthor(author) < MAX_MARKINGS_PER_AUTHOR)
             this.markings.add(author);

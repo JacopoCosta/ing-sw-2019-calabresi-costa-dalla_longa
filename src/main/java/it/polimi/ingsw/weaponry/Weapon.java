@@ -19,4 +19,8 @@ public class Weapon {
         this.reloadCost = reloadCost;
         this.loaded = false;
     }
+
+    public boolean isLoaded() {
+        return this.loaded;
+    }
 }
