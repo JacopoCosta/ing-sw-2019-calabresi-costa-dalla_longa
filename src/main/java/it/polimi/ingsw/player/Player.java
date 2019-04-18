@@ -23,7 +23,7 @@ public class Player {
     private int deathCount;
     private boolean onFrenzy;
     private boolean onFrenzyBeforeStartingPlayer;
-    private int executionsOnCurrentTurn = 0;
+    private int executionsOnCurrentTurn;
 
     private List<Player> damage;
     private List<Player> markings;
@@ -141,7 +141,7 @@ public class Player {
     // TODO check for finalFrenzy
     public void scoreUponDeath() {
 
-        final int scoreboard[] = {8, 6, 4, 2, 1, 1};
+        final int[] scoreboard = {8, 6, 4, 2, 1, 1};
         final int scoreboardSize = scoreboard.length;
 
         // this comparator sorts players from the MOST to the LEAST damaging
@@ -160,13 +160,11 @@ public class Player {
         Predicate<Player> atLeastOneDamage = p -> this.getDamageByAuthor(p) > 0;
 
         // this stream defines the ranking of the players about to earn points
-        ArrayList<Player> ranking = new ArrayList<>(
-                this.damage.stream()
-                        .filter(atLeastOneDamage)
-                        .sorted(better)
-                        .distinct()
-                        .collect(Collectors.toList())
-        );
+        List<Player> ranking = this.damage.stream()
+                .filter(atLeastOneDamage)
+                .sorted(better)
+                .distinct()
+                .collect(Collectors.toList());
 
         // the initial index of the scoreboard should be equal to the player's death count
         // this will skip the first (most valuable) elements if the player has already died

@@ -7,8 +7,8 @@ import it.polimi.ingsw.weaponry.Attack;
 public abstract class Effect {
     protected int amount;
 
-    protected boolean cellDamage; //whether or not this Effect is applied to all  Players in the same  cell
-    protected boolean roomDamage; //whether or not this Effect is applied to all  Players in the same  room
+    protected boolean cellDamage; //whether or not this Effect is applied to all  Players in the same cell
+    protected boolean roomDamage; //whether or not this Effect is applied to all  Players in the same room
 
     public abstract void apply(Attack attack);
 }

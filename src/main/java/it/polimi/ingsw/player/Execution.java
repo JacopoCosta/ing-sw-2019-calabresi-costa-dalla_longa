@@ -1,8 +1,5 @@
 package it.polimi.ingsw.player;
 
-import it.polimi.ingsw.Game;
-import it.polimi.ingsw.weaponry.Weapon;
-
 import java.util.ArrayList;
 import java.util.List;
 

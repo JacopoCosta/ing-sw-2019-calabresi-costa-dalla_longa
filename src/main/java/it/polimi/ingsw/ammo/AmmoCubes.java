@@ -35,9 +35,9 @@ public class AmmoCubes {
     }
 
     public AmmoCubes sum(AmmoCubes a) {
-        int red = Math.min(3, this.getRed() + a.getRed());
-        int yellow = Math.min(3, this.getYellow() + a.getYellow());
-        int blue = Math.min(3, this.getBlue() + a.getBlue());
+        int red = Math.min(MAX_AMMO_CUBES, this.getRed() + a.getRed());
+        int yellow = Math.min(MAX_AMMO_CUBES, this.getYellow() + a.getYellow());
+        int blue = Math.min(MAX_AMMO_CUBES, this.getBlue() + a.getBlue());
 
         try {
             return new AmmoCubes(red, yellow, blue);
