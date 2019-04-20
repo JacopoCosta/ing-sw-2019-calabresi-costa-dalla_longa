@@ -4,4 +4,13 @@ package it.polimi.ingsw.ammo;
 public class AmmoTile {
     private AmmoCubes ammoCubes;
     private boolean includesPowerup;
+
+    private AmmoTile(AmmoCubes ammoCubes, boolean includesPowerup) {
+        this.ammoCubes = ammoCubes;
+        this.includesPowerup = includesPowerup;
+    }
+
+    public static AmmoTile build(String string) {
+        return null; //TODO AmmoTile factory
+    }
 }

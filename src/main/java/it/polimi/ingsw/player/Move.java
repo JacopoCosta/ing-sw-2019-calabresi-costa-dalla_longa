@@ -17,6 +17,6 @@ public class Move extends Activity {
 
     @Override
     public void perform(Player player) {
-
+        player.setPosition(this.destination);
     }
 }

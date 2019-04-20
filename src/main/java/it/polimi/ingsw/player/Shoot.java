@@ -1,27 +1,23 @@
 package it.polimi.ingsw.player;
 
-import it.polimi.ingsw.weaponry.Weapon;
+import it.polimi.ingsw.weaponry.Action;
+import it.polimi.ingsw.weaponry.Attack;
 
 public class Shoot extends Activity {
+    private Action action;
 
-    private Player author;
-    private Player target;
-    private Weapon weapon;
-
-    public void setAuthor(Player author) {
-        this.author = author;
-    }
-
-    public void setTarget(Player target) {
-        this.target = target;
-    }
-
-    public void setWeapon(Weapon weapon) {
-        this.weapon = weapon;
+    public void setAction(Action action) { // this is not part of the constructor because Executions (and their Shoot Activities) are generated before the choice of Action
+        this.action = action;
     }
 
     @Override
-    public void perform(Player player) {
+    public void perform(Player author) {
+        for(Attack attack : this.action.getAttacks()) {
+            Player target = null; //TODO acquire this variable legitimately -- suggest valid targets only
 
+            attack.setAuthor(author);
+            attack.setTarget(target);
+            attack.deal();
+        }
     }
 }

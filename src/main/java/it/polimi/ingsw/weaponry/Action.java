@@ -23,4 +23,8 @@ public class Action {
         this.summonCost = summonCost;
         this.attacks = attacks;
     }
+
+    public List<Attack> getAttacks() {
+        return this.attacks;
+    }
 }

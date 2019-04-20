@@ -16,14 +16,17 @@ public class Player {
     private static final int OVERKILL_THRESHOLD = 11; // maximum amount of damage before a Player is declared as "overkilled"
 
     private static final int MAX_MARKINGS_PER_AUTHOR = 3; // maximum number of markings an "author" can give to another Player
-    protected static final int EXECUTIONS_PER_TURN = 2; // number of executions a player needs to perform on each turn
+    private static final int EXECUTIONS_PER_TURN = 2; // number of executions a player needs to perform on each non-frenzy turn
+    private static final int EXECUTIONS_PER_TURN_FRENETIC = 1; // number of executions a player needs to perform on each frenzy turn
 
     private String name;
     private int score;
     private int deathCount;
     private boolean onFrenzy;
     private boolean onFrenzyBeforeStartingPlayer;
-    private int executionsOnCurrentTurn;
+    private int remainingExecutions;
+
+    private int scopesUsed;
 
     private List<Player> damage;
     private List<Player> markings;
@@ -40,7 +43,7 @@ public class Player {
         this.deathCount = 0;
         this.onFrenzy = false;
         this.onFrenzyBeforeStartingPlayer = false;
-        this.executionsOnCurrentTurn = 0;
+        this.remainingExecutions = EXECUTIONS_PER_TURN;
         this.damage = new ArrayList<>();
         this.markings = new ArrayList<>();
         this.weapons = new ArrayList<>();
@@ -87,8 +90,14 @@ public class Player {
         return this.onFrenzyBeforeStartingPlayer;
     }
 
-    public int getExecutionsOnCurrentTurn() {
-        return this.executionsOnCurrentTurn;
+    public int exhaustScopes() {
+        int scopes = this.scopesUsed;
+        this.scopesUsed = 0;
+        return scopes;
+    }
+
+    public int getRemainingExecutions() {
+        return this.remainingExecutions;
     }
 
     public List<Weapon> getWeapons() {
@@ -99,16 +108,28 @@ public class Player {
         return this.powerUps;
     }
 
+    public Cell getPosition() {
+        return this.position;
+    }
+
+    public void setPosition(Cell cell) {
+        this.position = cell;
+    }
+
     public void activateFrenzy() {
         this.onFrenzy = true;
     }
 
-    public void endExecution() {
-        this.executionsOnCurrentTurn ++;
+    public void useScope() {
+        this.scopesUsed ++;
     }
 
-    public void endTurn() {
-        this.executionsOnCurrentTurn = 0;
+    public void endExecution() {
+        this.remainingExecutions --;
+    }
+
+    public void beginTurn() {
+        this.remainingExecutions = this.onFrenzy ? EXECUTIONS_PER_TURN_FRENETIC : EXECUTIONS_PER_TURN;
     }
 
     // inflicts the player with a damage point
@@ -137,11 +158,12 @@ public class Player {
     // this is used immediately before respawning
     // the player hands out points to its damagers, ranked by total damage inflicted
     // ties are broken in favor of chronological earliness (lowest minimum index)
-    // first blood dealer is awareded 1 extra point
-    // TODO check for finalFrenzy
+    // first blood dealer is awarded 1 extra point
     public void scoreUponDeath() {
 
-        final int[] scoreboard = {8, 6, 4, 2, 1, 1};
+        final int[] scoreboardDefault = {8, 6, 4, 2, 1, 1};
+        final int[] scoreboardFrenzy = {2, 1, 1, 1};
+        final int[] scoreboard = this.onFrenzy ? scoreboardFrenzy : scoreboardDefault;
         final int scoreboardSize = scoreboard.length;
 
         // this comparator sorts players from the MOST to the LEAST damaging
@@ -182,6 +204,6 @@ public class Player {
     }
 
     public void spawn(Cell cell) {
-        //TODO
+        this.damage.clear();
     }
 }

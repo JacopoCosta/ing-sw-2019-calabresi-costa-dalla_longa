@@ -12,7 +12,7 @@ public class Weapon {
     private AmmoCubes reloadCost;
     private boolean loaded;
 
-    public Weapon(String name, List<Action> actions, AmmoCubes purchaseCost, AmmoCubes reloadCost) {
+    private Weapon(String name, List<Action> actions, AmmoCubes purchaseCost, AmmoCubes reloadCost) {
         this.name = name;
         this.actions = actions;
         this.purchaseCost = purchaseCost;
@@ -22,5 +22,13 @@ public class Weapon {
 
     public boolean isLoaded() {
         return this.loaded;
+    }
+
+    public void reload() {
+        this.loaded = true;
+    }
+
+    public static Weapon build(String s) {
+        return null; //TODO weapon factory
     }
 }

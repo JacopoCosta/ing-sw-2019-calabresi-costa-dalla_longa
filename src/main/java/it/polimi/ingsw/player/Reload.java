@@ -12,6 +12,6 @@ public class Reload extends Activity {
 
     @Override
     public void perform(Player player) {
-
+        this.weapon.reload();
     }
 }

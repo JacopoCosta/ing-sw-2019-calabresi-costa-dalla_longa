@@ -21,14 +21,20 @@ public class Deck<T> {
     }
 
     public static Deck<Weapon> generateWeapons() {
-        return null;
+        Deck<Weapon> deck = new Deck<>();
+        deck.cards.add(Weapon.build("")); // ... strings loaded from file, this statement will be in a loop
+        return deck;
     }
 
     public static Deck<PowerUp> generatePowerUps() {
-        return null;
+        Deck<PowerUp> deck = new Deck<>();
+        deck.cards.add(PowerUp.build("")); // ...
+        return deck;
     }
 
     public static Deck<AmmoTile> generateAmmoTiles() {
-        return null;
+        Deck<AmmoTile> deck = new Deck<>();
+        deck.cards.add(AmmoTile.build("")); // ...
+        return deck;
     }
 }

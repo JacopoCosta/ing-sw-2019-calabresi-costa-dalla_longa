@@ -1,6 +1,7 @@
 package it.polimi.ingsw.weaponry.effects;
 
 import it.polimi.ingsw.board.cell.Cell;
+import it.polimi.ingsw.player.Move;
 import it.polimi.ingsw.weaponry.Attack;
 
 public class ForceMove extends Effect {
@@ -10,12 +11,14 @@ public class ForceMove extends Effect {
         this.amount = amount;
     }
 
-    public void setDestination(Cell destination) { // check that destination is within range
+    public void setDestination(Cell destination) {
         this.destination = destination;
     }
 
     @Override
     public void apply(Attack attack) {
-        // make attack.getTarget() perform a "move" Activity
+        Move fm = new Move(this.amount);
+        fm.setDestination(this.destination);
+        fm.perform(attack.getTarget());
     }
 }

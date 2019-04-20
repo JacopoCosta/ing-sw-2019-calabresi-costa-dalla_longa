@@ -27,7 +27,9 @@ public class Board {
         board.killers = new ArrayList<>();
         board.doubleKillers = new ArrayList<>();
 
-        // generate decks
+        board.weaponDeck = Deck.generateWeapons();
+        board.ammoTileDeck = Deck.generateAmmoTiles();
+        board.powerUpDeck = Deck.generatePowerUps();
 
 
         // type is used to choose one predefined cell configuration

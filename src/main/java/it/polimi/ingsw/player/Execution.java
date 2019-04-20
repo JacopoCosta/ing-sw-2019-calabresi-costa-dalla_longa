@@ -24,8 +24,12 @@ public class Execution {
         this.activities = activities;
     }
 
+    public List<Activity> getActivities() {
+        return this.activities;
+    }
+
     private static void concatenateReload(List<Activity> a, Player subject) { // each last execution of a non-frenzy turn also offers a reload at the end
-        if(!subject.isOnFrenzy() && subject.getExecutionsOnCurrentTurn() == Player.EXECUTIONS_PER_TURN - 1) // this is the last execution of a non-frenzy turn
+        if(!subject.isOnFrenzy() && subject.getRemainingExecutions() == 1) // this is the last execution of a non-frenzy turn
             a.add(new Reload());
     }
 
