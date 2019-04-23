@@ -4,6 +4,10 @@ import it.polimi.ingsw.board.cell.Cell;
 
 public class Grab extends Activity {
 
+    public Grab() {
+        this.type = ActivityType.GRAB;
+    }
+
     @Override
     public void perform(Player player) {
         Cell cell = player.getPosition();

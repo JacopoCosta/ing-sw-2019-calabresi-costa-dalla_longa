@@ -3,9 +3,9 @@ package it.polimi.ingsw;
 import it.polimi.ingsw.board.Board;
 import it.polimi.ingsw.board.Room;
 import it.polimi.ingsw.board.cell.Cell;
-import it.polimi.ingsw.player.Activity;
-import it.polimi.ingsw.player.Execution;
-import it.polimi.ingsw.player.Player;
+import it.polimi.ingsw.player.*;
+import it.polimi.ingsw.weaponry.Action;
+import it.polimi.ingsw.weaponry.Weapon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,10 +54,26 @@ public class Game {
             int choice = 0; //TODO get this value legitimately
 
             for(Activity activity : options.get(choice).getActivities()) { // each execution consists of some activities
-                // activity may be either Move, Grab, Shoot or Reload
-
+                if(activity.getType() == ActivityType.MOVE) {
+                    Cell destination = null; //TODO get this value legitimately
+                    ((Move)activity).setDestination(destination);
+                }
+                else if(activity.getType() == ActivityType.SHOOT) {
+                    Action action = null; //TODO get this value legitimately
+                    ((Shoot)activity).setAction(action);
+                }
+                else if(activity.getType() == ActivityType.RELOAD) {
+                    Weapon weapon = null; //TODO get this value legitimately
+                    ((Reload)activity).setWeapon(weapon);
+                }
+                activity.perform(subject);
             }
         }
-        currentTurnPlayer = (currentTurnPlayer + 1) % this.participants.size();
+
+        participants.stream() // score all dead players
+                .filter(x -> x.isKilled())
+                .forEach(x -> x.scoreUponDeath());
+
+        this.currentTurnPlayer = (this.currentTurnPlayer + 1) % this.participants.size();
     }
 }

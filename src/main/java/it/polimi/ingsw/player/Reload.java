@@ -6,6 +6,10 @@ public class Reload extends Activity {
 
     private Weapon weapon;
 
+    public Reload() {
+        this.type = ActivityType.RELOAD;
+    }
+
     public void setWeapon(Weapon weapon) {
         this.weapon = weapon;
     }

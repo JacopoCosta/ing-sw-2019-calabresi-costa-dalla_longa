@@ -134,14 +134,17 @@ public class Player {
 
     // inflicts the player with a damage point
     public void applyDamage(Player author) {
-        this.damage.add(author);
+        if(!this.isOverKilled()) // no more than the max amount of tokens can be stored, any excess tokens are ignored
+            this.damage.add(author);
 
         // if the damage's author has markings on the targeted player ...
         int awaitingMarkings = this.getMarkingsByAuthor(author);
         for(int i = 0; i < awaitingMarkings; i ++) {
             // ... each marking is turned into a damage point
-            this.markings.remove(author);
-            this.damage.add(author);
+            if(!this.isOverKilled()) {
+                this.markings.remove(author);
+                this.damage.add(author);
+            }
         }
     }
 

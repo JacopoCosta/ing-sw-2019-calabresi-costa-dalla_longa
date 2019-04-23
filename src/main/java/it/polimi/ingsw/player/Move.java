@@ -8,6 +8,7 @@ public class Move extends Activity {
     private Cell destination;
 
     public Move(int maxDistance) {
+        this.type = ActivityType.MOVE;
         this.maxDistance = maxDistance;
     }
 

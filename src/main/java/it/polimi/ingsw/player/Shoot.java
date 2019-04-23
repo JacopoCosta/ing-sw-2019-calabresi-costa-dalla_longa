@@ -6,6 +6,10 @@ import it.polimi.ingsw.weaponry.Attack;
 public class Shoot extends Activity {
     private Action action;
 
+    public Shoot() {
+        this.type = ActivityType.SHOOT;
+    }
+
     public void setAction(Action action) { // this is not part of the constructor because Executions (and their Shoot Activities) are generated before the choice of Action
         this.action = action;
     }
