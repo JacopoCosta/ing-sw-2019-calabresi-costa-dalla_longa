@@ -1,7 +1,9 @@
 package it.polimi.ingsw.board;
 
+import it.polimi.ingsw.ammo.AmmoCubes;
 import it.polimi.ingsw.ammo.AmmoTile;
 import it.polimi.ingsw.board.cell.Cell;
+import it.polimi.ingsw.board.cell.SpawnCell;
 import it.polimi.ingsw.player.Player;
 import it.polimi.ingsw.powerups.PowerUp;
 import it.polimi.ingsw.weaponry.Weapon;
@@ -45,5 +47,13 @@ public class Board {
                 break;
         }
         return cells;
+    }
+
+    public Cell findSpawnPoint(AmmoCubes ammoCubeColor) {
+        for(Cell cell : cells) {
+            if(cell.isSpawnPoint() && ((SpawnCell)cell).getAmmoCubeColor().equals(ammoCubeColor))
+                return cell;
+        }
+        return null;
     }
 }

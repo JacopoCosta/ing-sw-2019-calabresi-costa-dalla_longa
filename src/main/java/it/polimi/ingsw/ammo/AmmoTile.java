@@ -10,7 +10,18 @@ public class AmmoTile {
         this.includesPowerup = includesPowerup;
     }
 
-    public static AmmoTile build(String string) {
-        return null; //TODO AmmoTile factory
+    public static AmmoTile build(String descriptor) {
+        int red = Integer.parseInt(descriptor.substring(0, 0));
+        int yellow = Integer.parseInt(descriptor.substring(1, 1));
+        int blue = Integer.parseInt(descriptor.substring(2, 2));
+        boolean includesPowerup = !descriptor.substring(3, 3).equals("0");
+        AmmoCubes ammoCubes = null;
+        try{
+            ammoCubes = new AmmoCubes(red, yellow, blue);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new AmmoTile(ammoCubes, includesPowerup);
     }
 }

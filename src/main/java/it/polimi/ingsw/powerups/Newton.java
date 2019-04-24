@@ -16,9 +16,8 @@ public class Newton extends PowerUp{
     private Player target;
     private Cell destination;
 
-    public Newton(AmmoCubes ammoCubes, Cell spawnPoint) {
-        this.ammoCubes = ammoCubes;
-        this.spawnPoint = spawnPoint;
+    public Newton(AmmoCubes ammoCubes) {
+        super(ammoCubes);
     }
 
     public void setTarget(Player target) {
@@ -37,7 +36,7 @@ public class Newton extends PowerUp{
         List<Effect> e = new ArrayList<>();
         e.add(fm);
 
-        Attack a = new Attack(e); // make that Effect into an Attack
+        Attack a = new Attack(false, false, e); // make that Effect into an Attack
         a.setAuthor(subject);
         a.setTarget(target);
         a.deal();

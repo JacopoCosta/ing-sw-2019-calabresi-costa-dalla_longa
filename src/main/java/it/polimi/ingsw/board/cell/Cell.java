@@ -11,11 +11,16 @@ public abstract class Cell {
     protected Room room;
     protected int xCoord;
     protected int yCoord;
+    protected boolean spawnPoint;
 
     public Cell(int xCoord, int yCoord) {
         this.adjacentCells = new ArrayList<>();
         this.xCoord = xCoord;
         this.yCoord = yCoord;
+    }
+
+    public boolean isSpawnPoint() {
+        return spawnPoint;
     }
 
     // each cell belongs to a room -- this is used when determining visibility

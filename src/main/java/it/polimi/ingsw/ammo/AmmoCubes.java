@@ -22,6 +22,20 @@ public class AmmoCubes {
         this.blue = blue;
     }
 
+    public static AmmoCubes build(String descriptor) {
+        int red = Integer.parseInt(descriptor.substring(0, 0));
+        int yellow = Integer.parseInt(descriptor.substring(1, 1));
+        int blue = Integer.parseInt(descriptor.substring(2, 2));
+
+        try {
+            return new AmmoCubes(red, yellow, blue);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private int getRed() {
         return red;
     }
@@ -56,6 +70,12 @@ public class AmmoCubes {
             throw new Exception();
 
         return new AmmoCubes(red, yellow, blue);
+    }
+
+    public boolean equals(AmmoCubes that) {
+        return  this.getRed() == that.getRed() &&
+                this.getYellow() == that.getYellow() &&
+                this.getBlue() == that.getBlue();
     }
 
     public static AmmoCubes red() {

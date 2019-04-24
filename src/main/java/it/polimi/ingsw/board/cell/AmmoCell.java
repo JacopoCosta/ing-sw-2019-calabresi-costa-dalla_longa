@@ -7,5 +7,6 @@ public class AmmoCell extends Cell {
 
     public AmmoCell(int xCoord, int yCoord) {
         super(xCoord, yCoord);
+        this.spawnPoint = false;
     }
 }
