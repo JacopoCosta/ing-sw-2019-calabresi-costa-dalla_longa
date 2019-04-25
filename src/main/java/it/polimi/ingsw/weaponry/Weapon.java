@@ -21,6 +21,22 @@ public class Weapon {
         this.loaded = false;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
+    public AmmoCubes getPurchaseCost() {
+        return purchaseCost;
+    }
+
+    public AmmoCubes getReloadCost() {
+        return reloadCost;
+    }
+
+    public List<Action> getActions() {
+        return actions;
+    }
+
     public boolean isLoaded() {
         return this.loaded;
     }

@@ -9,4 +9,12 @@ public class AmmoCell extends Cell {
         super(xCoord, yCoord);
         this.spawnPoint = false;
     }
+
+    public AmmoTile getAmmoTile() {
+        return ammoTile;
+    }
+
+    public void setAmmoTile(AmmoTile ammoTile) {
+        this.ammoTile = ammoTile;
+    }
 }

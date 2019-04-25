@@ -18,6 +18,10 @@ public class Grenade extends PowerUp {
         super(ammoCubes);
     }
 
+    public void setTarget(Player target) {
+        this.target = target;
+    }
+
     @Override
     public void use(Player subject) {
         Mark m = new Mark(GRENADE_TAGBACK_MARKS); // create a Mark Effect

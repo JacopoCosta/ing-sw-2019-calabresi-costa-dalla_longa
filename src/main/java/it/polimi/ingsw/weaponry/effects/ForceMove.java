@@ -8,6 +8,7 @@ public class ForceMove extends Effect {
     private Cell destination;
 
     public ForceMove(int amount) {
+        this.type = EffectType.FORCEMOVE;
         this.amount = amount;
     }
 

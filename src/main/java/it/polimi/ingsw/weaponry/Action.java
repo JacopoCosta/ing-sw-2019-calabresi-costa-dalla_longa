@@ -41,6 +41,26 @@ public class Action {
         return new Action(name, description, summonCost, moves, canMoveAfter, attacks);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public AmmoCubes getSummonCost() {
+        return summonCost;
+    }
+
+    public int getMoves() {
+        return moves;
+    }
+
+    public boolean canMoveAfter() {
+        return canMoveAfter;
+    }
+
     public List<Attack> getAttacks() {
         return this.attacks;
     }

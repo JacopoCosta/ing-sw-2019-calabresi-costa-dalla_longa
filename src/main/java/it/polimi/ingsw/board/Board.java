@@ -33,9 +33,12 @@ public class Board {
         board.ammoTileDeck = Deck.generateAmmoTiles();
         board.powerUpDeck = Deck.generatePowerUps();
 
+        board.weaponDeck.shuffle();
+        board.ammoTileDeck.shuffle();
+        board.powerUpDeck.shuffle();
 
         // type is used to choose one predefined cell configuration
-        Board.configureCells(type);
+        board.cells = Board.configureCells(type);
 
         return board;
     }

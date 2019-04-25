@@ -18,4 +18,16 @@ public class SpawnCell extends Cell {
     public AmmoCubes getAmmoCubeColor() {
         return this.ammoCubeColor;
     }
+
+    public List<Weapon> getWeaponShop() {
+        return this.weaponShop;
+    }
+
+    public void addToWeaponShop(Weapon weapon) {
+        this.weaponShop.add(weapon);
+    }
+
+    public Weapon takeFromWeaponShop(int index) {
+        return this.weaponShop.remove(index);
+    }
 }

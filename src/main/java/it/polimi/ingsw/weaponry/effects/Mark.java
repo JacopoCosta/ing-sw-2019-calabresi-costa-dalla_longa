@@ -4,6 +4,7 @@ import it.polimi.ingsw.weaponry.Attack;
 
 public class Mark extends Effect{
     public Mark(int amount) {
+        this.type = EffectType.MARK;
         this.amount = amount;
     }
 

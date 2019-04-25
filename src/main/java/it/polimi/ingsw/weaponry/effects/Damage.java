@@ -4,6 +4,7 @@ import it.polimi.ingsw.weaponry.Attack;
 
 public class Damage extends Effect {
     public Damage(int amount) {
+        this.type = EffectType.DAMAGE;
         this.amount = amount;
     }
 

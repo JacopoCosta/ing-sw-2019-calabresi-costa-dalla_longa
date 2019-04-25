@@ -90,12 +90,6 @@ public class Player {
         return this.onFrenzyBeforeStartingPlayer;
     }
 
-    public int exhaustScopes() {
-        int scopes = this.scopesUsed;
-        this.scopesUsed = 0;
-        return scopes;
-    }
-
     public int getRemainingExecutions() {
         return this.remainingExecutions;
     }
@@ -122,6 +116,12 @@ public class Player {
 
     public void useScope() {
         this.scopesUsed ++;
+    }
+
+    public int exhaustScopes() {
+        int scopes = this.scopesUsed;
+        this.scopesUsed = 0;
+        return scopes;
     }
 
     public void endExecution() {

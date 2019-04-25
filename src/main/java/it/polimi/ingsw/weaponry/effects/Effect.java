@@ -7,6 +7,7 @@ import java.util.List;
 // an effect modifies the state of a player
 // a group of effects makes an attack
 public abstract class Effect {
+    protected EffectType type;
     protected int amount;
 
     public static Effect build(List<String> descriptors) {
