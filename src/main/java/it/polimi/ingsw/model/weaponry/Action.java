@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.weaponry;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
-import it.polimi.ingsw.model.exceptions.AppendedToAppendableAction;
+import it.polimi.ingsw.model.exceptions.AppendedToAppendableActionException;
 import it.polimi.ingsw.model.exceptions.AppendedUnappendableActionException;
 
 import java.util.ArrayList;
@@ -73,11 +73,11 @@ public class Action {
         return appendable;
     }
 
-    public void append(Action appendableAction) throws AppendedUnappendableActionException, AppendedToAppendableAction {
+    public void append(Action appendableAction) throws AppendedUnappendableActionException, AppendedToAppendableActionException {
         if(!appendableAction.isAppendable())
             throw new AppendedUnappendableActionException("Tried to append an action that is not appendable.");
         if(this.isAppendable())
-            throw new AppendedToAppendableAction("Tried to append an action to another appendable action");
+            throw new AppendedToAppendableActionException("Tried to append an action to another appendable action");
         this.attacks.addAll(appendableAction.attacks);
     }
 }
