@@ -1,8 +1,8 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.board.cell.AmmoCell;
-import it.polimi.ingsw.board.cell.Cell;
-import it.polimi.ingsw.board.Room;
+import it.polimi.ingsw.model.cell.AmmoCell;
+import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.board.Room;
 import org.junit.Before;
 import org.junit.Test;
 

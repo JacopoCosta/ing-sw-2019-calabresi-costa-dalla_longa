@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.ammo.AmmoCubes;
+import it.polimi.ingsw.model.ammo.AmmoCubes;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

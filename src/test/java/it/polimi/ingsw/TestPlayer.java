@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.player.Player;
+import it.polimi.ingsw.model.player.Player;
 import org.junit.Test;
 
 public class TestPlayer {
