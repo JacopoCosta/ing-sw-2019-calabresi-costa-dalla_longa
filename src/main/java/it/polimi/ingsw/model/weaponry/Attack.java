@@ -9,13 +9,15 @@ import java.util.List;
 public class Attack {
     private Player target;
     private Player author;
+    private boolean optional;
     private boolean cellAttack;
     private boolean roomAttack;
     private List<Effect> effects;
 
-    public Attack(boolean cellAttack, boolean roomAttack, List<Effect> effects) {
+    public Attack(boolean optional, boolean cellAttack, boolean roomAttack, List<Effect> effects) {
         this.target = null; // target is not defined upon deck generation
         this.author = null; // author is not defined upon deck generation
+        this.optional = optional;
         this.cellAttack = cellAttack; // whether or not this Attack is dealt to all Players in the same cell
         this.roomAttack = roomAttack; // whether or not this Attack is dealt to all Players in the same room
         this.effects = effects;
@@ -36,7 +38,7 @@ public class Attack {
                 effectDescriptors.add(s);
         }
 
-        return new Attack(cellAttack, roomAttack, effects);
+        return new Attack(false, cellAttack, roomAttack, effects);
     }
 
     public void setTarget(Player target) {

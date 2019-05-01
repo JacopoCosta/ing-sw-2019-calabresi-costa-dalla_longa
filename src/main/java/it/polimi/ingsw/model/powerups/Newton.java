@@ -36,7 +36,7 @@ public class Newton extends PowerUp{
         List<Effect> e = new ArrayList<>();
         e.add(fm);
 
-        Attack a = new Attack(false, false, e); // make that Effect into an Attack
+        Attack a = new Attack(false, false, false, e); // make that Effect into an Attack
         a.setAuthor(subject);
         a.setTarget(target);
         a.deal();

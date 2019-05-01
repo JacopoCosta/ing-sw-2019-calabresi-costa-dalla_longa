@@ -11,27 +11,23 @@ public class Action {
     private String name;
     private String description;
     private AmmoCubes summonCost;
-    private int moves;
-    private boolean canMoveAfter;
-    private List<Attack> attacks;
     private boolean appendable;
+    private int requiredActions;
+    private List<Attack> attacks;
 
-    public Action(String name, String description, AmmoCubes summonCost, int moves, boolean canMoveAfter, List<Attack> attacks, boolean appendable) {
+    public Action(String name, String description, AmmoCubes summonCost, boolean appendable, int requiredActions, List<Attack> attacks) {
         this.name = name;
         this.description = description;
         this.summonCost = summonCost;
-        this.moves = moves;
-        this.canMoveAfter = canMoveAfter;
-        this.attacks = attacks;
         this.appendable = appendable;
+        this.requiredActions = requiredActions;
+        this.attacks = attacks;
     }
 
     public static Action build(List<String> descriptors) {
         String name = descriptors.remove(0);
         String description = descriptors.remove(0);
         AmmoCubes summonCost = AmmoCubes.build(descriptors.remove(0));
-        int moves = Integer.parseInt(descriptors.remove(0));
-        boolean canMoveAfter = !descriptors.remove(0).equals("0");
         List<Attack> attacks = new ArrayList<>();
         List<String> attackDescriptors = new ArrayList<>();
         for(String s : descriptors) {
@@ -42,7 +38,7 @@ public class Action {
             else
                 attackDescriptors.add(s);
         }
-        return new Action(name, description, summonCost, moves, canMoveAfter, attacks, false); //TODO set appendable
+        return new Action(name, description, summonCost, false, 0, attacks); //TODO set appendable
     }
 
     public String getName() {
@@ -55,14 +51,6 @@ public class Action {
 
     public AmmoCubes getSummonCost() {
         return summonCost;
-    }
-
-    public int getMoves() {
-        return moves;
-    }
-
-    public boolean canMoveAfter() {
-        return canMoveAfter;
     }
 
     public List<Attack> getAttacks() {

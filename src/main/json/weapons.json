@@ -1,0 +1,71 @@
+{
+    "weapons": [
+        {
+            "name": "Lock Rifle",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 0
+            },
+            "actions": [
+                {
+                    "name": "Basic Effect",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                },
+                                {
+                                    "type": "mark",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Second Lock",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": true,
+                    "requires": 1,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "mark",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
