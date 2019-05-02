@@ -47,7 +47,7 @@ public class DecoratedJSONObject {
     }
 
     public int getInt(String key) {
-        return (Integer) this.common.get(key);
+        return ((Long) this.common.get(key)).intValue();
     }
 
     public boolean getBoolean(String key) {

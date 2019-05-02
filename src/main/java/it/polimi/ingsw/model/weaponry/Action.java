@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.weaponry;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.exceptions.AppendedToAppendableActionException;
 import it.polimi.ingsw.model.exceptions.AppendedUnappendableActionException;
+import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,21 +25,22 @@ public class Action {
         this.attacks = attacks;
     }
 
-    public static Action build(List<String> descriptors) {
-        String name = descriptors.remove(0);
-        String description = descriptors.remove(0);
-        AmmoCubes summonCost = AmmoCubes.build(descriptors.remove(0));
+    public static Action build(DecoratedJSONObject jAction) {
+        String name = jAction.getString("name");
+        String description = jAction.getString("description");
+        DecoratedJSONObject jSummon = jAction.getObject("summonCost");
+        int red = jSummon.getInt("red");
+        int yellow = jSummon.getInt("yellow");
+        int blue = jSummon.getInt("blue");
+        AmmoCubes summonCost = new AmmoCubes(red, yellow, blue);
+        boolean appendable = jAction.getBoolean("appendable");
+        int requires = jAction.getInt("requires");
         List<Attack> attacks = new ArrayList<>();
-        List<String> attackDescriptors = new ArrayList<>();
-        for(String s : descriptors) {
-            if(s.equals("K")) {
-                attacks.add(Attack.build(attackDescriptors));
-                attackDescriptors.clear();
-            }
-            else
-                attackDescriptors.add(s);
+
+        for(DecoratedJSONObject jAttack : jAction.getArray("attacks").asList()) {
+            attacks.add(Attack.build(jAttack));
         }
-        return new Action(name, description, summonCost, false, 0, attacks); //TODO set appendable
+        return new Action(name, description, summonCost, appendable, requires, attacks);
     }
 
     public String getName() {

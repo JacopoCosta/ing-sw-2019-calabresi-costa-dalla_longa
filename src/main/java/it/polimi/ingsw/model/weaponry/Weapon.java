@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.weaponry;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.exceptions.WeaponAlreadyLoadedException;
+import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,19 +49,23 @@ public class Weapon {
         this.loaded = true;
     }
 
-    public static Weapon build(List<String> descriptors) {
-        String name = descriptors.remove(0);
-        AmmoCubes purchaseCost = AmmoCubes.build(descriptors.remove(0));
-        AmmoCubes reloadCost = AmmoCubes.build(descriptors.remove(0));
+    public static Weapon build(DecoratedJSONObject jWeapon) {
+        String name = jWeapon.getString("name");
+        int red, yellow, blue;
+        DecoratedJSONObject jPurchase = jWeapon.getObject("purchaseCost");
+        red = jPurchase.getInt("red");
+        yellow = jPurchase.getInt("yellow");
+        blue = jPurchase.getInt("blue");
+        AmmoCubes purchaseCost = new AmmoCubes(red, yellow, blue);
+        DecoratedJSONObject jReload = jWeapon.getObject("reloadCost");
+        red = jReload.getInt("red");
+        yellow = jReload.getInt("yellow");
+        blue = jReload.getInt("blue");
+        AmmoCubes reloadCost = new AmmoCubes(red, yellow, blue);
         List<Action> actions = new ArrayList<>();
-        List<String> actionDescriptors = new ArrayList<>();
-        for(String s : descriptors) {
-            if(s.equals("A")) {
-                actions.add(Action.build(actionDescriptors));
-                actionDescriptors.clear();
-            }
-            else
-                actionDescriptors.add(s);
+
+        for(DecoratedJSONObject jAction : jWeapon.getArray("actions").asList()) {
+            actions.add(Action.build(jAction));
         }
         return new Weapon(name, purchaseCost, reloadCost, actions);
     }

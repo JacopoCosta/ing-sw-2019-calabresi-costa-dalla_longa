@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.weaponry;
 
+import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 import it.polimi.ingsw.model.weaponry.effects.Effect;
 import it.polimi.ingsw.model.player.Player;
 
@@ -23,22 +24,16 @@ public class Attack {
         this.effects = effects;
     }
 
-    public static Attack build(List<String> descriptors) {
-        boolean cellAttack = !descriptors.remove(0).equals("0");
-        boolean roomAttack = !descriptors.remove(0).equals("0");
+    public static Attack build(DecoratedJSONObject jAttack) {
+        boolean optional = jAttack.getBoolean("optional");
+        boolean cellAttack = jAttack.getBoolean("cellAttack");
+        boolean roomAttack = jAttack.getBoolean("roomAttack");
         List<Effect> effects = new ArrayList<>();
-        List<String> effectDescriptors = new ArrayList<>();
 
-        for(String s : descriptors) {
-            if(s.equals("E")) {
-                effects.add(Effect.build(effectDescriptors));
-                effectDescriptors.clear();
-            }
-            else
-                effectDescriptors.add(s);
+        for(DecoratedJSONObject jEffect : jAttack.getArray("effects").asList()) {
+            effects.add(Effect.build(jEffect));
         }
-
-        return new Attack(false, cellAttack, roomAttack, effects);
+        return new Attack(optional, cellAttack, roomAttack, effects);
     }
 
     public void setTarget(Player target) {
