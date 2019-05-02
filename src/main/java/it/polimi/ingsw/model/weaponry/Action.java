@@ -16,7 +16,7 @@ public class Action {
     private int requiredActions;
     private List<Attack> attacks;
 
-    public Action(String name, String description, AmmoCubes summonCost, boolean appendable, int requiredActions, List<Attack> attacks) {
+    private Action(String name, String description, AmmoCubes summonCost, boolean appendable, int requiredActions, List<Attack> attacks) {
         this.name = name;
         this.description = description;
         this.summonCost = summonCost;
@@ -28,11 +28,7 @@ public class Action {
     public static Action build(DecoratedJSONObject jAction) {
         String name = jAction.getString("name");
         String description = jAction.getString("description");
-        DecoratedJSONObject jSummon = jAction.getObject("summonCost");
-        int red = jSummon.getInt("red");
-        int yellow = jSummon.getInt("yellow");
-        int blue = jSummon.getInt("blue");
-        AmmoCubes summonCost = new AmmoCubes(red, yellow, blue);
+        AmmoCubes summonCost = AmmoCubes.build(jAction.getObject("summonCost"));
         boolean appendable = jAction.getBoolean("appendable");
         int requires = jAction.getInt("requires");
         List<Attack> attacks = new ArrayList<>();

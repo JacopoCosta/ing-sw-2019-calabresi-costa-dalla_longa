@@ -12,8 +12,8 @@ public abstract class Effect {
 
 
     public static Effect build(DecoratedJSONObject jEffect) throws InvalidEffectTypeException {
-        int amount = jEffect.getInt("amount");
         String type = jEffect.getString("type");
+        int amount = jEffect.getInt("amount");
 
         if(type.equals("damage"))
             return new Damage(amount);

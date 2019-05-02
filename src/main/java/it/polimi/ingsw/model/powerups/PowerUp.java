@@ -2,7 +2,9 @@ package it.polimi.ingsw.model.powerups;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.exceptions.InvalidPowerUpTypeException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 
 public abstract class PowerUp {
     protected AmmoCubes ammoCubes;
@@ -14,27 +16,19 @@ public abstract class PowerUp {
         this.spawnPoint = null; //TODO acquire actual spawnpoint
     }
 
-    public static PowerUp build(String descriptor) {
-        String type = descriptor.substring(0, 0);
-        int red = Integer.parseInt(descriptor.substring(1, 1));
-        int yellow = Integer.parseInt(descriptor.substring(2, 2));
-        int blue = Integer.parseInt(descriptor.substring(3, 3));
-        AmmoCubes ammoCubes = null;
-        try {
-            ammoCubes = new AmmoCubes(red, yellow, blue);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
+    public static PowerUp build(DecoratedJSONObject jPowerUp) throws InvalidPowerUpTypeException {
+        String type = jPowerUp.getString("type");
+        AmmoCubes ammoCubes = AmmoCubes.build(jPowerUp.getObject("ammoCubes"));
 
-        if(type.equals("G"))
+        if(type.equals("grenade"))
             return new Grenade(ammoCubes);
-        if(type.equals("N"))
+        if(type.equals("newton"))
             return new Newton(ammoCubes);
-        if(type.equals("S"))
+        if(type.equals("scope"))
             return new Scope(ammoCubes);
-        if(type.equals("T"))
+        if(type.equals("teleport"))
             return new Teleport(ammoCubes);
-        return null;
+        throw new InvalidPowerUpTypeException(type + " is not a valid name for a PowerUp type. Use \"grenade\", \"newton\", \"scope\", or \"teleport\"");
     }
 
     public abstract void use(Player subject);

@@ -1,18 +1,12 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.model.board.Deck;
-import it.polimi.ingsw.model.weaponry.Weapon;
-
 /**
- * Hello world!
+ * Hello world! (yay)
  *
  */
 public class App 
 {
     public static void main(String[] args) {
-
-        Deck<Weapon> myDeck = Deck.generateWeapons();
-
-        System.out.println(myDeck.draw().getName());
+        System.out.println("Hello world");
     }
 }

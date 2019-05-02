@@ -1,0 +1,12 @@
+{
+    "powerUps": [
+        {
+            "type": "newton",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 0
+            }
+        }
+    ]
+}

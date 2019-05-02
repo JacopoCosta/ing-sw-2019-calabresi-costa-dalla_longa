@@ -26,9 +26,7 @@ public class Deck<T> {
     public static Deck<Weapon> generateWeapons() {
         Deck<Weapon> deck = new Deck<>();
 
-
         DecoratedJSONObject jDeck = DecoratedJSONObject.getFromFile("src\\main\\json\\weapons.json");
-
         for(DecoratedJSONObject jWeapon : jDeck.getArray("weapons").asList()) {
             deck.cards.add(Weapon.build(jWeapon));
         }
@@ -37,11 +35,21 @@ public class Deck<T> {
 
     public static Deck<PowerUp> generatePowerUps() {
         Deck<PowerUp> deck = new Deck<>();
+
+        DecoratedJSONObject jDeck = DecoratedJSONObject.getFromFile("src\\main\\json\\powerUps.json");
+        for(DecoratedJSONObject jPowerUp : jDeck.getArray("powerUps").asList()) {
+            deck.cards.add(PowerUp.build(jPowerUp));
+        }
         return deck;
     }
 
     public static Deck<AmmoTile> generateAmmoTiles() {
         Deck<AmmoTile> deck = new Deck<>();
+
+        DecoratedJSONObject jDeck = DecoratedJSONObject.getFromFile("src\\main\\json\\ammoTiles.json");
+        for(DecoratedJSONObject jAmmoTile : jDeck.getArray("ammoTiles").asList()) {
+            deck.cards.add(AmmoTile.build(jAmmoTile));
+        }
         return deck;
     }
 }

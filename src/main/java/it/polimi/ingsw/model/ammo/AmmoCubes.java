@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.ammo;
 
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
+import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 
 public class AmmoCubes {
     private static final int MAX_AMMO_CUBES = 3; //maximum amount of cubes per colour
@@ -22,10 +23,10 @@ public class AmmoCubes {
         this.blue = blue;
     }
 
-    public static AmmoCubes build(String descriptor) {
-        int red = Integer.parseInt(descriptor.substring(0, 0));
-        int yellow = Integer.parseInt(descriptor.substring(1, 1));
-        int blue = Integer.parseInt(descriptor.substring(2, 2));
+    public static AmmoCubes build(DecoratedJSONObject jAmmoCube) {
+        int red = jAmmoCube.getInt("red");
+        int yellow = jAmmoCube.getInt("yellow");
+        int blue = jAmmoCube.getInt("blue");
 
         try {
             return new AmmoCubes(red, yellow, blue);

@@ -52,16 +52,8 @@ public class Weapon {
     public static Weapon build(DecoratedJSONObject jWeapon) {
         String name = jWeapon.getString("name");
         int red, yellow, blue;
-        DecoratedJSONObject jPurchase = jWeapon.getObject("purchaseCost");
-        red = jPurchase.getInt("red");
-        yellow = jPurchase.getInt("yellow");
-        blue = jPurchase.getInt("blue");
-        AmmoCubes purchaseCost = new AmmoCubes(red, yellow, blue);
-        DecoratedJSONObject jReload = jWeapon.getObject("reloadCost");
-        red = jReload.getInt("red");
-        yellow = jReload.getInt("yellow");
-        blue = jReload.getInt("blue");
-        AmmoCubes reloadCost = new AmmoCubes(red, yellow, blue);
+        AmmoCubes purchaseCost = AmmoCubes.build(jWeapon.getObject("purchaseCost"));
+        AmmoCubes reloadCost = AmmoCubes.build(jWeapon.getObject("reloadCost"));
         List<Action> actions = new ArrayList<>();
 
         for(DecoratedJSONObject jAction : jWeapon.getArray("actions").asList()) {
