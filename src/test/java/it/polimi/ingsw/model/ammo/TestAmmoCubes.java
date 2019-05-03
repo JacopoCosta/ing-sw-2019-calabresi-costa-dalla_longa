@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model.ammo;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import org.junit.Rule;
