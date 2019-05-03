@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.weaponry.effects;
 import it.polimi.ingsw.model.weaponry.Attack;
 
 public class Damage extends Effect {
-    public Damage(int amount) {
+    protected Damage(int amount) {
         this.type = EffectType.DAMAGE;
         this.amount = amount;
     }

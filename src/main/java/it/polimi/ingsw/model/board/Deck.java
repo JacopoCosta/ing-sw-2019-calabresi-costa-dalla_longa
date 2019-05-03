@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.board;
 
 import it.polimi.ingsw.model.ammo.AmmoTile;
+import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 import it.polimi.ingsw.model.weaponry.Weapon;
@@ -16,9 +17,12 @@ public class Deck<T> {
         this.cards = new ArrayList<>();
     }
 
-    public T draw() {
+    public T draw() throws EmptyDeckException {
+        if(this.cards.size() == 0)
+            throw new EmptyDeckException("Can't draw for an empty deck.");
         return this.cards.remove(0);
     }
+
     public void shuffle() {
         Collections.shuffle(this.cards);
     }

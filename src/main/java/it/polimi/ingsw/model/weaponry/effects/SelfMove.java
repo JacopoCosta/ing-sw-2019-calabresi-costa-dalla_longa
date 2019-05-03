@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.weaponry.Attack;
 public class SelfMove extends Effect {
     private Cell destination;
 
-    public SelfMove(int amount) {
+    protected SelfMove(int amount) {
         this.type = EffectType.SELFMOVE;
         this.amount = amount;
     }

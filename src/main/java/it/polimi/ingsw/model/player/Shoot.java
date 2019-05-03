@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.weaponry.Attack;
 public class Shoot extends Activity {
     private Action action;
 
-    public Shoot() {
+    protected Shoot() {
         this.type = ActivityType.SHOOT;
     }
 

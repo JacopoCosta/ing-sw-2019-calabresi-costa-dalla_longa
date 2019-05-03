@@ -43,7 +43,7 @@ public class Board {
         return board;
     }
 
-    public static List<Cell> configureCells(int boardType) {
+    protected static List<Cell> configureCells(int boardType) {
         List<Cell> cells = new ArrayList<>();
         switch(boardType) {
             default:

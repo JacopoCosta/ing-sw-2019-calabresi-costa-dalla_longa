@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.board;
 
+import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.weaponry.Weapon;
 import org.junit.Test;
 
@@ -15,7 +16,7 @@ public class TestDeck {
 
         try {
             deck.draw();
-        } catch (Exception ignored) {
+        } catch (EmptyDeckException ignored) {
             catchTaken = true;
         }
 
