@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 public abstract class PowerUp {
     protected AmmoCubes ammoCubes;
     protected Cell spawnPoint;
+    protected PowerUpType type;
 
 
     public PowerUp(AmmoCubes ammoCubes) {
@@ -32,4 +33,8 @@ public abstract class PowerUp {
     }
 
     public abstract void use(Player subject);
+
+    public String toString() {
+        return ammoCubes.toStringAsColor() + " " + this.type.toString() + "\n";
+    }
 }

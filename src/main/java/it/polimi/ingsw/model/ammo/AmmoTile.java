@@ -22,4 +22,8 @@ public class AmmoTile {
     public boolean includesPowerUp() {
         return includesPowerUp;
     }
+
+    public String toString() {
+        return ammoCubes.toString() + (includesPowerUp ? " with powerup\n" : "\n");
+    }
 }

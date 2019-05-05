@@ -1,11 +1,195 @@
 {
     "powerUps": [
         {
+            "type": "grenade",
+            "ammoCubes": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 0
+            }
+        },
+        {
+            "type": "grenade",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 0
+            }
+        },
+        {
+            "type": "grenade",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 1
+            }
+        },
+        {
+            "type": "newton",
+            "ammoCubes": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 0
+            }
+        },
+        {
+            "type": "newton",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 0
+            }
+        },
+        {
             "type": "newton",
             "ammoCubes": {
                 "red": 0,
                 "yellow": 0,
+                "blue": 1
+            }
+        },
+        {
+            "type": "scope",
+            "ammoCubes": {
+                "red": 1,
+                "yellow": 0,
                 "blue": 0
+            }
+        },
+        {
+            "type": "scope",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 0
+            }
+        },
+        {
+            "type": "scope",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 1
+            }
+        },
+        {
+            "type": "teleport",
+            "ammoCubes": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 0
+            }
+        },
+        {
+            "type": "teleport",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 0
+            }
+        },
+        {
+            "type": "teleport",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 1
+            }
+        },
+        {
+            "type": "grenade",
+            "ammoCubes": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 0
+            }
+        },
+        {
+            "type": "grenade",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 0
+            }
+        },
+        {
+            "type": "grenade",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 1
+            }
+        },
+        {
+            "type": "newton",
+            "ammoCubes": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 0
+            }
+        },
+        {
+            "type": "newton",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 0
+            }
+        },
+        {
+            "type": "newton",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 1
+            }
+        },
+        {
+            "type": "scope",
+            "ammoCubes": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 0
+            }
+        },
+        {
+            "type": "scope",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 0
+            }
+        },
+        {
+            "type": "scope",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 1
+            }
+        },
+        {
+            "type": "teleport",
+            "ammoCubes": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 0
+            }
+        },
+        {
+            "type": "teleport",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 0
+            }
+        },
+        {
+            "type": "teleport",
+            "ammoCubes": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 1
             }
         }
     ]

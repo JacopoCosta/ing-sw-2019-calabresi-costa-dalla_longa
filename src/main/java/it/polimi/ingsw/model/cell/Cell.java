@@ -107,4 +107,14 @@ public abstract class Cell {
     public boolean isAligned(Cell cell) {
         return cell.xCoord == this.xCoord || cell.yCoord == this.yCoord;
     }
+
+    public boolean isBetween(Cell cell1, Cell cell2) {
+        if(cell1.xCoord == this.xCoord && this.xCoord == cell2.xCoord)
+            return (cell1.yCoord - this.yCoord) * (this.yCoord - cell2.yCoord) >= 0;
+
+        if(cell1.yCoord == this.yCoord && this.yCoord == cell2.yCoord)
+            return (cell1.xCoord - this.xCoord) * (this.xCoord - cell2.xCoord) >= 0;
+
+        return false;
+    }
 }

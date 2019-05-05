@@ -14,4 +14,5 @@ public class Damage extends Effect {
         for(int i = 0; i < this.amount; i ++)
             attack.getTarget().applyDamage(attack.getAuthor());
     }
+
 }

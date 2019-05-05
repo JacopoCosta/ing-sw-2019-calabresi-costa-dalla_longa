@@ -27,4 +27,8 @@ public abstract class Effect {
     }
 
     public abstract void apply(Attack attack);
+
+    public String toString() {
+        return this.amount + " " + this.type.toString();
+    }
 }

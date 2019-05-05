@@ -85,4 +85,38 @@ public class AmmoCubes {
     public static AmmoCubes blue() {
         return new AmmoCubes(0, 0, 1);
     }
+
+    public String toString() {
+        boolean addComma = false;
+        String s = "";
+        if(red > 0) {
+            addComma = true;
+            s += red + " red";
+        }
+        if(yellow > 0) {
+            if(addComma)
+                s += ", ";
+            addComma = true;
+            s += yellow + " yellow";
+        }
+        if(blue > 0) {
+            if(addComma)
+                s += ", ";
+            s += blue + " blue";
+        }
+        if(s == "")
+            return "free";
+        return s;
+    }
+
+    public String toStringAsColor() {
+        if(red + yellow + blue == 1) {
+            if(red == 1)
+                return "red";
+            if(yellow == 1)
+                return "yellow";
+            return "blue";
+        }
+        return "";
+    }
 }

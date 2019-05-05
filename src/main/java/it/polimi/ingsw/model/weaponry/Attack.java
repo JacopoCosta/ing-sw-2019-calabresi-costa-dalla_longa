@@ -52,8 +52,39 @@ public class Attack {
         return this.author;
     }
 
+    public boolean isOptional() {
+        return optional;
+    }
+
+    public boolean isCellAttack() {
+        return cellAttack;
+    }
+
+    public boolean isRoomAttack() {
+        return roomAttack;
+    }
+
     public void deal() {
         for(Effect e : effects)
             e.apply(this);
+    }
+
+    public String toString() {
+        boolean addComma = false;
+
+        String s = "";
+        if(optional)
+            s += "(optional) ";
+        if(cellAttack)
+            s += "(cell) ";
+        if(roomAttack)
+            s+= "(room) ";
+        for(Effect e : effects) {
+            if(addComma)
+                s += ", ";
+            addComma = true;
+            s += e.toString();
+        }
+        return s;
     }
 }

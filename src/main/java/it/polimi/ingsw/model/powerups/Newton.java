@@ -18,6 +18,7 @@ public class Newton extends PowerUp{
 
     public Newton(AmmoCubes ammoCubes) {
         super(ammoCubes);
+        this.type = PowerUpType.NEWTON;
     }
 
     public void setTarget(Player target) {

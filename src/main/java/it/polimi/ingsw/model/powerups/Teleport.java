@@ -9,6 +9,7 @@ public class Teleport extends PowerUp{
 
     public Teleport(AmmoCubes ammoCubes) {
         super(ammoCubes);
+        this.type = PowerUpType.TELEPORT;
     }
 
     public void setDestination(Cell destination) {

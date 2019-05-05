@@ -61,4 +61,16 @@ public class Weapon {
         }
         return new Weapon(name, purchaseCost, reloadCost, actions);
     }
+
+    public String toString() {
+        String s = name + ":";
+        s += "\n\t" + purchaseCost.toString() + " to purchase";
+        s += "\n\t" + reloadCost.toString() + " to reload";
+
+        for(Action a : actions) {
+            s += "\n\t" + a.toString();
+        }
+
+        return s + "\n";
+    }
 }

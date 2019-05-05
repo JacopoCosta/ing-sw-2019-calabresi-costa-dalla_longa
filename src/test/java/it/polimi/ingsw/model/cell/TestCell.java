@@ -99,4 +99,18 @@ public class TestCell {
         assertTrue(cell1.isAligned(cell9));
         assertFalse(cell1.isAligned(cell8));
     }
+
+    @Test
+    public void isBetween() {
+        assertTrue(cell0.isBetween(cell0, cell0));
+        assertTrue(cell4.isBetween(cell3, cell5));
+        assertTrue(cell5.isBetween(cell2, cell5));
+        assertTrue(cell4.isBetween(cell1, cell9));
+        assertTrue(cell6.isBetween(cell8, cell0));
+        assertFalse(cell2.isBetween(cell0, cell5));
+        assertFalse(cell9.isBetween(cell1, cell4));
+        assertFalse(cell0.isBetween(cell3, cell8));
+        assertFalse(cell3.isBetween(cell4, cell5));
+        assertFalse(cell1.isBetween(cell2, cell2));
+    }
 }

@@ -66,4 +66,17 @@ public class Action {
             throw new AppendedToAppendableActionException("Tried to append an action to another appendable action");
         this.attacks.addAll(appendableAction.attacks);
     }
+
+    public String toString() {
+        String s = name + ":";
+        if(appendable)
+            s += " (appendable)";
+        if(requiredActions != 0)
+            s += " (requires " + requiredActions + ")";
+
+        s += "\n\t\t" + summonCost.toString() + " to summon";
+        for(Attack a : attacks)
+            s += "\n\t\t" + a.toString();
+        return s;
+    }
 }

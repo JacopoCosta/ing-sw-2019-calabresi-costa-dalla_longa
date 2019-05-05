@@ -2,7 +2,10 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.exceptions.AppendedToAppendableActionException;
+import it.polimi.ingsw.model.exceptions.AppendedUnappendableActionException;
 import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.model.weaponry.Action;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.ArrayList;
@@ -36,6 +39,7 @@ public class Player {
     private AmmoCubes ammoCubes;
 
     private Cell position;
+    private Action action;
 
     public Player(String name) {
         this.name = name;
@@ -104,6 +108,21 @@ public class Player {
 
     public Cell getPosition() {
         return this.position;
+    }
+
+    public Action getAction() {
+        return this.action;
+    }
+
+    public void setAction(Action action) {
+        this.action = action;
+    }
+
+    public void appendAction(Action action) throws AppendedToAppendableActionException, AppendedUnappendableActionException {
+        if(this.action == null)
+            this.action = action;
+        else
+            this.action.append(action);
     }
 
     public void setPosition(Cell cell) {
