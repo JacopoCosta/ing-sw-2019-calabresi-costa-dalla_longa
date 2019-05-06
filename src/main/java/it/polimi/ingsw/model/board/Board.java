@@ -52,11 +52,42 @@ public class Board {
         return cells;
     }
 
+    public void sortCells(List<Cell> cells) {
+        Integer tempCoordinateX;
+        Integer tempCoordinateY;
+        for(int i=0; i<cells.size(); i++) {
+            tempCoordinateX = cells.get(0).getXCoord();
+            tempCoordinateY = cells.get(0).getYCoord();
+
+            if(tempCoordinateY > cells.get(i).getYCoord()) {
+                //the element is not in the right place
+                cells.add(0, cells.get(i));
+                cells.remove(i);
+                i=0; //starts over
+            }
+            else if(tempCoordinateX > cells.get(i).getXCoord()) {
+                //the element is not in the right place
+                cells.add(0, cells.get(i));
+                cells.remove(i);
+                i=0; //starts over
+            }
+        }
+    }
+
     public Cell findSpawnPoint(AmmoCubes ammoCubeColor) {
         for(Cell cell : cells) {
             if(cell.isSpawnPoint() && ((SpawnCell)cell).getAmmoCubeColor().equals(ammoCubeColor))
                 return cell;
         }
         return null;
+    }
+
+    public void draw() {
+        sortCells(this.cells);
+        //now the list is sorted
+        Integer currentCellIndex;
+        /*TODO:
+            finish this CLI
+         */
     }
 }

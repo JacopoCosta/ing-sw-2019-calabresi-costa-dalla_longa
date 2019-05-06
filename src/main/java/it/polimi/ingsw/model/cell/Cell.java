@@ -63,6 +63,24 @@ public abstract class Cell {
     }
 
     /**
+     * Each cell has two coordinates, ranging from left to right (being 0 the most left cell on the board)
+     * and from above to the bottom (being 0 the top cell). Each cell can be identified as a pair of xCoord
+     * and yCoord.
+     * @return the horizontal coordinate of the cell.
+     */
+    public int getXCoord() {
+        return this.xCoord;
+    }
+    /**
+     * Similarly to the public int getXCoord method, this method refers to the vertical coordinate of the cell.
+     * @return the vertical coordinate ofthe cell.
+     */
+
+    public int getYCoord() {
+        return this.yCoord;
+    }
+
+    /**
      * This method sets a cell adjacent to another cell.
      * @param cell the cell to be declared as adjacent to the cell this method was called upon.
      * @throws SelfAdjacentCellException on an attempt to set a cell adjacent to itself.
