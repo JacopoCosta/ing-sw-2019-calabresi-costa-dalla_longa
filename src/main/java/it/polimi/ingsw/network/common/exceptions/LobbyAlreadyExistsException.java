@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.exceptions;
+package it.polimi.ingsw.network.common.exceptions;
 
 public class LobbyAlreadyExistsException extends Throwable {
     public LobbyAlreadyExistsException(String message) {

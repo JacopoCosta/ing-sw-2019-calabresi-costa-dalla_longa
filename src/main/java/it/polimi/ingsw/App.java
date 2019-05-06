@@ -6,9 +6,6 @@ import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Hello world! (yay)
  */
@@ -24,7 +21,7 @@ public class App {
         deck3.shuffle();
 
         boolean keepDrawing = true;
-        while(keepDrawing) {
+        while (keepDrawing) {
             try {
                 System.out.print(deck1.draw().toString());
             } catch (EmptyDeckException e) {
@@ -32,7 +29,7 @@ public class App {
             }
         }
         keepDrawing = true;
-        while(keepDrawing) {
+        while (keepDrawing) {
             try {
                 System.out.print(deck2.draw().toString());
             } catch (EmptyDeckException e) {
@@ -40,7 +37,7 @@ public class App {
             }
         }
         keepDrawing = true;
-        while(keepDrawing) {
+        while (keepDrawing) {
             try {
                 System.out.print(deck3.draw().toString());
             } catch (EmptyDeckException e) {

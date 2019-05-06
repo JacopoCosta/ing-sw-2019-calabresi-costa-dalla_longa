@@ -1,6 +1,6 @@
-package it.polimi.ingsw.network;
+package it.polimi.ingsw.network.server.lobby;
 
-import it.polimi.ingsw.network.exceptions.*;
+import it.polimi.ingsw.network.common.exceptions.*;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;

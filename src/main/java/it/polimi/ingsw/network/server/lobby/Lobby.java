@@ -1,6 +1,6 @@
-package it.polimi.ingsw.network;
+package it.polimi.ingsw.network.server.lobby;
 
-import it.polimi.ingsw.network.exceptions.*;
+import it.polimi.ingsw.network.common.exceptions.*;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -11,10 +11,11 @@ class Lobby {
     private static final int MINIMUM_USERS_THRESHOLD = 3; //minimum number of Users needed for the countdown to start
 
     private static final int COUNTDOWN_STARTING_SECONDS = 90; //initial time in seconds the timer stats counting down from
+    private final CountDownTimer timer; //timer to perform the countdown before the match starts
 
     private final String name; //unique Lobby name
-    private final CountDownTimer timer; //timer to perform the countdown before the match starts
     private String password; //[OPTIONAL] the Lobby password
+
     private Queue<User> users; //array of Users connected to this Lobby. users[0] is the Lobby admin
 
     Lobby(String name, String password) {

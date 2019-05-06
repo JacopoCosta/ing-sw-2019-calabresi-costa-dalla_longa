@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network;
+package it.polimi.ingsw.network.server.lobby;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -16,12 +16,16 @@ class CountDownTimer {
     //the timer has completed the countdown or has been stopped during the execution.
     //In both cases the timer is not performing the countdown anymore
     static final int STOPPED = 2;
+
+    private int timerState; //the current state of the timer
+
     private static final int INITIAL_DELAY = 0; //delay in seconds before task is to be executed the first time
     private static final int PERIOD = 1; //time in seconds between successive task executions
+
     private final int statingSeconds; //time to start counting from in seconds
-    private final ScheduledExecutorService executor; //the timer responsible for the actual countdown
-    private int timerState; //the current state of the timer
     private AtomicInteger currentSeconds; //the time left in seconds before countdown expires
+
+    private final ScheduledExecutorService executor; //the timer responsible for the actual countdown
     private ScheduledFuture<?> future;
 
     CountDownTimer(int statingSeconds) {

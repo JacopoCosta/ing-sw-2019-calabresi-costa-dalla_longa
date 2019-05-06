@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network;
+package it.polimi.ingsw.network.server.lobby;
 
 import org.junit.Test;
 

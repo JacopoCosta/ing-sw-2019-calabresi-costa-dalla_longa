@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.exceptions;
+package it.polimi.ingsw.network.common.exceptions;
 
 public class EmptyLobbyException extends Exception {
     public EmptyLobbyException(String message) {
