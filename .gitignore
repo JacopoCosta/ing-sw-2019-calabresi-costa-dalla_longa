@@ -3,6 +3,7 @@
 !pom.xml
 !resources/
 !src/
+!target/classes/json
 !javadoc/
 .iml
 .idea/
