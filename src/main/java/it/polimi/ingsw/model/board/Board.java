@@ -53,8 +53,8 @@ public class Board {
     }
 
     public void sortCells(List<Cell> cells) {
-        Integer tempCoordinateX;
-        Integer tempCoordinateY;
+        int tempCoordinateX;
+        int tempCoordinateY;
         for(int i=0; i<cells.size(); i++) {
             tempCoordinateX = cells.get(0).getXCoord();
             tempCoordinateY = cells.get(0).getYCoord();

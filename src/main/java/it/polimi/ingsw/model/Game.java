@@ -71,8 +71,8 @@ public class Game {
         }
 
         participants.stream() // score all dead players
-                .filter(x -> x.isKilled())
-                .forEach(x -> x.scoreUponDeath());
+                .filter(Player::isKilled)
+                .forEach(Player::scoreUponDeath);
 
         this.currentTurnPlayer = (this.currentTurnPlayer + 1) % this.participants.size();
     }

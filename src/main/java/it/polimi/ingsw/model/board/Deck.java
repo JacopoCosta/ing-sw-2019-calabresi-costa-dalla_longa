@@ -7,10 +7,10 @@ import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 import it.polimi.ingsw.model.utilities.PathGenerator;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Deck<T> {
     private List<T> cards;
@@ -20,7 +20,7 @@ public class Deck<T> {
     }
 
     public T draw() throws EmptyDeckException {
-        if(this.cards.size() == 0)
+        if (this.cards.size() == 0)
             throw new EmptyDeckException("Can't draw for an empty deck.");
         return this.cards.remove(0);
     }
@@ -33,7 +33,7 @@ public class Deck<T> {
         Deck<Weapon> deck = new Deck<>();
 
         DecoratedJSONObject jDeck = DecoratedJSONObject.getFromFile(PathGenerator.getPath("weapons.json"));
-        for(DecoratedJSONObject jWeapon : jDeck.getArray("weapons").asList()) {
+        for (DecoratedJSONObject jWeapon : Objects.requireNonNull(jDeck).getArray("weapons").asList()) {
             deck.cards.add(Weapon.build(jWeapon));
         }
         return deck;
@@ -43,7 +43,7 @@ public class Deck<T> {
         Deck<PowerUp> deck = new Deck<>();
 
         DecoratedJSONObject jDeck = DecoratedJSONObject.getFromFile(PathGenerator.getPath("powerUps.json"));
-        for(DecoratedJSONObject jPowerUp : jDeck.getArray("powerUps").asList()) {
+        for (DecoratedJSONObject jPowerUp : Objects.requireNonNull(jDeck).getArray("powerUps").asList()) {
             deck.cards.add(PowerUp.build(jPowerUp));
         }
         return deck;
@@ -53,7 +53,7 @@ public class Deck<T> {
         Deck<AmmoTile> deck = new Deck<>();
 
         DecoratedJSONObject jDeck = DecoratedJSONObject.getFromFile(PathGenerator.getPath("ammoTiles.json"));
-        for(DecoratedJSONObject jAmmoTile : jDeck.getArray("ammoTiles").asList()) {
+        for (DecoratedJSONObject jAmmoTile : Objects.requireNonNull(jDeck).getArray("ammoTiles").asList()) {
             deck.cards.add(AmmoTile.build(jAmmoTile));
         }
         return deck;
