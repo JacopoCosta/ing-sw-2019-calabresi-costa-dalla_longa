@@ -39,7 +39,7 @@ public class Player {
     private AmmoCubes ammoCubes;
 
     private Cell position;
-    private Action action;
+    private List<ActiveAction> activeActions;
 
     public Player(String name) {
         this.name = name;
@@ -110,19 +110,19 @@ public class Player {
         return this.position;
     }
 
-    public Action getAction() {
-        return this.action;
+    public void loadActionsFromWeapon(Weapon weapon) {
+        this.activeActions = ActiveAction.createList(weapon.getActions());
     }
 
-    public void setAction(Action action) {
-        this.action = action;
+    public List<ActiveAction> getActiveActions() {
+        return activeActions;
     }
 
-    public void appendAction(Action action) throws AppendedToAppendableActionException, AppendedUnappendableActionException {
-        if(this.action == null)
-            this.action = action;
-        else
-            this.action.append(action);
+    public void playAction(int id) throws AppendedToAppendableActionException, AppendedUnappendableActionException {
+        // TODO appendability, consumability, constraintsbility CHECKS
+        ActiveAction activeAction = activeActions.get(id);
+        activeAction.getAction().accomplish();
+        activeAction.consume();
     }
 
     public void setPosition(Cell cell) {
