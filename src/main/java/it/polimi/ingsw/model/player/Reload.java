@@ -16,11 +16,7 @@ public class Reload extends Activity {
     }
 
     @Override
-    public void perform(Player player) {
-        try {
-            this.weapon.reload();
-        } catch (WeaponAlreadyLoadedException e) {
-            e.printStackTrace(); // TODO manage exception
-        }
+    public void perform(Player player) throws WeaponAlreadyLoadedException {
+        this.weapon.reload();
     }
 }

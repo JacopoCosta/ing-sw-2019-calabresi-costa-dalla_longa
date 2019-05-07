@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.model.exceptions.ConstraintNotSatisfiedException;
 import it.polimi.ingsw.model.weaponry.Action;
 import it.polimi.ingsw.model.weaponry.Attack;
 
@@ -15,7 +16,7 @@ public class Shoot extends Activity {
     }
 
     @Override
-    public void perform(Player author) {
+    public void perform(Player author) throws ConstraintNotSatisfiedException {
         for(Attack attack : this.action.getAttacks()) {
             Player target = null; //TODO acquire this variable legitimately -- suggest valid targets only
 

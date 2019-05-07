@@ -1,13 +1,14 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 
 public class Move extends Activity {
 
     private int maxDistance;
     private Cell destination;
 
-    public Move(int maxDistance) {
+    public Move(int maxDistance) throws InvalidMoveException {
         this.type = ActivityType.MOVE;
         this.maxDistance = maxDistance;
     }

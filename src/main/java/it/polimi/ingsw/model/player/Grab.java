@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.exceptions.CannotGrabException;
 
 public class Grab extends Activity {
 
@@ -9,9 +10,7 @@ public class Grab extends Activity {
     }
 
     @Override
-    public void perform(Player player) {
+    public void perform(Player player) throws CannotGrabException {
         Cell cell = player.getPosition();
-
-
     }
 }

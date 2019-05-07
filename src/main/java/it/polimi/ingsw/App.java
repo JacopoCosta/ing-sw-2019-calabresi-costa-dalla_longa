@@ -11,7 +11,7 @@ import it.polimi.ingsw.model.weaponry.Weapon;
 import java.io.File;
 
 /**
- * Hello world! (yay)
+ * Hello world!
  */
 public class App {
     public static void main(String[] args) {
