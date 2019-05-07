@@ -10,10 +10,24 @@ import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
  * A player can also never be in debt of these, meaning negative values are not accepted.
  */
 public class AmmoCubes {
-    private static final int MAX_AMMO_CUBES = 3; // maximum amount of cubes per colour
+    /**
+     * The maximum amount of cubes per colour contained in each set of ammo cubes.
+     */
+    private static final int MAX_AMMO_CUBES = 3;
 
+    /**
+     * The amount of red cubes in the current set.
+     */
     private int red;
+
+    /**
+     * The amount of yellow cubes in the current set.
+     */
     private int yellow;
+
+    /**
+     * The amount of blue cubes in the current set.
+     */
     private int blue;
 
     /**
@@ -54,14 +68,26 @@ public class AmmoCubes {
         return new AmmoCubes(red, yellow, blue);
     }
 
+    /**
+     * This method tells the amount of red cubes in the current set.
+     * @return the amount of red cubes in the current set.
+     */
     private int getRed() {
         return red;
     }
 
+    /**
+     * This method tells the amount of yellow cubes in the current set.
+     * @return the amount of yellow cubes in the current set.
+     */
     private int getYellow() {
         return yellow;
     }
 
+    /**
+     * This method tells the amount of blue cubes in the current set.
+     * @return the amount of blue cubes in the current set.
+     */
     private int getBlue() {
         return blue;
     }

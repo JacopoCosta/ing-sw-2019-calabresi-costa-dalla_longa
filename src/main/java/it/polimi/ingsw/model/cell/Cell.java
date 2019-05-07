@@ -19,10 +19,32 @@ import java.util.ArrayList;
  */
 
 public abstract class Cell {
+
+    /**
+     * A list of all the cells considered to be adjacent to the current cell.
+     */
     protected List<Cell> adjacentCells;
+
+    /**
+     * The room this cell belongs to.
+     */
     protected Room room;
+
+    /**
+     * The horizontal coordinate of the cell on the board.
+     */
     protected int xCoord;
+
+    /**
+     * The vertical coordinate of the cell on the board.
+     */
     protected int yCoord;
+
+    /**
+     * Indicates if a cell is instance of {@code SpawnCell} (the alternative being {@code AmmoCell}).
+     * @see SpawnCell
+     * @see AmmoCell
+     */
     protected boolean spawnPoint;
 
     /**
@@ -63,19 +85,17 @@ public abstract class Cell {
     }
 
     /**
-     * Each cell has two coordinates, ranging from left to right (being 0 the most left cell on the board)
-     * and from above to the bottom (being 0 the top cell). Each cell can be identified as a pair of xCoord
-     * and yCoord.
+     * This method tells the horizontal coordinate of a cell on the board.
      * @return the horizontal coordinate of the cell.
      */
     public int getXCoord() {
         return this.xCoord;
     }
-    /**
-     * Similarly to the public int getXCoord method, this method refers to the vertical coordinate of the cell.
-     * @return the vertical coordinate ofthe cell.
-     */
 
+    /**
+     * This method tells the vertical coordinate of a cell on the board.
+     * @return the vertical coordinate of the cell.
+     */
     public int getYCoord() {
         return this.yCoord;
     }

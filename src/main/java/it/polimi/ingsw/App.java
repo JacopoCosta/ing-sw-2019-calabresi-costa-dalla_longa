@@ -1,16 +1,23 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.Deck;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.model.utilities.PathGenerator;
 import it.polimi.ingsw.model.weaponry.Weapon;
+
+import java.io.File;
 
 /**
  * Hello world! (yay)
  */
 public class App {
     public static void main(String[] args) {
+
+        AmmoCubes ac = new AmmoCubes(0, 2, 3);
+        System.out.println(PathGenerator.getPath("weapons.json"));
 
         Deck<Weapon> deck1 = Deck.generateWeapons();
         Deck<PowerUp> deck2 = Deck.generatePowerUps();
@@ -28,6 +35,7 @@ public class App {
                 keepDrawing = false;
             }
         }
+        System.out.print("\n");
         keepDrawing = true;
         while (keepDrawing) {
             try {
@@ -36,6 +44,7 @@ public class App {
                 keepDrawing = false;
             }
         }
+        System.out.print("\n");
         keepDrawing = true;
         while (keepDrawing) {
             try {
