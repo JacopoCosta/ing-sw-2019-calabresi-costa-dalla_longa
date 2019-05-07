@@ -1,0 +1,1611 @@
+{
+    "weapons": [
+        {
+            "name": "Lock Rifle",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 1
+            },
+            "reloadCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 2
+            },
+            "actions": [
+                {
+                    "name": "Basic Effect",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                },
+                                {
+                                    "type": "mark",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Second Lock",
+                    "description": "",
+                    "summonCost": {
+                        "red": 1,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": true,
+                    "requires": 1,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "mark",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Machine Gun",
+            "purchaseCost": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 1
+            },
+            "actions": [
+                {
+                    "name": "Basic Effect",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        },
+                        {
+                            "optional": true,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Focus Shot",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 1,
+                        "blue": 0
+                    },
+                    "appendable": true,
+                    "requires": 1,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Turret Tripod",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 1
+                    },
+                    "appendable": true,
+                    "requires": 1,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "T.H.O.R.",
+            "purchaseCost": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 1
+            },
+            "actions": [
+                {
+                    "name": "Basic effect",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Chain Reaction",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 1
+                    },
+                    "appendable": true,
+                    "requires": 1,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "High Voltage",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 1
+                    },
+                    "appendable": true,
+                    "requires": 2,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Plasma Gun",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 1
+            },
+            "actions": [
+                {
+                    "name": "Basic Effect",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Phase Glide",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": true,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "selfmove",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Charged Shot",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 1
+                    },
+                    "appendable": true,
+                    "requires": 1,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Whisper",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 1
+            },
+            "reloadCost": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 2
+            },
+            "actions": [
+                {
+                    "name": "Basic Effect",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 3
+                                },
+                                {
+                                    "type": "mark",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Electroscythe",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 1
+            },
+            "actions": [
+                {
+                    "name": "Basic Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": true,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Reaper Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 1,
+                        "yellow": 0,
+                        "blue": 1
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": true,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Tractor Beam",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 1
+            },
+            "actions": [
+                {
+                    "name": "Basic Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "forcemove",
+                                    "amount": 2
+                                },
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Punisher Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 1,
+                        "yellow": 1,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "forcemove",
+                                    "amount": 2
+                                },
+                                {
+                                    "type": "damage",
+                                    "amount": 3
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Vortex Cannon",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 1
+            },
+            "reloadCost": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 1
+            },
+            "actions": [
+                {
+                    "name": "Basic Effect",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "forcemove",
+                                    "amount": 1
+                                },
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Black Hole",
+                    "description": "",
+                    "summonCost": {
+                        "red": 1,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": true,
+                    "requires": 1,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "forcemove",
+                                    "amount": 1
+                                },
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        },
+                        {
+                            "optional": true,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "forcemove",
+                                    "amount": 1
+                                },
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Furnace",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 1
+            },
+            "reloadCost": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 1
+            },
+            "actions": [
+                {
+                    "name": "Basic Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": true,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Cozy Fire Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": true,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                },
+                                {
+                                    "type": "mark",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Heatseeker",
+            "purchaseCost": {
+                "red": 1,
+                "yellow": 1,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 2,
+                "yellow": 1,
+                "blue": 0
+            },
+            "actions": [
+                {
+                    "name": "Basic Effect",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 3
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Hellion",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 1,
+                "yellow": 1,
+                "blue": 0
+            },
+            "actions": [
+                {
+                    "name": "Basic Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": true,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                },
+                                {
+                                    "type": "mark",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Nano Tracer Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 1,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": true,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                },
+                                {
+                                    "type": "mark",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Flamethrower",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 0
+            },
+            "actions": [
+                {
+                    "name": "Basic Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        },
+                        {
+                            "optional": true,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Barbecue Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 2,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": true,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                }
+                            ]
+                        },
+                        {
+                            "optional": true,
+                            "cellAttack": true,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Grenade Launcher",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 0
+            },
+            "actions": [
+                {
+                    "name": "Basic Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                },
+                                {
+                                    "type": "forcemove",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Extra Grenade",
+                    "description": "",
+                    "summonCost": {
+                        "red": 1,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": true,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Rocket Launcher",
+            "purchaseCost": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 2,
+                "yellow": 0,
+                "blue": 0
+            },
+            "actions": [
+                {
+                    "name": "Basic Effect",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                },
+                                {
+                                    "type": "forcemove",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Rocket Jump",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 1
+                    },
+                    "appendable": true,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "selfmove",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Fragmenting Warhead",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 1,
+                        "blue": 0
+                    },
+                    "appendable": true,
+                    "requires": 1,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": true,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Railgun",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 1
+            },
+            "reloadCost": {
+                "red": 0,
+                "yellow": 2,
+                "blue": 1
+            },
+            "actions": [
+                {
+                    "name": "Basic Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 3
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Piercing Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                },
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cyberblade",
+            "purchaseCost": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 1,
+                "yellow": 1,
+                "blue": 0
+            },
+            "actions": [
+                {
+                    "name": "Basic Effect",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Shadowstep",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": true,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "selfmove",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Slice and Dice",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 1,
+                        "blue": 0
+                    },
+                    "appendable": true,
+                    "requires": 1,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "ZX-2",
+            "purchaseCost": {
+                "red": 1,
+                "yellow": 0,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 1,
+                "yellow": 1,
+                "blue": 0
+            },
+            "actions": [
+                {
+                    "name": "Basic Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                },
+                                {
+                                    "type": "mark",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Scanner Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "mark",
+                                    "amount": 1
+                                }
+                            ]
+                        },
+                        {
+                            "optional": true,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "mark",
+                                    "amount": 1
+                                }
+                            ]
+                        },
+                        {
+                            "optional": true,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "mark",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Shotgun",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 0,
+                "yellow": 2,
+                "blue": 0
+            },
+            "actions": [
+                {
+                    "name": "Basic Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 3
+                                },
+                                {
+                                    "type": "forcemove",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Long Barrel Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Power Glove",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 0
+            },
+            "actions": [
+                {
+                    "name": "Basic Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "selfmove",
+                                    "amount": 1
+                                },
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                },
+                                {
+                                    "type": "mark",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Rocket Fist Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 1
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "selfmove",
+                                    "amount": 1
+                                },
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                }
+                            ]
+                        },
+                        {
+                            "optional": true,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "selfmove",
+                                    "amount": 1
+                                },
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Shockwave",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 0
+            },
+            "actions": [
+                {
+                    "name": "Basic Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        },
+                        {
+                            "optional": true,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        },
+                        {
+                            "optional": true,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Tsunami Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 1,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": true,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        },
+                        {
+                            "optional": true,
+                            "cellAttack": true,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        },
+                        {
+                            "optional": true,
+                            "cellAttack": true,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        },
+                        {
+                            "optional": true,
+                            "cellAttack": true,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Sledgehammer",
+            "purchaseCost": {
+                "red": 0,
+                "yellow": 0,
+                "blue": 0
+            },
+            "reloadCost": {
+                "red": 0,
+                "yellow": 1,
+                "blue": 0
+            },
+            "actions": [
+                {
+                    "name": "Basic Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 0,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Pulverize Mode",
+                    "description": "",
+                    "summonCost": {
+                        "red": 1,
+                        "yellow": 0,
+                        "blue": 0
+                    },
+                    "appendable": false,
+                    "requires": 0,
+                    "attacks": [
+                        {
+                            "optional": false,
+                            "cellAttack": false,
+                            "roomAttack": false,
+                            "effects": [
+                                {
+                                    "type": "damage",
+                                    "amount": 3
+                                },
+                                {
+                                    "type": "forcemove",
+                                    "amount": 2
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
