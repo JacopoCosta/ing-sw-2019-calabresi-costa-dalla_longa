@@ -1,8 +1,7 @@
 package it.polimi.ingsw.model.weaponry;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
-import it.polimi.ingsw.model.exceptions.AppendedToAppendableActionException;
-import it.polimi.ingsw.model.exceptions.AppendedUnappendableActionException;
+import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 
 import java.util.ArrayList;
@@ -59,7 +58,11 @@ public class Action {
         return appendable;
     }
 
-    public void accomplish() {
+    public int getRequiredActions() {
+        return requiredActions;
+    }
+
+    public void accomplish() throws InvalidMoveException {
         for(Attack attack : attacks)
             attack.deal();
     }

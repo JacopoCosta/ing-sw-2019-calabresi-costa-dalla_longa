@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.powerups;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
+import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.Attack;
 import it.polimi.ingsw.model.weaponry.effects.Effect;
@@ -24,7 +25,7 @@ public class Grenade extends PowerUp {
     }
 
     @Override
-    public void use(Player subject) {
+    public void use(Player subject) throws InvalidMoveException {
         Mark m = new Mark(GRENADE_TAGBACK_MARKS); // create a Mark Effect
 
         List<Effect> e = new ArrayList<>();

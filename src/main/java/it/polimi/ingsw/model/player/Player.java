@@ -2,8 +2,8 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.cell.Cell;
-import it.polimi.ingsw.model.exceptions.AppendedToAppendableActionException;
-import it.polimi.ingsw.model.exceptions.AppendedUnappendableActionException;
+import it.polimi.ingsw.model.exceptions.AppendException;
+import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.weaponry.Action;
 import it.polimi.ingsw.model.weaponry.Weapon;
@@ -118,10 +118,27 @@ public class Player {
         return activeActions;
     }
 
-    public void playAction(int id) throws AppendedToAppendableActionException, AppendedUnappendableActionException {
-        // TODO appendability, consumability, constraintsbility CHECKS
+    public void playAction(int id) throws AppendException, InvalidMoveException {
         ActiveAction activeAction = activeActions.get(id);
-        activeAction.getAction().accomplish();
+        Action action = activeAction.getAction();
+
+        if(action.isAppendable())
+            for(int requiredIndex = 0; requiredIndex < action.getRequiredActions(); requiredIndex ++)
+                if(!activeActions.get(requiredIndex).isConsumed())
+                    throw new AppendException("Attempted to append " + action.getName() + " without the required actions being consumed first.");
+
+        if(activeActions // if there exists an activeAction that is both appendable and consumed
+                .stream()
+                .map(a -> a.isConsumed() && a.getAction().isAppendable())
+                .reduce(false, (b1, b2) -> b1 || b2)
+                && !activeActions.get(0).isConsumed() // and the basic effect is not consumed
+                && id != 0 // and the basic effect is not about to be consumed
+        )
+            throw new AppendException("Tried to accomplish " + action.getName() + " after an appendable action with no requirements.");
+
+        if(activeAction.isConsumed())
+            throw new AppendException("Tried to accomplish " + action.getName() + " more than once.");
+
         activeAction.consume();
     }
 
@@ -149,6 +166,7 @@ public class Player {
 
     public void beginTurn() {
         this.remainingExecutions = this.onFrenzy ? EXECUTIONS_PER_TURN_FRENETIC : EXECUTIONS_PER_TURN;
+        this.activeActions.clear();
     }
 
     // inflicts the player with a damage point
@@ -227,5 +245,6 @@ public class Player {
 
     public void spawn(Cell cell) {
         this.damage.clear();
+        this.position = cell;
     }
 }

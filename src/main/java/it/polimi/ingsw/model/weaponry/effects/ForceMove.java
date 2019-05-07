@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.weaponry.effects;
 
 import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.player.Move;
 import it.polimi.ingsw.model.weaponry.Attack;
 
@@ -17,7 +18,7 @@ public class ForceMove extends Effect {
     }
 
     @Override
-    public void apply(Attack attack) {
+    public void apply(Attack attack) throws InvalidMoveException {
         Move fm = new Move(this.amount);
         fm.setDestination(this.destination);
         fm.perform(attack.getTarget());

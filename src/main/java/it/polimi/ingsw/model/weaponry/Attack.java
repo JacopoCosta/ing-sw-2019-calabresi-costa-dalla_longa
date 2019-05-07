@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.weaponry;
 
+import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 import it.polimi.ingsw.model.weaponry.effects.Effect;
 import it.polimi.ingsw.model.player.Player;
@@ -64,7 +65,7 @@ public class Attack {
         return roomAttack;
     }
 
-    public void deal() {
+    public void deal() throws InvalidMoveException {
         for(Effect e : effects)
             e.apply(this);
     }

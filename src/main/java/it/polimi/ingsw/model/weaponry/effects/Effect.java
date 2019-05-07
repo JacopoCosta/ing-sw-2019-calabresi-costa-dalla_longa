@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.weaponry.effects;
 
 import it.polimi.ingsw.model.exceptions.InvalidEffectTypeException;
+import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 import it.polimi.ingsw.model.weaponry.Attack;
 
@@ -26,7 +27,7 @@ public abstract class Effect {
         throw new InvalidEffectTypeException(type + " is not a valid name for an Effect type. Use \"damage\", \"forcemove\", \"mark\", or \"selfmove\"");
     }
 
-    public abstract void apply(Attack attack);
+    public abstract void apply(Attack attack) throws InvalidMoveException;
 
     public String toString() {
         return this.amount + " " + this.type.toString();

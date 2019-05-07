@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.weaponry.Action;
 
 import java.util.ArrayList;
@@ -22,7 +23,8 @@ public class ActiveAction {
         return consumed;
     }
 
-    public void consume() {
+    public void consume() throws InvalidMoveException {
+        this.action.accomplish();
         this.consumed = true;
     }
 

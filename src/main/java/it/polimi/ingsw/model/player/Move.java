@@ -8,7 +8,7 @@ public class Move extends Activity {
     private int maxDistance;
     private Cell destination;
 
-    public Move(int maxDistance) throws InvalidMoveException {
+    public Move(int maxDistance) {
         this.type = ActivityType.MOVE;
         this.maxDistance = maxDistance;
     }
@@ -18,7 +18,7 @@ public class Move extends Activity {
     }
 
     @Override
-    public void perform(Player player) {
+    public void perform(Player player) throws InvalidMoveException {
         player.setPosition(this.destination);
     }
 }

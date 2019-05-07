@@ -66,7 +66,6 @@ public class Game {
                     Weapon weapon = null; //TODO get this value legitimately
                     ((Reload)activity).setWeapon(weapon);
                 }
-                activity.perform(subject);
             }
         }
 
