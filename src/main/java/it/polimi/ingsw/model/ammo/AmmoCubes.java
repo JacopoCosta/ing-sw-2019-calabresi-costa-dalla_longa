@@ -186,7 +186,7 @@ public class AmmoCubes {
                 s += ", ";
             s += blue + " blue";
         }
-        if(s == "")
+        if(s.equals(""))
             return "free";
         return s;
     }

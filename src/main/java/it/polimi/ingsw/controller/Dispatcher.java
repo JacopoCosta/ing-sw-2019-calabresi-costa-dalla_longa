@@ -11,13 +11,14 @@ public abstract class Dispatcher {
     // prints a request message and returns the response inserted via System.in (terminal)
     private static String requestRoutine(String q) {
         System.out.println("\n" + q);
-        String response = new String();
+        String response;
         try {
             BufferedReader bufferedRead = new BufferedReader(new InputStreamReader(System.in));
             response = bufferedRead.readLine();
         }
         catch(IOException e) {
             e.printStackTrace();
+            return null;
         }
         return response;
     }
