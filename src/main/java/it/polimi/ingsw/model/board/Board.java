@@ -55,25 +55,14 @@ public class Board {
     }
 
     public void sortCells(List<Cell> cells) {
-        Integer tempCoordinateX;
-        Integer tempCoordinateY;
-        for(int i=0; i<cells.size(); i++) {
-            tempCoordinateX = cells.get(0).getXCoord();
-            tempCoordinateY = cells.get(0).getYCoord();
-
-            if(tempCoordinateY > cells.get(i).getYCoord()) {
-                //the element is not in the right place
-                cells.add(0, cells.get(i));
-                cells.remove(i);
-                i=0; //starts over
-            }
-            else if(tempCoordinateX > cells.get(i).getXCoord()) {
-                //the element is not in the right place
-                cells.add(0, cells.get(i));
-                cells.remove(i);
-                i=0; //starts over
-            }
-        }
+        Comparator<Cell> before = (c1, c2) -> {
+            if(c1.getYCoord() == c2.getYCoord())
+                return c1.getYCoord() - c2.getYCoord();
+            return c1.getXCoord() - c2.getXCoord();
+        };
+        cells = cells.stream()
+                    .sorted(before)
+                    .collect(Collectors.toList());
     }
 
     public Cell findSpawnPoint(AmmoCubes ammoCubeColor) {

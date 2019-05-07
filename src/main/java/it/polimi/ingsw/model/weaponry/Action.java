@@ -59,12 +59,9 @@ public class Action {
         return appendable;
     }
 
-    public void append(Action appendableAction) throws AppendedUnappendableActionException, AppendedToAppendableActionException {
-        if(!appendableAction.isAppendable())
-            throw new AppendedUnappendableActionException("Tried to append an action that is not appendable.");
-        if(this.isAppendable())
-            throw new AppendedToAppendableActionException("Tried to append an action to another appendable action");
-        this.attacks.addAll(appendableAction.attacks);
+    public void accomplish() {
+        for(Attack attack : attacks)
+            attack.deal();
     }
 
     public String toString() {
