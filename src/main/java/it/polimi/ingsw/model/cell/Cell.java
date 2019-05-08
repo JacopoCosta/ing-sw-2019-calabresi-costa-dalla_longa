@@ -182,12 +182,27 @@ public abstract class Cell {
      * A cell is adjacent to another cell if and only if the distance separating them is equal to 1.
      * This implies a cell is not adjacent to itself.
      * An adjacent cell may also be referred to as a neighbour.
+     * Note that this relationship is symmetrical (i.e. if cell A is adjacent to cell B, then also cell B
+     * is adjacent to cell A).
      * @param cell the comparison cell.
      * @return whether or not the cell this method is called upon is adjacent to the cell passed as argument.
      * @see Cell#distance(Cell)
      */
     public boolean isAdjacent(Cell cell) {
         return this.adjacentCells.contains(cell);
+    }
+
+    /**
+     * This method tells if a cell could be adjacent to another cell, if there were no walls between them.
+     * This implies a cell is not {@code ghostlyAdjacent} to itself, and two adjacent cells are also {@code ghostlyAdjacent}
+     * (while the vice versa may not be true).
+     * Note that, just like {@code isAdjacent} method, this relationship is symmetrical as well.
+     * @see Cell#isAdjacent(Cell)
+     * @param cell te comparison cell
+     * @return whether or not the cell is ghostlyAdjacent to the given cell
+     */
+    public boolean isGhostlyAdjacent(Cell cell) {
+        return ((xCoord - cell.getXCoord() == 1) != (yCoord - cell.getYCoord() == 1));
     }
 
     /**

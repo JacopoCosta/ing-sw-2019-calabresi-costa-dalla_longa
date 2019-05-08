@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.board.Board;
+import it.polimi.ingsw.view.BoardGraph;
 
 public class CommandLineInterface extends View implements Viewable {
 
@@ -12,11 +13,11 @@ public class CommandLineInterface extends View implements Viewable {
         //sorts the cell list
         board.sortCells();
         //displays the board
-        for(Integer h=0; h < boardHeight; h++) {
+        for(int h = 0; h < boardHeight; h++) {
 
             //printing line 1
-            for(Integer w=0; w < boardWidth; w++) {
-                if(board.isExistingCell(w, h)) {
+            for(int w=0; w < boardWidth; w++) {
+                if(board.getCellByCoordinates(w,h) != null) {
                     System.out.print("┏━━━━━━━━━━━━┓"); //14 characters in total
                 }
                 else {  //the cell doesn't exists
@@ -26,8 +27,8 @@ public class CommandLineInterface extends View implements Viewable {
             System.out.print("\n");
 
             //printing line 2
-            for(Integer w=0; w < boardWidth; w++) {
-                if(board.isExistingCell(w, h)) {
+            for(int w=0; w < boardWidth; w++) {
+                if(board.getCellByCoordinates(w,h) != null) {
                     System.out.print("┃            ┃");
                 }
                 else
@@ -36,8 +37,8 @@ public class CommandLineInterface extends View implements Viewable {
             System.out.print("\n");
 
             //printing line 3
-            for(Integer w=0; w < boardWidth; w++) {
-                if(board.isExistingCell(w, h)) {
+            for(int w=0; w < boardWidth; w++) {
+                if(board.getCellByCoordinates(w,h) != null) {
                     System.out.print("┃            ┃");
                 }
                 else
@@ -46,8 +47,8 @@ public class CommandLineInterface extends View implements Viewable {
             System.out.print("\n");
 
             //printing line 4
-            for(Integer w=0; w < boardWidth; w++) {
-                if(board.isExistingCell(w, h)) {
+            for(int w=0; w < boardWidth; w++) {
+                if(board.getCellByCoordinates(w,h) != null) {
                     System.out.print("┃            ┃");
                 }
                 else
@@ -56,8 +57,8 @@ public class CommandLineInterface extends View implements Viewable {
             System.out.print("\n");
 
             //printing line 5
-            for(Integer w=0; w < boardWidth; w++) {
-                if(board.isExistingCell(w, h)) {
+            for(int w=0; w < boardWidth; w++) {
+                if(board.getCellByCoordinates(w,h) != null) {
                     System.out.print("┗━━━━━━━━━━━━┛");
                 }
                 else
@@ -72,4 +73,6 @@ public class CommandLineInterface extends View implements Viewable {
         }
 
     }
+
+
 }
