@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.model.exceptions.InvalidMoveException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +35,7 @@ public class Execution {
             a.add(new Reload());
     }
 
-    public static Execution generateMove(Player subject) { // moves only
+    public static Execution generateMove(Player subject) throws InvalidMoveException { // moves only
         List<Activity> a = new ArrayList<>();
         a.add(new Move(
                 subject.isOnFrenzy() ? MAX_MOVES_FRENETIC : MAX_MOVES
@@ -42,7 +44,7 @@ public class Execution {
         return new Execution(a);
     }
 
-    public static Execution generateGrab(Player subject) { // moves, then grabs
+    public static Execution generateGrab(Player subject) throws InvalidMoveException { // moves, then grabs
         List<Activity> a = new ArrayList<>();
         a.add(new Move(
                 subject.isOnFrenzy() ?
@@ -54,7 +56,7 @@ public class Execution {
         return new Execution(a);
     }
 
-    public static Execution generateShoot(Player subject) { // moves (unless not enhanced and not on frenzy), then shoots -- reloads before shooting if on frenzy
+    public static Execution generateShoot(Player subject) throws InvalidMoveException { // moves (unless not enhanced and not on frenzy), then shoots -- reloads before shooting if on frenzy
         List<Activity> a = new ArrayList<>();
         if(subject.isOnFrenzy() || subject.getDamage() >= SHOOT_ENHANCE_THRESHOLD) { // the moves will not be included unless the player is either well damaged or on frenzy
             a.add(new Move(
@@ -70,7 +72,7 @@ public class Execution {
         return new Execution(a);
     }
 
-    public static List<Execution> getOptionsForPlayer(Player subject) {
+    public static List<Execution> getOptionsForPlayer(Player subject) throws InvalidMoveException {
         List<Execution> e = new ArrayList<>();
         if(!subject.isOnFrenzy() || subject.isOnFrenzyBeforeStartingPlayer()) // the "move only" execution is not available outside of these conditions
             e.add(generateMove(subject));

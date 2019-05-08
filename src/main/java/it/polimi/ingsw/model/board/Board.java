@@ -9,9 +9,12 @@ import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.lang.Math.*;
 
 public class Board {
     private List<Player> killers;
@@ -73,12 +76,88 @@ public class Board {
         return null;
     }
 
+    //tells if the cell of given coordinates exists in the current board configuration
+    public boolean isExistingCell(int xCoord, int yCoord) {
+        for(Cell cell: cells) {
+            if(cell.getXCoord() == xCoord && cell.getYCoord() == yCoord)
+                return true;
+        }
+        return false;
+    }
+
     public void draw() {
+
+        int boardWidth = 0;
+        int boardHeight = 0;
+
         sortCells(this.cells);
         //now the list is sorted
-        Integer currentCellIndex;
-        /*TODO:
-            finish this CLI
-         */
+
+        //calculates boardWidth and boardHeight
+        int i;
+        for(i=0; i<cells.size(); i++)
+            boardWidth = max(boardWidth, cells.get(i).getXCoord());
+        boardHeight = cells.get(i-1).getYCoord(); //that's because the list has been sorted
+
+        //displays the board
+        for(Integer h=0; h < boardHeight; h++) {
+
+            //printing line 1
+            for(Integer w=0; w < boardWidth; w++) {
+                if(isExistingCell(w, h)) {
+                    System.out.print("┏━━━━━━━━━━━━┓"); //14 characters in total
+                }
+                else {  //the cell doesn't exists
+                    System.out.print("              ");
+                }
+            }
+            System.out.print("\n");
+
+            //printing line 2
+            for(Integer w=0; w < boardWidth; w++) {
+                if(isExistingCell(w, h)) {
+                    System.out.print("┃            ┃");
+                }
+                else
+                    System.out.print("              ");
+            }
+            System.out.print("\n");
+
+            //printing line 3
+            for(Integer w=0; w < boardWidth; w++) {
+                if(isExistingCell(w, h)) {
+                    System.out.print("┃            ┃");
+                }
+                else
+                    System.out.print("              ");
+            }
+            System.out.print("\n");
+
+            //printing line 4
+            for(Integer w=0; w < boardWidth; w++) {
+                if(isExistingCell(w, h)) {
+                    System.out.print("┃            ┃");
+                }
+                else
+                    System.out.print("              ");
+            }
+            System.out.print("\n");
+
+            //printing line 5
+            for(Integer w=0; w < boardWidth; w++) {
+                if(isExistingCell(w, h)) {
+                    System.out.print("┗━━━━━━━━━━━━┛");
+                }
+                else
+                    System.out.print("              ");
+            }
+            System.out.print("\n");
+            /*TODO
+                create walls and doors
+                make it print all the info about the cell;
+                delete the double walls between two adjacent cells
+             */
+        }
+
     }
 }

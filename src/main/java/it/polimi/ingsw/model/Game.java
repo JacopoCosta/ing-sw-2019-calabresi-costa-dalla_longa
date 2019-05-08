@@ -3,6 +3,10 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.exceptions.CannotGrabException;
+import it.polimi.ingsw.model.exceptions.ConstraintNotSatisfiedException;
+import it.polimi.ingsw.model.exceptions.InvalidMoveException;
+import it.polimi.ingsw.model.exceptions.WeaponAlreadyLoadedException;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.weaponry.Action;
 import it.polimi.ingsw.model.weaponry.Weapon;
@@ -46,7 +50,7 @@ public class Game {
         return result;
     }
 
-    public void playTurn() {
+    public void playTurn() throws CannotGrabException, ConstraintNotSatisfiedException, InvalidMoveException, WeaponAlreadyLoadedException {
         Player subject = participants.get(currentTurnPlayer);
         subject.beginTurn();
         while(subject.getRemainingExecutions() > 0) { // a turn is made by several executions

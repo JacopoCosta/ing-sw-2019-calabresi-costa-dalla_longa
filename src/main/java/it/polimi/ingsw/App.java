@@ -53,6 +53,5 @@ public class App {
                 keepDrawing = false;
             }
         }
-
     }
 }

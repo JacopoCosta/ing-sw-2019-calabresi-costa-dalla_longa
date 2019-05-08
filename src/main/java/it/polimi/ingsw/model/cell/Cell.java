@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.exceptions.SelfAdjacentCellException;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * The cell is the unit of space on the board. Cells are organized in a 2-dimensional
