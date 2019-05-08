@@ -3,8 +3,6 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.*;
-import it.polimi.ingsw.model.weaponry.Action;
-import it.polimi.ingsw.model.weaponry.Weapon;
 
 public class Controller implements Controllable {
 

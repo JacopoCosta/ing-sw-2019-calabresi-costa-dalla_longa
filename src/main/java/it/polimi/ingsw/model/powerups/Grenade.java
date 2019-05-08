@@ -31,7 +31,7 @@ public class Grenade extends PowerUp {
         List<Effect> e = new ArrayList<>();
         e.add(m);
 
-        Attack a = new Attack(false, false, false, e); // make that Effect into an Attack
+        Attack a = new Attack(false, false, false, e, null); // make that Effect into an Attack
         a.setAuthor(subject);
         a.setTarget(target);
         a.deal();

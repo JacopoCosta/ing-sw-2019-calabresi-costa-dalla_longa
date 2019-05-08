@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.weaponry;
 
 import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
+import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 import it.polimi.ingsw.model.weaponry.effects.Effect;
 import it.polimi.ingsw.model.player.Player;
 
@@ -15,14 +16,16 @@ public class Attack {
     private boolean cellAttack;
     private boolean roomAttack;
     private List<Effect> effects;
+    private List<Constraint> constraints;
 
-    public Attack(boolean optional, boolean cellAttack, boolean roomAttack, List<Effect> effects) {
+    public Attack(boolean optional, boolean cellAttack, boolean roomAttack, List<Effect> effects, List<Constraint> constraints) {
         this.target = null; // target is not defined upon deck generation
         this.author = null; // author is not defined upon deck generation
         this.optional = optional;
         this.cellAttack = cellAttack; // whether or not this Attack is dealt to all Players in the same cell
         this.roomAttack = roomAttack; // whether or not this Attack is dealt to all Players in the same room
         this.effects = effects;
+        this.constraints = constraints;
     }
 
     public static Attack build(DecoratedJSONObject jAttack) {
@@ -30,11 +33,20 @@ public class Attack {
         boolean cellAttack = jAttack.getBoolean("cellAttack");
         boolean roomAttack = jAttack.getBoolean("roomAttack");
         List<Effect> effects = new ArrayList<>();
+        List<Constraint> constraints = new ArrayList<>();
 
-        for(DecoratedJSONObject jEffect : jAttack.getArray("effects").asList()) {
+        for(DecoratedJSONObject jEffect : jAttack.getArray("effects").asList())
             effects.add(Effect.build(jEffect));
+
+        try {
+            for (DecoratedJSONObject jConstraint : jAttack.getArray("constrains").asList())
+                constraints.add(Constraint.build(jConstraint));
         }
-        return new Attack(optional, cellAttack, roomAttack, effects);
+        catch (NullPointerException e) {
+            System.out.println(jAttack + " is missing constraints."); //TODO complete json and remove try/catch block (NPE should no longer occur)
+        }
+
+        return new Attack(optional, cellAttack, roomAttack, effects, constraints);
     }
 
     public void setTarget(Player target) {

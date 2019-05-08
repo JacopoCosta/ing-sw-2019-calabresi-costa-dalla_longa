@@ -24,6 +24,6 @@ public class IdentityConstraint extends Constraint {
         Player drainPlayer = getPlayerFromId(activeActions, drainActionId, drainAttackId);
 
         if(sourcePlayer.equals(drainPlayer) != same)
-            throw new ConstraintNotSatisfiedException("The two players are " + (same ? "not" : "") + " the same.");
+            throw new ConstraintNotSatisfiedException("The two players are" + (same ? " not" : "") + " the same.");
     }
 }

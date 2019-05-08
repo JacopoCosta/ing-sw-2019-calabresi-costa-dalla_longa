@@ -37,6 +37,16 @@
                                     "type": "mark",
                                     "amount": 1
                                 }
+                            ],
+                            "constraints": [
+                                {
+                                    "type": "visibility",
+                                    "sourceActionId": 0,
+                                    "sourceAttackId": 0,
+                                    "drainActionId": 0,
+                                    "drainAttackId": 1,
+                                    "sees": true
+                                }
                             ]
                         }
                     ]
@@ -60,6 +70,24 @@
                                 {
                                     "type": "mark",
                                     "amount": 1
+                                }
+                            ],
+                            "constraints": [
+                                {
+                                    "type": "identity",
+                                    "sourceActionId": 0,
+                                    "sourceAttackId": 1,
+                                    "drainActionId": 1,
+                                    "drainAttackId": 1,
+                                    "same": false
+                                },
+                                {
+                                    "type": "visibility",
+                                    "sourceActionId": 0,
+                                    "sourceAttackId": 0,
+                                    "drainActionId": 1,
+                                    "drainAttackId": 1,
+                                    "sees": true
                                 }
                             ]
                         }
