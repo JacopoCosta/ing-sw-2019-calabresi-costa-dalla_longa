@@ -1,10 +1,15 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.weaponry.Action;
-import it.polimi.ingsw.model.weaponry.Weapon;
+
+import it.polimi.ingsw.model.Game;
 
 public class Controller {
+
+    private Game game;
+
+    public Controller(Game game) {
+        this.game = game;
+    }
 
     /*TODO:
     public void shoot()

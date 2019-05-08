@@ -40,6 +40,7 @@ public class Player {
 
     private Cell position;
     private List<ActiveAction> activeActions;
+    private Cell historicPosition;
 
     public Player(String name) {
         this.name = name;
@@ -110,6 +111,10 @@ public class Player {
         return this.position;
     }
 
+    public Cell getHistoricPosition() {
+        return this.historicPosition;
+    }
+
     public void loadActionsFromWeapon(Weapon weapon) {
         this.activeActions = ActiveAction.createList(weapon.getActions());
     }
@@ -144,6 +149,10 @@ public class Player {
 
     public void setPosition(Cell cell) {
         this.position = cell;
+    }
+
+    public void setHistoricPosition(Cell historicPosition) {
+        this.historicPosition = historicPosition;
     }
 
     public void activateFrenzy() {

@@ -50,7 +50,7 @@ public class Game {
         return result;
     }
 
-    public void playTurn() throws CannotGrabException, ConstraintNotSatisfiedException, InvalidMoveException, WeaponAlreadyLoadedException {
+    public void playTurn() {
         Player subject = participants.get(currentTurnPlayer);
         subject.beginTurn();
         while(subject.getRemainingExecutions() > 0) { // a turn is made by several executions
@@ -59,14 +59,20 @@ public class Game {
 
             for(Activity activity : options.get(choice).getActivities()) { // each execution consists of some activities
                 if(activity.getType() == ActivityType.MOVE) {
+                    Move move = (Move) activity;
                     Cell destination = null; //TODO get this value legitimately
-                    ((Move)activity).setDestination(destination);
+                    move.setDestination(destination);
+                }
+                else if(activity.getType() == ActivityType.GRAB) {
+                    Grab grab = (Grab) activity;
                 }
                 else if(activity.getType() == ActivityType.SHOOT) {
+                    Shoot shoot = (Shoot) activity;
                     Action action = null; //TODO get this value legitimately
                     ((Shoot)activity).setAction(action);
                 }
                 else if(activity.getType() == ActivityType.RELOAD) {
+                    Reload reload = (Reload) activity;
                     Weapon weapon = null; //TODO get this value legitimately
                     ((Reload)activity).setWeapon(weapon);
                 }

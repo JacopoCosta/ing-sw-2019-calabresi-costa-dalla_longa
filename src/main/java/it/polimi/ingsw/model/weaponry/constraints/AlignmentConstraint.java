@@ -20,6 +20,9 @@ public class AlignmentConstraint extends Constraint {
         Cell sourceCell = getPlayerFromId(activeActions, sourceActionId, sourceAttackId).getPosition();
         Cell drainCell = getPlayerFromId(activeActions, drainActionId, drainAttackId).getPosition();
 
+        if(sourceActionId < 0)
+            sourceCell = getPlayerFromId(activeActions, -1 - sourceActionId, sourceAttackId).getHistoricPosition();
+
         if(!sourceCell.isAligned(drainCell))
             throw new ConstraintNotSatisfiedException("The two players are not aligned.");
     }

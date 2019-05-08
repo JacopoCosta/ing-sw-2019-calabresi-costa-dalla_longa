@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.weaponry.constraints;
 
+import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.ConstraintNotSatisfiedException;
 import it.polimi.ingsw.model.player.ActiveAction;
 import it.polimi.ingsw.model.player.Player;
