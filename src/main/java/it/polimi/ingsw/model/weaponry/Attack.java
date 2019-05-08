@@ -65,6 +65,10 @@ public class Attack {
         return this.author;
     }
 
+    public List<Constraint> getConstraints() {
+        return this.constraints;
+    }
+
     public boolean isOptional() {
         return optional;
     }
