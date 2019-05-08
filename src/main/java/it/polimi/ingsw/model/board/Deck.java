@@ -10,13 +10,14 @@ import it.polimi.ingsw.model.weaponry.Weapon;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class Deck<T> {
     private List<T> cards;
+    private List<T> discarded;
 
     private Deck() {
         this.cards = new ArrayList<>();
+        this.discarded = new ArrayList<>();
     }
 
     public T draw() throws EmptyDeckException {
@@ -25,8 +26,17 @@ public class Deck<T> {
         return this.cards.remove(0);
     }
 
+    public void discard(T card) {
+        discarded.add(card);
+    }
+
     public void shuffle() {
         Collections.shuffle(this.cards);
+    }
+
+    public void regenerate() {
+        this.cards = this.discarded;
+        this.discarded.clear();
     }
 
     public static Deck<Weapon> generateWeapons() {

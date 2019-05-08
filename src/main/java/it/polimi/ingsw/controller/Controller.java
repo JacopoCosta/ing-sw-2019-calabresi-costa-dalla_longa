@@ -2,8 +2,13 @@ package it.polimi.ingsw.controller;
 
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.player.*;
+import it.polimi.ingsw.model.weaponry.Action;
+import it.polimi.ingsw.model.weaponry.Weapon;
 
-public class Controller {
+public class Controller implements Controllable {
+
+    private static final String EXECUTION_REQUEST = "Choose a moveset:";
 
     private Game game;
 
@@ -11,13 +16,31 @@ public class Controller {
         this.game = game;
     }
 
-    /*TODO:
-    public void shoot()
-     */
-
-    public void reload() {
-        /*int weaponCount = game.getCurrentPlayer().getWeapons().size();
-        int WeaponIndex = Dispatcher.requestInterval("Which weapon do you wish to reload? "0, weaponCount);
-        */
+    public Game getGame() {
+        return game;
     }
+
+    public void activityRoutine(Player subject, Activity activity) {
+        switch(activity.getType()) {
+            case MOVE:
+                ControlledMove.routine(subject, (Move) activity);
+                break;
+            case GRAB:
+                ControlledGrab.routine(subject, (Grab) activity);
+                break;
+            case SHOOT:
+                ControlledShoot.routine(subject, (Shoot) activity);
+                break;
+            case RELOAD:
+                ControlledReload.routine(subject, (Reload) activity);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public int getExecutionIndex(Player subject, int upperBound) {
+        return Dispatcher.requestInteger(EXECUTION_REQUEST, 0, upperBound);
+    }
+
 }

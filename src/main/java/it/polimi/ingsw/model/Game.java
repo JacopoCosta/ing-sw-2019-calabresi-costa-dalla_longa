@@ -1,15 +1,13 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
-import it.polimi.ingsw.model.exceptions.CannotGrabException;
-import it.polimi.ingsw.model.exceptions.ConstraintNotSatisfiedException;
-import it.polimi.ingsw.model.exceptions.InvalidMoveException;
-import it.polimi.ingsw.model.exceptions.WeaponAlreadyLoadedException;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.weaponry.Action;
 import it.polimi.ingsw.model.weaponry.Weapon;
+import it.polimi.ingsw.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +20,7 @@ public class Game {
     private int currentTurnPlayer;
 
     private Board board;
+    private Controller controller;
 
     public Board getBoard() {
         return this.board;
@@ -34,6 +33,7 @@ public class Game {
         this.currentTurnPlayer = 0;
 
         this.board = Board.generate(boardType);
+        this.controller = new Controller(this);
     }
 
     public List<Player> getPlayersByCell(Cell cell) {
@@ -59,28 +59,10 @@ public class Game {
         subject.beginTurn();
         while(subject.getRemainingExecutions() > 0) { // a turn is made by several executions
             List<Execution> options = Execution.getOptionsForPlayer(subject);
-            int choice = 0; //TODO get this value legitimately
+            int choice = controller.getExecutionIndex(subject, options.size());
 
-            for(Activity activity : options.get(choice).getActivities()) { // each execution consists of some activities
-                if(activity.getType() == ActivityType.MOVE) {
-                    Move move = (Move) activity;
-                    Cell destination = null; //TODO get this value legitimately
-                    move.setDestination(destination);
-                }
-                else if(activity.getType() == ActivityType.GRAB) {
-                    Grab grab = (Grab) activity;
-                }
-                else if(activity.getType() == ActivityType.SHOOT) {
-                    Shoot shoot = (Shoot) activity;
-                    Action action = null; //TODO get this value legitimately
-                    ((Shoot)activity).setAction(action);
-                }
-                else if(activity.getType() == ActivityType.RELOAD) {
-                    Reload reload = (Reload) activity;
-                    Weapon weapon = null; //TODO get this value legitimately
-                    ((Reload)activity).setWeapon(weapon);
-                }
-            }
+            for(Activity activity : options.get(choice).getActivities()) // each execution consists of some activities
+                this.controller.activityRoutine(subject, activity);
         }
 
         participants.stream() // score all dead players

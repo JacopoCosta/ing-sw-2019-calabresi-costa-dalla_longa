@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.cell;
 
+import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.exceptions.SelfAdjacentCellException;
 
@@ -24,6 +25,11 @@ public abstract class Cell {
      * A list of all the cells considered to be adjacent to the current cell.
      */
     protected List<Cell> adjacentCells;
+
+    /**
+     * The board this cell belongs to.
+     */
+    protected Board board;
 
     /**
      * The room this cell belongs to.
@@ -75,6 +81,15 @@ public abstract class Cell {
     public void setRoom(Room room) {
         this.room = room;
     }
+
+    /**
+     * This method tells which board a cell belongs to.
+     * @return the board containing the cell this method was called upon.
+     */
+    public Board getBoard() {
+        return board;
+    }
+
 
     /**
      * This method tells which room a cell belongs to.

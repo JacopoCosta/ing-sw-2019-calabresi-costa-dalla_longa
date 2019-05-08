@@ -9,12 +9,9 @@ import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.lang.Math.*;
 
 public class Board {
     private List<Player> killers;
@@ -85,19 +82,31 @@ public class Board {
         return false;
     }
 
-    public int getBoardHeight() {
-        int boardHeight = 0;
-        for(int i=0; i<cells.size(); i++)
-            boardHeight = max(boardHeight, cells.get(i).getYCoord());
-        return boardHeight;
-    }
-
     public int getBoardWidth() {
-        int boardWidth = 0;
-        for(int i=0; i<cells.size(); i++)
-            boardWidth = max(boardWidth, cells.get(i).getXCoord());
-        return boardWidth;
+        return cells.stream()
+                .map(Cell::getXCoord)
+                .reduce(0, Integer::max);
     }
 
+    public int getBoardHeight() {
+        return cells.stream()
+                .map(Cell::getYCoord)
+                .reduce(0, Integer::max);
+    }
 
+    public List<Cell> getCells() {
+        return cells;
+    }
+
+    public Deck<Weapon> getWeaponDeck() {
+        return weaponDeck;
+    }
+
+    public Deck<PowerUp> getPowerUpDeck() {
+        return powerUpDeck;
+    }
+
+    public Deck<AmmoTile> getAmmoTileDeck() {
+        return ammoTileDeck;
+    }
 }

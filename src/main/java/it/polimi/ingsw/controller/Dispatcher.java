@@ -37,7 +37,7 @@ public abstract class Dispatcher {
     }
 
     // keeps requesting an integer within an interval until such request is fulfilled
-    public static int requestInterval(String message, int lowerBound, int upperBound) {
+    public static int requestInteger(String message, int lowerBound, int upperBound) {
         int value = lowerBound - 1;
         do {
             value = Dispatcher.safeIntegerConversion(Dispatcher.requestRoutine(message + " [" + lowerBound + "~" + upperBound + "]"), value);

@@ -1,8 +1,11 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
+import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.AppendException;
+import it.polimi.ingsw.model.exceptions.CannotAffordException;
+import it.polimi.ingsw.model.exceptions.FullHandException;
 import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.weaponry.Action;
@@ -21,6 +24,8 @@ public class Player {
     private static final int MAX_MARKINGS_PER_AUTHOR = 3; // maximum number of markings an "author" can give to another Player
     private static final int EXECUTIONS_PER_TURN = 2; // number of executions a player needs to perform on each non-frenzy turn
     private static final int EXECUTIONS_PER_TURN_FRENETIC = 1; // number of executions a player needs to perform on each frenzy turn
+
+    private static final int MAX_CARDS_IN_HAND = 3;
 
     private String name;
     private int score;
@@ -117,6 +122,21 @@ public class Player {
 
     public void loadActionsFromWeapon(Weapon weapon) {
         this.activeActions = ActiveAction.createList(weapon.getActions());
+    }
+
+    public void giveAmmoCubes(AmmoCubes ammoCubes) {
+        this.ammoCubes = this.ammoCubes.sum(ammoCubes);
+    }
+
+    public void takeAmmoCubes(AmmoCubes ammoCubes) throws CannotAffordException {
+        this.ammoCubes = this.ammoCubes.take(ammoCubes);
+    }
+
+    public void givePowerUp(PowerUp powerUp) throws FullHandException {
+        this.powerUps.add(powerUp);
+
+        if(this.powerUps.size() > MAX_CARDS_IN_HAND)
+            throw new FullHandException("There can't be more than 3 power ups in a player's hand");
     }
 
     public List<ActiveAction> getActiveActions() {
