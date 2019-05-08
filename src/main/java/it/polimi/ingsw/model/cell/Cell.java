@@ -3,9 +3,8 @@ package it.polimi.ingsw.model.cell;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.exceptions.SelfAdjacentCellException;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
 
 /**
  * The cell is the unit of space on the board. Cells are organized in a 2-dimensional

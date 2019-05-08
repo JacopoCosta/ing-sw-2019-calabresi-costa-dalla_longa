@@ -57,7 +57,7 @@ public class Board {
         return cells;
     }
 
-    public void sortCells(List<Cell> cells) {
+    public void sortCells() {
         Comparator<Cell> before = (c1, c2) -> {
             if(c1.getYCoord() == c2.getYCoord())
                 return c1.getYCoord() - c2.getYCoord();
@@ -85,79 +85,19 @@ public class Board {
         return false;
     }
 
-    public void draw() {
-
-        int boardWidth = 0;
+    public int getBoardHeight() {
         int boardHeight = 0;
-
-        sortCells(this.cells);
-        //now the list is sorted
-
-        //calculates boardWidth and boardHeight
-        int i;
-        for(i=0; i<cells.size(); i++)
-            boardWidth = max(boardWidth, cells.get(i).getXCoord());
-        boardHeight = cells.get(i-1).getYCoord(); //that's because the list has been sorted
-
-        //displays the board
-        for(Integer h=0; h < boardHeight; h++) {
-
-            //printing line 1
-            for(Integer w=0; w < boardWidth; w++) {
-                if(isExistingCell(w, h)) {
-                    System.out.print("┏━━━━━━━━━━━━┓"); //14 characters in total
-                }
-                else {  //the cell doesn't exists
-                    System.out.print("              ");
-                }
-            }
-            System.out.print("\n");
-
-            //printing line 2
-            for(Integer w=0; w < boardWidth; w++) {
-                if(isExistingCell(w, h)) {
-                    System.out.print("┃            ┃");
-                }
-                else
-                    System.out.print("              ");
-            }
-            System.out.print("\n");
-
-            //printing line 3
-            for(Integer w=0; w < boardWidth; w++) {
-                if(isExistingCell(w, h)) {
-                    System.out.print("┃            ┃");
-                }
-                else
-                    System.out.print("              ");
-            }
-            System.out.print("\n");
-
-            //printing line 4
-            for(Integer w=0; w < boardWidth; w++) {
-                if(isExistingCell(w, h)) {
-                    System.out.print("┃            ┃");
-                }
-                else
-                    System.out.print("              ");
-            }
-            System.out.print("\n");
-
-            //printing line 5
-            for(Integer w=0; w < boardWidth; w++) {
-                if(isExistingCell(w, h)) {
-                    System.out.print("┗━━━━━━━━━━━━┛");
-                }
-                else
-                    System.out.print("              ");
-            }
-            System.out.print("\n");
-            /*TODO
-                create walls and doors
-                make it print all the info about the cell;
-                delete the double walls between two adjacent cells
-             */
-        }
-
+        for(int i=0; i<cells.size(); i++)
+            boardHeight = max(boardHeight, cells.get(i).getYCoord());
+        return boardHeight;
     }
+
+    public int getBoardWidth() {
+        int boardWidth = 0;
+        for(int i=0; i<cells.size(); i++)
+            boardWidth = max(boardWidth, cells.get(i).getXCoord());
+        return boardWidth;
+    }
+
+
 }

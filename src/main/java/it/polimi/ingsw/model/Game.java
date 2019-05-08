@@ -23,6 +23,10 @@ public class Game {
 
     private Board board;
 
+    public Board getBoard() {
+        return this.board;
+    }
+
     public Game(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {
         this.finalFrenzy = finalFrenzy;
         this.roundsLeft = roundsToPlay;
