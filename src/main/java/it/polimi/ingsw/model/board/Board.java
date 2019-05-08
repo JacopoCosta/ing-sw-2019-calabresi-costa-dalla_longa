@@ -73,13 +73,12 @@ public class Board {
         return null;
     }
 
-    //tells if the cell of given coordinates exists in the current board configuration
-    public boolean isExistingCell(int xCoord, int yCoord) {
+    public Cell getCellByCoordinates(int xCoord, int yCoord) {
         for(Cell cell: cells) {
             if(cell.getXCoord() == xCoord && cell.getYCoord() == yCoord)
-                return true;
+                return cell;
         }
-        return false;
+        return null;
     }
 
     public int getBoardWidth() {
