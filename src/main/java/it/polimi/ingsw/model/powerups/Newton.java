@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.powerups;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.exceptions.ConstraintNotSatisfiedException;
 import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.Attack;
@@ -40,7 +41,11 @@ public class Newton extends PowerUp{
 
         Attack a = new Attack(false, false, false, e, null); // make that Effect into an Attack
         a.setAuthor(subject);
-        a.setTarget(target);
+        try {
+            a.setTarget(target);
+        } catch (ConstraintNotSatisfiedException ignored) {
+            System.out.println("You should never see this message.");
+        }
         a.deal();
     }
 }

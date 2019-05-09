@@ -5,9 +5,6 @@ import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.player.*;
-import it.polimi.ingsw.model.weaponry.Action;
-import it.polimi.ingsw.model.weaponry.Weapon;
-import it.polimi.ingsw.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +29,12 @@ public class Game {
         this.participants = participants;
         this.currentTurnPlayer = 0;
 
-        this.board = Board.generate(boardType);
+        this.board = Board.generate(this, boardType);
         this.controller = new Controller(this);
+    }
+
+    public List<Player> getParticipants() {
+        return participants;
     }
 
     public List<Player> getPlayersByCell(Cell cell) {
@@ -70,5 +71,13 @@ public class Game {
                 .forEach(Player::scoreUponDeath);
 
         this.currentTurnPlayer = (this.currentTurnPlayer + 1) % this.participants.size();
+    }
+
+    public void play() {
+        boolean gameOver = false;
+
+        while(!gameOver) {
+            this.playTurn();
+        }
     }
 }

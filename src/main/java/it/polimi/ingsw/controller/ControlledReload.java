@@ -12,7 +12,7 @@ public abstract class ControlledReload {
     private static final String RELOAD_REQUEST_IF = "Would you like to reload?";
     private static final String RELOAD_REQUEST_WHICH = "Which weapon would you like to reload?";
 
-    public static void routine(Player subject, Reload reload) {
+    protected static synchronized void routine(Player subject, Reload reload) {
 
         List<Weapon> weapons = subject.getWeapons();
         boolean keepReloading = true;

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.controller.ControlledShoot;
 import it.polimi.ingsw.model.exceptions.ConstraintNotSatisfiedException;
 import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.weaponry.Action;
@@ -19,7 +20,7 @@ public class Shoot extends Activity {
     @Override
     public void perform(Player author) throws ConstraintNotSatisfiedException, InvalidMoveException {
         for(Attack attack : this.action.getAttacks()) {
-            Player target = null; //TODO acquire this variable legitimately -- suggest valid targets only
+            Player target = ControlledShoot.chooseTarget(author);
 
             attack.setAuthor(author);
             attack.setTarget(target);

@@ -1,7 +1,9 @@
 package it.polimi.ingsw.model.board;
 
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.ammo.AmmoTile;
+import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.player.Player;
@@ -14,6 +16,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Board {
+    private Game game;
+
     private List<Player> killers;
     private List<Player> doubleKillers;
     private List<Cell> cells;
@@ -24,8 +28,10 @@ public class Board {
 
     private Board() {}
 
-    public static Board generate(int type) {
+    public static Board generate(Game game, int type) {
         Board board = new Board();
+
+        board.game = game;
 
         // initialize starting values
         board.killers = new ArrayList<>();
@@ -48,6 +54,62 @@ public class Board {
     protected static List<Cell> configureCells(int boardType) {
         List<Cell> cells = new ArrayList<>();
         switch(boardType) {
+            case 1:
+                break;
+            case 2:
+                cells.add(new AmmoCell(0, 0));
+                cells.add(new AmmoCell(1, 0));
+                cells.add(new SpawnCell(2, 0, new AmmoCubes(0, 0, 1)));
+                cells.add(new AmmoCell(3, 0));
+                cells.add(new SpawnCell(0, 1, new AmmoCubes(1, 0, 1)));
+                cells.add(new AmmoCell(1, 1));
+                cells.add(new AmmoCell(2, 1));
+                cells.add(new AmmoCell(3, 1));
+                cells.add(new AmmoCell(1, 2));
+                cells.add(new AmmoCell(2, 2));
+                cells.add(new SpawnCell(3, 2, new AmmoCubes(0, 1, 0)));
+
+                cells.get(0).setAdjacent(cells.get(1));
+                cells.get(0).setAdjacent(cells.get(4));
+                cells.get(1).setAdjacent(cells.get(2));
+                cells.get(2).setAdjacent(cells.get(3));
+                cells.get(2).setAdjacent(cells.get(6));
+                cells.get(3).setAdjacent(cells.get(7));
+                cells.get(4).setAdjacent(cells.get(5));
+                cells.get(5).setAdjacent(cells.get(8));
+                cells.get(6).setAdjacent(cells.get(7));
+                cells.get(6).setAdjacent(cells.get(9));
+                cells.get(7).setAdjacent(cells.get(10));
+                cells.get(8).setAdjacent(cells.get(9));
+                cells.get(9).setAdjacent(cells.get(10));
+
+                List<Cell> list0 = new ArrayList<>();
+                List<Cell> list1 = new ArrayList<>();
+                List<Cell> list2 = new ArrayList<>();
+                List<Cell> list3 = new ArrayList<>();
+                List<Cell> list4 = new ArrayList<>();
+                list0.add(cells.get(0));
+                list0.add(cells.get(1));
+                list0.add(cells.get(2));
+                list1.add(cells.get(3));
+                list2.add(cells.get(4));
+                list2.add(cells.get(5));
+                list3.add(cells.get(6));
+                list3.add(cells.get(7));
+                list4.add(cells.get(8));
+                list3.add(cells.get(9));
+                list3.add(cells.get(10));
+                new Room(list0);
+                new Room(list1);
+                new Room(list2);
+                new Room(list3);
+                new Room(list4);
+
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
             default:
                 break;
         }
@@ -107,5 +169,9 @@ public class Board {
 
     public Deck<AmmoTile> getAmmoTileDeck() {
         return ammoTileDeck;
+    }
+
+    public Game getGame() {
+        return this.game;
     }
 }

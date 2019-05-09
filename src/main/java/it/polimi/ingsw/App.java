@@ -1,57 +1,31 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
-import it.polimi.ingsw.model.ammo.AmmoTile;
-import it.polimi.ingsw.model.board.Deck;
-import it.polimi.ingsw.model.exceptions.EmptyDeckException;
-import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.model.utilities.PathGenerator;
-import it.polimi.ingsw.model.weaponry.Weapon;
+import it.polimi.ingsw.model.player.Player;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Hello world!
  */
 public class App {
     public static void main(String[] args) {
+        List<Player> players = new ArrayList<>();
+        players.add(new Player("Aldo"));
+        players.add(new Player("Giovanni"));
+        players.add(new Player("Giacomo"));
+        players.add(new Player("Luca"));
+        players.add(new Player("Paolo"));
 
-        AmmoCubes ac = new AmmoCubes(0, 2, 3);
-        System.out.println(PathGenerator.getPath("weapons.json"));
 
-        Deck<Weapon> deck1 = Deck.generateWeapons();
-        Deck<PowerUp> deck2 = Deck.generatePowerUps();
-        Deck<AmmoTile> deck3 = Deck.generateAmmoTiles();
+        Game game = new Game(true, 8, 2, players);
 
-        deck1.shuffle();
-        deck2.shuffle();
-        deck3.shuffle();
+        for(Player player: players)
+            player.spawn(game.getBoard().findSpawnPoint(AmmoCubes.red()));
 
-        boolean keepDrawing = true;
-        while (keepDrawing) {
-            try {
-                System.out.print(deck1.draw().toString());
-            } catch (EmptyDeckException e) {
-                keepDrawing = false;
-            }
-        }
-        System.out.print("\n");
-        keepDrawing = true;
-        while (keepDrawing) {
-            try {
-                System.out.print(deck2.draw().toString());
-            } catch (EmptyDeckException e) {
-                keepDrawing = false;
-            }
-        }
-        System.out.print("\n");
-        keepDrawing = true;
-        while (keepDrawing) {
-            try {
-                System.out.print(deck3.draw().toString());
-            } catch (EmptyDeckException e) {
-                keepDrawing = false;
-            }
-        }
+
+
     }
 }

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
-import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.AppendException;
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
@@ -45,7 +44,7 @@ public class Player {
 
     private Cell position;
     private List<ActiveAction> activeActions;
-    private Cell historicPosition;
+    private Cell savedPosition;
 
     public Player(String name) {
         this.name = name;
@@ -116,10 +115,6 @@ public class Player {
         return this.position;
     }
 
-    public Cell getHistoricPosition() {
-        return this.historicPosition;
-    }
-
     public void loadActionsFromWeapon(Weapon weapon) {
         this.activeActions = ActiveAction.createList(weapon.getActions());
     }
@@ -171,8 +166,16 @@ public class Player {
         this.position = cell;
     }
 
-    public void setHistoricPosition(Cell historicPosition) {
-        this.historicPosition = historicPosition;
+    public void savePosition() {
+        this.savedPosition = position;
+    }
+
+    public Cell getSavedPosition() {
+        return this.savedPosition;
+    }
+
+    public void restorePosition() {
+        this.position = savedPosition;
     }
 
     public void activateFrenzy() {

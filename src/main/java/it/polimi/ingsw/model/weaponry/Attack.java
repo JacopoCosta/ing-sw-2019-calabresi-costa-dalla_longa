@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.weaponry;
 
+import it.polimi.ingsw.model.exceptions.ConstraintNotSatisfiedException;
 import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
@@ -10,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Attack {
-    private Player target;
     private Player author;
+    private Player target;
     private boolean optional;
     private boolean cellAttack;
     private boolean roomAttack;
@@ -19,8 +20,8 @@ public class Attack {
     private List<Constraint> constraints;
 
     public Attack(boolean optional, boolean cellAttack, boolean roomAttack, List<Effect> effects, List<Constraint> constraints) {
-        this.target = null; // target is not defined upon deck generation
         this.author = null; // author is not defined upon deck generation
+        this.target = null; // target is not defined upon deck generation
         this.optional = optional;
         this.cellAttack = cellAttack; // whether or not this Attack is dealt to all Players in the same cell
         this.roomAttack = roomAttack; // whether or not this Attack is dealt to all Players in the same room
@@ -49,20 +50,22 @@ public class Attack {
         return new Attack(optional, cellAttack, roomAttack, effects, constraints);
     }
 
-    public void setTarget(Player target) {
-        this.target = target;
-    }
-
     public void setAuthor(Player author) {
         this.author = author;
     }
 
-    public Player getTarget() {
-        return this.target;
+    public void setTarget(Player target) throws ConstraintNotSatisfiedException {
+        for(Constraint constraint : constraints)
+            constraint.verify(author.getActiveActions());
+        this.target = target;
     }
 
     public Player getAuthor() {
         return this.author;
+    }
+
+    public Player getTarget() {
+        return this.target;
     }
 
     public List<Constraint> getConstraints() {

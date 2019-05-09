@@ -33,7 +33,12 @@ public class Grenade extends PowerUp {
 
         Attack a = new Attack(false, false, false, e, null); // make that Effect into an Attack
         a.setAuthor(subject);
-        a.setTarget(target);
+        try {
+            a.setTarget(target);
+        }
+        catch (Exception ignored) {
+            System.out.println("You should never see this message.");
+        }
         a.deal();
     }
 }
