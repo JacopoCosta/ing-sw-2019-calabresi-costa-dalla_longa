@@ -1,7 +1,11 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.cell.SpawnCell;
+import it.polimi.ingsw.model.weaponry.Weapon;
 
 import static it.polimi.ingsw.view.WallType.*;
 
@@ -88,5 +92,35 @@ public class BoardGraph {
             }
         }
         return NONE;
+    }
+
+    /*
+
+    May be used instead of the current visualization for the gridboard. May be completely removed soon.
+
+    public String getInternalLineOne(Cell cell) {
+        String description;
+
+        if(cell.isSpawnPoint()) {   //this cell contains a shop
+            //gets the first weapon
+            Weapon weapon = ((SpawnCell) cell).getWeaponShop().get(0);  //casting to SpawnCell is correct since cell.isSpawnPoint() == true
+            description = "1. " + weapon.getName();
+        }
+        else {
+
+        }
+
+        return description;
+    }
+    */
+
+    public void printShop(Board board, AmmoCubes ammoCubeColor) {
+
+        Cell cell = board.findSpawnPoint(ammoCubeColor);
+
+        for(int i=0; i < ((SpawnCell) cell).getWeaponShop().size(); i++) {
+            System.out.println((i + 1) + ". " + ((SpawnCell) cell).getWeaponShop().get(i).getName());
+            System.out.println("\tSelling for: " + ((SpawnCell) cell).getWeaponShop().get(i).getPurchaseCost().toString());
+        }
     }
 }
