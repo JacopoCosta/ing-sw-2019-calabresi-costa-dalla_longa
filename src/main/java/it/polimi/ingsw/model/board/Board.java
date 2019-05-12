@@ -159,6 +159,14 @@ public class Board {
         return cells;
     }
 
+    public List<Player> getKillers() {
+        return this.killers;
+    }
+
+    public List<Player> getDoubleKillers() {
+        return this.doubleKillers;
+    }
+
     public Deck<Weapon> getWeaponDeck() {
         return weaponDeck;
     }

@@ -1,10 +1,11 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cell.Cell;
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cell.SpawnCell;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import static it.polimi.ingsw.view.WallType.*;
@@ -114,7 +115,7 @@ public class BoardGraph {
     }
     */
 
-    public void printShop(Board board, AmmoCubes ammoCubeColor) {
+    public void printShop(Board board, AmmoCubes ammoCubeColor) {   //prints every weapon in a selected shop
 
         Cell cell = board.findSpawnPoint(ammoCubeColor);
 
@@ -122,5 +123,64 @@ public class BoardGraph {
             System.out.println((i + 1) + ". " + ((SpawnCell) cell).getWeaponShop().get(i).getName());
             System.out.println("\tSelling for: " + ((SpawnCell) cell).getWeaponShop().get(i).getPurchaseCost().toString());
         }
+    }
+
+    public void printPlayerStatus(Board board, Player player) {
+
+        //given a player, it displays damageboard, list of weapon, owned ammocubes and so on.
+        System.out.println("Player number " + player.getID() + ", codename: " + player.getName());
+        //printing weapons
+        if(player.getWeapons().size() == 0) {
+            System.out.println("This player has no weapons!");
+        }
+        else {
+            int index=1;
+            for(Weapon w: player.getWeapons()) {
+                System.out.print(((char) index) + ". " + w.getName());
+
+                if(w.isLoaded())
+                    System.out.println("\tReady to fire!");
+                else
+                    System.out.println("\tUnloaded");
+                index++;
+            }
+        }
+
+        //printing damageboard
+        System.out.print("Damage taken:\t");
+        for(Player p: player.getDamagersList()) {
+            System.out.print(((char) p.getID()));
+        }
+        System.out.println("\nMarkers taken:");
+        for(Player author: board.getGame().getParticipants()) {
+
+            int m = player.getMarkingsByAuthor(author);
+            if(m > 0)
+                System.out.println(m + " by player number " + author.getID() + " [codename: " + author.getName() + "]");
+        }
+        System.out.println("Dead " + player.getDeathCount() + " times");
+
+        printDamageBoard(board, player);
+    }
+
+    public void printDamageBoard(Board board, Player player) {
+        /*TODO:
+            set some Player methods for this
+         */
+    }
+
+    //prints killers, doublekillers etc.
+    public void printBoardStatus(Board board) {
+        /*
+        TODO:
+            there isn't a way to determine whether a pair of kills was caused by two kills in a row
+            or by a doublekill, need to fix this in the model
+         */
+    }
+
+    public void printWeaponInfo(Weapon weapon) {
+        /*TODO:
+            ultimate json files to define how to load weapon info
+         */
     }
 }

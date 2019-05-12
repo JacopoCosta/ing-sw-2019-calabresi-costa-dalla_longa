@@ -27,6 +27,7 @@ public class Player {
     private static final int MAX_CARDS_IN_HAND = 3;
 
     private String name;
+    private int ID;
     private int score;
     private int deathCount;
     private boolean onFrenzy;
@@ -60,6 +61,21 @@ public class Player {
         this.ammoCubes = new AmmoCubes();
     }
 
+    public String getName() {
+        return this.name;
+    }
+
+    public int getID() {
+        return this.ID;
+    }
+
+    public int getScore() {
+        return this.score;
+    }
+
+    public int getDeathCount() {
+        return this.deathCount;
+    }
     // returns the total amount of damage points the player has taken
     public boolean isKilled() {
         return this.damage.size() > KILL_THRESHOLD;
@@ -71,6 +87,10 @@ public class Player {
 
     public int getDamage() {
         return this.damage.size();
+    }
+
+    public List<Player> getDamagersList() {
+        return this.damage;
     }
 
     // returns the amount of damage points the player has taken by a given opponent
