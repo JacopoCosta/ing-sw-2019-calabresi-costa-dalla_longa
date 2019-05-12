@@ -23,7 +23,7 @@ public class Game {
         return this.board;
     }
 
-    public Game(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {
+    private Game(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {
         this.finalFrenzy = finalFrenzy;
         this.roundsLeft = roundsToPlay;
         this.participants = participants;
@@ -31,6 +31,12 @@ public class Game {
 
         this.board = Board.generate(this, boardType);
         this.controller = new Controller(this);
+    }
+
+    public static Game create(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {
+        Game game = new Game(finalFrenzy, roundsToPlay, boardType, participants);
+        participants.stream().forEach(p -> p.setGame(game));
+        return game;
     }
 
     public List<Player> getParticipants() {

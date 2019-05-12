@@ -46,8 +46,7 @@ public class Player {
     private Cell position;
     private Cell savedPosition;
 
-    public Player(Game game, String name) {
-        this.game = game;
+    public Player(String name) {
         this.name = name;
         this.score = 0;
         this.deathCount = 0;
@@ -154,6 +153,10 @@ public class Player {
 
     public Game getGame() {
         return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     public void setPosition(Cell cell) {
