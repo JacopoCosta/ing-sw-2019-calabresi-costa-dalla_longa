@@ -3,6 +3,7 @@ package it.polimi.ingsw.view;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.board.Board;
+import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.player.Player;
@@ -161,6 +162,96 @@ public class BoardGraph {
         System.out.println("Dead " + player.getDeathCount() + " times");
 
         printDamageBoard(board, player);
+    }
+
+    public void printFirstLine(Cell cell) {
+        if(cell == null)
+            return;
+
+        if(cell.isSpawnPoint()) {
+            System.out.print("            ");   //12 spaces
+        }
+        else {
+            if(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() > 0)
+                System.out.print(" RED: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() + "     ");
+
+            else if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() > 0)
+                System.out.print(" YELLOW: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() + "  ");
+
+            else
+                System.out.print("BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + "    ");
+        }
+    }
+
+    public void printSecondLine(Cell cell) {
+        if(cell == null)
+            return;
+
+        if(cell.isSpawnPoint()) {
+            switch(((SpawnCell) cell).getAmmoCubeColor().toStringAsColor()) {
+                case("red"):
+                    System.out.print(" < RED >    ");
+                    break;
+                case("yellow"):
+                    System.out.print(" < YELLOW > ");
+                    break;
+                case("blue"):
+                    System.out.print(" < BLUE >   ");
+                default:
+                    break;
+            }
+        }
+        else {  //cell is AmmoCell
+            if(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() > 0) {
+                //red cubes have been printed by printFirstLine method, so this has to print yellow or blue cubes
+                if(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() > 0)
+                    System.out.print(" YELLOW: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() + "  ");
+
+                else if(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() > 0)
+                    System.out.print("BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + "    ");
+
+                else    //if you are here, that means the cell contained only red cubes, so there aren't any more to print
+                    System.out.print("            ");   //12 spaces
+            }
+            else {
+                //yellow cubes has already been printed by printFirstLine, so this must print blue cubes, if any
+                if(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() > 0)
+                    System.out.print("BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + "    ");
+                else
+                    System.out.print("            ");   //12 spaces
+            }
+        }
+    }
+
+    public void printThirdLine(Cell cell) {
+        if(cell == null)
+            return;
+
+        if(cell.isSpawnPoint())
+            System.out.print(" SPAWN/SHOP ");
+        else {
+            //only power-ups may be displayed
+            if(((AmmoCell) cell).getAmmoTile().includesPowerUp())
+                System.out.println(" *POWER UP* ");
+            else
+                System.out.print("            ");   //12 spaces
+        }
+    }
+
+    public void printFourthLine(Board board, Cell cell) {
+        int charCounter = 0;
+        if(cell == null)
+            return;
+        //this time, it doesn't matter whether the cell is a SpawnCell or not
+        for(Player p: board.getGame().getParticipants()) {
+            if (p.getPosition() == cell) {
+                System.out.print(" " + p.getID());
+                charCounter += 2;
+            }
+        }
+        //completes the row with the right number of spaces
+        for(int i=0; i < 12 - charCounter; i++)
+            System.out.print(" ");
     }
 
     public void printDamageBoard(Board board, Player player) {
