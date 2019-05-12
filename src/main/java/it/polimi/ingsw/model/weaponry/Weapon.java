@@ -4,22 +4,19 @@ import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.exceptions.WeaponAlreadyLoadedException;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Weapon {
     private String name;
     private AmmoCubes purchaseCost;
     private AmmoCubes reloadCost;
-    private List<Action> actions;
+    private AttackPattern attackPattern;
 
     private boolean loaded;
 
-    private Weapon(String name, AmmoCubes purchaseCost, AmmoCubes reloadCost, List<Action> actions) {
+    private Weapon(String name, AmmoCubes purchaseCost, AmmoCubes reloadCost, AttackPattern attackPattern) {
         this.name = name;
         this.purchaseCost = purchaseCost;
         this.reloadCost = reloadCost;
-        this.actions = actions;
+        this.attackPattern = attackPattern;
         this.loaded = false;
     }
 
@@ -35,8 +32,8 @@ public class Weapon {
         return reloadCost;
     }
 
-    public List<Action> getActions() {
-        return actions;
+    public AttackPattern getPattern() {
+        return attackPattern;
     }
 
     public boolean isLoaded() {
@@ -51,26 +48,19 @@ public class Weapon {
 
     public static Weapon build(DecoratedJSONObject jWeapon) {
         String name = jWeapon.getString("name");
-        int red, yellow, blue;
         AmmoCubes purchaseCost = AmmoCubes.build(jWeapon.getObject("purchaseCost"));
         AmmoCubes reloadCost = AmmoCubes.build(jWeapon.getObject("reloadCost"));
-        List<Action> actions = new ArrayList<>();
+        AttackPattern attackPattern = AttackPattern.build(jWeapon.getObject("attackPattern"));
 
-        for(DecoratedJSONObject jAction : jWeapon.getArray("actions").asList()) {
-            actions.add(Action.build(jAction));
-        }
-        return new Weapon(name, purchaseCost, reloadCost, actions);
+        return new Weapon(name, purchaseCost, reloadCost, attackPattern);
     }
 
+    @Override
     public String toString() {
-        String s = name + ":";
-        s += "\n\t" + purchaseCost.toString() + " to purchase";
-        s += "\n\t" + reloadCost.toString() + " to reload";
-
-        for(Action a : actions) {
-            s += "\n\t" + a.toString();
-        }
-
-        return s + "\n";
+        String s = name + ":\n";
+        s += purchaseCost.toString() + " to purchase\n";
+        s += reloadCost.toString() + " to reload\n";
+        s += attackPattern.toString() + "\n";
+        return s;
     }
 }

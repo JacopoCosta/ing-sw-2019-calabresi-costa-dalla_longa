@@ -9,7 +9,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /*
- * A StreamReceiver process inputs from different communication protocols (Socket and RMI) and perform a standardized
+ * A StreamReceiver processes inputs from different communication protocols (Socket and RMI) and performs a standardized
  * request to the logical layer of the Server
  *
  * */

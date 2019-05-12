@@ -23,6 +23,7 @@ public class AmmoTile {
         return includesPowerUp;
     }
 
+    @Override
     public String toString() {
         return ammoCubes.toString() + (includesPowerUp ? " with powerup\n" : "\n");
     }

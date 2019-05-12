@@ -12,88 +12,134 @@
                 "yellow": 0,
                 "blue": 2
             },
-            "actions": [
-                {
-                    "name": "Basic Effect",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Effect",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "mark",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 1
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                },
-                                {
-                                    "type": "mark",
-                                    "amount": 1
-                                }
-                            ],
-                            "constraints": [
-                                {
-                                    "type": "visibility",
-                                    "sourceActionId": 0,
-                                    "sourceAttackId": 0,
-                                    "drainActionId": 0,
-                                    "drainAttackId": 1,
-                                    "sees": true
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Second Lock",
-                    "description": "",
-                    "summonCost": {
-                        "red": 1,
-                        "yellow": 0,
-                        "blue": 0
-                    },
-                    "appendable": true,
-                    "requires": 1,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "mark",
-                                    "amount": 1
-                                }
-                            ],
-                            "constraints": [
-                                {
-                                    "type": "identity",
-                                    "sourceActionId": 0,
-                                    "sourceAttackId": 1,
-                                    "drainActionId": 1,
-                                    "drainAttackId": 1,
-                                    "same": false
-                                },
-                                {
-                                    "type": "visibility",
-                                    "sourceActionId": 0,
-                                    "sourceAttackId": 0,
-                                    "drainActionId": 1,
-                                    "drainAttackId": 1,
-                                    "sees": true
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                    {
+                        "id": 1,
+                        "name": "Second Lock",
+                        "description": "",
+                        "summonCost": {
+                            "red": 1,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    },
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": 0,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": false
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "mark",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Machine Gun",
@@ -107,91 +153,224 @@
                 "yellow": 0,
                 "blue": 1
             },
-            "actions": [
-                {
-                    "name": "Basic Effect",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
-                    },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Effect",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
                         },
-                        {
-                            "optional": true,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Focus Shot",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 1,
-                        "blue": 0
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 1
+                            },
+                            {
+                                "id": 2
+                            },
+                            {
+                                "id": 3
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": true,
-                    "requires": 1,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Turret Tripod",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 1
+                    {
+                        "id": 1,
+                        "name": "Basic Effect - 2nd target",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    },
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": 1,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": false
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 2
+                            },
+                            {
+                                "id": 3
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": true,
-                    "requires": 1,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                    {
+                        "id": 2,
+                        "name": "Focus Shot",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 1,
+                            "blue": 0
+                        },
+                        "targets": [
+
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 3
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
+                    },
+                    {
+                        "id": 3,
+                        "name": "Turret Tripod",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 1
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 3,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    },
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": 3,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "truth": false
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 3,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "T.H.O.R.",
@@ -205,80 +384,162 @@
                 "yellow": 0,
                 "blue": 1
             },
-            "actions": [
-                {
-                    "name": "Basic effect",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Effect",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 1
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Chain Reaction",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 1
+                    {
+                        "id": 1,
+                        "name": "Chain Reaction",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 1
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": 0,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 2
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": true,
-                    "requires": 1,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "High Voltage",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 1
-                    },
-                    "appendable": true,
-                    "requires": 2,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                    {
+                        "id": 2,
+                        "name": "High Voltage",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 1
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": 1,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Plasma Gun",
@@ -292,80 +553,149 @@
                 "yellow": 1,
                 "blue": 1
             },
-            "actions": [
-                {
-                    "name": "Basic Effect",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Phase Glide",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+                    {
+                        "id": 1
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Effect",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 1
+                            },
+                            {
+                                "id": 2
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": true,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "selfmove",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Charged Shot",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 1
+                    {
+                        "id": 1,
+                        "name": "Phase Glide",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "cell",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 2
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": -1,
+                                "sourceTargetId": -1,
+                                "drainAttackModuleId": 1,
+                                "drainTargetId": 0
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 2
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": true,
-                    "requires": 1,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                    {
+                        "id": 2,
+                        "name": "Charged Shot",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 1
+                        },
+                        "targets": [
+
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Whisper",
@@ -379,36 +709,85 @@
                 "yellow": 1,
                 "blue": 2
             },
-            "actions": [
-                {
-                    "name": "Basic Effect",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
-                    },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 3
-                                },
-                                {
-                                    "type": "mark",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Effect",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    },
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 2,
+                                        "upperBound": -1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 3,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "mark",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Electroscythe",
@@ -422,56 +801,88 @@
                 "yellow": 0,
                 "blue": 1
             },
-            "actions": [
-                {
-                    "name": "Basic Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": true,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Reaper Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 1,
-                        "yellow": 0,
-                        "blue": 1
+                    {
+                        "id": 1
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": -1,
+                                        "drainTargetId": -1,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": true,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                    {
+                        "id": 1,
+                        "name": "Reaper Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 1,
+                            "yellow": 0,
+                            "blue": 1
+                        },
+                        "targets": [
+
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": -1,
+                                        "drainTargetId": -1,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Tractor Beam",
@@ -485,64 +896,143 @@
                 "yellow": 0,
                 "blue": 1
             },
-            "actions": [
-                {
-                    "name": "Basic Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "forcemove",
-                                    "amount": 2
-                                },
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Punisher Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 1,
-                        "yellow": 1,
-                        "blue": 0
+                    {
+                        "id": 1
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+
+                                ]
+                            },
+                            {
+                                "type": "cell",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 1,
+                                        "truth": true
+                                    },
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": 0,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 1,
+                                        "lowerBound": 0,
+                                        "upperBound": 2
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": 0,
+                                "sourceTargetId": 0,
+                                "drainAttackModuleId": 0,
+                                "drainTargetId": 1
+                            },
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "forcemove",
-                                    "amount": 2
-                                },
-                                {
-                                    "type": "damage",
-                                    "amount": 3
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                    {
+                        "id": 1,
+                        "name": "Punisher Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 1,
+                            "yellow": 1,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 2
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": 1,
+                                "sourceTargetId": 0,
+                                "drainAttackModuleId": -1,
+                                "drainTargetId": -1
+                            },
+                            {
+                                "type": "damage",
+                                "amount": 3,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Vortex Cannon",
@@ -556,79 +1046,224 @@
                 "yellow": 0,
                 "blue": 1
             },
-            "actions": [
-                {
-                    "name": "Basic Effect",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
-                    },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "forcemove",
-                                    "amount": 1
-                                },
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Black Hole",
-                    "description": "",
-                    "summonCost": {
-                        "red": 1,
-                        "yellow": 0,
-                        "blue": 0
-                    },
-                    "appendable": true,
-                    "requires": 1,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "forcemove",
-                                    "amount": 1
-                                },
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Effect",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
                         },
-                        {
-                            "optional": true,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "forcemove",
-                                    "amount": 1
-                                },
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                        "targets": [
+                            {
+                                "type": "cell",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": 0,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 1,
+                                        "lowerBound": 0,
+                                        "upperBound": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": 0,
+                                "sourceTargetId": 1,
+                                "drainAttackModuleId": 0,
+                                "drainTargetId": 0
+                            },
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 1,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 1
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
+                    },
+                    {
+                        "id": 1,
+                        "name": "Black Hole",
+                        "description": "",
+                        "summonCost": {
+                            "red": 1,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": 1,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 1
+                                    },
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": 1,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 1,
+                                        "truth": false
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": 1,
+                                "sourceTargetId": 0,
+                                "drainAttackModuleId": 0,
+                                "drainTargetId": 0
+                            },
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 2
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "name": "Black Hole - 2nd target",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": 2,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 1
+                                    },
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": 2,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": false
+                                    },
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": 2,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 1,
+                                        "truth": false
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": 2,
+                                "sourceTargetId": 0,
+                                "drainAttackModuleId": 0,
+                                "drainTargetId": 0
+                            },
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Furnace",
@@ -642,60 +1277,129 @@
                 "yellow": 0,
                 "blue": 1
             },
-            "actions": [
-                {
-                    "name": "Basic Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": true,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Cozy Fire Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+                    {
+                        "id": 1
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "room",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "room",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": false
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "room",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": true,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                },
-                                {
-                                    "type": "mark",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                    {
+                        "id": 1,
+                        "name": "Cozy Fire Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "cell",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "mark",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Heatseeker",
@@ -709,32 +1413,62 @@
                 "yellow": 1,
                 "blue": 0
             },
-            "actions": [
-                {
-                    "name": "Basic Effect",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
-                    },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 3
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Effect",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": false
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 3,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Hellion",
@@ -748,64 +1482,144 @@
                 "yellow": 1,
                 "blue": 0
             },
-            "actions": [
-                {
-                    "name": "Basic Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": true,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                },
-                                {
-                                    "type": "mark",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Nano Tracer Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 1,
-                        "yellow": 0,
-                        "blue": 0
+                    {
+                        "id": 1
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 1,
+                        "name": "Basic Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": -1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "mark",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": true,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                },
-                                {
-                                    "type": "mark",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                    {
+                        "id": 0,
+                        "name": "Nano-Tracer Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 1,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": -1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "mark",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Flamethrower",
@@ -819,78 +1633,236 @@
                 "yellow": 0,
                 "blue": 0
             },
-            "actions": [
-                {
-                    "name": "Basic Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
+                    {
+                        "id": 2
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
                         },
-                        {
-                            "optional": true,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Barbecue Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 2,
-                        "blue": 0
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 1
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": true,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                }
-                            ]
+                    {
+                        "id": 1,
+                        "name": "Basic Mode - 2nd Target",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
                         },
-                        {
-                            "optional": true,
-                            "cellAttack": true,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": 0,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": 1
+                                    },
+                                    {
+                                        "type": "order",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "gateAttackModuleId": 0,
+                                        "gateTargetId": 0,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "name": "Barbecue Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 2,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "cell",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 3
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
+                    },
+                    {
+                        "id": 3,
+                        "name": "Barbecue Mode - 2nd Target",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "cell",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": 2,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 3,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": 1
+                                    },
+                                    {
+                                        "type": "order",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "gateAttackModuleId": 2,
+                                        "gateTargetId": 0,
+                                        "drainAttackModuleId": 3,
+                                        "drainTargetId": 0
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 3,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Grenade Launcher",
@@ -904,60 +1876,141 @@
                 "yellow": 0,
                 "blue": 0
             },
-            "actions": [
-                {
-                    "name": "Basic Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                },
-                                {
-                                    "type": "forcemove",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Extra Grenade",
-                    "description": "",
-                    "summonCost": {
-                        "red": 1,
-                        "yellow": 0,
-                        "blue": 0
+                    {
+                        "id": 1
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Effect",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "cell",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": 0,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 1,
+                                        "lowerBound": 0,
+                                        "upperBound": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": 0,
+                                "sourceTargetId": 0,
+                                "drainAttackModuleId": 0,
+                                "drainTargetId": 1
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 1
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": true,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                    {
+                        "id": 1,
+                        "name": "Extra Grenade",
+                        "description": "",
+                        "summonCost": {
+                            "red": 1,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "cell",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 0
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Rocket Launcher",
@@ -971,84 +2024,245 @@
                 "yellow": 0,
                 "blue": 0
             },
-            "actions": [
-                {
-                    "name": "Basic Effect",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                },
-                                {
-                                    "type": "forcemove",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Rocket Jump",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 1
+                    {
+                        "id": 1
                     },
-                    "appendable": true,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "selfmove",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Fragmenting Warhead",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 1,
-                        "blue": 0
+                    {
+                        "id": 2
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Effect",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    },
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": -1
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "cell",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": 0,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 1,
+                                        "lowerBound": 0,
+                                        "upperBound": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": 0,
+                                "sourceTargetId": 0,
+                                "drainAttackModuleId": 0,
+                                "drainTargetId": 1
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 1
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": true,
-                    "requires": 1,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": true,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                    {
+                        "id": 1,
+                        "name": "Rocket Jump",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 1
+                        },
+                        "targets": [
+                            {
+                                "type": "cell",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 2
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": -1,
+                                "sourceTargetId": -1,
+                                "drainAttackModuleId": 1,
+                                "drainTargetId": 0
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 0
+                            },
+                            {
+                                "id": 2
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "name": "Fragmenting Warhead",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 1,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    },
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": -1
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "cell",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": 2,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 1,
+                                        "lowerBound": 0,
+                                        "upperBound": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": 2,
+                                "sourceTargetId": 0,
+                                "drainAttackModuleId": 2,
+                                "drainTargetId": 1
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 1
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Railgun",
@@ -1062,60 +2276,142 @@
                 "yellow": 2,
                 "blue": 1
             },
-            "actions": [
-                {
-                    "name": "Basic Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 3
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Piercing Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+                    {
+                        "id": 1
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "alignment",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+
+                                "amount": 3,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                },
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                    {
+                        "id": 1,
+                        "name": "Piercing Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "alignment",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "order",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "gateAttackModuleId": 1,
+                                        "gateTargetId": 0,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 1,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Cyberblade",
@@ -1129,80 +2425,178 @@
                 "yellow": 1,
                 "blue": 0
             },
-            "actions": [
-                {
-                    "name": "Basic Effect",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Shadowstep",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+                    {
+                        "id": 1
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Effect",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": 0,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 1
+                            },
+                            {
+                                "id": 2
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": true,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "selfmove",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Slice and Dice",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 1,
-                        "blue": 0
+                    {
+                        "id": 1,
+                        "name": "Shadowstep",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "cell",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": -1,
+                                "sourceTargetId": -1,
+                                "drainAttackModuleId": 1,
+                                "drainTargetId": 0
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 0
+                            },
+                            {
+                                "id": 2
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": true,
-                    "requires": 1,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                    {
+                        "id": 2,
+                        "name": "Slice & Dice",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 1,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    },
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": 2,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": false
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 1
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "ZX-2",
@@ -1216,82 +2610,251 @@
                 "yellow": 1,
                 "blue": 0
             },
-            "actions": [
-                {
-                    "name": "Basic Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                },
-                                {
-                                    "type": "mark",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Scanner Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+                    {
+                        "id": 1
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "mark",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "mark",
-                                    "amount": 1
-                                }
-                            ]
+                    {
+                        "id": 1,
+                        "name": "Scanner Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
                         },
-                        {
-                            "optional": true,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "mark",
-                                    "amount": 1
-                                }
-                            ]
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "mark",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 2
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "name": "Scanner Mode - 2nd Target",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
                         },
-                        {
-                            "optional": true,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "mark",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    },
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": 2,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": false
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "mark",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 3
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
+                    },
+                    {
+                        "id": 3,
+                        "name": "Scanner Mode - 3rd Target",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 3,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    },
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": 3,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": false
+                                    },
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": 3,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "truth": false
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "mark",
+
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 3,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Shotgun",
@@ -1305,150 +2868,352 @@
                 "yellow": 2,
                 "blue": 0
             },
-            "actions": [
-                {
-                    "name": "Basic Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 3
-                                },
-                                {
-                                    "type": "forcemove",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Long Barrel Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+                    {
+                        "id": 1
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "cell",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": 0,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 1,
+                                        "lowerBound": 0,
+                                        "upperBound": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 3,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": 0,
+                                "sourceTargetId": 0,
+                                "drainAttackModuleId": 0,
+                                "drainTargetId": 1
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                    {
+                        "id": 1,
+                        "name": "Long Barrel Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Power Glove",
             "purchaseCost": {
                 "red": 0,
                 "yellow": 0,
-                "blue": 0
+                "blue": 1
             },
             "reloadCost": {
                 "red": 0,
-                "yellow": 0,
-                "blue": 0
+                "yellow": 1,
+                "blue": 1
             },
-            "actions": [
-                {
-                    "name": "Basic Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "selfmove",
-                                    "amount": 1
-                                },
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                },
-                                {
-                                    "type": "mark",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Rocket Fist Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 1
-                    },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "selfmove",
-                                    "amount": 1
-                                },
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                }
-                            ]
+                    {
+                        "id": 1
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
                         },
-                        {
-                            "optional": true,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "selfmove",
-                                    "amount": 1
-                                },
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": -1,
+                                "sourceTargetId": -1,
+                                "drainAttackModuleId": 0,
+                                "drainTargetId": 0
+                            },
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "mark",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    },
+                    {
+                        "id": 1,
+                        "name": "Rocket Fist Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 1
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": -1,
+                                "sourceTargetId": -1,
+                                "drainAttackModuleId": 1,
+                                "drainTargetId": 0
+                            },
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 2
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "name": "Rocket Fist Mode - 2nd Target",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": 1
+                                    },
+                                    {
+                                        "type": "alignment",
+                                        "sourceAttackModuleId": -2,
+                                        "sourceTargetId": -2,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": -1,
+                                "sourceTargetId": -1,
+                                "drainAttackModuleId": 2,
+                                "drainTargetId": 0
+
+                            },
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Shockwave",
@@ -1462,111 +3227,231 @@
                 "yellow": 1,
                 "blue": 0
             },
-            "actions": [
-                {
-                    "name": "Basic Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
+                    {
+                        "id": 3
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
                         },
-                        {
-                            "optional": true,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        },
-                        {
-                            "optional": true,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Tsunami Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 1,
-                        "blue": 0
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 1
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": true,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
+                    {
+                        "id": 1,
+                        "name": "Basic Effect - 2nd Target",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
                         },
-                        {
-                            "optional": true,
-                            "cellAttack": true,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": 1
+                                    },
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": 1,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 2,
+                                        "upperBound": 2
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": 2
+                            },
+                            {
+                                "id": -1
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "name": "Basic Effect - 3rd Target",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
                         },
-                        {
-                            "optional": true,
-                            "cellAttack": true,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 1,
+                                        "upperBound": 1
+                                    },
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": 2,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 2,
+                                        "upperBound": 2
+                                    },
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": 2,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 2,
+                                        "upperBound": 2
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 2,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    },
+                    {
+                        "id": 3,
+                        "name": "Tsunami Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 1,
+                            "blue": 0
                         },
-                        {
-                            "optional": true,
-                            "cellAttack": true,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 1
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                        "targets": [
+
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 1,
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": -1,
+                                        "drainTargetId": -1,
+                                        "lowerBound": 1,
+                                        "upperBound": 1
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         },
         {
             "name": "Sledgehammer",
@@ -1580,60 +3465,144 @@
                 "yellow": 1,
                 "blue": 0
             },
-            "actions": [
-                {
-                    "name": "Basic Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 0,
-                        "yellow": 0,
-                        "blue": 0
+            "attackPattern": {
+                "first": [
+                    {
+                        "id": 0
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Pulverize Mode",
-                    "description": "",
-                    "summonCost": {
-                        "red": 1,
-                        "yellow": 0,
-                        "blue": 0
+                    {
+                        "id": 1
+                    }
+                ],
+                "content": [
+                    {
+                        "id": 0,
+                        "name": "Basic Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 0,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 2,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 0,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
                     },
-                    "appendable": false,
-                    "requires": 0,
-                    "attacks": [
-                        {
-                            "optional": false,
-                            "cellAttack": false,
-                            "roomAttack": false,
-                            "effects": [
-                                {
-                                    "type": "damage",
-                                    "amount": 3
-                                },
-                                {
-                                    "type": "forcemove",
-                                    "amount": 2
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+                    {
+                        "id": 1,
+                        "name": "Pulverize Mode",
+                        "description": "",
+                        "summonCost": {
+                            "red": 1,
+                            "yellow": 0,
+                            "blue": 0
+                        },
+                        "targets": [
+                            {
+                                "type": "player",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "lowerBound": 0,
+                                        "upperBound": 0
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "cell",
+                                "message": "",
+                                "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 1,
+                                        "lowerBound": 0,
+                                        "upperBound": 2
+                                    },
+                                    {
+                                        "type": "alignment",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 1,
+                                        "truth": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "type": "damage",
+                                "amount": 3,
+                                "constraints": [
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
+                                        "drainAttackModuleId": 1,
+                                        "drainTargetId": 0,
+                                        "truth": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "move",
+                                "sourceAttackModuleId": 1,
+                                "sourceTargetId": 0,
+                                "drainAttackModuleId": 1,
+                                "drainTargetId": 1
+                            }
+                        ],
+                        "next": [
+                            {
+                                "id": -1
+                            }
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

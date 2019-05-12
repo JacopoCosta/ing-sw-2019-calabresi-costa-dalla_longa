@@ -1,44 +1,18 @@
 package it.polimi.ingsw.model.powerups;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
-import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.weaponry.Attack;
-import it.polimi.ingsw.model.weaponry.effects.Effect;
-import it.polimi.ingsw.model.weaponry.effects.Mark;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Grenade extends PowerUp {
     private static final int GRENADE_TAGBACK_MARKS = 1;
-
-    private Player target;
 
     public Grenade(AmmoCubes ammoCubes) {
         super(ammoCubes);
         this.type = PowerUpType.GRENADE;
     }
 
-    public void setTarget(Player target) {
-        this.target = target;
-    }
-
     @Override
-    public void use(Player subject) throws InvalidMoveException {
-        Mark m = new Mark(GRENADE_TAGBACK_MARKS); // create a Mark Effect
+    public void use(Player subject) {
 
-        List<Effect> e = new ArrayList<>();
-        e.add(m);
-
-        Attack a = new Attack(false, false, false, e, null); // make that Effect into an Attack
-        a.setAuthor(subject);
-        try {
-            a.setTarget(target);
-        }
-        catch (Exception ignored) {
-            System.out.println("You should never see this message.");
-        }
-        a.deal();
     }
 }

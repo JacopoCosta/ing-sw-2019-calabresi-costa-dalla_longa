@@ -5,6 +5,6 @@ public enum ConstraintType {
     DISTANCE,
     IDENTITY,
     ORDER,
-    SAMEROOM,
+    ROOM,
     VISIBILITY
 }

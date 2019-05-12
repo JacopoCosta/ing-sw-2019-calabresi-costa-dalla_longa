@@ -1,35 +1,49 @@
 package it.polimi.ingsw.model.weaponry.effects;
 
 import it.polimi.ingsw.model.exceptions.InvalidEffectTypeException;
-import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
-import it.polimi.ingsw.model.weaponry.Attack;
+import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 
-// an effect modifies the state of a player
-// a group of effects makes an attack
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Effect {
     protected EffectType type;
-    protected int amount;
-
+    protected Object context;
 
     public static Effect build(DecoratedJSONObject jEffect) throws InvalidEffectTypeException {
         String type = jEffect.getString("type");
-        int amount = jEffect.getInt("amount");
 
-        if(type.equals("damage"))
-            return new Damage(amount);
-        if(type.equals("forcemove"))
-            return new ForceMove(amount);
-        if(type.equals("mark"))
-            return new Mark(amount);
-        if(type.equals("selfmove"))
-            return new SelfMove(amount);
-        throw new InvalidEffectTypeException(type + " is not a valid name for an Effect type. Use \"damage\", \"forcemove\", \"mark\", or \"selfmove\"");
+        if(type.equals("damage")) {
+            List<Constraint> constraints = new ArrayList<>();
+            int amount = jEffect.getInt("amount");
+            List<DecoratedJSONObject> jConstraints = jEffect.getArray("constraints").asList();
+            for(DecoratedJSONObject jConstraint : jConstraints) {
+                constraints.add(Constraint.build(jConstraint));
+            }
+            return new Damage(amount, constraints);
+        }
+        if(type.equals("mark")) {
+            List<Constraint> constraints = new ArrayList<>();
+            int amount = jEffect.getInt("amount");
+            List<DecoratedJSONObject> jConstraints = jEffect.getArray("constraints").asList();
+            for(DecoratedJSONObject jConstraint : jConstraints) {
+                constraints.add(Constraint.build(jConstraint));
+            }
+            return new Mark(amount, constraints);
+        }
+        if(type.equals("move")) {
+            int sourceAttackModuleId = jEffect.getInt("sourceAttackModuleId");
+            int sourceTargetId = jEffect.getInt("sourceTargetId");
+            int drainAttackModuleId = jEffect.getInt("drainAttackModuleId");
+            int drainTargetId = jEffect.getInt("drainTargetId");
+            return new Move(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId);
+        }
+        throw new InvalidEffectTypeException(type + " is not a valid name for an Effect type. Use \"damage\", \"mark\", or \"move\"");
     }
 
-    public abstract void apply(Attack attack) throws InvalidMoveException;
+    public abstract void apply();
 
-    public String toString() {
-        return this.amount + " " + this.type.toString();
-    }
+    @Override
+    public abstract String toString();
 }

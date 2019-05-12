@@ -1,62 +1,61 @@
 package it.polimi.ingsw.model.weaponry.constraints;
 
+import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
+import it.polimi.ingsw.model.weaponry.targets.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DistanceConstraint extends Constraint {
-    private int lowerBound;
-    private int upperBound;
+public class RoomConstraint extends Constraint {
+    private boolean truth;
 
-    public DistanceConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, int lowerBound, int upperBound) {
+    public RoomConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
         this.sourceAttackModuleId = sourceAttackModuleId;
         this.sourceTargetId = sourceTargetId;
         this.drainAttackModuleId = drainAttackModuleId;
         this.drainTargetId = drainTargetId;
-        this.lowerBound = lowerBound;
-        this.upperBound = upperBound;
-        this.type = ConstraintType.DISTANCE;
+        this.truth = truth;
+        this.type = ConstraintType.ROOM;
     }
 
-    private boolean verify(Cell sourceCell, Cell drainCell) {
-        int distance = sourceCell.distance(drainCell);
-        return (distance >= lowerBound) && (distance <= upperBound || upperBound < 0);
+    private boolean verify(Room sourceRoom, Room drainRoom) {
+        return sourceRoom.equals(drainRoom) == truth;
     }
 
     @Override
     public boolean verify() {
-        Cell sourceCell = Constraint.getTarget(context, sourceAttackModuleId, sourceTargetId).getCell();
-        Cell drainCell = Constraint.getTarget(context, drainAttackModuleId, drainTargetId).getCell();
+        Room sourceRoom = Constraint.getTarget(context, sourceAttackModuleId, sourceTargetId).getRoom();
+        Room drainRoom = Constraint.getTarget(context, drainAttackModuleId, drainTargetId).getRoom();
 
-        return verify(sourceCell, drainCell);
+        return verify(sourceRoom, drainRoom);
     }
 
     @Override
     public List<Player> filter(AttackPattern context) {
         if(sourceAttackModuleId == -3 && sourceTargetId == -3) {
-            Cell drainCell = Constraint.getTarget(context, drainAttackModuleId, drainTargetId).getCell();
+            Room drainRoom = Constraint.getTarget(context, drainAttackModuleId, drainTargetId).getRoom();
 
             return context.getAuthor()
                     .getGame()
                     .getParticipants()
                     .stream()
                     .filter(p -> !p.equals(context.getAuthor()))
-                    .filter(p -> this.verify(p.getPosition(), drainCell))
+                    .filter(p -> this.verify(p.getPosition().getRoom(), drainRoom))
                     .distinct()
                     .collect(Collectors.toList());
         }
         if(drainAttackModuleId == -3 && drainTargetId == -3) {
-            Cell sourceCell = Constraint.getTarget(context, sourceAttackModuleId, sourceTargetId).getCell();
+            Room sourceRoom = Constraint.getTarget(context, sourceAttackModuleId, sourceTargetId).getRoom();
 
             return context.getAuthor()
                     .getGame()
                     .getParticipants()
                     .stream()
                     .filter(p -> !p.equals(context.getAuthor()))
-                    .filter(p -> this.verify(sourceCell, p.getPosition()))
+                    .filter(p -> this.verify(sourceRoom, p.getPosition().getRoom()))
                     .distinct()
                     .collect(Collectors.toList());
         }
@@ -66,7 +65,7 @@ public class DistanceConstraint extends Constraint {
     @Override
     public String toString() {
         String s = getHumanReadableName(sourceAttackModuleId, sourceTargetId) + " ";
-        s += upperBound >= 0 ? ("is " + lowerBound + "~" + upperBound + " away from") : ("is at least " + lowerBound + " away from");
+        s += truth ? "is (in) the same room as" : "is not (in) the same room as";
         s += " " + getHumanReadableName(drainAttackModuleId, drainTargetId);
         return s;
     }

@@ -1,13 +1,11 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.cell.Cell;
-import it.polimi.ingsw.model.exceptions.AppendException;
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.exceptions.FullHandException;
-import it.polimi.ingsw.model.exceptions.InvalidMoveException;
 import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.model.weaponry.Action;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.ArrayList;
@@ -25,6 +23,8 @@ public class Player {
     private static final int EXECUTIONS_PER_TURN_FRENETIC = 1; // number of executions a player needs to perform on each frenzy turn
 
     private static final int MAX_CARDS_IN_HAND = 3;
+
+    private Game game;
 
     private String name;
     private int ID;
@@ -44,10 +44,10 @@ public class Player {
     private AmmoCubes ammoCubes;
 
     private Cell position;
-    private List<ActiveAction> activeActions;
     private Cell savedPosition;
 
-    public Player(String name) {
+    public Player(Game game, String name) {
+        this.game = game;
         this.name = name;
         this.score = 0;
         this.deathCount = 0;
@@ -59,6 +59,8 @@ public class Player {
         this.weapons = new ArrayList<>();
         this.powerUps = new ArrayList<>();
         this.ammoCubes = new AmmoCubes();
+        this.position = null;
+        this.savedPosition = null;
     }
 
     public String getName() {
@@ -135,10 +137,6 @@ public class Player {
         return this.position;
     }
 
-    public void loadActionsFromWeapon(Weapon weapon) {
-        this.activeActions = ActiveAction.createList(weapon.getActions());
-    }
-
     public void giveAmmoCubes(AmmoCubes ammoCubes) {
         this.ammoCubes = this.ammoCubes.sum(ammoCubes);
     }
@@ -154,32 +152,8 @@ public class Player {
             throw new FullHandException("There can't be more than 3 power ups in a player's hand");
     }
 
-    public List<ActiveAction> getActiveActions() {
-        return activeActions;
-    }
-
-    public void playAction(int id) throws AppendException, InvalidMoveException {
-        ActiveAction activeAction = activeActions.get(id);
-        Action action = activeAction.getAction();
-
-        if(action.isAppendable())
-            for(int requiredIndex = 0; requiredIndex < action.getRequiredActions(); requiredIndex ++)
-                if(!activeActions.get(requiredIndex).isConsumed())
-                    throw new AppendException("Attempted to append " + action.getName() + " without the required actions being consumed first.");
-
-        if(activeActions // if there exists an activeAction that is both appendable and consumed
-                .stream()
-                .map(a -> a.isConsumed() && a.getAction().isAppendable())
-                .reduce(false, (b1, b2) -> b1 || b2)
-                && !activeActions.get(0).isConsumed() // and the basic effect is not consumed
-                && id != 0 // and the basic effect is not about to be consumed
-        )
-            throw new AppendException("Tried to accomplish " + action.getName() + " after an appendable action with no requirements.");
-
-        if(activeAction.isConsumed())
-            throw new AppendException("Tried to accomplish " + action.getName() + " more than once.");
-
-        activeAction.consume();
+    public Game getGame() {
+        return game;
     }
 
     public void setPosition(Cell cell) {
@@ -218,7 +192,6 @@ public class Player {
 
     public void beginTurn() {
         this.remainingExecutions = this.onFrenzy ? EXECUTIONS_PER_TURN_FRENETIC : EXECUTIONS_PER_TURN;
-        this.activeActions.clear();
     }
 
     // inflicts the player with a damage point

@@ -168,6 +168,7 @@ public class AmmoCubes {
      * This methods is used to inspect an object.
      * @return a summary of the object's attributes.
      */
+    @Override
     public String toString() {
         boolean addComma = false;
         String s = "";
