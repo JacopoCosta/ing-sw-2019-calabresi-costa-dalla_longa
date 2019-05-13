@@ -72,7 +72,7 @@ public class AmmoCubes {
      * This method tells the amount of red cubes in the current set.
      * @return the amount of red cubes in the current set.
      */
-    private int getRed() {
+    public int getRed() {
         return red;
     }
 
@@ -80,7 +80,7 @@ public class AmmoCubes {
      * This method tells the amount of yellow cubes in the current set.
      * @return the amount of yellow cubes in the current set.
      */
-    private int getYellow() {
+    public int getYellow() {
         return yellow;
     }
 
@@ -88,7 +88,7 @@ public class AmmoCubes {
      * This method tells the amount of blue cubes in the current set.
      * @return the amount of blue cubes in the current set.
      */
-    private int getBlue() {
+    public int getBlue() {
         return blue;
     }
 
