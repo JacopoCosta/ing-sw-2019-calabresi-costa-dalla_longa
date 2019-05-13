@@ -24,6 +24,9 @@ public class Player {
 
     private static final int MAX_CARDS_IN_HAND = 3;
 
+    public static final int[] scoreboardDefault = {8, 6, 4, 2, 1, 1};
+    public static final int[] scoreboardFrenzy = {2, 1, 1, 1};
+
     private Game game;
 
     private String name;
@@ -228,9 +231,6 @@ public class Player {
     // ties are broken in favor of chronological earliness (lowest minimum index)
     // first blood dealer is awarded 1 extra point
     public void scoreUponDeath() {
-
-        final int[] scoreboardDefault = {8, 6, 4, 2, 1, 1};
-        final int[] scoreboardFrenzy = {2, 1, 1, 1};
         final int[] scoreboard = this.onFrenzy ? scoreboardFrenzy : scoreboardDefault;
         final int scoreboardSize = scoreboard.length;
 
