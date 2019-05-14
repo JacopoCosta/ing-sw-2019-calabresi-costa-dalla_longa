@@ -30,7 +30,6 @@ public class Player {
     private Game game;
 
     private String name;
-    private int ID;
     private int score;
     private int deathCount;
     private boolean onFrenzy;
@@ -70,7 +69,7 @@ public class Player {
     }
 
     public int getID() {
-        return this.ID;
+        return this.game.getParticipants().indexOf(this) + 1; // non-programmer friendly, ids start from 1
     }
 
     public int getScore() {

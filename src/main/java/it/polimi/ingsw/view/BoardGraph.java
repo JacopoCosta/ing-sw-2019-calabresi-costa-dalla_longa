@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cell.AmmoCell;

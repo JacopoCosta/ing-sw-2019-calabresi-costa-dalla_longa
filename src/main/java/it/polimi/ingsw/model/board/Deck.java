@@ -22,7 +22,7 @@ public class Deck<T> {
 
     public T draw() throws EmptyDeckException {
         if(this.cards.size() == 0)
-            throw new EmptyDeckException("Can't draw for an empty deck.");
+            throw new EmptyDeckException("Can't draw from an empty deck.");
         return this.cards.remove(0);
     }
 
