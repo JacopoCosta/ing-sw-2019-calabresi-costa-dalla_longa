@@ -1,15 +1,14 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.network.common.rmi.RmiController;
-import it.polimi.ingsw.network.server.rmi.RmiControllerImpl;
-import it.polimi.ingsw.network.server.socket.ClientHandler;
+import it.polimi.ingsw.network.common.rmi.ServerController;
+import it.polimi.ingsw.network.server.communicationInterface.rmi.ServerControllerImpl;
+import it.polimi.ingsw.network.server.communicationInterface.socket.ClientHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -24,23 +23,21 @@ import java.util.concurrent.Executors;
  *         with a proper logger.
  *  NOTE 4: an auto-save feature is required. This will be introduced in the future updates.
  *  NOTE 6: all exceptions are thrown as they are. In the final release they will be handled with proper
- *          user friendly messages (in both Server and ClientHandler).
+ *          user friendly messages (in both ServerController and ClientHandler).
  *
  * */
 
 public class Server {
+    private static String serverAddress;
+    private static int serverPort;
 
-    //An Executor for the two Server protocol: one for the Socket Server, the other for the RMI Server
     private static final ExecutorService executor = Executors.newFixedThreadPool(2);
 
-    private static int SERVER_PORT;
-    private static InetAddress SERVER_ADDRESS;
-
-    private static Runnable socketServer = () -> {
-        try (ServerSocket socket = new ServerSocket(SERVER_PORT, 0, SERVER_ADDRESS)) {
-            System.out.println("LOG: socket server configured on " + SERVER_ADDRESS + ":" + SERVER_PORT);
-            System.out.println("LOG: socket Server bounded on " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
-            System.out.println("LOG: socket server running...");
+    private static final Runnable socketServer = () -> {
+        try (ServerSocket socket = new ServerSocket(serverPort, 0, InetAddress.getByName(serverAddress))) {
+            System.out.println("LOG: socket server configured on " + serverAddress + ":" + serverPort);
+            System.out.println("LOG: socket ServerController bounded on " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
+            System.out.println("STATUS: socket server running...");
             ExecutorService executor = Executors.newCachedThreadPool();
             while (true) {
                 ClientHandler clientHandler = new ClientHandler(socket.accept()); //create a User thread to represent the Client
@@ -51,18 +48,19 @@ public class Server {
         }
     };
 
-    private static Runnable rmiServer = () -> {
+    private static final Runnable rmiServer = () -> {
         System.out.println("LOG: Starting RMI registry...");
         startRmiRegistry();
         System.out.println("LOG: RMI service started");
 
         System.out.println("LOG: creating RMI protocol implementation...");
-        RmiController rmiController;
+        ServerController serverController;
         try {
-            rmiController = new RmiControllerImpl();
+            serverController = new ServerControllerImpl();
         } catch (RemoteException e) {
             e.printStackTrace();
             stopRmiRegistry();
+            System.exit(-1);
             return;
         }
         System.out.println("LOG: RMI done creating");
@@ -74,54 +72,66 @@ public class Server {
         } catch (RemoteException e) {
             e.printStackTrace();
             stopRmiRegistry();
+            System.exit(-1);
             return;
         }
 
+        String bindingName = "rmi://" + serverAddress + ":" + serverPort + "/network";
         try {
-            registry.bind(RmiController.REMOTE_REFERENCE_NAME, rmiController);
+            registry.bind(bindingName, serverController);
         } catch (RemoteException e) {
             e.printStackTrace();
             stopRmiRegistry();
-            return;
+            System.exit(-1);
         } catch (AlreadyBoundException e) {
             System.out.println("LOG: RMI registry service already bound, unbinding...");
             try {
-                registry.unbind(RmiController.REMOTE_REFERENCE_NAME);
+                registry.unbind(bindingName);
             } catch (RemoteException | NotBoundException ex) {
                 ex.printStackTrace();
                 stopRmiRegistry();
-                return;
+                System.exit(-1);
             }
             System.out.println("LOG: RMI done unbinding");
 
             System.out.println("LOG: rebinding RMI registry service...");
             try {
                 registry = LocateRegistry.getRegistry();
-                registry.bind(RmiController.REMOTE_REFERENCE_NAME, rmiController);
+                registry.bind(bindingName, serverController);
             } catch (RemoteException | AlreadyBoundException ex) {
                 ex.printStackTrace();
                 stopRmiRegistry();
-                return;
+                System.exit(-1);
             }
             System.out.println("LOG: RMI service rebounded");
         }
         System.out.println("LOG: RMI done binding");
-        System.out.println("LOG: RMI server running on " + SERVER_ADDRESS + ":" + SERVER_PORT);
+        System.out.println("LOG: RMI started on " + serverAddress + ":" + serverPort);
+        System.out.println("STATUS: RMI serverController is running...");
     };
 
-    //starts the Socket server on a different Thread using Executor
-    private static void startSocketServer() {
-        executor.execute(socketServer);
-    }
+    public static void main(String[] args) {
+        if (args.length != 2) {
+            System.err.println("ERROR: correct syntax is: Server [serverAddress] [serverPort]");
+            System.exit(-1);
+        }
+        serverAddress = args[0];
 
-    //starts a RMI Server on a different Thread using Executor
-    private static void startRmiServer() {
+        try {
+            serverPort = Integer.parseInt(args[1]);
+        } catch (NumberFormatException e) {
+            System.err.println("ERROR: server port not in range [1025 - 65535]");
+            System.exit(-1);
+        }
+
+        clearCMD();
+
+        executor.execute(socketServer);
         executor.execute(rmiServer);
     }
 
-    //starts the RMI registry via command line
     private static void startRmiRegistry() {
-        String RMI_REGISTRY_EXECUTION_PATH = RmiController.class
+        String RMI_REGISTRY_EXECUTION_PATH = ServerController.class
                 .getProtectionDomain()
                 .getCodeSource()
                 .getLocation()
@@ -163,25 +173,5 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        if (args.length != 2) {
-            System.err.println("ERROR: insert SERVER_ADDRESS as first argument and SERVER_PORT as second");
-            return;
-        }
-
-        try {
-            SERVER_ADDRESS = InetAddress.getByName(args[0]);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            return;
-        }
-        SERVER_PORT = Integer.parseInt(args[1]);
-
-        clearCMD();
-
-        startSocketServer();
-        startRmiServer();
     }
 }

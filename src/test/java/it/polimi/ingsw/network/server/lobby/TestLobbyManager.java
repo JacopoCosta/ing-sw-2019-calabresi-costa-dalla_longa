@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.server.lobby;
 
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.*;
 import org.junit.Test;
 
@@ -36,13 +37,13 @@ public class TestLobbyManager {
     }
 
     @Test
-    public void addToLobby() {
+    public void add() {
         String lobby1Name = "SampleLobby1Name";
         String lobby2Name = "SampleLobby2Name";
         String lobby2Password = "SampleLobby2Password";
 
-        String username = "SampleUsername";
-        User user = new User(username);
+        String playername = "SamplePlayername";
+        Player player = new Player(playername);
 
         LobbyManager manager = new LobbyManager();
 
@@ -54,35 +55,35 @@ public class TestLobbyManager {
         } catch (LobbyAlreadyExistsException ignored) {
         }
 
-        //add a User to an existing Lobby: OK
+        //add a Player to an existing Lobby: OK
         try {
-            manager.add(lobby1Name, user, null);
+            manager.add(lobby1Name, player, null);
             catchTaken = false;
-        } catch (LobbyNotFoundException | InvalidPasswordException | UserAlreadyAddedException | LobbyFullException e) {
+        } catch (LobbyNotFoundException | InvalidPasswordException | PlayerAlreadyAddedException | LobbyFullException e) {
             catchTaken = true;
             e.printStackTrace();
         }
         assertFalse(catchTaken);
 
-        //add a User to a non existing Lobby: KO
+        //add a Player to a non existing Lobby: KO
         try {
-            manager.add(lobby2Name, user, lobby2Password);
+            manager.add(lobby2Name, player, lobby2Password);
             catchTaken = false;
         } catch (LobbyNotFoundException ignored) {
             catchTaken = true;
-        } catch (LobbyFullException | InvalidPasswordException | UserAlreadyAddedException ignored) {
+        } catch (LobbyFullException | InvalidPasswordException | PlayerAlreadyAddedException ignored) {
             catchTaken = false;
         }
         assertTrue(catchTaken);
     }
 
     @Test
-    public void removeFromLobby() {
+    public void remove() {
         String lobby1Name = "SampleLobby3Name";
         String lobby2Name = "SampleLobby4Name";
 
-        String username = "SampleUsername";
-        User user = new User(username);
+        String playername = "SamplePlayername";
+        Player player = new Player(playername);
 
         LobbyManager manager = new LobbyManager();
 
@@ -94,49 +95,30 @@ public class TestLobbyManager {
         } catch (LobbyAlreadyExistsException ignored) {
         }
 
-        //add a User to an existing Lobby
+        //add a Player to an existing Lobby
         try {
-            manager.add(lobby1Name, user, null);
-        } catch (LobbyNotFoundException | InvalidPasswordException | UserAlreadyAddedException | LobbyFullException ignored) {
+            manager.add(lobby1Name, player, null);
+        } catch (LobbyNotFoundException | InvalidPasswordException | PlayerAlreadyAddedException | LobbyFullException ignored) {
         }
 
-        //remove a user from an existing Lobby: OK
+        //remove a player from an existing Lobby: OK
         try {
-            manager.remove(lobby1Name, user);
+            manager.remove(lobby1Name, player);
             catchTaken = false;
-        } catch (LobbyNotFoundException | UserNotFoundException | EmptyLobbyException ignored) {
+        } catch (LobbyNotFoundException | PlayerNotFoundException | LobbyEmptyException ignored) {
             catchTaken = true;
         }
         assertFalse(catchTaken);
 
-        //remove a User from a non existing Lobby: KO
+        //remove a Player from a non existing Lobby: KO
         try {
-            manager.remove(lobby2Name, user);
+            manager.remove(lobby2Name, player);
             catchTaken = false;
         } catch (LobbyNotFoundException ignored) {
             catchTaken = true;
-        } catch (UserNotFoundException | EmptyLobbyException ignored) {
+        } catch (PlayerNotFoundException | LobbyEmptyException ignored) {
             catchTaken = false;
         }
         assertTrue(catchTaken);
-    }
-
-    @Test
-    public void exists() {
-        String lobby1Name = "SampleLobby7Name";
-        String lobby2Name = "SampleLobby8Name";
-
-        String lobby1Password = "SampleLobby7Password";
-
-        LobbyManager manager = new LobbyManager();
-
-        //create a new Lobby
-        try {
-            manager.newLobby(lobby1Name, lobby1Password);
-        } catch (LobbyAlreadyExistsException ignored) {
-        }
-
-        assertTrue(manager.exists(lobby1Name));
-        assertFalse(manager.exists(lobby2Name));
     }
 }

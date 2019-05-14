@@ -1,101 +1,87 @@
 package it.polimi.ingsw.network.server.lobby;
 
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.*;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.stream.Collectors;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 class Lobby {
-    private static final int LOBBY_SIZE = 5; //the maximum number of Users into the Lobby
-    private static final int MINIMUM_USERS_THRESHOLD = 3; //minimum number of Users needed for the countdown to start
+    private final int MAX_PLAYERS = 5;
+    private int currentPlayers;
 
-    private static final int COUNTDOWN_STARTING_SECONDS = 90; //initial time in seconds the timer stats counting down from
-    private final CountDownTimer timer; //timer to perform the countdown before the match starts
+    private final List<Player> players;
 
-    private final String name; //unique Lobby name
-    private String password; //[OPTIONAL] the Lobby password
+    private final String name;
+    private final String password;
 
-    private Queue<User> users; //array of Users connected to this Lobby. users[0] is the Lobby admin
+    private final int WAITING_TIME = 5; //time in seconds the timer starts from
+    private final int PLAYERS_THRESHOLD = 3; //minimum number of players to reach before the timer begins the countdown
+    private final CountDownTimer timer;
 
     Lobby(String name, String password) {
         this.name = name;
         this.password = password;
-        users = new ConcurrentLinkedQueue<>();
 
-        timer = new CountDownTimer(COUNTDOWN_STARTING_SECONDS);
+        currentPlayers = 0;
+        players = new ArrayList<>(MAX_PLAYERS);
+
+        timer = new CountDownTimer(WAITING_TIME);
     }
 
-    String getName() {
-        return this.name;
-    }
+    void add(Player player, String password) throws LobbyFullException, PlayerAlreadyAddedException, InvalidPasswordException {
+        if (currentPlayers == MAX_PLAYERS)
+            throw new LobbyFullException("Lobby \"" + name + "\" is full");
 
-    //add a new User to the Lobby only if not already in and password is correct
-    void addUser(User user, String password) throws InvalidPasswordException, LobbyFullException, UserAlreadyAddedException {
-        //password not correct
-        if ((this.password != null && !this.password.isBlank() && !this.password.equals(password))
-                || ((this.password == null || this.password.isBlank()) && (password != null && !password.isBlank())))
-            throw new InvalidPasswordException("\"" + password + "\" is no a valid password for Lobby \"" + name + "\"");
+        if (player == null)
+            throw new NullPointerException("Player is null");
 
-        //maximum number of Users reached
-        if (users.size() == LOBBY_SIZE)
-            throw new LobbyFullException("Lobby is full, maximum number of Users is " + LOBBY_SIZE);
+        if (players.contains(player))
+            throw new PlayerAlreadyAddedException("Player \"" + player.getName() + "\" already found into Lobby \"" + name + "\"");
 
-        //User already into this Lobby
-        for (User u : users)
-            if (u.equals(user))
-                throw new UserAlreadyAddedException("User \"" + user.getName() + "\" already added to Lobby \"" + name + "\"");
+        if (this.password != password)
+            throw new InvalidPasswordException("password \"" + password + "\" invalid for Lobby \"" + name + "\"");
 
-        //add User to this Lobby
-        users.add(user);
+        players.add(player);
+        currentPlayers++;
 
-        //adjust the timer accordingly to the number of players in the Lobby
         adjustTimer();
     }
 
-    //remove a User from the Lobby
-    void removeUser(User user) throws EmptyLobbyException, UserNotFoundException {
-        int length = users.size();
+    void remove(Player player) throws LobbyEmptyException, PlayerNotFoundException {
+        if (this.currentPlayers == 0)
+            throw new LobbyEmptyException("Lobby \"" + name + "\" is empty");
 
-        //Lobby is empty
-        if (length == 0)
-            throw new EmptyLobbyException("can't remove User \"" + user.getName() + "\", Lobby \"" + name + "\" is empty");
+        if (player == null)
+            throw new NullPointerException("Player is null");
 
-        //remove the User if present
-        users = users.stream().filter(u -> !u.equals(user)).collect(Collectors.toCollection(ConcurrentLinkedQueue::new));
+        if (!players.contains(player))
+            throw new PlayerNotFoundException("Player \"" + player.getName() + "\" not found into Lobby \"" + name + "\"");
 
-        //array has the same size before and after removal: no Users have been removed
-        if (length == users.size())
-            throw new UserNotFoundException("User \"" + user.getName() + "\" not found into Lobby \"" + name + "\"");
+        players.remove(player);
+        currentPlayers--;
 
-        //adjust the timer accordingly to the number of players in the Lobby
         adjustTimer();
     }
 
-    //whether or not this Lobby has Users connected to it
-    boolean isEmpty() {
-        return users.size() == 0;
+    public List<Player> getPlayers() {
+        return players;
     }
 
-    //whether or not this Lobby has reached the maximum amount of Users connected to it
-    boolean isFull() {
-        return users.size() == LOBBY_SIZE;
+    public String getName() {
+        return name;
     }
 
-    //gets the number of the Users connected to this Lobby
-    int getCurrentUsers() {
-        return users.size();
+    Map.Entry<String, String> getLobbyStatus() {
+        return new AbstractMap.SimpleEntry<>(name, "[" + currentPlayers + "/" + MAX_PLAYERS + "]");
     }
 
-    //get the maximum number of Users for this Lobby
-    int getMaxUses() {
-        return LOBBY_SIZE;
-    }
-
-    //regulate the timer to adjust the countdown, according to the number of Users in the Lobby
+    //regulate the timer to adjust the countdown, according to the number of players in the Lobby
     private void adjustTimer() {
         /* TODO:
-            This function is called every time a User is added or removed from this Lobby.
+         *  This function is called every time a User is added or removed from this Lobby.
          *  This function adjusts the timer countdown based on the number of Users connected (currUsers).
          *  The timer should start when the minimum number of Users is reached:
          *  users.size() == MINIMUM_USERS_THRESHOLD

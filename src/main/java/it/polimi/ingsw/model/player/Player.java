@@ -274,4 +274,13 @@ public class Player {
         this.damage.clear();
         this.position = cell;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if(object == null)
+            return false;
+        if(!(object instanceof Player))
+            return false;
+        return ((Player)object).getName().equals(this.name);
+    }
 }

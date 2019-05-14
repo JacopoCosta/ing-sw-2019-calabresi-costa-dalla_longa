@@ -7,17 +7,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class CountDownTimer {
-    //the timer has been created successfully, but is not started yet
-    static final int NOT_STARTED = 0;
+    public enum TimerState {
+        //the timer has been created successfully, but is not started yet
+        NOT_STARTED,
 
-    //the timer is started and is currently performing the countdown
-    static final int STARTED = 1;
+        //the timer is started and is currently performing the countdown
+        STARTED,
 
-    //the timer has completed the countdown or has been stopped during the execution.
-    //In both cases the timer is not performing the countdown anymore
-    static final int STOPPED = 2;
+        //the timer has completed the countdown or has been stopped during the execution.
+        //In both cases the timer is not performing the countdown anymore
+        STOPPED
+    }
 
-    private int timerState; //the current state of the timer
+    private TimerState timerState; //the current state of the timer
 
     private static final int INITIAL_DELAY = 0; //delay in seconds before task is to be executed the first time
     private static final int PERIOD = 1; //time in seconds between successive task executions
@@ -28,10 +30,16 @@ class CountDownTimer {
     private final ScheduledExecutorService executor; //the timer responsible for the actual countdown
     private ScheduledFuture<?> future;
 
+    //the task to execute every PERIOD
+    private Runnable tick = () -> {
+        if (currentSeconds.decrementAndGet() < 0)
+            stop();
+    };
+
     CountDownTimer(int statingSeconds) {
         this.statingSeconds = statingSeconds;
         currentSeconds = new AtomicInteger();
-        timerState = CountDownTimer.NOT_STARTED;
+        timerState = TimerState.NOT_STARTED;
 
         executor = Executors.newSingleThreadScheduledExecutor();
     }
@@ -44,13 +52,8 @@ class CountDownTimer {
         //prepare the timer to start the countdown from the beginning
         currentSeconds.set(statingSeconds);
 
-        //the task to execute every PERIOD
-        Runnable timerTask = () -> {
-            if (currentSeconds.decrementAndGet() < 0)
-                stop();
-        };
-        future = executor.scheduleAtFixedRate(timerTask, INITIAL_DELAY, PERIOD, TimeUnit.SECONDS);
-        timerState = CountDownTimer.STARTED;
+        future = executor.scheduleAtFixedRate(tick, INITIAL_DELAY, PERIOD, TimeUnit.SECONDS);
+        timerState = TimerState.STARTED;
     }
 
     /*
@@ -58,7 +61,7 @@ class CountDownTimer {
      * If called called repeatedly the second and subsequent calls have no effect
      * */
     void stop() {
-        timerState = CountDownTimer.STOPPED;
+        timerState = TimerState.STOPPED;
         future.cancel(true);
         executor.shutdown();
     }
@@ -73,7 +76,7 @@ class CountDownTimer {
     /*
      * get the current state of the timer
      * */
-    int getState() {
+    TimerState getState() {
         return timerState;
     }
 }

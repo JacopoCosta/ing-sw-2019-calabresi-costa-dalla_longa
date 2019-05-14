@@ -1,11 +1,11 @@
 package it.polimi.ingsw.model.ammo;
 
-import it.polimi.ingsw.model.ammo.AmmoCubes;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TestAmmoCubes {
 
@@ -17,10 +17,9 @@ public class TestAmmoCubes {
         boolean catchTaken = false;
         try {
             AmmoCubes ammoCubes = new AmmoCubes(-1, 0, 0);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             catchTaken = true;
-       }
+        }
         assertTrue(catchTaken);
     }
 
@@ -29,8 +28,7 @@ public class TestAmmoCubes {
         boolean catchTaken = false;
         try {
             AmmoCubes ammoCubes = new AmmoCubes(2, 5, 1);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             catchTaken = true;
         }
         assertTrue(catchTaken);
@@ -41,8 +39,7 @@ public class TestAmmoCubes {
         boolean catchTaken = false;
         try {
             AmmoCubes ammoCubes = new AmmoCubes();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             catchTaken = true;
         }
         assertFalse(catchTaken);

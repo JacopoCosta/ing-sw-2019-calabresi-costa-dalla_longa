@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.server.lobby;
 
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.*;
 
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 public class LobbyManager {
-    private Queue<Lobby> lobbies; //all Lobbies located on the Server
+    private final Queue<Lobby> lobbies; //all Lobbies located on the Server
 
     public LobbyManager() {
         lobbies = new ConcurrentLinkedQueue<>();
@@ -19,68 +20,50 @@ public class LobbyManager {
         for (Lobby lobby : lobbies)
             if (lobby.getName().equals(name))
                 return lobby;
-        throw new LobbyNotFoundException("Lobby \"" + name + "\" not found into lobbies list");
+        throw new LobbyNotFoundException("Lobby \"" + name + "\" not found");
     }
+
 
     //create a new Lobby
-    public void newLobby(String lobbyName, String lobbyPassword) throws LobbyAlreadyExistsException {
-        if (exists(lobbyName))
-            throw new LobbyAlreadyExistsException("Lobby \"" + lobbyName + "\" already exists into lobbies list");
+    public synchronized void newLobby(String lobbyName, String password) throws LobbyAlreadyExistsException {
+        if (lobbyName == null)
+            throw new NullPointerException("Lobby name is null");
 
-        Lobby lobby = new Lobby(lobbyName, lobbyPassword);
-        lobbies.add(lobby);
-    }
-
-    //add a User to an existing Lobby
-    public void add(String lobbyName, User user, String lobbyPassword)
-            throws LobbyNotFoundException, LobbyFullException, InvalidPasswordException, UserAlreadyAddedException {
-        getLobbyByName(lobbyName).addUser(user, lobbyPassword);
-    }
-
-    //remove a User from an existing Lobby
-    public void remove(String lobbyName, User user)
-            throws LobbyNotFoundException, UserNotFoundException, EmptyLobbyException {
-        Lobby lobby = getLobbyByName(lobbyName);
-        lobby.removeUser(user);
-
-        //if empty, the Lobby is removed from the global Lobbies list
-        if (lobby.isEmpty())
-            lobbies.remove(lobby);
-    }
-
-    //whether or not the given Lobby is empty
-    public boolean isEmpty(String lobbyName) throws LobbyNotFoundException {
-        return getLobbyByName(lobbyName).isEmpty();
-    }
-
-    //whether or not the given Lobby is full
-    public boolean isFull(String lobbyName) throws LobbyNotFoundException {
-        return getLobbyByName(lobbyName).isFull();
-    }
-
-    //returns the number of Users currently present into the given Lobby
-    public int getCurrentUsers(String lobbyName) throws LobbyNotFoundException {
-        return getLobbyByName(lobbyName).getCurrentUsers();
-    }
-
-    //returns the maximum number of Users that can be added into the given Lobby
-    public int getMaxUsers(String lobbyName) throws LobbyNotFoundException {
-        return getLobbyByName(lobbyName).getMaxUses();
-    }
-
-    //returns all the Lobbies on the Server as <lobbyName, [number_of_users/LOBBY_SIZE]>
-    public Map<String, String> getLobbies() {
-        return lobbies.stream().collect(Collectors.toMap(Lobby::getName,
-                l -> "[" + l.getCurrentUsers() + "/" + l.getMaxUses() + "]"));
-    }
-
-    //whether or not lobbyName refers to an existing Lobby
-    public boolean exists(String lobbyName) {
         try {
             getLobbyByName(lobbyName);
-            return true;
+            throw new LobbyAlreadyExistsException("Lobby\"" + lobbyName + "\" already exists");
         } catch (LobbyNotFoundException ignored) {
         }
-        return false;
+
+        lobbies.add(new Lobby(lobbyName, password));
+    }
+
+    //add a Player to an existing Lobby
+    public synchronized void add(String lobbyName, Player player, String password)
+            throws LobbyNotFoundException, LobbyFullException, PlayerAlreadyAddedException, InvalidPasswordException {
+        if (lobbyName == null)
+            throw new NullPointerException("Lobby name is null");
+
+        getLobbyByName(lobbyName).add(player, password);
+    }
+
+    //remove a Player from an existing Lobby
+    public synchronized void remove(String lobbyName, Player player)
+            throws LobbyNotFoundException, PlayerNotFoundException, LobbyEmptyException {
+        if (lobbyName == null)
+            throw new NullPointerException("Lobby name is null");
+
+        if (player == null)
+            throw new NullPointerException("Player is null");
+
+        getLobbyByName(lobbyName).remove(player);
+    }
+
+    //returns all the Lobbies on the Server as <lobbyName, [number_of_users/MAX_USERS]>
+    public Map<String, String> getLobbiesStatus() {
+        return lobbies
+                .stream()
+                .map(Lobby::getLobbyStatus)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }
