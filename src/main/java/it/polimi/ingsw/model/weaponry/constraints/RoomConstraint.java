@@ -1,10 +1,8 @@
 package it.polimi.ingsw.model.weaponry.constraints;
 
 import it.polimi.ingsw.model.board.Room;
-import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
-import it.polimi.ingsw.model.weaponry.targets.*;
 
 import java.util.List;
 import java.util.stream.Collectors;

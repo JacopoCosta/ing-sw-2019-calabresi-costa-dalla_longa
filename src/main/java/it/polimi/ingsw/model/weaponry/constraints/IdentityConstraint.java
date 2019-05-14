@@ -2,9 +2,6 @@ package it.polimi.ingsw.model.weaponry.constraints;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
-import it.polimi.ingsw.model.weaponry.targets.Target;
-import it.polimi.ingsw.model.weaponry.targets.TargetPlayer;
-import it.polimi.ingsw.model.weaponry.targets.TargetType;
 
 import java.util.List;
 import java.util.stream.Collectors;

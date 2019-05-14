@@ -85,9 +85,7 @@ public abstract class ControlledShoot {
                 );
             }
 
-            attackModule.getEffects()
-                    .stream()
-                    .forEach(Effect::apply);
+            attackModule.getEffects().forEach(Effect::apply);
 
             attackModule.setUsed(true);
 

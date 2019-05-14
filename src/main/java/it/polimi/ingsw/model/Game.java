@@ -35,7 +35,7 @@ public class Game {
 
     public static Game create(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {
         Game game = new Game(finalFrenzy, roundsToPlay, boardType, participants);
-        participants.stream().forEach(p -> p.setGame(game));
+        participants.forEach(p -> p.setGame(game));
         return game;
     }
 

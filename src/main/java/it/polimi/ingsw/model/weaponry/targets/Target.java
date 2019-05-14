@@ -26,17 +26,16 @@ public abstract class Target {
             constraints.add(Constraint.build(jConstraint));
         }
 
-        if(type.equals("player")) {
-            return new TargetPlayer(message, constraints);
+        switch (type) {
+            case "player":
+                return new TargetPlayer(message, constraints);
+            case "cell":
+                return new TargetCell(message, constraints);
+            case "room":
+                return new TargetRoom(message, constraints);
+            default:
+                throw new InvalidTargetTypeException(type + " is not a valid name for a Target type. Use \"player\", \"cell\", or \"room\"");
         }
-        else if(type.equals("cell")) {
-            return new TargetCell(message, constraints);
-        }
-        else if(type.equals("room")) {
-            return new TargetRoom(message, constraints);
-        }
-        else
-            throw new InvalidTargetTypeException(type  + " is not a valid name for a Target type. Use \"player\", \"cell\", or \"room\"");
     }
 
     public TargetType getType() {
