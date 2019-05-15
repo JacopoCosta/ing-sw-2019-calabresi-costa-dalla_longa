@@ -8,6 +8,9 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
+import java.util.Comparator;
+import java.util.Iterator;
+
 import static it.polimi.ingsw.view.WallType.*;
 
 public class BoardGraph {
@@ -35,7 +38,7 @@ public class BoardGraph {
             case ANGLE:
                 System.out.print("╋");
                 break;
-            default:
+            default:    //it covers case NONE
                 break;
         }
     }
@@ -95,26 +98,6 @@ public class BoardGraph {
         return NONE;
     }
 
-    /*
-
-    May be used instead of the current visualization for the gridboard. May be completely removed soon.
-
-    public String getInternalLineOne(Cell cell) {
-        String description;
-
-        if(cell.isSpawnPoint()) {   //this cell contains a shop
-            //gets the first weapon
-            Weapon weapon = ((SpawnCell) cell).getWeaponShop().get(0);  //casting to SpawnCell is correct since cell.isSpawnPoint() == true
-            description = "1. " + weapon.getName();
-        }
-        else {
-
-        }
-
-        return description;
-    }
-    */
-
     public void printShop(Board board, AmmoCubes ammoCubeColor) {   //prints every weapon in a selected shop
 
         Cell cell = board.findSpawnPoint(ammoCubeColor);
@@ -143,24 +126,32 @@ public class BoardGraph {
                 else
                     System.out.println("\tUnloaded");
                 index++;
-            }
-        }
+            } //end for
+        } //end else
 
         //printing damageboard
         System.out.print("Damage taken:\t");
         for(Player p: player.getDamagersList()) {
             System.out.print(((char) p.getID()));
-        }
+        } //end for
+
         System.out.println("\nMarkers taken:");
         for(Player author: board.getGame().getParticipants()) {
 
             int m = player.getMarkingsByAuthor(author);
             if(m > 0)
                 System.out.println(m + " by player number " + author.getID() + " [codename: " + author.getName() + "]");
-        }
+        } //end for
         System.out.println("Dead " + player.getDeathCount() + " times");
 
         printDamageBoard(board, player);
+    }
+
+    public void printCellCoordinate(Cell cell) {
+        if(cell != null)
+            System.out.print(" <" + (cell.getXCoord() + 1) + "," + ((cell.getYCoord() + 1) + ">      "));
+        else
+            System.out.print("                        ");
     }
 
     public void printFirstLine(Cell cell) {
@@ -237,12 +228,12 @@ public class BoardGraph {
         }
     }
 
-    public void printFourthLine(Board board, Cell cell) {
+    public void printFourthLine(Cell cell) {
         int charCounter = 0;
         if(cell == null)
             return;
         //this time, it doesn't matter whether the cell is a SpawnCell or not
-        for(Player p: board.getGame().getParticipants()) {
+        for(Player p: cell.getBoard().getGame().getParticipants()) {
             if (p.getPosition() == cell) {
                 System.out.print(" " + p.getID());
                 charCounter += 2;
@@ -255,22 +246,43 @@ public class BoardGraph {
 
     public void printDamageBoard(Board board, Player player) {
         /*TODO:
-            set some Player methods for this
+            (this is not a priority for basic CLI behaviour)
          */
     }
 
-    //prints killers, doublekillers etc.
+    //prints killers (being normal or overkill) and doublekillers
     public void printBoardStatus(Board board) {
-        /*
-        TODO:
-            there isn't a way to determine whether a pair of kills was caused by two kills in a row
-            or by a doublekill, need to fix this in the model
-         */
+
+        //print Kills list
+        boolean emptyList = true;
+        System.out.print("\nKills list:");
+        for(Player p: board.getKillers()) {
+            if(p != null) {
+                if(board.getKillers().get(board.getKillers().indexOf(p) + 1) == null) {
+                    System.out.print(" " + p.getID() + " (x2)");
+                }
+                else {
+                    emptyList = false;
+                    System.out.print(" " + p.getID());
+                }
+            }
+        }
+        if(emptyList)
+            System.out.print("\t<No kills yet>");
+
+        emptyList = true;
+        System.out.print("\nDouble kills list:");
+        for(Player p: board.getDoubleKillers()) {
+            emptyList = false;
+            System.out.print(" " + p.getID());
+        }
+        if(emptyList)
+            System.out.print("\t<No doublekills yet>");
     }
 
     public void printWeaponInfo(Weapon weapon) {
         /*TODO:
-            ultimate json files to define how to load weapon info
+            (this is not a priority for basic CLI behaviour)
          */
     }
 }

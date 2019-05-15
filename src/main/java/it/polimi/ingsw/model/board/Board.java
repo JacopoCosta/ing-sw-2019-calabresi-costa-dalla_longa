@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.weaponry.Weapon;
+import it.polimi.ingsw.view.CommandLineInterface;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -48,6 +49,10 @@ public class Board {
         // type is used to choose one predefined cell configuration
         board.cells = Board.configureCells(type);
 
+        //this method is necessary for CLI drawing only; however, it's called here to avoid being called more than needed;
+        //NOTE: calling it just once is fine, as long as the cell configuration won't be modified, which should never be done
+        board.sortCells();
+
         return board;
     }
 
@@ -55,6 +60,48 @@ public class Board {
         List<Cell> cells = new ArrayList<>();
         switch(boardType) {
             case 1:
+                cells.add(new AmmoCell(0, 0));
+                cells.add(new AmmoCell(1, 0));
+                cells.add(new SpawnCell(2, 0, new AmmoCubes(0, 0, 1)));
+                cells.add(new SpawnCell(0, 1, new AmmoCubes(1, 0, 0)));
+                cells.add(new AmmoCell(1, 1));
+                cells.add(new AmmoCell(2, 1));
+                cells.add(new AmmoCell(3, 1));
+                cells.add(new AmmoCell(1, 2));
+                cells.add(new AmmoCell(2, 2));
+                cells.add(new SpawnCell(3, 2, new AmmoCubes(0, 1, 0)));
+
+                cells.get(0).setAdjacent(cells.get(1));
+                cells.get(0).setAdjacent(cells.get(3));
+                cells.get(1).setAdjacent(cells.get(2));
+                cells.get(2).setAdjacent(cells.get(5));
+                cells.get(3).setAdjacent(cells.get(4));
+                cells.get(4).setAdjacent(cells.get(5));
+                cells.get(4).setAdjacent(cells.get(7));
+                cells.get(5).setAdjacent(cells.get(6));
+                cells.get(6).setAdjacent(cells.get(9));
+                cells.get(7).setAdjacent(cells.get(8));
+                cells.get(8).setAdjacent(cells.get(9));
+
+                List<Cell> list10 = new ArrayList<>();
+                List<Cell> list11 = new ArrayList<>();
+                List<Cell> list12 = new ArrayList<>();
+                List<Cell> list13 = new ArrayList<>();
+                list10.add(cells.get(0));
+                list10.add(cells.get(1));
+                list10.add(cells.get(2));
+                list11.add(cells.get(3));
+                list10.add(cells.get(4));
+                list10.add(cells.get(5));
+                list12.add(cells.get(6));
+                list13.add(cells.get(7));
+                list13.add(cells.get(8));
+                list12.add(cells.get(9));
+                new Room(list10);
+                new Room(list11);
+                new Room(list12);
+                new Room(list13);
+
                 break;
             case 2:
                 cells.add(new AmmoCell(0, 0));
@@ -83,27 +130,27 @@ public class Board {
                 cells.get(8).setAdjacent(cells.get(9));
                 cells.get(9).setAdjacent(cells.get(10));
 
-                List<Cell> list0 = new ArrayList<>();
-                List<Cell> list1 = new ArrayList<>();
-                List<Cell> list2 = new ArrayList<>();
-                List<Cell> list3 = new ArrayList<>();
-                List<Cell> list4 = new ArrayList<>();
-                list0.add(cells.get(0));
-                list0.add(cells.get(1));
-                list0.add(cells.get(2));
-                list1.add(cells.get(3));
-                list2.add(cells.get(4));
-                list2.add(cells.get(5));
-                list3.add(cells.get(6));
-                list3.add(cells.get(7));
-                list4.add(cells.get(8));
-                list3.add(cells.get(9));
-                list3.add(cells.get(10));
-                new Room(list0);
-                new Room(list1);
-                new Room(list2);
-                new Room(list3);
-                new Room(list4);
+                List<Cell> list20 = new ArrayList<>();
+                List<Cell> list21 = new ArrayList<>();
+                List<Cell> list22 = new ArrayList<>();
+                List<Cell> list23 = new ArrayList<>();
+                List<Cell> list24 = new ArrayList<>();
+                list20.add(cells.get(0));
+                list20.add(cells.get(1));
+                list20.add(cells.get(2));
+                list21.add(cells.get(3));
+                list22.add(cells.get(4));
+                list22.add(cells.get(5));
+                list23.add(cells.get(6));
+                list23.add(cells.get(7));
+                list24.add(cells.get(8));
+                list23.add(cells.get(9));
+                list23.add(cells.get(10));
+                new Room(list20);
+                new Room(list21);
+                new Room(list22);
+                new Room(list23);
+                new Room(list24);
 
                 break;
             case 3:
@@ -116,6 +163,12 @@ public class Board {
         return cells;
     }
 
+    /**
+     * This method sorts {@code List<Cell> cells}, first along the horizontal coordinate, then along the vertical coordinates, returning a
+     * cell configuration that can be sequentially read in a natural visualization order (i.e. from left ro right and from above to the bottom).
+     * This method invocation is necessary for the correct printing of the game board when using the CLI-visualization view.
+     * @see CommandLineInterface#printBoard()
+     */
     public void sortCells() {
         Comparator<Cell> before = (c1, c2) -> {
             if(c1.getYCoord() == c2.getYCoord())
