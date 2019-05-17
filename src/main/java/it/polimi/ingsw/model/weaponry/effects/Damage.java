@@ -4,10 +4,7 @@ import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 
 import java.util.List;
 
-public class Damage extends Effect {
-    private int amount;
-    private List<Constraint> constraints;
-
+public class Damage extends OffensiveEffect {
     public Damage(int amount, List<Constraint> constraints) {
         this.amount = amount;
         this.constraints = constraints;
@@ -16,7 +13,9 @@ public class Damage extends Effect {
 
     @Override
     public void apply() {
-        //take scopes into account
+        for(int i = 0; i < amount; i ++)
+            getTargetStream()
+                    .forEach(p -> p.applyDamage(author));
     }
 
     @Override

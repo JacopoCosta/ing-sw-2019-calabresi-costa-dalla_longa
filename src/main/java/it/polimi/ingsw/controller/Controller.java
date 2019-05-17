@@ -4,6 +4,7 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.view.Dispatcher;
 
 public class Controller implements Controllable {
 

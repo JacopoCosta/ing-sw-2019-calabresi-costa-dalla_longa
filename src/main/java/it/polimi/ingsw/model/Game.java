@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.VirtualDispatcher;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
@@ -18,6 +19,7 @@ public class Game {
 
     private Board board;
     private Controller controller;
+    private VirtualDispatcher virtualDispatcher;
 
     public Board getBoard() {
         return this.board;
@@ -25,6 +27,10 @@ public class Game {
 
     public Controller getController() {
         return controller;
+    }
+
+    public VirtualDispatcher getDispatcher() {
+        return virtualDispatcher;
     }
 
     private Game(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {
@@ -35,6 +41,7 @@ public class Game {
 
         this.board = Board.generate(this, boardType);
         this.controller = new Controller(this);
+        this.virtualDispatcher = new VirtualDispatcher(this);
     }
 
     public static Game create(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {

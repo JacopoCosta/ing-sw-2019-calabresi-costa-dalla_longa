@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.exceptions.WeaponAlreadyLoadedException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.Weapon;
+import it.polimi.ingsw.view.Dispatcher;
 
 import java.util.List;
 

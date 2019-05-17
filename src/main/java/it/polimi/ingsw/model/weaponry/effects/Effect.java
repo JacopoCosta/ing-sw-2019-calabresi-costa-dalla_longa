@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.weaponry.effects;
 
 import it.polimi.ingsw.model.exceptions.InvalidEffectTypeException;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
+import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 
 public abstract class Effect {
     protected EffectType type;
-    protected Object context;
+    protected AttackPattern context;
 
     public static Effect build(DecoratedJSONObject jEffect) throws InvalidEffectTypeException {
         String type = jEffect.getString("type");
@@ -40,6 +41,10 @@ public abstract class Effect {
             return new Move(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId);
         }
         throw new InvalidEffectTypeException(type + " is not a valid name for an Effect type. Use \"damage\", \"mark\", or \"move\"");
+    }
+
+    public EffectType getType() {
+        return type;
     }
 
     public abstract void apply();

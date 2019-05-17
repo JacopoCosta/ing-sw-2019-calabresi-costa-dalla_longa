@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.weaponry.Weapon;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Deck<T> {
     private List<T> cards;
@@ -68,6 +69,7 @@ public class Deck<T> {
         singleCubes.add(AmmoCubes.blue());
 
         List<AmmoCubes> doubleCubes = new ArrayList<>();
+
         for(AmmoCubes s : singleCubes) {
             for(AmmoCubes s1 : singleCubes) {
                 AmmoCubes sum = s.sum(s1);
@@ -76,8 +78,7 @@ public class Deck<T> {
             }
         }
 
-        doubleCubes.stream()
-                .forEach(System.out::println);
+        doubleCubes.forEach(System.out::println);
 
         return deck;
     }

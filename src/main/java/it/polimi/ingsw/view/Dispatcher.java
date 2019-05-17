@@ -1,16 +1,22 @@
-package it.polimi.ingsw.controller;
+package it.polimi.ingsw.view;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-// simulates communication between server and a human-operated client via terminal
-// used to request values for setup, settings, game choices
+// offers the final delivery of a message to the client
+// if the message is a request, it awaits for a valid response that will be returned to the caller
+// used to request values for setup, settings, game choices, and updates about the game status
 public abstract class Dispatcher {
 
+    // outputs a message
+    public static void sendMessage(String message) {
+        System.out.println(message);
+    }
+
     // prints a request message and returns the response inserted via System.in (terminal)
-    private static String requestRoutine(String q) {
-        System.out.println("\n" + q);
+    private static String requestRoutine(String message) {
+        sendMessage("\n" + message);
         String response;
         try {
             BufferedReader bufferedRead = new BufferedReader(new InputStreamReader(System.in));

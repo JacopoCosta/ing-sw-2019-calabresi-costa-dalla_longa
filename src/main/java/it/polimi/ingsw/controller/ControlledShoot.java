@@ -8,7 +8,11 @@ import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.Weapon;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 import it.polimi.ingsw.model.weaponry.effects.Effect;
+import it.polimi.ingsw.model.weaponry.effects.EffectType;
+import it.polimi.ingsw.model.weaponry.effects.Mark;
+import it.polimi.ingsw.model.weaponry.effects.OffensiveEffect;
 import it.polimi.ingsw.model.weaponry.targets.*;
+import it.polimi.ingsw.view.Dispatcher;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +33,10 @@ public abstract class ControlledShoot {
         ); // choose a weapon
 
         AttackPattern pattern = weapon.getPattern();
+        applyPattern(pattern, subject);
+    }
+
+    protected static synchronized void applyPattern(AttackPattern pattern, Player subject) {
         pattern.setAuthor(subject);
         pattern.resetAllModules();
 
@@ -49,9 +57,9 @@ public abstract class ControlledShoot {
                         List<Player> players = subject.getGame().getParticipants();
 
                         ((TargetPlayer) target).setPlayer(
-                            players.get(
-                                    Dispatcher.requestInteger(target.getMessage(), 0, players.size())
-                            )
+                                players.get(
+                                        Dispatcher.requestInteger(target.getMessage(), 0, players.size())
+                                )
                         );
                     }
                     else if(target.getType() == TargetType.CELL) {
@@ -80,13 +88,22 @@ public abstract class ControlledShoot {
                     }
                 } while (
                         target.getConstraints()
-                        .stream()
-                        .map(Constraint::verify)
-                        .reduce(true, (c1, c2) -> c1 && c2)
+                                .stream()
+                                .map(Constraint::verify)
+                                .reduce(true, (c1, c2) -> c1 && c2)
                 );
             }
 
-            attackModule.getEffects().forEach(Effect::apply);
+
+            attackModule.getEffects().forEach(e -> {
+                if (e.getType() == EffectType.MOVE)
+                    e.apply();
+                else {
+                    OffensiveEffect oe = (OffensiveEffect) e;
+                    oe.setAuthor(subject);
+                    oe.apply();
+                }
+            });
 
             attackModule.setUsed(true);
 

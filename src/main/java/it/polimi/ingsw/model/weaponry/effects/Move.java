@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.weaponry.effects;
 
 
+import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 
 public class Move extends Effect {
@@ -19,6 +21,10 @@ public class Move extends Effect {
 
     @Override
     public void apply() {
+        Player target = Constraint.getTarget(context, sourceAttackModuleId, drainTargetId).getPlayer();
+        Cell destination = Constraint.getTarget(context, drainAttackModuleId, drainTargetId).getCell();
+
+        target.setPosition(destination);
     }
 
     @Override

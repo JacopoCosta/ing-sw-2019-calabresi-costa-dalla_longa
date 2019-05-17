@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.player.Move;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.view.Dispatcher;
 
 public abstract class ControlledMove {
     private static final String MOVE_REQUEST = "Where would you like to move?";
