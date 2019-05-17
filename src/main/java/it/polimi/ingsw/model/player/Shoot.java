@@ -1,12 +1,7 @@
 package it.polimi.ingsw.model.player;
 
 public class Shoot extends Activity {
-    protected Shoot() {
+    public Shoot() {
         this.type = ActivityType.SHOOT;
     }
-
-    @Override
-    public void perform(Player author) {
-    }
-
 }

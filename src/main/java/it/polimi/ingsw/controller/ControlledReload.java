@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.exceptions.WeaponAlreadyLoadedException;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.player.Reload;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public abstract class ControlledReload {
     private static final String RELOAD_REQUEST_IF = "Would you like to reload?";
     private static final String RELOAD_REQUEST_WHICH = "Which weapon would you like to reload?";
 
-    protected static synchronized void routine(Player subject, Reload reload) {
+    protected static synchronized void routine(Player subject) {
 
         List<Weapon> weapons = subject.getWeapons();
         boolean keepReloading = true;
@@ -26,8 +26,11 @@ public abstract class ControlledReload {
 
                 try {
                     weapons.get(weaponIndex).reload();
+                    subject.takeAmmoCubes(weapons.get(weaponIndex).getReloadCost());
                 } catch (WeaponAlreadyLoadedException e) {
-                    System.out.println(e.getMessage());
+
+                } catch (CannotAffordException e) {
+
                 }
             }
 

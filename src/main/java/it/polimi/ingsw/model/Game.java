@@ -23,6 +23,10 @@ public class Game {
         return this.board;
     }
 
+    public Controller getController() {
+        return controller;
+    }
+
     private Game(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {
         this.finalFrenzy = finalFrenzy;
         this.roundsLeft = roundsToPlay;
@@ -64,6 +68,8 @@ public class Game {
     public void playTurn() {
         Player subject = participants.get(currentTurnPlayer);
         subject.beginTurn();
+        subject.savePosition();
+        subject.resetRecentlyDamaged();
         while(subject.getRemainingExecutions() > 0) { // a turn is made by several executions
             List<Execution> options = Execution.getOptionsForPlayer(subject);
             int choice = controller.getExecutionIndex(subject, options.size());

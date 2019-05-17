@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.model.weaponry.Weapon;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +77,8 @@ public class Execution {
         if(!subject.isOnFrenzy() || subject.isOnFrenzyBeforeStartingPlayer()) // the "move only" execution is not available outside of these conditions
             e.add(generateMove(subject));
         e.add(generateGrab(subject));
-        e.add(generateShoot(subject));
+        if(subject.getWeapons().stream().filter(Weapon::isLoaded).count() > 0)
+            e.add(generateShoot(subject));
         return e;
     }
 }

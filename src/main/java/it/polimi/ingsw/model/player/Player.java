@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.exceptions.FullHandException;
 import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.model.powerups.PowerUpType;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Player {
     private static final int KILL_THRESHOLD = 10; // maximum amount of damage before a Player is declared as "killed"
@@ -36,8 +38,6 @@ public class Player {
     private boolean onFrenzyBeforeStartingPlayer;
     private int remainingExecutions;
 
-    private int scopesUsed;
-
     private List<Player> damage;
     private List<Player> markings;
 
@@ -47,6 +47,8 @@ public class Player {
 
     private Cell position;
     private Cell savedPosition;
+
+    private List<Player> recentlyDamaged;
 
     public Player(String name) {
         this.name = name;
@@ -62,6 +64,7 @@ public class Player {
         this.ammoCubes = new AmmoCubes();
         this.position = null;
         this.savedPosition = null;
+        this.recentlyDamaged = new ArrayList<>();
     }
 
     public String getName() {
@@ -92,8 +95,20 @@ public class Player {
         return this.damage.size();
     }
 
+    public Player getMostRecentDamager() {
+        return this.damage.get(this.damage.size() - 1);
+    }
+
     public List<Player> getDamagersList() {
         return this.damage;
+    }
+
+    public List<Player> getRecentlyDamaged() {
+        return this.recentlyDamaged;
+    }
+
+    public void resetRecentlyDamaged() {
+        this.recentlyDamaged.clear();
     }
 
     // returns the amount of damage points the player has taken by a given opponent
@@ -150,7 +165,14 @@ public class Player {
         this.powerUps.add(powerUp);
 
         if(this.powerUps.size() > MAX_CARDS_IN_HAND)
-            throw new FullHandException("There can't be more than 3 power ups in a player's hand");
+            throw new FullHandException("There can't be more than 3 power-ups in a player's hand.");
+    }
+
+    public void giveWeapon(Weapon weapon) throws FullHandException {
+        this.weapons.add(weapon);
+
+        if(this.weapons.size() > MAX_CARDS_IN_HAND)
+            throw new FullHandException("There can't be more than 3 weapons in a player's hand.");
     }
 
     public Game getGame() {
@@ -181,14 +203,14 @@ public class Player {
         this.onFrenzy = true;
     }
 
-    public void useScope() {
-        this.scopesUsed ++;
+    public void discardPowerUp(PowerUp powerUp) {
+        powerUps.remove(powerUp);
+        game.getBoard().getPowerUpDeck().discard(powerUp);
     }
 
-    public int exhaustScopes() {
-        int scopes = this.scopesUsed;
-        this.scopesUsed = 0;
-        return scopes;
+    public void discardWeapon(Weapon weapon) {
+        weapons.remove(weapon);
+        game.getBoard().getWeaponDeck().discard(weapon);
     }
 
     public void endExecution() {
@@ -212,6 +234,15 @@ public class Player {
                 this.markings.remove(author);
                 this.damage.add(author);
             }
+        }
+
+        author.recentlyDamaged.add(this);
+
+        Stream<PowerUp> grenadeStream = powerUps.stream().filter(p -> p.getType() == PowerUpType.GRENADE);
+        if(grenadeStream.count() > 0) { // if the player is able to respond with a tagback grenade
+            game.getController().powerUpRoutine(this,
+                    grenadeStream.findFirst().orElse(null) // null is never used due to the if condition
+            );
         }
     }
 
@@ -275,12 +306,7 @@ public class Player {
         this.position = cell;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if(object == null)
-            return false;
-        if(!(object instanceof Player))
-            return false;
-        return ((Player)object).getName().equals(this.name);
+    public boolean equals(Player player) {
+        return name.equals(player.name);
     }
 }

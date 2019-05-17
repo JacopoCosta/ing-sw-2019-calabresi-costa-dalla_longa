@@ -141,6 +141,15 @@ public class AmmoCubes {
     }
 
     /**
+     *
+     */
+    public boolean contains(AmmoCubes that) {
+        return  this.getRed() >= that.getRed() &&
+                this.getYellow() >= that.getYellow() &&
+                this.getBlue() >= that.getBlue();
+    }
+
+    /**
      * This method instantiates a set of ammo cubes equivalent to a single red cube.
      * @return a set of ammo cubes containing only a red cube.
      */

@@ -5,13 +5,8 @@ import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.player.Player;
 
 public class Teleport extends PowerUp{
-
     public Teleport(AmmoCubes ammoCubes) {
         super(ammoCubes);
         this.type = PowerUpType.TELEPORT;
-    }
-
-    @Override
-    public void use(Player subject) {
     }
 }

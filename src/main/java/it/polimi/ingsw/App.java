@@ -1,8 +1,6 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.board.Deck;
-import it.polimi.ingsw.model.exceptions.EmptyDeckException;
-import it.polimi.ingsw.model.weaponry.Weapon;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -14,22 +12,9 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
-    public static int count = 0;
-
     public static void main(String[] args) {
+        Deck.generateAmmoTiles();
         launch(args);
-
-        Deck<Weapon> deck = Deck.generateWeapons();
-        boolean keepDrawing = true;
-
-        while(keepDrawing) {
-            try {
-                deck.draw();
-                count++;
-            } catch (EmptyDeckException e) {
-                keepDrawing = false;
-            }
-        }
     }
 
     @Override
@@ -48,7 +33,7 @@ public class App extends Application {
         gc.setFill(Color.GREEN);
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(5);
-        gc.strokeLine(count, 10, 10, 40);
+        gc.strokeLine(40, 10, 10, 40);
         gc.fillOval(10, 60, 30, 30);
         gc.strokeOval(60, 60, 30, 30);
         gc.fillRoundRect(110, 60, 30, 30, 10, 10);

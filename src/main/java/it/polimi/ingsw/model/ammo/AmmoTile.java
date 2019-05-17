@@ -7,7 +7,7 @@ public class AmmoTile {
     private AmmoCubes ammoCubes;
     private boolean includesPowerUp;
 
-    private AmmoTile(AmmoCubes ammoCubes, boolean includesPowerUp) {
+    public AmmoTile(AmmoCubes ammoCubes, boolean includesPowerUp) {
         this.ammoCubes = ammoCubes;
         this.includesPowerUp = includesPowerUp;
     }

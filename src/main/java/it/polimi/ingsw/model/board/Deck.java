@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.board;
 
+import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.powerups.PowerUp;
@@ -7,9 +8,9 @@ import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 import it.polimi.ingsw.model.utilities.PathGenerator;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Deck<T> {
     private List<T> cards;
@@ -51,7 +52,6 @@ public class Deck<T> {
 
     public static Deck<PowerUp> generatePowerUps() {
         Deck<PowerUp> deck = new Deck<>();
-
         DecoratedJSONObject jDeck = DecoratedJSONObject.getFromFile(PathGenerator.getPath("powerUps.json"));
         for(DecoratedJSONObject jPowerUp : jDeck.getArray("powerUps").asList()) {
             deck.cards.add(PowerUp.build(jPowerUp));
@@ -62,10 +62,23 @@ public class Deck<T> {
     public static Deck<AmmoTile> generateAmmoTiles() {
         Deck<AmmoTile> deck = new Deck<>();
 
-        DecoratedJSONObject jDeck = DecoratedJSONObject.getFromFile(PathGenerator.getPath("ammoTiles.json"));
-        for(DecoratedJSONObject jAmmoTile : jDeck.getArray("ammoTiles").asList()) {
-            deck.cards.add(AmmoTile.build(jAmmoTile));
+        List<AmmoCubes> singleCubes = new ArrayList<>();
+        singleCubes.add(AmmoCubes.red());
+        singleCubes.add(AmmoCubes.yellow());
+        singleCubes.add(AmmoCubes.blue());
+
+        List<AmmoCubes> doubleCubes = new ArrayList<>();
+        for(AmmoCubes s : singleCubes) {
+            for(AmmoCubes s1 : singleCubes) {
+                AmmoCubes sum = s.sum(s1);
+                if(doubleCubes.stream().noneMatch(a -> a.equals(sum)))
+                    doubleCubes.add(sum);
+            }
         }
+
+        doubleCubes.stream()
+                .forEach(System.out::println);
+
         return deck;
     }
 }

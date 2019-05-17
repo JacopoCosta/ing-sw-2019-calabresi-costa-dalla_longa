@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.*;
+import it.polimi.ingsw.model.powerups.PowerUp;
 
 public class Controller implements Controllable {
 
@@ -24,13 +25,32 @@ public class Controller implements Controllable {
                 ControlledMove.routine(subject, (Move) activity);
                 break;
             case GRAB:
-                ControlledGrab.routine(subject, (Grab) activity);
+                ControlledGrab.routine(subject);
                 break;
             case SHOOT:
-                ControlledShoot.routine(subject, (Shoot) activity);
+                ControlledShoot.routine(subject);
                 break;
             case RELOAD:
-                ControlledReload.routine(subject, (Reload) activity);
+                ControlledReload.routine(subject);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void powerUpRoutine(Player subject, PowerUp powerUp) {
+        switch(powerUp.getType()) {
+            case GRENADE:
+                ControlledGrenade.routine(subject, powerUp);
+                break;
+            case NEWTON:
+                ControlledNewton.routine(subject, powerUp);
+                break;
+            case SCOPE:
+                ControlledScope.routine(subject, powerUp);
+                break;
+            case TELEPORT:
+                ControlledTeleport.routine(subject, powerUp);
                 break;
             default:
                 break;

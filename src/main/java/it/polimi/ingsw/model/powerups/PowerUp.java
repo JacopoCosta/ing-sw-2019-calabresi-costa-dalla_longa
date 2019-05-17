@@ -11,7 +11,6 @@ public abstract class PowerUp {
     protected Cell spawnPoint;
     protected PowerUpType type;
 
-
     public PowerUp(AmmoCubes ammoCubes) {
         this.ammoCubes = ammoCubes;
         this.spawnPoint = null; //TODO acquire actual spawnpoint
@@ -32,7 +31,9 @@ public abstract class PowerUp {
         throw new InvalidPowerUpTypeException(type + " is not a valid name for a PowerUp type. Use \"grenade\", \"newton\", \"scope\", or \"teleport\"");
     }
 
-    public abstract void use(Player subject);
+    public PowerUpType getType() {
+        return type;
+    }
 
     @Override
     public String toString() {

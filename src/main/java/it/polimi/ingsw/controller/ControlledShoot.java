@@ -3,7 +3,6 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.player.Shoot;
 import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.Weapon;
@@ -18,15 +17,16 @@ public abstract class ControlledShoot {
     private static final String WEAPON_CHOOSE = "Which weapon would you like to shoot with?";
     private static final String MODULE_CHOOSE = "Choose how to attack:";
 
-    protected static synchronized void routine(Player subject, Shoot shoot) {
+    protected static synchronized void routine(Player subject) {
         List<Weapon> availableWeapons = subject.getWeapons()
                 .stream()
                 .filter(Weapon::isLoaded)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()); // gather all of the player's loaded weapons
+        // at the time this method is called and entered, it is assumed that the player is actually able to shoot with at least one weapon
 
         Weapon weapon = availableWeapons.get(
             Dispatcher.requestInteger(WEAPON_CHOOSE, 0, availableWeapons.size())
-        );
+        ); // choose a weapon
 
         AttackPattern pattern = weapon.getPattern();
         pattern.setAuthor(subject);
@@ -37,6 +37,7 @@ public abstract class ControlledShoot {
                 .map(pattern::getModule)
                 .collect(Collectors.toList());
 
+        // prompt details are missing
         int nextId = first.size() > 1 ? Dispatcher.requestInteger(MODULE_CHOOSE, 0, first.size()) : 0;
 
         while(nextId != -1) {
