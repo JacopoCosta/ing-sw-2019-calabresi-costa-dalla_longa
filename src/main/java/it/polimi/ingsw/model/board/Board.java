@@ -9,7 +9,7 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.weaponry.Weapon;
-import it.polimi.ingsw.view.CommandLineInterface;
+import it.polimi.ingsw.view.CLI;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -167,7 +167,7 @@ public class Board {
      * This method sorts {@code List<Cell> cells}, first along the horizontal coordinate, then along the vertical coordinates, returning a
      * cell configuration that can be sequentially read in a natural visualization order (i.e. from left ro right and from above to the bottom).
      * This method invocation is necessary for the correct printing of the game board when using the CLI-visualization view.
-     * @see CommandLineInterface#printBoard()
+     * @see CLI#printBoard()
      */
     public void sortCells() {
         Comparator<Cell> before = (c1, c2) -> {

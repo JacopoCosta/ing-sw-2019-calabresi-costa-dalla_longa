@@ -3,15 +3,13 @@ package it.polimi.ingsw.model.board;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
-import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.model.powerups.*;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 import it.polimi.ingsw.model.utilities.PathGenerator;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Deck<T> {
     private List<T> cards;
@@ -53,32 +51,74 @@ public class Deck<T> {
 
     public static Deck<PowerUp> generatePowerUps() {
         Deck<PowerUp> deck = new Deck<>();
-        DecoratedJSONObject jDeck = DecoratedJSONObject.getFromFile(PathGenerator.getPath("powerUps.json"));
-        for(DecoratedJSONObject jPowerUp : jDeck.getArray("powerUps").asList()) {
-            deck.cards.add(PowerUp.build(jPowerUp));
-        }
+
+        List<AmmoCubes> unitCubes = new ArrayList<>();
+        unitCubes.add(AmmoCubes.red());
+        unitCubes.add(AmmoCubes.yellow());
+        unitCubes.add(AmmoCubes.blue());
+
+        Arrays.stream(PowerUpType.values())
+                .forEach(
+                        type -> unitCubes
+                        .forEach(
+                                unit -> {
+                                    switch (type) {
+                                        case GRENADE:
+                                            deck.cards.add(new Grenade(unit));
+                                            deck.cards.add(new Grenade(unit));
+                                            break;
+                                        case NEWTON:
+                                            deck.cards.add(new Newton(unit));
+                                            deck.cards.add(new Newton(unit));
+                                            break;
+                                        case SCOPE:
+                                            deck.cards.add(new Scope(unit));
+                                            deck.cards.add(new Scope(unit));
+                                            break;
+                                        case TELEPORT:
+                                            deck.cards.add(new Teleport(unit));
+                                            deck.cards.add(new Teleport(unit));
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                        )
+                );
+
         return deck;
     }
 
     public static Deck<AmmoTile> generateAmmoTiles() {
         Deck<AmmoTile> deck = new Deck<>();
 
-        List<AmmoCubes> singleCubes = new ArrayList<>();
-        singleCubes.add(AmmoCubes.red());
-        singleCubes.add(AmmoCubes.yellow());
-        singleCubes.add(AmmoCubes.blue());
+        List<AmmoCubes> unitCubes = new ArrayList<>();
+        unitCubes.add(AmmoCubes.red());
+        unitCubes.add(AmmoCubes.yellow());
+        unitCubes.add(AmmoCubes.blue());
 
-        List<AmmoCubes> doubleCubes = new ArrayList<>();
-
-        for(AmmoCubes s : singleCubes) {
-            for(AmmoCubes s1 : singleCubes) {
-                AmmoCubes sum = s.sum(s1);
-                if(doubleCubes.stream().noneMatch(a -> a.equals(sum)))
-                    doubleCubes.add(sum);
-            }
-        }
-
-        doubleCubes.forEach(System.out::println);
+        unitCubes.stream()
+                .peek(
+                        u -> unitCubes.stream()
+                                .filter(other -> !other.equals(u))
+                                .map(other -> other.sum(other).sum(u))
+                                .forEach(
+                                        s -> {
+                                            unitCubes.forEach(r -> deck.cards.add(new AmmoTile(s, false)));
+                                        }
+                                )
+                )
+                .map(
+                        u -> unitCubes.stream()
+                        .map(u::sum)
+                )
+                .flatMap(Function.identity())
+                .forEach(
+                        s -> {
+                            deck.cards.add(new AmmoTile(s, true));
+                            deck.cards.add(new AmmoTile(s, true));
+                        }
+                );
 
         return deck;
     }

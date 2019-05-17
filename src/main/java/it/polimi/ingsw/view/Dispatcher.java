@@ -11,7 +11,7 @@ public abstract class Dispatcher {
 
     // outputs a message
     public static void sendMessage(String message) {
-        System.out.println(message);
+        CLI.print(message);
     }
 
     // prints a request message and returns the response inserted via System.in (terminal)

@@ -1,10 +1,19 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.board.Board;
+import it.polimi.ingsw.model.weaponry.constraints.DistanceConstraint;
 import it.polimi.ingsw.view.BoardGraph;
 
-public class CommandLineInterface extends View implements Viewable {
-
+public class CLI extends View implements Viewable {
+    
+    public static void print(String message) {
+        System.out.print(message); // this is the only system out print call in the entire program
+    }
+    
+    public static void println(String message) {
+        print(message + "\n");
+    }
+    
     public void drawBoard() {
         Board board = getGame().getBoard();     //SHORTHAND
         int boardWidth = board.getBoardWidth();
@@ -18,53 +27,53 @@ public class CommandLineInterface extends View implements Viewable {
             //printing line 1
             for(int w=0; w < boardWidth; w++) {
                 if(board.getCellByCoordinates(w,h) != null) {
-                    System.out.print("┏━━━━━━━━━━━━┓"); //14 characters in total
+                    print("┏━━━━━━━━━━━━┓"); //14 characters in total
                 }
                 else {  //the cell doesn't exists
-                    System.out.print("              ");
+                    print("              ");
                 }
             }
-            System.out.print("\n");
+            print("\n");
 
             //printing line 2
             for(int w=0; w < boardWidth; w++) {
                 if(board.getCellByCoordinates(w,h) != null) {
-                    System.out.print("┃            ┃");
+                    print("┃            ┃");
                 }
                 else
-                    System.out.print("              ");
+                    print("              ");
             }
-            System.out.print("\n");
+            print("\n");
 
             //printing line 3
             for(int w=0; w < boardWidth; w++) {
                 if(board.getCellByCoordinates(w,h) != null) {
-                    System.out.print("┃            ┃");
+                    print("┃            ┃");
                 }
                 else
-                    System.out.print("              ");
+                    print("              ");
             }
-            System.out.print("\n");
+            print("\n");
 
             //printing line 4
             for(int w=0; w < boardWidth; w++) {
                 if(board.getCellByCoordinates(w,h) != null) {
-                    System.out.print("┃            ┃");
+                    print("┃            ┃");
                 }
                 else
-                    System.out.print("              ");
+                    print("              ");
             }
-            System.out.print("\n");
+            print("\n");
 
             //printing line 5
             for(int w=0; w < boardWidth; w++) {
                 if(board.getCellByCoordinates(w,h) != null) {
-                    System.out.print("┗━━━━━━━━━━━━┛");
+                    print("┗━━━━━━━━━━━━┛");
                 }
                 else
-                    System.out.print("              ");
+                    print("              ");
             }
-            System.out.print("\n");
+            print("\n");
             /*TODO
                 create walls and doors
                 make it print all the info about the cell;
@@ -92,7 +101,7 @@ public class CommandLineInterface extends View implements Viewable {
                 graph.printWall(WallType.ANGLE);
 
                 if(w == boardWidth-1)
-                    System.out.print("\n");
+                    print("\n");
             }
 
             //drawing cell coordinates of every cell
@@ -103,7 +112,7 @@ public class CommandLineInterface extends View implements Viewable {
 
                 if(w == boardWidth-1) { //I need to print an extra vertical wall, for this is the last cell of the row
                     graph.printWall(graph.getWallBetweenCells(board, w, h, w+1, h));
-                    System.out.print("\n");
+                    print("\n");
                 }
             }
 
@@ -115,7 +124,7 @@ public class CommandLineInterface extends View implements Viewable {
 
                 if(w == boardWidth-1) {
                     graph.printWall(graph.getWallBetweenCells(board, w, h, w+1, h));
-                    System.out.print("\n");
+                    print("\n");
                 }
             }
 
@@ -127,7 +136,7 @@ public class CommandLineInterface extends View implements Viewable {
 
                 if(w == boardWidth-1) {
                     graph.printWall(graph.getWallBetweenCells(board, w, h, w+1, h));
-                    System.out.print("\n");
+                    print("\n");
                 }
             }
 
@@ -139,7 +148,7 @@ public class CommandLineInterface extends View implements Viewable {
 
                 if(w == boardWidth-1) {
                     graph.printWall(graph.getWallBetweenCells(board, w, h, w+1, h));
-                    System.out.print("\n");
+                    print("\n");
                 }
             }
 
@@ -151,7 +160,7 @@ public class CommandLineInterface extends View implements Viewable {
 
                 if(w == boardWidth-1) {
                     graph.printWall(graph.getWallBetweenCells(board, w, h, w+1, h));
-                    System.out.print("\n");
+                    print("\n");
                 }
             }
         } //end for(Height)
