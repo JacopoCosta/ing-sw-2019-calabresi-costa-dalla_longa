@@ -1,8 +1,10 @@
 package it.polimi.ingsw.model.cell;
 
+import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.exceptions.SelfAdjacentCellException;
+import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +67,13 @@ public abstract class Cell {
     }
 
     /**
+     *
+     */
+    public int getId() {
+        return board.getCells().indexOf(this) + 1;
+    }
+
+    /**
      * This method is used to distinguish between the two possible implementations of this class.
      * @return whether or not this cell acts as a spawn point.
      * @see SpawnCell
@@ -90,6 +99,9 @@ public abstract class Cell {
         return board;
     }
 
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 
     /**
      * This method tells which room a cell belongs to.
@@ -261,5 +273,24 @@ public abstract class Cell {
             return (cell1.xCoord - this.xCoord) * (this.xCoord - cell2.xCoord) >= 0;
 
         return false;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder("Cell #" + getId() + " (" + xCoord + "," + yCoord + "): adjacent to ");
+        for(Cell c : adjacentCells)
+            s.append(" #").append(c.getId());
+        s.append(" - contains:\n");
+        try {
+            if (spawnPoint)
+                for (Weapon w : ((SpawnCell) this).getWeaponShop())
+                    s.append(w.toString());
+            else
+                s.append(((AmmoCell) this).getAmmoTile().toString());
+        }
+        catch (NullPointerException e) {
+            s.append("nothing\n");
+        }
+        return s.toString();
     }
 }

@@ -82,7 +82,7 @@ public class Player {
     public int getDeathCount() {
         return this.deathCount;
     }
-    // returns the total amount of damage points the player has taken
+
     public boolean isKilled() {
         return this.damage.size() > KILL_THRESHOLD;
     }
@@ -91,6 +91,7 @@ public class Player {
         return this.damage.size() > OVERKILL_THRESHOLD;
     }
 
+    // returns the total amount of damage points the player has taken
     public int getDamage() {
         return this.damage.size();
     }

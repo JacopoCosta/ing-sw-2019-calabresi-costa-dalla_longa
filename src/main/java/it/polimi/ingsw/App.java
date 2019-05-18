@@ -1,6 +1,8 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.model.board.Deck;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.player.Player;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -10,11 +12,22 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class App extends Application {
 
     public static void main(String[] args) {
-        Deck.generatePowerUps();
-        launch(args);
+    //    launch(args);
+
+        List<Player> participants = new ArrayList<>();
+        participants.add(new Player("Aldo"));
+        participants.add(new Player("Giovanni"));
+        participants.add(new Player("Giacomo"));
+
+        Game game = Game.create(true, 5, 2, participants);
+
+        game.play();
     }
 
     @Override

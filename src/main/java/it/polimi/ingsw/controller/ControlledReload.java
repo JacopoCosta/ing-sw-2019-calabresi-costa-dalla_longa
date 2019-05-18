@@ -23,7 +23,7 @@ public abstract class ControlledReload {
             keepReloading = Dispatcher.requestBoolean(RELOAD_REQUEST_IF);
 
             if(keepReloading) {
-                int weaponIndex = Dispatcher.requestInteger(RELOAD_REQUEST_WHICH, 0, weapons.size());
+                int weaponIndex = Dispatcher.requestIndex(RELOAD_REQUEST_WHICH, weapons);
 
                 try {
                     weapons.get(weaponIndex).reload();

@@ -29,7 +29,7 @@ public abstract class ControlledShoot {
         // at the time this method is called and entered, it is assumed that the player is actually able to shoot with at least one weapon
 
         Weapon weapon = availableWeapons.get(
-            Dispatcher.requestInteger(WEAPON_CHOOSE, 0, availableWeapons.size())
+            Dispatcher.requestIndex(WEAPON_CHOOSE, availableWeapons)
         ); // choose a weapon
 
         AttackPattern pattern = weapon.getPattern();
@@ -46,7 +46,7 @@ public abstract class ControlledShoot {
                 .collect(Collectors.toList());
 
         // prompt details are missing
-        int nextId = first.size() > 1 ? Dispatcher.requestInteger(MODULE_CHOOSE, 0, first.size()) : 0;
+        int nextId = first.size() > 1 ? Dispatcher.requestIndex(MODULE_CHOOSE, first) : 0;
 
         while(nextId != -1) {
             AttackModule attackModule = first.get(nextId);
@@ -58,7 +58,7 @@ public abstract class ControlledShoot {
 
                         ((TargetPlayer) target).setPlayer(
                                 players.get(
-                                        Dispatcher.requestInteger(target.getMessage(), 0, players.size())
+                                        Dispatcher.requestIndex(target.getMessage(), players)
                                 )
                         );
                     }
@@ -67,7 +67,7 @@ public abstract class ControlledShoot {
 
                         ((TargetCell) target).setCell(
                                 cells.get(
-                                        Dispatcher.requestInteger(target.getMessage(), 0, cells.size())
+                                        Dispatcher.requestIndex(target.getMessage(), cells)
                                 )
                         );
                     }
@@ -82,7 +82,7 @@ public abstract class ControlledShoot {
 
                         ((TargetRoom) target).setRoom(
                                 rooms.get(
-                                        Dispatcher.requestInteger(target.getMessage(), 0, rooms.size())
+                                        Dispatcher.requestIndex(target.getMessage(), rooms)
                                 )
                         );
                     }
@@ -108,7 +108,7 @@ public abstract class ControlledShoot {
             attackModule.setUsed(true);
 
             List<Integer> next = attackModule.getNext();
-            nextId = next.size() > 1 ? Dispatcher.requestInteger(MODULE_CHOOSE, 0, next.size()) : 0;
+            nextId = next.size() > 1 ? Dispatcher.requestIndex(MODULE_CHOOSE, next) : 0;
         }
     }
 }

@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
+import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.weaponry.Weapon;
@@ -17,6 +18,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Board {
+    private static final int MAX_WEAPONS_PER_SPAWNPOINT = 3;
+
     private Game game;
 
     private List<Player> killers;
@@ -48,6 +51,7 @@ public class Board {
 
         // type is used to choose one predefined cell configuration
         board.cells = Board.configureCells(type);
+        board.cells.forEach(c -> c.setBoard(board));
 
         //this method is necessary for CLI drawing only; however, it's called here to avoid being called more than needed;
         //NOTE: calling it just once is fine, as long as the cell configuration won't be modified, which should never be done
@@ -234,5 +238,55 @@ public class Board {
 
     public Game getGame() {
         return this.game;
+    }
+
+    public void spreadAmmo() {
+        cells.stream()
+                .filter(c -> !c.isSpawnPoint())
+                .forEach(
+                        c -> {
+                            AmmoTile at;
+                            try {
+                                at = ammoTileDeck.draw();
+                            } catch (EmptyDeckException e) {
+                                ammoTileDeck.regenerate();
+                                ammoTileDeck.shuffle();
+                                try {
+                                    at = ammoTileDeck.draw();
+                                } catch (EmptyDeckException error) {
+                                    throw new Error("Fatal error: Ammo Tile deck cannot be generated.");
+                                }
+                            }
+                            ((AmmoCell) c).setAmmoTile(at);
+                        }
+                );
+    }
+
+    public void spreadWeapons() {
+        cells.stream()
+                .filter(Cell::isSpawnPoint)
+                .forEach(
+                        c -> {
+                            List<Weapon> weapons = new ArrayList<>();
+
+                            // draw a fixed amount of times -- if the deck is empty, do nothing
+                            for(int i = 0; i < MAX_WEAPONS_PER_SPAWNPOINT; i ++) {
+                                try {
+                                    weapons.add(weaponDeck.draw());
+                                } catch (EmptyDeckException ignored) { }
+                            }
+
+                            // add all drawn weapons to the weapon shop
+                            weapons.forEach(((SpawnCell) c)::addToWeaponShop);
+                        }
+                );
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder("Board:");
+        for(Cell c : cells)
+            s.append(c.toString()).append("\n");
+        return s.toString();
     }
 }

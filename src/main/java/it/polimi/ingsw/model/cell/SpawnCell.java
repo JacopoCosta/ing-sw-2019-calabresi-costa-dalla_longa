@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.cell;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SpawnCell extends Cell {
@@ -12,6 +13,7 @@ public class SpawnCell extends Cell {
     public SpawnCell(int xCoord, int yCoord, AmmoCubes ammoCubeColor) {
         super(xCoord, yCoord);
         this.ammoCubeColor = ammoCubeColor;
+        this.weaponShop = new ArrayList<>();
         this.spawnPoint = true;
     }
 

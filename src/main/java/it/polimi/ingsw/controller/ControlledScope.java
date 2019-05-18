@@ -15,7 +15,7 @@ public abstract class ControlledScope {
                 .stream()
                 .distinct()
                 .collect(Collectors.toList());
-        int targetIndex = Dispatcher.requestInteger(TARGET_REQUEST, 0, availableTargets.size());
+        int targetIndex = Dispatcher.requestIndex(TARGET_REQUEST, availableTargets);
 
         availableTargets.get(targetIndex).applyDamage(subject);
         subject.discardPowerUp(powerUp);

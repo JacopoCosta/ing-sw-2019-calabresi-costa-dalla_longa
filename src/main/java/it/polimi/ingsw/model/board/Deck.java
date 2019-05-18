@@ -57,33 +57,18 @@ public class Deck<T> {
         unitCubes.add(AmmoCubes.yellow());
         unitCubes.add(AmmoCubes.blue());
 
-        Arrays.stream(PowerUpType.values())
-                .forEach(
-                        type -> unitCubes
-                        .forEach(
-                                unit -> {
-                                    switch (type) {
-                                        case GRENADE:
-                                            deck.cards.add(new Grenade(unit));
-                                            deck.cards.add(new Grenade(unit));
-                                            break;
-                                        case NEWTON:
-                                            deck.cards.add(new Newton(unit));
-                                            deck.cards.add(new Newton(unit));
-                                            break;
-                                        case SCOPE:
-                                            deck.cards.add(new Scope(unit));
-                                            deck.cards.add(new Scope(unit));
-                                            break;
-                                        case TELEPORT:
-                                            deck.cards.add(new Teleport(unit));
-                                            deck.cards.add(new Teleport(unit));
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                }
-                        )
+        unitCubes
+                .forEach( // two per colour per type (total 2 * 3 * 4 = 24)
+                        color -> {
+                            deck.cards.add(new Grenade(color));
+                            deck.cards.add(new Grenade(color));
+                            deck.cards.add(new Newton(color));
+                            deck.cards.add(new Newton(color));
+                            deck.cards.add(new Scope(color));
+                            deck.cards.add(new Scope(color));
+                            deck.cards.add(new Teleport(color));
+                            deck.cards.add(new Teleport(color));
+                        }
                 );
 
         return deck;
@@ -102,7 +87,7 @@ public class Deck<T> {
                         u -> unitCubes.stream()
                                 .filter(other -> !other.equals(u))
                                 .map(other -> other.sum(other).sum(u))
-                                .forEach(
+                                .forEach( // three per colour per pair of equal colours (total 2 * 3 * 3 = 18)
                                         s -> {
                                             unitCubes.forEach(r -> deck.cards.add(new AmmoTile(s, false)));
                                         }
@@ -113,7 +98,7 @@ public class Deck<T> {
                         .map(u::sum)
                 )
                 .flatMap(Function.identity())
-                .forEach(
+                .forEach( // two per colour per colour (total 2 * 3 * 3 = 18)
                         s -> {
                             deck.cards.add(new AmmoTile(s, true));
                             deck.cards.add(new AmmoTile(s, true));

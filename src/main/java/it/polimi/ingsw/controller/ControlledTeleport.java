@@ -12,7 +12,7 @@ public abstract class ControlledTeleport {
     protected static synchronized void routine(Player subject, PowerUp powerUp) {
         Board board = subject.getGame().getBoard();
         Cell destination = board.getCells().get(
-                Dispatcher.requestInteger(TELEPORT_REQUEST, 0, board.getCells().size())
+                Dispatcher.requestIndex(TELEPORT_REQUEST, board.getCells())
         );
 
         subject.setPosition(destination);

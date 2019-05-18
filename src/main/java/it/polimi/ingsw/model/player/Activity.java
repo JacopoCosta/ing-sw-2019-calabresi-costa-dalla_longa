@@ -6,4 +6,11 @@ public abstract class Activity {
     public ActivityType getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return type == ActivityType.MOVE ?
+                type.toString() + " x" + ((Move) this).getMaxDistance() :
+                type.toString();
+    }
 }

@@ -3,6 +3,8 @@ package it.polimi.ingsw.view;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 // offers the final delivery of a message to the client
 // if the message is a request, it awaits for a valid response that will be returned to the caller
@@ -40,6 +42,19 @@ public abstract class Dispatcher {
             n = defaultValue;
         }
         return n;
+    }
+
+    public static int requestIndex(String message, List<?> list) {
+        StringBuilder messageBuilder = new StringBuilder(message);
+        for(Object o : list)
+            messageBuilder.append("\n" + "[" + (list.indexOf(o) + 1) + "] ").append(o.toString());
+        message = messageBuilder.toString();
+
+        int value = 0;
+        do {
+            value = Dispatcher.safeIntegerConversion(Dispatcher.requestRoutine(message), value);
+        } while(value < 1 || value > list.size());
+        return value - 1;
     }
 
     // keeps requesting an integer within an interval until such request is fulfilled

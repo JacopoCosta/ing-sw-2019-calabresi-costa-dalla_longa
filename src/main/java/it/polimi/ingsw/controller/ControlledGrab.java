@@ -34,7 +34,7 @@ public abstract class ControlledGrab {
                 keepPurchasing = Dispatcher.requestBoolean(PURCHASE_REQUEST_IF);
 
                 if(keepPurchasing) {
-                    int weaponIndex = Dispatcher.requestInteger(PURCHASE_REQUEST_WHICH, 0, weapons.size());
+                    int weaponIndex = Dispatcher.requestIndex(PURCHASE_REQUEST_WHICH, weapons);
 
                     try {
                         subject.takeAmmoCubes(weapons.get(weaponIndex).getPurchaseCost());
@@ -43,7 +43,7 @@ public abstract class ControlledGrab {
                             subject.giveWeapon(weapon);
                         } catch (FullHandException e) {
                             List<Weapon> discardable = subject.getWeapons();
-                            int discardIndex = Dispatcher.requestInteger(DISCARD_WEAPON_REQUEST_WHICH, 0, discardable.size());
+                            int discardIndex = Dispatcher.requestIndex(DISCARD_WEAPON_REQUEST_WHICH, discardable);
                             subject.discardWeapon(discardable.get(discardIndex));
                         }
                         try {
@@ -74,7 +74,7 @@ public abstract class ControlledGrab {
                     subject.givePowerUp(card);
                 } catch (FullHandException e) {
                     List<PowerUp> discardable = subject.getPowerUps();
-                    int discardIndex = Dispatcher.requestInteger(DISCARD_POWERUP_REQUEST_WHICH, 0, discardable.size());
+                    int discardIndex = Dispatcher.requestIndex(DISCARD_POWERUP_REQUEST_WHICH, discardable);
                     subject.discardPowerUp(discardable.get(discardIndex));
                 }
             }

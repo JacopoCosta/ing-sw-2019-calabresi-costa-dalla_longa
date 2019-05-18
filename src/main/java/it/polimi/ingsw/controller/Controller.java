@@ -6,6 +6,8 @@ import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.view.Dispatcher;
 
+import java.util.List;
+
 public class Controller implements Controllable {
 
     private static final String EXECUTION_REQUEST = "Choose a moveset:";
@@ -58,8 +60,10 @@ public class Controller implements Controllable {
         }
     }
 
-    public int getExecutionIndex(Player subject, int upperBound) {
-        return Dispatcher.requestInteger(EXECUTION_REQUEST, 0, upperBound);
+    public Execution requestExecution(Player subject, List<Execution> executions) {
+        return executions.get(
+                Dispatcher.requestIndex(EXECUTION_REQUEST, executions)
+        );
     }
 
 }

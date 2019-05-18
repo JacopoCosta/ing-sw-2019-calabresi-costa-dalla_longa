@@ -81,4 +81,19 @@ public class Execution {
             e.add(generateShoot(subject));
         return e;
     }
+
+    @Override
+    public String toString() {
+        boolean addPlus = false;
+
+        StringBuilder s = new StringBuilder();
+        for(Activity a : activities) {
+            if(addPlus) {
+                s.append(" + ");
+            }
+            s.append(a);
+            addPlus = true;
+        }
+        return s.toString();
+    }
 }

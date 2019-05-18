@@ -15,7 +15,7 @@ public abstract class ControlledMove {
         Cell destination;
         do {
             destination = board.getCells().get(
-                    Dispatcher.requestInteger(MOVE_REQUEST, 0, board.getCells().size())
+                    Dispatcher.requestIndex(MOVE_REQUEST, board.getCells())
             );
         } while(destination.distance(subject.getPosition()) > move.getMaxDistance());
 
