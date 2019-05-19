@@ -150,6 +150,10 @@ public class Player {
         return this.powerUps;
     }
 
+    public AmmoCubes getAmmoCubes() {
+        return ammoCubes;
+    }
+
     public Cell getPosition() {
         return this.position;
     }

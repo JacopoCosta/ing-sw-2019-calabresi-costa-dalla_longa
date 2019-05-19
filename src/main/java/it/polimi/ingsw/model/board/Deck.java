@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.board;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.ammo.AmmoTile;
+import it.polimi.ingsw.model.exceptions.CorruptedDeckException;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.powerups.*;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
@@ -37,6 +38,25 @@ public class Deck<T> {
     public void regenerate() {
         this.cards = this.discarded;
         this.discarded.clear();
+    }
+
+    public Optional<T> smartDraw(boolean autoRegenerate) {
+        T card;
+        try {
+            card = draw();
+        } catch (EmptyDeckException e) {
+            if(autoRegenerate) {
+                regenerate();
+                shuffle();
+                try {
+                    card = draw();
+                } catch (EmptyDeckException fatal) {
+                    throw new CorruptedDeckException("Can't regenerate deck");
+                }
+            }
+            else return Optional.empty();
+        }
+        return Optional.of(card);
     }
 
     public static Deck<Weapon> generateWeapons() {

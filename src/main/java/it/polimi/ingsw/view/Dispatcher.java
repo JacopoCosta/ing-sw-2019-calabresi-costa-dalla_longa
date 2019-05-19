@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 // offers the final delivery of a message to the client
 // if the message is a request, it awaits for a valid response that will be returned to the caller
@@ -44,17 +45,25 @@ public abstract class Dispatcher {
         return n;
     }
 
-    public static int requestIndex(String message, List<?> list) {
+    public static int requestNumberedOption(String message, List<?> options, List<Integer> numbers) {
+        int length = options.size();
         StringBuilder messageBuilder = new StringBuilder(message);
-        for(Object o : list)
-            messageBuilder.append("\n" + "[" + (list.indexOf(o) + 1) + "] ").append(o.toString());
+        for(int i = 0; i < length; i ++) {
+            Object option = options.get(i);
+            int id = numbers.get(i);
+            messageBuilder.append("\n" + "[").append(id).append("] ").append(option.toString());
+        }
         message = messageBuilder.toString();
 
-        int value = 0;
+        int value = numbers.stream().reduce(0, Math::min) - 1;
         do {
             value = Dispatcher.safeIntegerConversion(Dispatcher.requestRoutine(message), value);
-        } while(value < 1 || value > list.size());
+        } while(!numbers.contains(value));
         return value - 1;
+    }
+
+    public static int requestIndex(String message, List<?> list) {
+        return requestNumberedOption(message, list, list.stream().map(list::indexOf).map(x -> x + 1).collect(Collectors.toList()));
     }
 
     // keeps requesting an integer within an interval until such request is fulfilled

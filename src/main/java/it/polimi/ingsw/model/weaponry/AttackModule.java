@@ -77,6 +77,12 @@ public class AttackModule {
 
     public void setContext(AttackPattern context) {
         this.context = context;
+
+        for(Target target : targets)
+            target.setContext(context);
+
+        for(Effect effect : effects)
+            effect.setContext(context);
     }
 
     @Override

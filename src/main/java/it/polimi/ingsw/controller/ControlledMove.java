@@ -6,6 +6,9 @@ import it.polimi.ingsw.model.player.Move;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.view.Dispatcher;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public abstract class ControlledMove {
     private static final String MOVE_REQUEST = "Where would you like to move?";
 
@@ -13,11 +16,13 @@ public abstract class ControlledMove {
 
         Board board = subject.getGame().getBoard();
         Cell destination;
-        do {
-            destination = board.getCells().get(
-                    Dispatcher.requestIndex(MOVE_REQUEST, board.getCells())
-            );
-        } while(destination.distance(subject.getPosition()) > move.getMaxDistance());
+        List<Cell> validDestinations = board.getCells()
+                .stream()
+                .filter(c -> c.distance(subject.getPosition()) <= move.getMaxDistance())
+                .collect(Collectors.toList());
+        destination = board.getCells().get(
+                Dispatcher.requestNumberedOption(MOVE_REQUEST, validDestinations, validDestinations.stream().map(Cell::getId).collect(Collectors.toList()))
+        );
 
         subject.setPosition(destination);
     }

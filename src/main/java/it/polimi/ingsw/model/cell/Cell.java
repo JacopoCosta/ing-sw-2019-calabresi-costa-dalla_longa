@@ -1,13 +1,14 @@
 package it.polimi.ingsw.model.cell;
 
-import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.exceptions.SelfAdjacentCellException;
+import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The cell is the unit of space on the board. Cells are organized in a 2-dimensional
@@ -277,20 +278,7 @@ public abstract class Cell {
 
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder("Cell #" + getId() + " (" + xCoord + "," + yCoord + "): adjacent to ");
-        for(Cell c : adjacentCells)
-            s.append(" #").append(c.getId());
-        s.append(" - contains:\n");
-        try {
-            if (spawnPoint)
-                for (Weapon w : ((SpawnCell) this).getWeaponShop())
-                    s.append(w.toString());
-            else
-                s.append(((AmmoCell) this).getAmmoTile().toString());
-        }
-        catch (NullPointerException e) {
-            s.append("nothing\n");
-        }
+        StringBuilder s = new StringBuilder("Cell #" + getId() + " (" + xCoord + "," + yCoord + ")");
         return s.toString();
     }
 }

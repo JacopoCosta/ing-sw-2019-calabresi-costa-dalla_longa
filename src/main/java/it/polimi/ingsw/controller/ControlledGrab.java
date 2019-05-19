@@ -61,22 +61,25 @@ public abstract class ControlledGrab {
         else {
             AmmoCell ammoCell = (AmmoCell) cell;
             AmmoTile ammoTile = ammoCell.getAmmoTile();
-            if(ammoTile != null && ammoTile.includesPowerUp()) {
-                Deck<PowerUp> deck = subject.getGame().getBoard().getPowerUpDeck();
-                PowerUp card = null;
-                try {
-                    card = deck.draw();
-                } catch (EmptyDeckException e) {
-                    deck.regenerate();
-                    deck.shuffle();
+            if(ammoTile != null) {
+                if(ammoTile.includesPowerUp()) {
+                    Deck<PowerUp> deck = subject.getGame().getBoard().getPowerUpDeck();
+                    PowerUp card = null;
+                    try {
+                        card = deck.draw();
+                    } catch (EmptyDeckException e) {
+                        deck.regenerate();
+                        deck.shuffle();
+                    }
+                    try {
+                        subject.givePowerUp(card);
+                    } catch (FullHandException e) {
+                        List<PowerUp> discardable = subject.getPowerUps();
+                        int discardIndex = Dispatcher.requestIndex(DISCARD_POWERUP_REQUEST_WHICH, discardable);
+                        subject.discardPowerUp(discardable.get(discardIndex));
+                    }
                 }
-                try {
-                    subject.givePowerUp(card);
-                } catch (FullHandException e) {
-                    List<PowerUp> discardable = subject.getPowerUps();
-                    int discardIndex = Dispatcher.requestIndex(DISCARD_POWERUP_REQUEST_WHICH, discardable);
-                    subject.discardPowerUp(discardable.get(discardIndex));
-                }
+                subject.giveAmmoCubes(ammoTile.getAmmoCubes());
             }
         }
     }

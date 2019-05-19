@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.InvalidTargetTypeException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
+import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public abstract class Target {
     protected TargetType type;
     protected String message;
     protected List<Constraint> constraints;
-    protected Object context;
+    protected AttackPattern context;
 
     public static Target build(DecoratedJSONObject jTarget) {
         String type = jTarget.getString("type");
@@ -52,6 +53,12 @@ public abstract class Target {
 
     public Object getContext() {
         return context;
+    }
+
+    public void setContext(AttackPattern context) {
+        this.context = context;
+        for(Constraint constraint : constraints)
+            constraint.setContext(context);
     }
 
     public abstract Player getPlayer();

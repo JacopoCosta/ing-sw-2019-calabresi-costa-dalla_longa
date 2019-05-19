@@ -1,19 +1,19 @@
 package it.polimi.ingsw.model.powerups;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
+import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.InvalidPowerUpTypeException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 
 public abstract class PowerUp {
     protected AmmoCubes ammoCubes;
-    protected Cell spawnPoint;
     protected PowerUpType type;
 
     public PowerUp(AmmoCubes ammoCubes) {
         this.ammoCubes = ammoCubes;
-        this.spawnPoint = null; //TODO acquire actual spawnpoint
     }
 
     public static PowerUp build(DecoratedJSONObject jPowerUp) throws InvalidPowerUpTypeException {
@@ -35,8 +35,17 @@ public abstract class PowerUp {
         return type;
     }
 
+    public Cell getSpawnPoint(Board board) {
+        return board.getCells()
+                .stream()
+                .filter(Cell::isSpawnPoint)
+                .filter(c -> ((SpawnCell) c).getAmmoCubeColor().equals(ammoCubes))
+                .findFirst()
+                .orElse(null); // this should never happen
+    }
+
     @Override
     public String toString() {
-        return ammoCubes.toStringAsColor() + " " + this.type.toString() + "\n";
+        return ammoCubes.toStringAsColor() + " " + this.type.toString();
     }
 }

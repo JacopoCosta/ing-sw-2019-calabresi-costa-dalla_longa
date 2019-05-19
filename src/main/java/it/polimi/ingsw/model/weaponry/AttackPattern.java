@@ -28,8 +28,9 @@ public class AttackPattern {
         }
 
         AttackPattern attackPattern = new AttackPattern(ids, attackModules);
-        for(AttackModule attackModule: attackPattern.content)
+        for(AttackModule attackModule: attackPattern.content) {
             attackModule.setContext(attackPattern);
+        }
         return attackPattern;
     }
 
@@ -50,14 +51,14 @@ public class AttackPattern {
     }
 
     public void resetAllModules() {
-        content.stream().forEach(m -> m.setUsed(false));
+        content.forEach(m -> m.setUsed(false));
     }
 
     @Override
     public String toString() {
-        String s = "Attack modules:\n";
+        StringBuilder s = new StringBuilder("Attack modules:\n");
             for(AttackModule attackModule : content)
-                s += attackModule.toString();
-        return s;
+                s.append(attackModule.toString());
+        return s.toString();
     }
 }

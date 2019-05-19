@@ -8,15 +8,20 @@ import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
+import it.polimi.ingsw.model.exceptions.FullHandException;
 import it.polimi.ingsw.model.player.*;
+import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.model.utilities.Table;
+import it.polimi.ingsw.model.weaponry.Weapon;
 import it.polimi.ingsw.view.Dispatcher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Game {
-    private static final String RESPAWN_REQUEST = "Where would you like to respawn?";
+    private static final String RESPAWN_REQUEST = "Which power-up would you like to keep? You will respawn where indicated by the one you discard.";
 
     private boolean finalFrenzy;
     private int roundsLeft;
@@ -84,37 +89,44 @@ public class Game {
     public void setup() {
         board.spreadAmmo();
         board.spreadWeapons();
-
-        System.out.println(board.toString());
     }
 
     public void playTurn() {
         Player subject = participants.get(currentTurnPlayer);
 
         if(subject.getPosition() == null) {
-            List<Cell> spawnPoints = board.getCells()
-                    .stream()
-                    .filter(Cell::isSpawnPoint)
-                    .collect(Collectors.toList());
+            printGameStatus();
 
-            List<String> spawnPointNames = spawnPoints.stream()
-                    .map(Cell::getId)
-                    .map(i -> "#" + i)
-                    .collect(Collectors.toList());
+            List<PowerUp> powerUps = new ArrayList<>();
 
-            int spawnPointIndex = Dispatcher.requestIndex(RESPAWN_REQUEST, spawnPointNames);
-            subject.setPosition(spawnPoints.get(spawnPointIndex));
+            for(int i = 0; i <= 1; i ++)
+                powerUps.add(board.getPowerUpDeck().smartDraw(true).orElse(null));
+
+            int keepIndex = Dispatcher.requestIndex(RESPAWN_REQUEST, powerUps);
+
+            PowerUp powerUpToKeep = powerUps.get(keepIndex);
+            PowerUp powerUpToRespawn = powerUps.get(1 - keepIndex);
+
+            subject.spawn(powerUpToRespawn.getSpawnPoint(board));
+            try {
+                subject.givePowerUp(powerUpToKeep);
+            } catch (FullHandException e) {
+                controller.discardPowerUpRoutine(subject);
+            }
         }
 
         subject.beginTurn();
         subject.savePosition();
         subject.resetRecentlyDamaged();
         while(subject.getRemainingExecutions() > 0) { // a turn is made by several executions
+            printGameStatus();
             List<Execution> options = Execution.getOptionsForPlayer(subject);
             Execution choice = controller.requestExecution(subject, options);
 
             for(Activity activity : choice.getActivities()) // each execution consists of some activities
                 this.controller.activityRoutine(subject, activity);
+
+            subject.endExecution();
         }
 
         participants.stream() // score all dead players
@@ -129,5 +141,41 @@ public class Game {
         while(!gameOver) {
             this.playTurn();
         }
+    }
+
+    public void printGameStatus() {
+        Dispatcher.sendMessage(this.toString());
+    }
+
+    @Override
+    public String toString() {
+        String s = "Board:\n";
+        s += board.toString() + "\n";
+
+        s += "Players:\n";
+        s += Table.create(
+                participants.stream().map(p -> "#" + p.getID()).collect(Collectors.toList()),
+                participants.stream().map(Player::getName).collect(Collectors.toList()),
+                participants.stream().map(Player::getScore).collect(Collectors.toList()),
+                participants.stream().map(Player::getPosition).map(c -> "@" +  (c == null ? "null" : c.getId())).collect(Collectors.toList()),
+                participants.stream().map(p -> "Damage[" +
+                        Table.list(p.getDamagersList().stream().map(Player::getID).collect(Collectors.toList()))
+                        + "]").collect(Collectors.toList()),
+                participants.stream().map(p -> "Marks[" +
+                        Table.list(p.getDamagersList().stream().map(Player::getID).collect(Collectors.toList()))
+                        + "]").collect(Collectors.toList()),
+                participants.stream().map(p -> "| Weapons[" +
+                        Table.list(p.getWeapons().stream().map(Weapon::getName).collect(Collectors.toList()))
+                        + "]").collect(Collectors.toList()),
+                participants.stream().map(p -> "Power-ups[" +
+                        Table.list(p.getPowerUps().stream().map(PowerUp::toString).collect(Collectors.toList()))
+                        + "]").collect(Collectors.toList()),
+                participants.stream().map(p -> "Ammo[" + p.getAmmoCubes() + "]").collect(Collectors.toList()),
+                participants.stream().map(p -> "| died " + p.getDeathCount() + " times").collect(Collectors.toList())
+        ) + "\n";
+
+        s += "Currently playing: " + participants.get(currentTurnPlayer).getName() + " with " + participants.get(currentTurnPlayer).getRemainingExecutions() + " actions left.";
+
+        return s;
     }
 }

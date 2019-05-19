@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 import it.polimi.ingsw.view.CLI;
 
@@ -112,7 +113,7 @@ public class Board {
                 cells.add(new AmmoCell(1, 0));
                 cells.add(new SpawnCell(2, 0, new AmmoCubes(0, 0, 1)));
                 cells.add(new AmmoCell(3, 0));
-                cells.add(new SpawnCell(0, 1, new AmmoCubes(1, 0, 1)));
+                cells.add(new SpawnCell(0, 1, new AmmoCubes(1, 0, 0)));
                 cells.add(new AmmoCell(1, 1));
                 cells.add(new AmmoCell(2, 1));
                 cells.add(new AmmoCell(3, 1));
@@ -284,9 +285,30 @@ public class Board {
 
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder("Board:");
-        for(Cell c : cells)
-            s.append(c.toString()).append("\n");
-        return s.toString();
+        return Table.create(
+                cells.stream().map(c -> "Cell").collect(Collectors.toList()),
+                cells.stream().map(c -> "#" + c.getId() + "  ").collect(Collectors.toList()),
+                cells.stream().map(Cell::getRoom).map(Room::toString).collect(Collectors.toList()),
+                cells.stream().map(c -> "x:" + c.getXCoord()).collect(Collectors.toList()),
+                cells.stream().map(c -> "y:" + c.getYCoord()).collect(Collectors.toList()),
+                cells.stream().map(c -> "| adjacent to: " + Table.list(c.getAdjacentCells().stream()
+                        .map(Cell::getId)
+                        .collect(Collectors.toList())))
+                .collect(Collectors.toList()),
+                cells.stream().map(c -> "contains: " + (c.isSpawnPoint() ?
+                        (
+                                Table.list(((SpawnCell) c).getWeaponShop()
+                                        .stream()
+                                        .map(Weapon::getName)
+                                        .collect(Collectors.toList())
+                                )
+                        ) :
+                        (
+                                ((AmmoCell) c).getAmmoTile().toString()
+                        )
+                    )
+                ).collect(Collectors.toList()),
+                cells.stream().map(c -> c.isSpawnPoint() ? ("| this is the " + ((SpawnCell) c).getAmmoCubeColor().toStringAsColor() + " spawnpoint") : "").collect(Collectors.toList())
+        );
     }
 }

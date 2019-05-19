@@ -43,6 +43,10 @@ public abstract class Effect {
         throw new InvalidEffectTypeException(type + " is not a valid name for an Effect type. Use \"damage\", \"mark\", or \"move\"");
     }
 
+    public void setContext(AttackPattern context) {
+        this.context = context;
+    }
+
     public EffectType getType() {
         return type;
     }

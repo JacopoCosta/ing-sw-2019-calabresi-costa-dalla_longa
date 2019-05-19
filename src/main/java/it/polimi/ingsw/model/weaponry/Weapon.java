@@ -17,7 +17,7 @@ public class Weapon {
         this.purchaseCost = purchaseCost;
         this.reloadCost = reloadCost;
         this.attackPattern = attackPattern;
-        this.loaded = false;
+        this.loaded = true;
     }
 
     public String getName() {

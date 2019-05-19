@@ -4,13 +4,16 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.model.weaponry.Weapon;
 import it.polimi.ingsw.view.Dispatcher;
 
 import java.util.List;
 
 public class Controller implements Controllable {
 
-    private static final String EXECUTION_REQUEST = "Choose a moveset:";
+    private static final String EXECUTION_REQUEST = "choose a moveset:";
+    private static final String WEAPONS_FULL = "Looks like your hand is full of weapons, please discard one:";
+    private static final String POWERUPS_FULL = "Looks like your hand is full of weapons, please discard one:";
 
     private Game game;
 
@@ -39,6 +42,7 @@ public class Controller implements Controllable {
             default:
                 break;
         }
+        Dispatcher.sendMessage(activity.getType().toString() + "completed.");
     }
 
     public void powerUpRoutine(Player subject, PowerUp powerUp) {
@@ -60,9 +64,21 @@ public class Controller implements Controllable {
         }
     }
 
+    public void discardWeaponRoutine(Player subject) {
+        List<Weapon> weapons = subject.getWeapons();
+        int discardIndex = Dispatcher.requestIndex(WEAPONS_FULL, weapons);
+        subject.getGame().getBoard().getWeaponDeck().discard(weapons.get(discardIndex));
+    }
+
+    public void discardPowerUpRoutine(Player subject) {
+        List<PowerUp> powerUps = subject.getPowerUps();
+        int discardIndex = Dispatcher.requestIndex(POWERUPS_FULL, powerUps);
+        subject.getGame().getBoard().getPowerUpDeck().discard(powerUps.get(discardIndex));
+    }
+
     public Execution requestExecution(Player subject, List<Execution> executions) {
         return executions.get(
-                Dispatcher.requestIndex(EXECUTION_REQUEST, executions)
+                Dispatcher.requestIndex(subject.getName() + ", " + EXECUTION_REQUEST, executions)
         );
     }
 

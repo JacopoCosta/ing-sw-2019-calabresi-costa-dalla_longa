@@ -76,6 +76,10 @@ public abstract class Constraint {
 
     public abstract List<Player> filter(AttackPattern context);
 
+    public void setContext(AttackPattern context) {
+        this.context = context;
+    }
+
     @Override
     public abstract String toString();
 
