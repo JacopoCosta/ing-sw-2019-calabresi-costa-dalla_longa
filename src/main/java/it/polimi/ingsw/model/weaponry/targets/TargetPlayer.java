@@ -5,7 +5,14 @@ import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TargetPlayer extends Target {
     private Player player;
@@ -33,5 +40,24 @@ public class TargetPlayer extends Target {
     @Override
     public Room getRoom() {
         return player.getPosition().getRoom();
+    }
+
+    public List<Player> filter() {
+        List<List<Player>> targetTable = new ArrayList<>();
+
+        for(Constraint constraint : constraints)
+            targetTable.add(constraint.filterPlayers(context));
+
+        Predicate<Player> inEveryList = p -> targetTable.stream()
+                .map(list -> list.contains(p))
+                .reduce(true, (a, b) -> a && b);
+
+        return targetTable.stream()
+                .map(Collection::stream)
+                .flatMap(Function.identity())
+                .sorted(Comparator.comparingInt(Player::getID))
+                .distinct()
+                .filter(inEveryList)
+                .collect(Collectors.toList());
     }
 }

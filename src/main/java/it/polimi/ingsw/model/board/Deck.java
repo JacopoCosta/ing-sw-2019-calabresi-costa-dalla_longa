@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.powerups.*;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 import it.polimi.ingsw.model.utilities.PathGenerator;
+import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.*;
@@ -51,7 +52,7 @@ public class Deck<T> {
                 try {
                     card = draw();
                 } catch (EmptyDeckException fatal) {
-                    throw new CorruptedDeckException("Can't regenerate deck");
+                    throw new CorruptedDeckException("Can't regenerate deck.");
                 }
             }
             else return Optional.empty();
@@ -126,5 +127,10 @@ public class Deck<T> {
                 );
 
         return deck;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + Table.list(cards) + "] discarded(" + Table.list(discarded) + ")";
     }
 }

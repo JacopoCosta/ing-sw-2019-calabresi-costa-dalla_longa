@@ -57,10 +57,6 @@ public class Weapon {
 
     @Override
     public String toString() {
-        String s = name + ":\n";
-        s += purchaseCost.toString() + " to purchase\n";
-        s += reloadCost.toString() + " to reload\n";
-        s += attackPattern.toString() + "\n";
-        return s;
+        return name;
     }
 }

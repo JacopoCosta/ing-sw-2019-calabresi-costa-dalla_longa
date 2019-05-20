@@ -23,7 +23,7 @@ public abstract class OffensiveEffect extends Effect {
         List<List<Player>> targetTable = new ArrayList<>();
 
         for(Constraint constraint : constraints) {
-            List<Player> targets = constraint.filter(context);
+            List<Player> targets = constraint.filterPlayers(context);
             targetTable.add(targets);
         }
 

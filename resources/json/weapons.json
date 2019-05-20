@@ -37,8 +37,8 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
@@ -101,16 +101,16 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     },
                                     {
                                         "type": "identity",
                                         "sourceAttackModuleId": 0,
                                         "sourceTargetId": 0,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": false
                                     }
                                 ]
@@ -178,8 +178,8 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
@@ -234,14 +234,14 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     },
                                     {
                                         "type": "identity",
-                                        "sourceAttackModuleId": 1,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 0,
                                         "drainTargetId": 0,
                                         "truth": false
@@ -332,14 +332,14 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 3,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     },
                                     {
                                         "type": "identity",
-                                        "sourceAttackModuleId": 3,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 2,
                                         "drainTargetId": 0,
                                         "truth": false
@@ -409,8 +409,8 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
@@ -459,8 +459,8 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": 0,
                                         "sourceTargetId": 0,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
@@ -509,8 +509,8 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": 1,
                                         "sourceTargetId": 0,
-                                        "drainAttackModuleId": 2,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
@@ -581,8 +581,8 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
@@ -634,8 +634,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 2
                                     }
@@ -734,16 +734,16 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     },
                                     {
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 2,
                                         "upperBound": -1
                                     }
@@ -931,16 +931,16 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 1,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     },
                                     {
                                         "type": "distance",
                                         "sourceAttackModuleId": 0,
                                         "sourceTargetId": 0,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 1,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 2
                                     }
@@ -994,8 +994,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 2
                                     }
@@ -1071,8 +1071,8 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
@@ -1141,8 +1141,8 @@
                                 "constraints": [
                                     {
                                         "type": "distance",
-                                        "sourceAttackModuleId": 1,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 0,
                                         "drainTargetId": 0,
                                         "lowerBound": 0,
@@ -1150,8 +1150,8 @@
                                     },
                                     {
                                         "type": "identity",
-                                        "sourceAttackModuleId": 1,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 0,
                                         "drainTargetId": 1,
                                         "truth": false
@@ -1207,8 +1207,8 @@
                                 "constraints": [
                                     {
                                         "type": "distance",
-                                        "sourceAttackModuleId": 2,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 0,
                                         "drainTargetId": 0,
                                         "lowerBound": 0,
@@ -1216,16 +1216,16 @@
                                     },
                                     {
                                         "type": "identity",
-                                        "sourceAttackModuleId": 2,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 1,
                                         "drainTargetId": 0,
                                         "truth": false
                                     },
                                     {
                                         "type": "identity",
-                                        "sourceAttackModuleId": 2,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 0,
                                         "drainTargetId": 1,
                                         "truth": false
@@ -1305,8 +1305,8 @@
                                         "type": "room",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": false
                                     }
                                 ]
@@ -1352,8 +1352,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": 1
                                     }
@@ -1438,8 +1438,8 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": false
                                     }
                                 ]
@@ -1510,8 +1510,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": -1
                                     }
@@ -1573,8 +1573,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": -1
                                     }
@@ -1661,8 +1661,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": 1
                                     }
@@ -1712,8 +1712,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": 0,
                                         "sourceTargetId": 0,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": 1
                                     },
@@ -1723,8 +1723,8 @@
                                         "sourceTargetId": -1,
                                         "gateAttackModuleId": 0,
                                         "gateTargetId": 0,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3
                                     }
                                 ]
                             }
@@ -1769,8 +1769,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 2,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": 1
                                     }
@@ -1821,8 +1821,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": 2,
                                         "sourceTargetId": 0,
-                                        "drainAttackModuleId": 3,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": 1
                                     },
@@ -1832,8 +1832,8 @@
                                         "sourceTargetId": -1,
                                         "gateAttackModuleId": 2,
                                         "gateTargetId": 0,
-                                        "drainAttackModuleId": 3,
-                                        "drainTargetId": 0
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3
                                     }
                                 ]
                             }
@@ -1904,8 +1904,8 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
@@ -1918,8 +1918,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": 0,
                                         "sourceTargetId": 0,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 1,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 1
                                     }
@@ -1976,8 +1976,8 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
@@ -2055,16 +2055,16 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     },
                                     {
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": -1
                                     }
@@ -2136,8 +2136,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 2
                                     }
@@ -2183,16 +2183,16 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 2,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     },
                                     {
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 2,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": -1
                                     }
@@ -2304,8 +2304,8 @@
                                         "type": "alignment",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
@@ -2352,8 +2352,8 @@
                                         "type": "alignment",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
@@ -2368,8 +2368,8 @@
                                         "sourceTargetId": -1,
                                         "gateAttackModuleId": 1,
                                         "gateTargetId": 0,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 1
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3
                                     }
                                 ]
                             }
@@ -2451,10 +2451,10 @@
                                 "constraints": [
                                     {
                                         "type": "distance",
-                                        "sourceAttackModuleId": 0,
-                                        "sourceTargetId": 0,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 0
                                     }
@@ -2507,8 +2507,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 1
                                     }
@@ -2554,15 +2554,15 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 2,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 0
                                     },
                                     {
                                         "type": "identity",
-                                        "sourceAttackModuleId": 2,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 0,
                                         "drainTargetId": 0,
                                         "truth": false
@@ -2638,8 +2638,8 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
@@ -2699,8 +2699,8 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
@@ -2749,14 +2749,14 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 2,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     },
                                     {
                                         "type": "identity",
-                                        "sourceAttackModuleId": 2,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 1,
                                         "drainTargetId": 0,
                                         "truth": false
@@ -2807,22 +2807,22 @@
                                         "type": "visibility",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 3,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     },
                                     {
                                         "type": "identity",
-                                        "sourceAttackModuleId": 3,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 1,
                                         "drainTargetId": 0,
                                         "truth": false
                                     },
                                     {
                                         "type": "identity",
-                                        "sourceAttackModuleId": 3,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 2,
                                         "drainTargetId": 0,
                                         "truth": false
@@ -2896,8 +2896,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 0
                                     }
@@ -2909,8 +2909,8 @@
                                 "constraints": [
                                     {
                                         "type": "distance",
-                                        "sourceAttackModuleId": 0,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 0,
                                         "drainTargetId": 1,
                                         "lowerBound": 0,
@@ -2966,8 +2966,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": 1
                                     }
@@ -3039,8 +3039,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": 1
                                     }
@@ -3108,8 +3108,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": 1
                                     }
@@ -3166,8 +3166,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 2,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": 1
                                     },
@@ -3175,8 +3175,8 @@
                                         "type": "alignment",
                                         "sourceAttackModuleId": -2,
                                         "sourceTargetId": -2,
-                                        "drainAttackModuleId": 2,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
@@ -3255,8 +3255,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": 1
                                     }
@@ -3307,15 +3307,15 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": 1
                                     },
                                     {
                                         "type": "distance",
-                                        "sourceAttackModuleId": 1,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 0,
                                         "drainTargetId": 0,
                                         "lowerBound": 2,
@@ -3367,15 +3367,15 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 2,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": 1
                                     },
                                     {
                                         "type": "distance",
-                                        "sourceAttackModuleId": 2,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 0,
                                         "drainTargetId": 0,
                                         "lowerBound": 2,
@@ -3383,8 +3383,8 @@
                                     },
                                     {
                                         "type": "distance",
-                                        "sourceAttackModuleId": 2,
-                                        "sourceTargetId": 0,
+                                        "sourceAttackModuleId": -3,
+                                        "sourceTargetId": -3,
                                         "drainAttackModuleId": 1,
                                         "drainTargetId": 0,
                                         "lowerBound": 2,
@@ -3493,8 +3493,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 0
                                     }
@@ -3541,8 +3541,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 0
                                     }

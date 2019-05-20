@@ -18,8 +18,6 @@ import java.util.List;
 public abstract class ControlledGrab {
     private static final String PURCHASE_REQUEST_IF = "Would you like to buy a weapon?";
     private static final String PURCHASE_REQUEST_WHICH = "Which weapon would you like to purchase?";
-    private static final String DISCARD_WEAPON_REQUEST_WHICH = "Which weapon would you like to discard?";
-    private static final String DISCARD_POWERUP_REQUEST_WHICH = "Which power-up would you like to discard?";
 
     protected static synchronized void routine(Player subject) {
         Cell cell = subject.getPosition();
@@ -42,13 +40,13 @@ public abstract class ControlledGrab {
                         try {
                             subject.giveWeapon(weapon);
                         } catch (FullHandException e) {
-                            List<Weapon> discardable = subject.getWeapons();
-                            int discardIndex = Dispatcher.requestIndex(DISCARD_WEAPON_REQUEST_WHICH, discardable);
-                            subject.discardWeapon(discardable.get(discardIndex));
+                            subject.getGame().getController().discardWeaponRoutine(subject);
                         }
-                        try {
-                            spawnCell.addToWeaponShop(subject.getGame().getBoard().getWeaponDeck().draw());
-                        } catch (EmptyDeckException ignored) {} // ignored because no action is required when the weapon deck is depleted
+                        subject.getGame()
+                                .getBoard()
+                                .getWeaponDeck()
+                                .smartDraw(false)
+                                .ifPresent(spawnCell::addToWeaponShop);
 
                     } catch (CannotAffordException e) {
 
@@ -63,23 +61,23 @@ public abstract class ControlledGrab {
             AmmoTile ammoTile = ammoCell.getAmmoTile();
             if(ammoTile != null) {
                 if(ammoTile.includesPowerUp()) {
-                    Deck<PowerUp> deck = subject.getGame().getBoard().getPowerUpDeck();
-                    PowerUp card = null;
-                    try {
-                        card = deck.draw();
-                    } catch (EmptyDeckException e) {
-                        deck.regenerate();
-                        deck.shuffle();
-                    }
+                    PowerUp card = subject.getGame()
+                            .getBoard()
+                            .getPowerUpDeck()
+                            .smartDraw(true)
+                            .orElse(null); // null should never happen
                     try {
                         subject.givePowerUp(card);
                     } catch (FullHandException e) {
-                        List<PowerUp> discardable = subject.getPowerUps();
-                        int discardIndex = Dispatcher.requestIndex(DISCARD_POWERUP_REQUEST_WHICH, discardable);
-                        subject.discardPowerUp(discardable.get(discardIndex));
+                        subject.getGame().getController().discardPowerUpRoutine(subject);
                     }
                 }
                 subject.giveAmmoCubes(ammoTile.getAmmoCubes());
+                ammoCell.setAmmoTile(subject.getGame()
+                        .getBoard()
+                        .getAmmoTileDeck()
+                        .smartDraw(true)
+                        .orElse(null)); // null should never happen
             }
         }
     }

@@ -3,6 +3,8 @@ package it.polimi.ingsw.model.ammo;
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 
+import java.lang.reflect.Array;
+
 /**
  * This class represents the game's currency. Ammo cubes come in three colours (red, yellow, blue). Players
  * can individually hold only up to three cubes for each colour. Any further transaction that would lead to
@@ -179,26 +181,14 @@ public class AmmoCubes {
      */
     @Override
     public String toString() {
-        boolean addComma = false;
-        String s = "";
-        if(red > 0) {
-            addComma = true;
-            s += red + " red";
+        StringBuilder s = new StringBuilder();
+        final int[] values = {red, yellow, blue};
+        final String[] names = {"R", "Y", "B"};
+        for(int i = 0; i < 3; i ++) {
+            for(int j = 0; j < values[i]; j ++)
+                s.append(names[i]);
         }
-        if(yellow > 0) {
-            if(addComma)
-                s += ", ";
-            addComma = true;
-            s += yellow + " yellow";
-        }
-        if(blue > 0) {
-            if(addComma)
-                s += ", ";
-            s += blue + " blue";
-        }
-        if(s.equals(""))
-            return "free";
-        return s;
+        return s.toString();
     }
 
     /**

@@ -1,7 +1,10 @@
 package it.polimi.ingsw.model.weaponry.constraints;
+import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.exceptions.InvalidFilterInvocationException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
+import it.polimi.ingsw.model.weaponry.targets.TargetType;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,18 +26,10 @@ public class AlignmentConstraint extends Constraint {
     }
 
     @Override
-    public boolean verify() {
-        Cell sourceCell = Constraint.getTarget(context, sourceAttackModuleId, sourceTargetId).getCell();
-        Cell drainCell = Constraint.getTarget(context, drainAttackModuleId, drainTargetId).getCell();
-
-        return verify(sourceCell, drainCell);
-    }
-
-    @Override
-    public List<Player> filter(AttackPattern context) {
+    public List<Player> filterPlayers(AttackPattern context) {
         if(sourceAttackModuleId == -3 && sourceTargetId == -3) {
             Cell drainCell = Constraint.getTarget(context, drainAttackModuleId, drainTargetId).getCell();
-            
+
             return context.getAuthor()
                     .getGame()
                     .getParticipants()
@@ -56,7 +51,41 @@ public class AlignmentConstraint extends Constraint {
                     .distinct()
                     .collect(Collectors.toList());
         }
-        throw new IllegalStateException("This instance of constraint can't use a filter.");
+        throw new InvalidFilterInvocationException("This instance of constraint can't use a filter.");
+    }
+
+    @Override
+    public List<Cell> filterCells(AttackPattern context) {
+        if(sourceAttackModuleId == -3 && sourceTargetId == -3) {
+            Cell drainCell = Constraint.getTarget(context, drainAttackModuleId, drainTargetId).getCell();
+
+            return context.getAuthor()
+                    .getGame()
+                    .getBoard()
+                    .getCells()
+                    .stream()
+                    .filter(c -> this.verify(c, drainCell))
+                    .distinct()
+                    .collect(Collectors.toList());
+        }
+        if(drainAttackModuleId == -3 && drainTargetId == -3) {
+            Cell sourceCell = Constraint.getTarget(context, sourceAttackModuleId, sourceTargetId).getCell();
+
+            return context.getAuthor()
+                    .getGame()
+                    .getBoard()
+                    .getCells()
+                    .stream()
+                    .filter(c -> this.verify(sourceCell, c))
+                    .distinct()
+                    .collect(Collectors.toList());
+        }
+        throw new InvalidFilterInvocationException("This instance of constraint can't use a filter.");
+    }
+
+    @Override
+    public List<Room> filterRooms(AttackPattern context) {
+        throw new InvalidFilterInvocationException("no");
     }
 
     @Override

@@ -46,54 +46,41 @@ public abstract class ControlledShoot {
                 .collect(Collectors.toList());
 
         // prompt details are missing
-        int nextId = first.size() > 1 ? Dispatcher.requestIndex(MODULE_CHOOSE, first) : 0;
-
+        int nextIndex = first.size() > 1 ? Dispatcher.requestIndex(MODULE_CHOOSE, first) : 0;
+        int nextId = pattern.getFirst().get(nextIndex);
         while(nextId != -1) {
             AttackModule attackModule = first.get(nextId);
             List<Target> targets = attackModule.getTargets();
             for(Target target : targets) {
-                do {
-                    if(target.getType() == TargetType.PLAYER) {
-                        List<Player> players = subject.getGame().getParticipants();
+                if(target.getType() == TargetType.PLAYER) {
+                    List<Player> players = ((TargetPlayer) target).filter();
 
-                        ((TargetPlayer) target).setPlayer(
-                                players.get(
-                                        Dispatcher.requestIndex(target.getMessage(), players)
-                                )
-                        );
-                    }
-                    else if(target.getType() == TargetType.CELL) {
-                        List<Cell> cells = subject.getPosition().getBoard().getCells();
+                    ((TargetPlayer) target).setPlayer(
+                            players.get(
+                                    Dispatcher.requestIndex(target.getMessage(), players.stream().map(Player::getName).collect(Collectors.toList()))
+                            )
+                    );
+                }
+                else if(target.getType() == TargetType.CELL) {
+                    List<Cell> cells = ((TargetCell) target).filter();
 
-                        ((TargetCell) target).setCell(
-                                cells.get(
-                                        Dispatcher.requestIndex(target.getMessage(), cells)
-                                )
-                        );
-                    }
-                    else if(target.getType() == TargetType.ROOM) {
-                        List<Room> rooms = subject.getPosition()
-                                .getBoard()
-                                .getCells()
-                                .stream()
-                                .map(Cell::getRoom)
-                                .distinct()
-                                .collect(Collectors.toList());
+                    ((TargetCell) target).setCell(
+                            cells.get(
+                                    Dispatcher.requestIndex(target.getMessage(), cells.stream().map(Cell::getId).collect(Collectors.toList()))
+                            )
+                    );
+                }
+                else if(target.getType() == TargetType.ROOM) {
+                    List<Room> rooms = ((TargetRoom) target).filter();
 
-                        ((TargetRoom) target).setRoom(
-                                rooms.get(
-                                        Dispatcher.requestIndex(target.getMessage(), rooms)
-                                )
-                        );
-                    }
-                } while (
-                        target.getConstraints()
-                                .stream()
-                                .map(Constraint::verify)
-                                .reduce(true, (c1, c2) -> c1 && c2)
-                );
+                    ((TargetRoom) target).setRoom(
+                            rooms.get(
+                                    Dispatcher.requestIndex(target.getMessage(), rooms.stream().map(Room::toString).collect(Collectors.toList()))
+                            )
+                    );
+                }
+
             }
-
 
             attackModule.getEffects().forEach(e -> {
                 if (e.getType() == EffectType.MOVE)

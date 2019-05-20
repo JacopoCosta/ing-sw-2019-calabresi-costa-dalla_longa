@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model.weaponry.constraints;
 
+import it.polimi.ingsw.model.board.Room;
+import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.exceptions.InvalidFilterInvocationException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 
@@ -23,15 +26,7 @@ public class IdentityConstraint extends Constraint {
     }
 
     @Override
-    public boolean verify() {
-        Player sourcePlayer = Constraint.getTarget(context, sourceAttackModuleId, sourceTargetId).getPlayer();
-        Player drainPlayer = Constraint.getTarget(context, drainAttackModuleId, drainTargetId).getPlayer();
-
-        return verify(sourcePlayer, drainPlayer);
-    }
-
-    @Override
-    public List<Player> filter(AttackPattern context) {
+    public List<Player> filterPlayers(AttackPattern context) {
         if(sourceAttackModuleId == -3 && sourceTargetId == -3) {
             Player drainPlayer = Constraint.getTarget(context, drainAttackModuleId, drainTargetId).getPlayer();
 
@@ -56,7 +51,17 @@ public class IdentityConstraint extends Constraint {
                     .distinct()
                     .collect(Collectors.toList());
         }
-        throw new IllegalStateException("This instance of constraint can't use a filter.");
+        throw new InvalidFilterInvocationException("This instance of constraint can't use a filter.");
+    }
+
+    @Override
+    public List<Cell> filterCells(AttackPattern context) {
+        throw new InvalidFilterInvocationException("A cell can't be a player.");
+    }
+
+    @Override
+    public List<Room> filterRooms(AttackPattern context) {
+        throw new InvalidFilterInvocationException("A room can't be a player.");
     }
 
     @Override

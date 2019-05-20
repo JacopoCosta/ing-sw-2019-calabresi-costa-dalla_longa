@@ -6,7 +6,14 @@ import it.polimi.ingsw.model.exceptions.TargetInheritanceException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TargetCell extends Target {
     private Cell cell;
@@ -34,5 +41,24 @@ public class TargetCell extends Target {
     @Override
     public Room getRoom() {
         return cell.getRoom();
+    }
+
+    public List<Cell> filter() {
+        List<List<Cell>> targetTable = new ArrayList<>();
+
+        for(Constraint constraint : constraints)
+            targetTable.add(constraint.filterCells(context));
+
+        Predicate<Cell> inEveryList = c -> targetTable.stream()
+                .map(list -> list.contains(c))
+                .reduce(true, (a, b) -> a && b);
+
+        return targetTable.stream()
+                .map(Collection::stream)
+                .flatMap(Function.identity())
+                .sorted(Comparator.comparingInt(Cell::getId))
+                .distinct()
+                .filter(inEveryList)
+                .collect(Collectors.toList());
     }
 }

@@ -68,27 +68,20 @@ public class Game {
         return participants;
     }
 
-    public List<Player> getPlayersByCell(Cell cell) {
-        List<Player> result = new ArrayList<>();
-        for(Player p : this.participants) {
-            if(p.getPosition() == cell)
-                result.add(p);
-        }
-        return result;
-    }
-
-    public List<Player> getPlayersByRoom(Room room) {
-        List<Player> result = new ArrayList<>();
-        for(Player p : this.participants) {
-            if(p.getPosition().getRoom() == room)
-                result.add(p);
-        }
-        return result;
-    }
-
     public void setup() {
         board.spreadAmmo();
         board.spreadWeapons();
+
+        // <temp>
+        participants.get(0).setPosition(board.getCells().get(5));
+
+        for(int i = 0; i < 10; i ++) {
+            try {
+                participants.get(0).giveWeapon(board.getWeaponDeck().smartDraw(false).orElse(null));
+            } catch (FullHandException ignored) { }
+        }
+        participants.get(1).setPosition(board.getCells().get(6));
+        // </temp>
     }
 
     public void playTurn() {
@@ -152,6 +145,10 @@ public class Game {
         String s = "Board:\n";
         s += board.toString() + "\n";
 
+        s += "Weapons : " + board.getWeaponDeck().toString() + "\n";
+        s += "Power-Ups : " + board.getPowerUpDeck().toString() + "\n";
+        s += "Ammo Tiles : " + board.getAmmoTileDeck().toString() + "\n";
+
         s += "Players:\n";
         s += Table.create(
                 participants.stream().map(p -> "#" + p.getID()).collect(Collectors.toList()),
@@ -171,9 +168,11 @@ public class Game {
                         Table.list(p.getPowerUps().stream().map(PowerUp::toString).collect(Collectors.toList()))
                         + "]").collect(Collectors.toList()),
                 participants.stream().map(p -> "Ammo[" + p.getAmmoCubes() + "]").collect(Collectors.toList()),
-                participants.stream().map(p -> "| died " + p.getDeathCount() + " times").collect(Collectors.toList())
+                participants.stream().map(p -> "| died " + p.getDeathCount() + " times").collect(Collectors.toList()),
+                participants.stream().map(p -> p.isOnFrenzy() ? "(frenzy activated)" : "").collect(Collectors.toList())
         ) + "\n";
 
+        s += "There are " + roundsLeft + " skulls on the killshot track.\n";
         s += "Currently playing: " + participants.get(currentTurnPlayer).getName() + " with " + participants.get(currentTurnPlayer).getRemainingExecutions() + " actions left.";
 
         return s;

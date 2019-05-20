@@ -69,9 +69,9 @@ public abstract class Target {
 
     @Override
     public String toString() {
-        String s = type.toString().toLowerCase();
+        StringBuilder s = new StringBuilder(type.toString().toLowerCase());
         for(Constraint constraint : constraints)
-            s += " (" + constraint.toString() + ")";
-        return s;
+            s.append(" (").append(constraint.toString()).append(")");
+        return s.toString();
     }
 }

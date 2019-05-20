@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.weaponry.constraints;
 
+import it.polimi.ingsw.model.board.Room;
+import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.InvalidConstraintTypeException;
 import it.polimi.ingsw.model.exceptions.InvalidEffectTypeException;
 import it.polimi.ingsw.model.player.Player;
@@ -12,6 +14,7 @@ import it.polimi.ingsw.model.weaponry.targets.TargetPlayer;
 import java.util.List;
 
 public abstract class Constraint {
+
     protected ConstraintType type;
     protected int sourceAttackModuleId;
     protected int sourceTargetId;
@@ -69,12 +72,14 @@ public abstract class Constraint {
         if(attackModuleId >= 0 && targetId >= 0) {
             return context.getModule(attackModuleId).getTargets().get(targetId);
         }
-        throw new IllegalArgumentException("Generic constraints are not verifiable.");
+        throw new IllegalArgumentException("Generic targets are not gettable.");
     }
 
-    public abstract boolean verify();
+    public abstract List<Player> filterPlayers(AttackPattern context);
 
-    public abstract List<Player> filter(AttackPattern context);
+    public abstract List<Cell> filterCells(AttackPattern context);
+
+    public abstract List<Room> filterRooms(AttackPattern context);
 
     public void setContext(AttackPattern context) {
         this.context = context;

@@ -243,10 +243,10 @@ public class Player {
 
         author.recentlyDamaged.add(this);
 
-        Stream<PowerUp> grenadeStream = powerUps.stream().filter(p -> p.getType() == PowerUpType.GRENADE);
-        if(grenadeStream.count() > 0) { // if the player is able to respond with a tagback grenade
+        List<PowerUp> grenades = powerUps.stream().filter(p -> p.getType() == PowerUpType.GRENADE).collect(Collectors.toList());
+        if(grenades.size() > 0) { // if the player is able to respond with a tagback grenade
             game.getController().powerUpRoutine(this,
-                    grenadeStream.findFirst().orElse(null) // null is never used due to the if condition
+                    grenades.stream().findFirst().orElse(null) // null is never used due to the if condition
             );
         }
     }
