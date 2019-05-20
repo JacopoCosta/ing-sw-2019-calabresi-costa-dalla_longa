@@ -1,22 +1,5 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.network.common.rmi.ServerController;
-import it.polimi.ingsw.network.server.communicationInterface.rmi.ServerControllerImpl;
-import it.polimi.ingsw.network.server.communicationInterface.socket.ClientHandler;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.rmi.AlreadyBoundException;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 /*
  * TODO:
  *  NOTE 3: logging activity is performed by System.out for now. In the future it will eventually be replaced
@@ -27,9 +10,26 @@ import java.util.concurrent.Executors;
  *
  * */
 
+import it.polimi.ingsw.network.common.controller.RmiController;
+import it.polimi.ingsw.network.common.util.CommandLineController;
+import it.polimi.ingsw.network.server.communication.rmi.ServerController;
+import it.polimi.ingsw.network.server.communication.socket.ClientHandler;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.rmi.AlreadyBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class Server {
     private static String serverAddress;
     private static int serverPort;
+
+    private static final CommandLineController commandLineController = new CommandLineController();
 
     private static final ExecutorService executor = Executors.newFixedThreadPool(2);
 
@@ -44,22 +44,22 @@ public class Server {
                 executor.execute(clientHandler); //execute the user thread
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("ERROR: " + e.getClass().toString() + " error in socketServer: " + e.getMessage());
         }
     };
 
     private static final Runnable rmiServer = () -> {
         System.out.println("LOG: Starting RMI registry...");
-        startRmiRegistry();
+        commandLineController.startRmiRegistry();
         System.out.println("LOG: RMI service started");
 
         System.out.println("LOG: creating RMI protocol implementation...");
-        ServerController serverController;
+        RmiController serverController;
         try {
-            serverController = new ServerControllerImpl();
+            serverController = new ServerController();
         } catch (RemoteException e) {
-            e.printStackTrace();
-            stopRmiRegistry();
+            System.err.println("ERROR: " + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
+            commandLineController.stopRmiRegistry();
             System.exit(-1);
             return;
         }
@@ -70,37 +70,26 @@ public class Server {
         try {
             registry = LocateRegistry.getRegistry();
         } catch (RemoteException e) {
-            e.printStackTrace();
-            stopRmiRegistry();
+            System.err.println("ERROR: " + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
+            commandLineController.stopRmiRegistry();
             System.exit(-1);
             return;
         }
 
-        String bindingName = "rmi://" + serverAddress + ":" + serverPort + "/network";
+        String bindingName = "rmi://" + serverAddress + ":" + serverPort + "/ServerController";
         try {
             registry.bind(bindingName, serverController);
         } catch (RemoteException e) {
-            e.printStackTrace();
-            stopRmiRegistry();
+            System.err.println("ERROR: " + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
+            commandLineController.stopRmiRegistry();
             System.exit(-1);
         } catch (AlreadyBoundException e) {
-            System.out.println("LOG: RMI registry service already bound, unbinding...");
+            System.out.println("LOG: RMI registry service already bound, rebinding...");
             try {
-                registry.unbind(bindingName);
-            } catch (RemoteException | NotBoundException ex) {
-                ex.printStackTrace();
-                stopRmiRegistry();
-                System.exit(-1);
-            }
-            System.out.println("LOG: RMI done unbinding");
-
-            System.out.println("LOG: rebinding RMI registry service...");
-            try {
-                registry = LocateRegistry.getRegistry();
-                registry.bind(bindingName, serverController);
-            } catch (RemoteException | AlreadyBoundException ex) {
-                ex.printStackTrace();
-                stopRmiRegistry();
+                registry.rebind(bindingName, serverController);
+            } catch (RemoteException ex) {
+                System.err.println("ERROR: " + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
+                commandLineController.stopRmiRegistry();
                 System.exit(-1);
             }
             System.out.println("LOG: RMI service rebounded");
@@ -123,55 +112,9 @@ public class Server {
             System.err.println("ERROR: server port not in range [1025 - 65535]");
             System.exit(-1);
         }
-
-        clearCMD();
+        commandLineController.clearConsole();
 
         executor.execute(socketServer);
         executor.execute(rmiServer);
-    }
-
-    private static void startRmiRegistry() {
-        String RMI_REGISTRY_EXECUTION_PATH = ServerController.class
-                .getProtectionDomain()
-                .getCodeSource()
-                .getLocation()
-                .toString()
-                .substring(6)
-                .replaceAll("%20", " ");
-        String START_RMI_REGISTRY_COMMAND = "cd /d " + RMI_REGISTRY_EXECUTION_PATH + "&&" + "start rmiregistry";
-        executeCMDCommand(START_RMI_REGISTRY_COMMAND);
-    }
-
-    //stops the RMI registry via command line
-    private static void stopRmiRegistry() {
-        String STOP_RMI_REGISTRY_COMMAND = "taskkill /im rmiregistry.exe";
-        executeCMDCommand(STOP_RMI_REGISTRY_COMMAND);
-    }
-
-    //clear the cmd to better display LOG activity
-    private static void clearCMD() {
-        executeCMDCommand("cls");
-    }
-
-    // [see Client.NOTE 5] execute a cmd command
-    private static void executeCMDCommand(String command) {
-        try {
-            ProcessBuilder builder = new ProcessBuilder(
-                    "cmd.exe", "/c", command);
-            builder.redirectErrorStream(true);
-            builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-            Process p = builder.start();
-            BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while (true) {
-                line = r.readLine();
-                if (line == null) {
-                    break;
-                }
-                System.err.println(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

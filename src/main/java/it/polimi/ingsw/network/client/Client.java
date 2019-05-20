@@ -1,22 +1,11 @@
 package it.polimi.ingsw.network.client;
 
-import it.polimi.ingsw.network.common.exceptions.ClientAlreadyRegisteredException;
-import it.polimi.ingsw.network.common.exceptions.ClientNotFoundException;
-import it.polimi.ingsw.network.common.exceptions.ConfigurationException;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
+import it.polimi.ingsw.network.common.message.Message;
+import it.polimi.ingsw.network.common.message.MessageType;
 
 import java.io.IOException;
 import java.util.Scanner;
-
-/*
- * TODO:
- *  NOTE 4: for now the Client interaction with the program is mixed with the communication logic. It will be split
- *          and managed by different entities.
- *  NOTE 5: output format is based on Windows CMD only. In the futureUpdate it will be extended to support MacOS and Linux.
- *  NOTE 6: all exceptions are thrown as they are. In the final release they will be handled with proper
- *          user friendly messages.
- *
- * */
 
 public class Client {
     private static String hostAddress;
@@ -28,45 +17,79 @@ public class Client {
 
     private static String username;
 
+    private static void out(String string) {
+        System.out.print(string);
+    }
+
+    private static void err(String string) {
+        System.err.print("ERROR: " + string);
+    }
+
+    private static String in() {
+        return in.nextLine();
+    }
+
     //register a Client into the ServerController
     private static void register() {
         boolean valid = false;
+        Message message;
+
         do {
-            System.out.print("Username: ");
-            username = in.nextLine();
+            out("Username: ");
+            username = in();
+
+            message = Message.completeMessage(username, MessageType.REGISTER_REQUEST, username);
 
             try {
-                communicationHandler.register(username);
-                valid = true;
+                communicationHandler.sendMessage(message);
+                message = communicationHandler.nextMessage();
+
+                switch (message.getType()) {
+                    case REGISTER_SUCCESS:
+                        valid = true;
+                        break;
+                    case PLAYER_ALREADY_REGISTERED_ERROR:
+                    default:
+                        break;
+                }
             } catch (ConnectionException e) {
+                //err(e.nextMessage() + "\n");
                 e.printStackTrace();
                 System.exit(-1);
-            } catch (ClientAlreadyRegisteredException e) {
-                System.out.println(e.getMessage());
             }
         } while (!valid);
     }
 
     //unregister the Client from the ServerController global list
     private static void unregister() {
+        Message message = Message.completeMessage(username, MessageType.UNREGISTER_REQUEST, username);
         try {
-            communicationHandler.unregister(username);
-            System.out.println("Logout success");
-            System.exit(0);
-        } catch (ConnectionException | ClientNotFoundException e) {
+            communicationHandler.sendMessage(message);
+            message = communicationHandler.nextMessage();
+
+            switch (message.getType()) {
+                case UNREGISTER_SUCCESS:
+                    out("Logout success\n");
+                    System.exit(0);
+                case PLAYER_NOT_REGISTERED_ERROR:
+                default:
+                    err("client not registered, unregistering failed\n");
+            }
+        } catch (ConnectionException e) {
+            //err(e.nextMessage() + "\n");
             e.printStackTrace();
-            System.exit(-1);
         }
+        System.exit(-1);
     }
 
     //ask the user to perform an action (for now 0 = logout is the only one)
     private static int requestAction() {
         int action = 0;
         boolean valid = false;
-        System.out.println("Choose an action:\n");
-        System.out.println("[0] Logout\n");
+        out("Choose an action:\n\n");
+        out("[0] Logout\n\n");
         do {
-            System.out.print("Action: ");
+            out("Action: ");
             try {
                 action = Integer.parseInt(in.nextLine());
                 if (action == 0)
@@ -80,7 +103,7 @@ public class Client {
     //prints a welcome screen
     private static void printWelcomeScreen() {
         clearCMD();
-        System.out.println("Welcome to Adrenaline !");
+        out("Welcome to Adrenaline !\n");
     }
 
     // [see NOTE 5] clear the console output (works on Windows only)
@@ -94,7 +117,7 @@ public class Client {
 
     public static void main(String[] args) {
         if (args.length != 4) {
-            System.err.println("ERROR: correct syntax is: Client [ip address] [port] -conn [s/r]");
+            err("correct syntax is: Client [ip address] [port] -conn [s/r]\n");
             System.exit(-1);
             return;
         }
@@ -103,13 +126,13 @@ public class Client {
         try {
             port = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
-            System.err.println("ERROR: server port not in range [1025 - 65535]");
+            err("server port not in range [1025 - 65535]\n");
             System.exit(-1);
             return;
         }
 
         if (!args[2].equals("-conn")) {
-            System.err.println("ERROR: correct syntax is: Client [ip address] [port] -conn [s/r]");
+            err("correct syntax is: Client [ip address] [port] -conn [s/r]\n");
             System.exit(-1);
             return;
         }
@@ -121,14 +144,15 @@ public class Client {
         } else if (interfaceType.equals("r")) {
             communicationInterface = CommunicationHandler.Interface.RMI_INTERFACE;
         } else {
-            System.err.println("ERROR: options for param \"-conn\" must be [s] or [r]");
+            err("options for param \"-conn\" must be [s] or [r]\n");
             System.exit(-1);
             return;
         }
 
         try {
             communicationHandler = new CommunicationHandler(hostAddress, port, communicationInterface);
-        } catch (ConfigurationException e) {
+        } catch (ConnectionException e) {
+            //err("ERROR: " + e.nextMessage() + "\n");
             e.printStackTrace();
             System.exit(-1);
             return;
@@ -137,7 +161,7 @@ public class Client {
         //prints a welcome screen
         printWelcomeScreen();
 
-        //register the Client into the ServerController
+        //register the Client into the Server
         register();
 
         //request the next action to do

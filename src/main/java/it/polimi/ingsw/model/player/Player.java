@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.exceptions.FullHandException;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.powerups.PowerUpType;
 import it.polimi.ingsw.model.weaponry.Weapon;
+import it.polimi.ingsw.network.server.VirtualClient;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,7 +17,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Player {
+public class Player extends VirtualClient {
     private static final int KILL_THRESHOLD = 10; // maximum amount of damage before a Player is declared as "killed"
     private static final int OVERKILL_THRESHOLD = 11; // maximum amount of damage before a Player is declared as "overkilled"
 
@@ -31,7 +32,6 @@ public class Player {
 
     private Game game;
 
-    private String name;
     private int score;
     private int deathCount;
     private boolean onFrenzy;
@@ -51,7 +51,8 @@ public class Player {
     private List<Player> recentlyDamaged;
 
     public Player(String name) {
-        this.name = name;
+        super(name);
+
         this.score = 0;
         this.deathCount = 0;
         this.onFrenzy = false;
@@ -65,10 +66,6 @@ public class Player {
         this.position = null;
         this.savedPosition = null;
         this.recentlyDamaged = new ArrayList<>();
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     public int getID() {
@@ -309,9 +306,5 @@ public class Player {
     public void spawn(Cell cell) {
         this.damage.clear();
         this.position = cell;
-    }
-
-    public boolean equals(Player player) {
-        return name.equals(player.name);
     }
 }
