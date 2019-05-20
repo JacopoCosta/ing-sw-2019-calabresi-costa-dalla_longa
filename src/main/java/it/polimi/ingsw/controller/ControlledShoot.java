@@ -55,29 +55,29 @@ public abstract class ControlledShoot {
                 if(target.getType() == TargetType.PLAYER) {
                     List<Player> players = ((TargetPlayer) target).filter();
 
-                    ((TargetPlayer) target).setPlayer(
-                            players.get(
-                                    Dispatcher.requestIndex(target.getMessage(), players.stream().map(Player::getName).collect(Collectors.toList()))
-                            )
-                    );
+                    int playerId = Dispatcher.requestIndex(target.getMessage(), players.stream().map(Player::getName).collect(Collectors.toList()));
+                    Player acquiredPlayer = players.get(playerId);
+
+                    Dispatcher.sendMessage("Selected " + acquiredPlayer.getName() + ".\n");
+                    ((TargetPlayer) target).setPlayer(acquiredPlayer);
                 }
                 else if(target.getType() == TargetType.CELL) {
                     List<Cell> cells = ((TargetCell) target).filter();
 
-                    ((TargetCell) target).setCell(
-                            cells.get(
-                                    Dispatcher.requestIndex(target.getMessage(), cells.stream().map(Cell::getId).collect(Collectors.toList()))
-                            )
-                    );
+                    int cellId = Dispatcher.requestIndex(target.getMessage(), cells.stream().map(Cell::getId).collect(Collectors.toList()));
+                    Cell acquiredCell = cells.get(cellId);
+
+                    Dispatcher.sendMessage("Selected " + acquiredCell.getId() + ".\n");
+                    ((TargetCell) target).setCell(acquiredCell);
                 }
                 else if(target.getType() == TargetType.ROOM) {
                     List<Room> rooms = ((TargetRoom) target).filter();
 
-                    ((TargetRoom) target).setRoom(
-                            rooms.get(
-                                    Dispatcher.requestIndex(target.getMessage(), rooms.stream().map(Room::toString).collect(Collectors.toList()))
-                            )
-                    );
+                    int roomId = Dispatcher.requestIndex(target.getMessage(), rooms.stream().map(Room::toString).collect(Collectors.toList()));
+                    Room acquiredRoom = rooms.get(roomId);
+
+                    Dispatcher.sendMessage("Selected " + acquiredRoom.toString() + ".\n");
+                    ((TargetRoom) target).setRoom(acquiredRoom);
                 }
 
             }

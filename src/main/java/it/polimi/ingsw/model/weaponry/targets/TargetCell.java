@@ -44,21 +44,6 @@ public class TargetCell extends Target {
     }
 
     public List<Cell> filter() {
-        List<List<Cell>> targetTable = new ArrayList<>();
-
-        for(Constraint constraint : constraints)
-            targetTable.add(constraint.filterCells(context));
-
-        Predicate<Cell> inEveryList = c -> targetTable.stream()
-                .map(list -> list.contains(c))
-                .reduce(true, (a, b) -> a && b);
-
-        return targetTable.stream()
-                .map(Collection::stream)
-                .flatMap(Function.identity())
-                .sorted(Comparator.comparingInt(Cell::getId))
-                .distinct()
-                .filter(inEveryList)
-                .collect(Collectors.toList());
+        return Constraint.filterCells(context, constraints);
     }
 }

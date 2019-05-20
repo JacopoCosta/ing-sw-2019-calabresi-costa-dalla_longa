@@ -43,21 +43,6 @@ public class TargetPlayer extends Target {
     }
 
     public List<Player> filter() {
-        List<List<Player>> targetTable = new ArrayList<>();
-
-        for(Constraint constraint : constraints)
-            targetTable.add(constraint.filterPlayers(context));
-
-        Predicate<Player> inEveryList = p -> targetTable.stream()
-                .map(list -> list.contains(p))
-                .reduce(true, (a, b) -> a && b);
-
-        return targetTable.stream()
-                .map(Collection::stream)
-                .flatMap(Function.identity())
-                .sorted(Comparator.comparingInt(Player::getID))
-                .distinct()
-                .filter(inEveryList)
-                .collect(Collectors.toList());
+        return Constraint.filterPlayers(context, constraints);
     }
 }

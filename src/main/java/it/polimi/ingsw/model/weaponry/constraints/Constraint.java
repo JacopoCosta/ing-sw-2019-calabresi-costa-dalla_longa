@@ -11,7 +11,13 @@ import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.model.weaponry.targets.TargetCell;
 import it.polimi.ingsw.model.weaponry.targets.TargetPlayer;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public abstract class Constraint {
 
@@ -80,6 +86,63 @@ public abstract class Constraint {
     public abstract List<Cell> filterCells(AttackPattern context);
 
     public abstract List<Room> filterRooms(AttackPattern context);
+
+    public static List<Player> filterPlayers(AttackPattern context, List<Constraint> constraints) {
+        List<List<Player>> targetTable = new ArrayList<>();
+
+        for(Constraint constraint : constraints)
+            targetTable.add(constraint.filterPlayers(context));
+
+        Predicate<Player> inEveryList = p -> targetTable.stream()
+                .map(list -> list.contains(p))
+                .reduce(true, (a, b) -> a && b);
+
+        return targetTable.stream()
+                .map(Collection::stream)
+                .flatMap(Function.identity())
+                .sorted(Comparator.comparingInt(Player::getID))
+                .distinct()
+                .filter(inEveryList)
+                .collect(Collectors.toList());
+    }
+
+    public static List<Cell> filterCells(AttackPattern context, List<Constraint> constraints) {
+        List<List<Cell>> targetTable = new ArrayList<>();
+
+        for(Constraint constraint : constraints)
+            targetTable.add(constraint.filterCells(context));
+
+        Predicate<Cell> inEveryList = c -> targetTable.stream()
+                .map(list -> list.contains(c))
+                .reduce(true, (a, b) -> a && b);
+
+        return targetTable.stream()
+                .map(Collection::stream)
+                .flatMap(Function.identity())
+                .sorted(Comparator.comparingInt(Cell::getId))
+                .distinct()
+                .filter(inEveryList)
+                .collect(Collectors.toList());
+    }
+
+    public static List<Room> filterRooms(AttackPattern context, List<Constraint> constraints) {
+        List<List<Room>> targetTable = new ArrayList<>();
+
+        for(Constraint constraint : constraints)
+            targetTable.add(constraint.filterRooms(context));
+
+        Predicate<Room> inEveryList = r -> targetTable.stream()
+                .map(list -> list.contains(r))
+                .reduce(true, (a, b) -> a && b);
+
+        return targetTable.stream()
+                .map(Collection::stream)
+                .flatMap(Function.identity())
+                .sorted()
+                .distinct()
+                .filter(inEveryList)
+                .collect(Collectors.toList());
+    }
 
     public void setContext(AttackPattern context) {
         this.context = context;

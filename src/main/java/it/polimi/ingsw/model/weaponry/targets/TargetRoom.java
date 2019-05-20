@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.weaponry.targets;
 
+import com.sun.org.apache.bcel.internal.Const;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.TargetInheritanceException;
@@ -44,21 +45,6 @@ public class TargetRoom extends Target {
     }
 
     public List<Room> filter() {
-        List<List<Room>> targetTable = new ArrayList<>();
-
-        for(Constraint constraint : constraints)
-            targetTable.add(constraint.filterRooms(context));
-
-        Predicate<Room> inEveryList = r -> targetTable.stream()
-                .map(list -> list.contains(r))
-                .reduce(true, (a, b) -> a && b);
-
-        return targetTable.stream()
-                .map(Collection::stream)
-                .flatMap(Function.identity())
-                .sorted()
-                .distinct()
-                .filter(inEveryList)
-                .collect(Collectors.toList());
+        return Constraint.filterRooms(context, constraints);
     }
 }

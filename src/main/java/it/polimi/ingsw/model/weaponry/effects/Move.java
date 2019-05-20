@@ -4,6 +4,7 @@ package it.polimi.ingsw.model.weaponry.effects;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
+import it.polimi.ingsw.view.Dispatcher;
 
 public class Move extends Effect {
     protected int sourceAttackModuleId;
@@ -24,6 +25,7 @@ public class Move extends Effect {
         Player target = Constraint.getTarget(context, sourceAttackModuleId, drainTargetId).getPlayer();
         Cell destination = Constraint.getTarget(context, drainAttackModuleId, drainTargetId).getCell();
 
+        Dispatcher.sendMessage(target.getName() + " moves to " + destination.getId() + ".\n");
         target.setPosition(destination);
     }
 
