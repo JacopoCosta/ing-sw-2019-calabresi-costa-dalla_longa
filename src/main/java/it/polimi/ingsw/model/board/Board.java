@@ -55,10 +55,6 @@ public class Board {
         board.cells = Board.configureCells(type);
         board.cells.forEach(c -> c.setBoard(board));
 
-        //this method is necessary for CLI drawing only; however, it's called here to avoid being called more than needed;
-        //NOTE: calling it just once is fine, as long as the cell configuration won't be modified, which should never be done
-        board.sortCells();
-
         return board;
     }
 
@@ -175,16 +171,6 @@ public class Board {
      * This method invocation is necessary for the correct printing of the game board when using the CLI-visualization view.
      * @see CLI#printBoard()
      */
-    public void sortCells() {
-        Comparator<Cell> before = (c1, c2) -> {
-            if(c1.getYCoord() == c2.getYCoord())
-                return c1.getYCoord() - c2.getYCoord();
-            return c1.getXCoord() - c2.getXCoord();
-        };
-        cells = cells.stream()
-                    .sorted(before)
-                    .collect(Collectors.toList());
-    }
 
     public Cell findSpawnPoint(AmmoCubes ammoCubeColor) {
         for(Cell cell : cells) {

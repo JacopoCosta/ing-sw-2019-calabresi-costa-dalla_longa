@@ -3,7 +3,6 @@ package it.polimi.ingsw.view;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +46,7 @@ public abstract class Dispatcher {
 
     public static int requestNumberedOption(String message, List<?> options, List<Integer> numbers) {
         int length = options.size();
+
         StringBuilder messageBuilder = new StringBuilder(message);
         for(int i = 0; i < length; i ++) {
             Object option = options.get(i);
@@ -59,7 +59,7 @@ public abstract class Dispatcher {
         do {
             value = Dispatcher.safeIntegerConversion(Dispatcher.requestRoutine(message), value);
         } while(!numbers.contains(value));
-        return value - 1;
+        return numbers.indexOf(value);
     }
 
     public static int requestIndex(String message, List<?> list) {

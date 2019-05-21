@@ -51,6 +51,14 @@ public class AttackModule {
         return new AttackModule(id, name, description, summonCost, targets, effects, next);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public List<Target> getTargets() {
         return targets;
     }

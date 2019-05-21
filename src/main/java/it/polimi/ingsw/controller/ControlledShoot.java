@@ -43,25 +43,34 @@ public abstract class ControlledShoot {
         pattern.setAuthor(subject);
         pattern.resetAllModules();
 
-        List<AttackModule> first = pattern.getFirst()
-                .stream()
-                .map(pattern::getModule)
-                .collect(Collectors.toList());
+        List<Integer> first = pattern.getFirst();
 
-        // prompt details are missing
-        int nextIndex = first.size() > 1 ? Dispatcher.requestIndex(MODULE_CHOOSE, first) : 0;
+        int nextIndex = Dispatcher.requestIndex(MODULE_CHOOSE,
+                first.stream()
+                .map(i -> pattern.getModule(i).getName())
+                .collect(Collectors.toList())
+        );
+
         int nextId = pattern.getFirst().get(nextIndex);
+
         while(nextId != -1) {
-            AttackModule attackModule = first.get(nextIndex);
+            AttackModule attackModule = pattern.getModule(nextId);
             List<Target> targets = attackModule.getTargets();
 
-            System.out.println("I am groot.");
+            Dispatcher.sendMessage("For " + attackModule.getName() + ", I need to acquire: " + Table.list(targets.stream()
+                    .map(Target::getType)
+                    .collect(Collectors.toList())
+            ) + ".\n");
 
             for(Target target : targets) {
                 if(target.getType() == TargetType.PLAYER) {
                     List<Player> players = ((TargetPlayer) target).filter();
+                    if(players.size() == 0) {
+                        Dispatcher.sendMessage("Looks like there aren't valid players to select.\n");
+                        return;
+                    }
 
-                    System.out.println("This is a temporary message about players.");
+                    System.out.print("This is a temporary message about players.");
                     int playerId = Dispatcher.requestIndex(target.getMessage(),
                             players.stream()
                             .map(Player::getName)
@@ -75,8 +84,17 @@ public abstract class ControlledShoot {
                 else if(target.getType() == TargetType.CELL) {
                     List<Cell> cells = ((TargetCell) target).filter();
 
-                    System.out.println("This is a temporary message about cells.");
-                    int cellId = Dispatcher.requestIndex(target.getMessage(),
+                    if(cells.size() == 0) {
+                        Dispatcher.sendMessage("Looks like there aren't valid cells to select.\n");
+                        return;
+                    }
+
+                    System.out.print("This is a temporary message about cells.");
+                    int cellId = Dispatcher.requestNumberedOption(target.getMessage(),
+                            cells.stream()
+                            .map(Cell::getId)
+                            .collect(Collectors.toList()),
+
                             cells.stream()
                             .map(Cell::getId)
                             .collect(Collectors.toList())
@@ -89,7 +107,12 @@ public abstract class ControlledShoot {
                 else if(target.getType() == TargetType.ROOM) {
                     List<Room> rooms = ((TargetRoom) target).filter();
 
-                    System.out.println("This is a temporary message about rooms.");
+                    if(rooms.size() == 0) {
+                        Dispatcher.sendMessage("Looks like there aren't valid rooms to select.\n");
+                        return;
+                    }
+
+                    System.out.print("This is a temporary message about rooms.");
                     int roomId = Dispatcher.requestIndex(target.getMessage(),
                             rooms.stream()
                             .map(Room::toString)
@@ -103,9 +126,6 @@ public abstract class ControlledShoot {
 
             }
 
-            System.out.println("attackModule:" + attackModule);
-            System.out.println("attackModule.effects:" + Table.list(attackModule.getEffects()));
-
             attackModule.getEffects().forEach(e -> {
                 if (e.getType() == EffectType.MOVE)
                     e.apply();
@@ -118,8 +138,28 @@ public abstract class ControlledShoot {
 
             attackModule.setUsed(true);
 
-            List<Integer> next = attackModule.getNext();
-            nextIndex = next.size() > 1 ? Dispatcher.requestIndex(MODULE_CHOOSE, next) : 0;
+            List<Integer> next = attackModule.getNext()
+                    .stream()
+                    .filter(i -> {
+                        try {
+                            return !pattern.getModule(i).isUsed();
+                        } catch (IndexOutOfBoundsException e) { // -1 needs to pass
+                            return true;
+                        }
+                    })
+                    .collect(Collectors.toList());
+
+            nextIndex = Dispatcher.requestIndex(MODULE_CHOOSE,
+                    next.stream()
+                    .map(i -> {
+                        try {
+                            return pattern.getModule(i).getName() + ": " + pattern.getModule(i).getDescription();
+                        } catch (Exception e) { // -1 ends action
+                            return "End action.";
+                        }
+                    })
+                    .collect(Collectors.toList())
+            );
             nextId = next.get(nextIndex);
         }
     }

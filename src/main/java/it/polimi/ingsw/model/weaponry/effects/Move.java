@@ -22,7 +22,7 @@ public class Move extends Effect {
 
     @Override
     public void apply() {
-        Player target = Constraint.getTarget(context, sourceAttackModuleId, drainTargetId).getPlayer();
+        Player target = Constraint.getTarget(context, sourceAttackModuleId, sourceTargetId).getPlayer();
         Cell destination = Constraint.getTarget(context, drainAttackModuleId, drainTargetId).getCell();
 
         Dispatcher.sendMessage(target.getName() + " moves to " + destination.getId() + ".\n");

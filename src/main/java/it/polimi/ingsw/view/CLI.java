@@ -19,8 +19,6 @@ public class CLI extends View implements Viewable {
         int boardWidth = board.getBoardWidth();
         int boardHeight = board.getBoardHeight();
 
-        //sorts the cell list
-        board.sortCells();
         //displays the board
         for(int h = 0; h < boardHeight; h++) {
 

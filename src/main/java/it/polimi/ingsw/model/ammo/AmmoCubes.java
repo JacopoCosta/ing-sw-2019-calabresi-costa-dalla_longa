@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.ammo;
 
+import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 
@@ -133,17 +134,23 @@ public class AmmoCubes {
      * For this purpose, equal amounts of different colours are not comparable, implying that,
      * in order for two instances of this class to be considered equivalent, they must have equal amounts
      * of cubes for every colour.
-     * @param that the set of ammo cubes to compare with.
+     * @param object the set of ammo cubes to compare with.
      * @return whether or not the object this method was called upon is equivalent to the one passed as argument.
      */
-    public boolean equals(AmmoCubes that) {
-        return  this.getRed() == that.getRed() &&
-                this.getYellow() == that.getYellow() &&
-                this.getBlue() == that.getBlue();
+    @Override
+    public boolean equals(Object object) {
+        if(object == null)
+            return false;
+        if(!(object instanceof AmmoCubes))
+            return false;
+        AmmoCubes ammoCubes = ((AmmoCubes) object);
+        return  this.getRed() == ammoCubes.getRed() &&
+                this.getYellow() == ammoCubes.getYellow() &&
+                this.getBlue() == ammoCubes.getBlue();
     }
 
     /**
-     *
+     * no
      */
     public boolean contains(AmmoCubes that) {
         return  this.getRed() >= that.getRed() &&

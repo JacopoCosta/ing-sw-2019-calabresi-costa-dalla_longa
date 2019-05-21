@@ -340,7 +340,7 @@
                                         "type": "identity",
                                         "sourceAttackModuleId": -3,
                                         "sourceTargetId": -3,
-                                        "drainAttackModuleId": 2,
+                                        "drainAttackModuleId": 1,
                                         "drainTargetId": 0,
                                         "truth": false
                                     }
