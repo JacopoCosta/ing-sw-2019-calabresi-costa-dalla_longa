@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
+import it.polimi.ingsw.model.exceptions.CorruptedDeckException;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
@@ -46,7 +47,7 @@ public class Board {
         board.ammoTileDeck = Deck.generateAmmoTiles();
         board.powerUpDeck = Deck.generatePowerUps();
 
-        board.weaponDeck.shuffle();
+    //    board.weaponDeck.shuffle();
         board.ammoTileDeck.shuffle();
         board.powerUpDeck.shuffle();
 
@@ -246,18 +247,7 @@ public class Board {
                 .filter(c -> !c.isSpawnPoint())
                 .forEach(
                         c -> {
-                            AmmoTile at;
-                            try {
-                                at = ammoTileDeck.draw();
-                            } catch (EmptyDeckException e) {
-                                ammoTileDeck.regenerate();
-                                ammoTileDeck.shuffle();
-                                try {
-                                    at = ammoTileDeck.draw();
-                                } catch (EmptyDeckException error) {
-                                    throw new Error("Fatal error: Ammo Tile deck cannot be generated.");
-                                }
-                            }
+                            AmmoTile at = ammoTileDeck.smartDraw(true).orElse(null);
                             ((AmmoCell) c).setAmmoTile(at);
                         }
                 );

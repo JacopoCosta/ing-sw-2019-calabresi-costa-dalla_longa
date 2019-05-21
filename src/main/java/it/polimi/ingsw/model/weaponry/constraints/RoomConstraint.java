@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.exceptions.InvalidFilterInvocationException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -108,7 +109,7 @@ public class RoomConstraint extends Constraint {
                     .getCells()
                     .stream()
                     .map(Cell::getRoom)
-                    .sorted()
+                    .sorted(Comparator.comparing(Room::toString))
                     .filter(r -> this.verify(sourceRoom, r))
                     .distinct()
                     .collect(Collectors.toList());

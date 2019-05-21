@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.weaponry;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.exceptions.WeaponAlreadyLoadedException;
+import it.polimi.ingsw.model.exceptions.WeaponAlreadyUnloadedException;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
 
 public class Weapon {
@@ -40,10 +41,16 @@ public class Weapon {
         return this.loaded;
     }
 
-    public void reload() throws WeaponAlreadyLoadedException{
+    public void reload() throws WeaponAlreadyLoadedException {
         if(this.loaded)
             throw new WeaponAlreadyLoadedException("Attempted to reload an already loaded weapon");
         this.loaded = true;
+    }
+
+    public void unload() throws WeaponAlreadyUnloadedException {
+        if(!this.loaded)
+            throw new WeaponAlreadyUnloadedException("Attempted to consume ammo from an unloaded weapon.");
+        this.loaded = false;
     }
 
     public static Weapon build(DecoratedJSONObject jWeapon) {

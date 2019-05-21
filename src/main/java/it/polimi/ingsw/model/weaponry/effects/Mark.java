@@ -29,9 +29,9 @@ public class Mark extends OffensiveEffect{
 
     @Override
     public String toString() {
-        String s = amount + " mark(s) to player such that";
+        StringBuilder s = new StringBuilder(amount + " mark(s) to player such that");
         for(Constraint constraint : constraints)
-            s += " (" + constraint.toString() + ")";
-        return s;
+            s.append(" (").append(constraint.toString()).append(")");
+        return s.toString();
     }
 }

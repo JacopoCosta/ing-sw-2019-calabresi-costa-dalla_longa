@@ -28,10 +28,10 @@ public class Damage extends OffensiveEffect {
 
     @Override
     public String toString() {
-        String s = amount + " damage to player such that";
+        StringBuilder s = new StringBuilder(amount + " damage to player such that");
         for(Constraint constraint : constraints)
-            s += " (" + constraint.toString() + ")";
-        return s;
+            s.append(" (").append(constraint.toString()).append(")");
+        return s.toString();
     }
 
 }

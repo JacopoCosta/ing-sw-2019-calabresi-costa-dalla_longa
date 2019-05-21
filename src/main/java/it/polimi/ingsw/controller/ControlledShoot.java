@@ -2,7 +2,9 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.exceptions.WeaponAlreadyUnloadedException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.Weapon;
@@ -34,6 +36,7 @@ public abstract class ControlledShoot {
 
         AttackPattern pattern = weapon.getPattern();
         applyPattern(pattern, subject);
+        weapon.unload();
     }
 
     protected static synchronized void applyPattern(AttackPattern pattern, Player subject) {
@@ -49,38 +52,59 @@ public abstract class ControlledShoot {
         int nextIndex = first.size() > 1 ? Dispatcher.requestIndex(MODULE_CHOOSE, first) : 0;
         int nextId = pattern.getFirst().get(nextIndex);
         while(nextId != -1) {
-            AttackModule attackModule = first.get(nextId);
+            AttackModule attackModule = first.get(nextIndex);
             List<Target> targets = attackModule.getTargets();
+
+            System.out.println("I am groot.");
+
             for(Target target : targets) {
                 if(target.getType() == TargetType.PLAYER) {
                     List<Player> players = ((TargetPlayer) target).filter();
 
-                    int playerId = Dispatcher.requestIndex(target.getMessage(), players.stream().map(Player::getName).collect(Collectors.toList()));
-                    Player acquiredPlayer = players.get(playerId);
+                    System.out.println("This is a temporary message about players.");
+                    int playerId = Dispatcher.requestIndex(target.getMessage(),
+                            players.stream()
+                            .map(Player::getName)
+                            .collect(Collectors.toList())
+                    );
 
+                    Player acquiredPlayer = players.get(playerId);
                     Dispatcher.sendMessage("Selected " + acquiredPlayer.getName() + ".\n");
                     ((TargetPlayer) target).setPlayer(acquiredPlayer);
                 }
                 else if(target.getType() == TargetType.CELL) {
                     List<Cell> cells = ((TargetCell) target).filter();
 
-                    int cellId = Dispatcher.requestIndex(target.getMessage(), cells.stream().map(Cell::getId).collect(Collectors.toList()));
-                    Cell acquiredCell = cells.get(cellId);
+                    System.out.println("This is a temporary message about cells.");
+                    int cellId = Dispatcher.requestIndex(target.getMessage(),
+                            cells.stream()
+                            .map(Cell::getId)
+                            .collect(Collectors.toList())
+                    );
 
+                    Cell acquiredCell = cells.get(cellId);
                     Dispatcher.sendMessage("Selected " + acquiredCell.getId() + ".\n");
                     ((TargetCell) target).setCell(acquiredCell);
                 }
                 else if(target.getType() == TargetType.ROOM) {
                     List<Room> rooms = ((TargetRoom) target).filter();
 
-                    int roomId = Dispatcher.requestIndex(target.getMessage(), rooms.stream().map(Room::toString).collect(Collectors.toList()));
-                    Room acquiredRoom = rooms.get(roomId);
+                    System.out.println("This is a temporary message about rooms.");
+                    int roomId = Dispatcher.requestIndex(target.getMessage(),
+                            rooms.stream()
+                            .map(Room::toString)
+                            .collect(Collectors.toList())
+                    );
 
+                    Room acquiredRoom = rooms.get(roomId);
                     Dispatcher.sendMessage("Selected " + acquiredRoom.toString() + ".\n");
                     ((TargetRoom) target).setRoom(acquiredRoom);
                 }
 
             }
+
+            System.out.println("attackModule:" + attackModule);
+            System.out.println("attackModule.effects:" + Table.list(attackModule.getEffects()));
 
             attackModule.getEffects().forEach(e -> {
                 if (e.getType() == EffectType.MOVE)
@@ -95,7 +119,8 @@ public abstract class ControlledShoot {
             attackModule.setUsed(true);
 
             List<Integer> next = attackModule.getNext();
-            nextId = next.size() > 1 ? Dispatcher.requestIndex(MODULE_CHOOSE, next) : 0;
+            nextIndex = next.size() > 1 ? Dispatcher.requestIndex(MODULE_CHOOSE, next) : 0;
+            nextId = next.get(nextIndex);
         }
     }
 }

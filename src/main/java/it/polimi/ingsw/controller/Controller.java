@@ -67,13 +67,13 @@ public class Controller implements Controllable {
     public void discardWeaponRoutine(Player subject) {
         List<Weapon> weapons = subject.getWeapons();
         int discardIndex = Dispatcher.requestIndex(WEAPONS_FULL, weapons);
-        subject.getGame().getBoard().getWeaponDeck().discard(weapons.get(discardIndex));
+        subject.discardWeapon(weapons.get(discardIndex));
     }
 
     public void discardPowerUpRoutine(Player subject) {
         List<PowerUp> powerUps = subject.getPowerUps();
         int discardIndex = Dispatcher.requestIndex(POWERUPS_FULL, powerUps);
-        subject.getGame().getBoard().getPowerUpDeck().discard(powerUps.get(discardIndex));
+        subject.discardPowerUp(powerUps.get(discardIndex));
     }
 
     public Execution requestExecution(Player subject, List<Execution> executions) {

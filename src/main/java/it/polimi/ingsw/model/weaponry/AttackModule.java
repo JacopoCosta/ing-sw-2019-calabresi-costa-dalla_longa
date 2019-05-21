@@ -87,24 +87,24 @@ public class AttackModule {
 
     @Override
     public String toString() {
-        String s = "\t" + id + ". " + name;
+        StringBuilder s = new StringBuilder("\t" + id + ". " + name);
         if(context.getFirst().contains(id))
-            s += " (first)";
-        s += "\n\t" + summonCost.toString() + " to summon";
+            s.append(" (first)");
+        s.append("\n\t").append(summonCost.toString()).append(" to summon");
 
-        s += "\n\tTargets:";
+        s.append("\n\tTargets:");
         int targetId = 0;
         for(Target target : targets) {
-            s += "\n\t\t" + targetId + ". " + target.toString();
+            s.append("\n\t\t").append(targetId).append(". ").append(target.toString());
             targetId ++;
         }
-        s += "\n\tEffects:";
+        s.append("\n\tEffects:");
         for(Effect effect : effects)
-            s += "\n\t\t" + effect.toString();
+            s.append("\n\t\t").append(effect.toString());
 
-        s += "\n\tNext modules:";
+        s.append("\n\tNext modules:");
         for(int n : next)
-            s += " " + n;
+            s.append(" ").append(n);
 
         return s + "\n";
     }
