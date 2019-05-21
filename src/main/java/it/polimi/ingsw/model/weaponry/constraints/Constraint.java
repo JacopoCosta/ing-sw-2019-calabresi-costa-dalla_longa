@@ -76,6 +76,7 @@ public abstract class Constraint {
             return target;
         }
         if(attackModuleId >= 0 && targetId >= 0) {
+            System.out.println(attackModuleId + "PIIIPO" + targetId);
             return context.getModule(attackModuleId).getTargets().get(targetId);
         }
         throw new IllegalArgumentException("Generic targets are not gettable.");
@@ -90,8 +91,10 @@ public abstract class Constraint {
     public static List<Player> filterPlayers(AttackPattern context, List<Constraint> constraints) {
         List<List<Player>> targetTable = new ArrayList<>();
 
-        for(Constraint constraint : constraints)
+        for(Constraint constraint : constraints) {
+            System.out.println("Started constraint " + constraint.toString());
             targetTable.add(constraint.filterPlayers(context));
+        }
 
         Predicate<Player> inEveryList = p -> targetTable.stream()
                 .map(list -> list.contains(p))

@@ -26,8 +26,8 @@ public class Player extends VirtualClient {
 
     private static final int MAX_CARDS_IN_HAND = 3;
 
-    public static final int[] scoreboardDefault = {8, 6, 4, 2, 1, 1};
-    public static final int[] scoreboardFrenzy = {2, 1, 1, 1};
+    private static final int[] scoreboardDefault = {8, 6, 4, 2, 1, 1};
+    private static final int[] scoreboardFrenzy = {2, 1, 1, 1};
 
     private Game game;
 
@@ -124,6 +124,10 @@ public class Player extends VirtualClient {
             if(auth == author)
                 count ++;
         return count;
+    }
+
+    public List<Player> getMarkersList() {
+        return this.markings;
     }
 
     public boolean isOnFrenzy() {
@@ -229,6 +233,8 @@ public class Player extends VirtualClient {
 
         // if the damage's author has markings on the targeted player ...
         int awaitingMarkings = this.getMarkingsByAuthor(author);
+
+
         for(int i = 0; i < awaitingMarkings; i ++) {
             // ... each marking is turned into a damage point
             if(!this.isOverKilled()) {

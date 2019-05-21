@@ -69,19 +69,21 @@ public class Game {
     }
 
     public void setup() {
-        board.spreadAmmo();
-        board.spreadWeapons();
 
         // <temp>
-        participants.get(0).setPosition(board.getCells().get(5));
-
-        for(int i = 0; i < 10; i ++) {
+        for(int i = 0; i < 21; i ++) {
             try {
                 participants.get(0).giveWeapon(board.getWeaponDeck().smartDraw(false).orElse(null));
             } catch (FullHandException ignored) { }
         }
-        participants.get(1).setPosition(board.getCells().get(6));
+
+        int[] positions = {7, 7, 6, 9, 3, 4, 0};
+        for(int i = 0; i < positions.length; i ++)
+            participants.get(i).setPosition(board.getCells().get(positions[i]));
         // </temp>
+
+        board.spreadAmmo();
+        board.spreadWeapons();
     }
 
     public void playTurn() {
@@ -159,7 +161,7 @@ public class Game {
                         Table.list(p.getDamagersList().stream().map(Player::getID).collect(Collectors.toList()))
                         + "]").collect(Collectors.toList()),
                 participants.stream().map(p -> "Marks[" +
-                        Table.list(p.getDamagersList().stream().map(Player::getID).collect(Collectors.toList()))
+                        Table.list(p.getMarkersList().stream().map(Player::getID).collect(Collectors.toList()))
                         + "]").collect(Collectors.toList()),
                 participants.stream().map(p -> "| Weapons[" +
                         Table.list(p.getWeapons().stream().map(Weapon::getName).collect(Collectors.toList()))

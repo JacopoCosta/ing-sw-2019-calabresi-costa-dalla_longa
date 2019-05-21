@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.weaponry.constraints;
 
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.exceptions.DistanceFromNullException;
 import it.polimi.ingsw.model.exceptions.InvalidFilterInvocationException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
@@ -24,7 +25,13 @@ public class DistanceConstraint extends Constraint {
     }
 
     private boolean verify(Cell sourceCell, Cell drainCell) {
-        int distance = sourceCell.distance(drainCell);
+        int distance;
+        System.out.println("RAPEPINO" + sourceCell);
+        try {
+            distance = sourceCell.distance(drainCell);
+        } catch (DistanceFromNullException e) {
+            return false;
+        }
         return (distance >= lowerBound) && (distance <= upperBound || upperBound < 0);
     }
 

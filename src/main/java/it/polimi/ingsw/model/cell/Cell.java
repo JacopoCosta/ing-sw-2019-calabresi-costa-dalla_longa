@@ -1,13 +1,17 @@
 package it.polimi.ingsw.model.cell;
 
+import com.sun.javafx.geom.transform.Identity;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.Room;
+import it.polimi.ingsw.model.exceptions.DistanceFromNullException;
 import it.polimi.ingsw.model.exceptions.SelfAdjacentCellException;
 import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -160,32 +164,25 @@ public abstract class Cell {
      * @param cell the target cell.
      * @return the distance between the cell this method is called upon and the cell passed as argument.
      */
-    public int distance(Cell cell) {
-        // trivial case -- the cell is distant 0 from itself
-        if(this == cell)
-            return 0;
+    public int distance(Cell cell) throws DistanceFromNullException {
+        if(cell == null)
+            throw new DistanceFromNullException("Attempted to measure distance from null.");
 
-        int distance = 1;
-        boolean found = false;
-        List<Cell> alreadyVisited = new ArrayList<>();
-        List<Cell> visiting = new ArrayList<>();
+        List<Cell> visited = new ArrayList<>();
+        // consider the starting cell already visited
+        visited.add(this);
 
-        // this has already been visited (in the trivial case check)
-        alreadyVisited.add(this);
-
-        // start a Breadth-First Search (BFS) algorithm from this
-        while(!found) {
-            for(Cell av : alreadyVisited) // for each already visited cell
-                for(Cell adj : av.getAdjacentCells()) // visit all of its adjacent cells
-                    if(!alreadyVisited.contains(adj)) // avoid re-visiting already visited cells
-                        visiting.add(adj);
-            if(visiting.contains(cell))
-                found = true;
-            else
-                distance ++;
-
-            // move all the currently visited to already visited
-            alreadyVisited.addAll(visiting);
+        int distance;
+        for(distance = 0; !visited.contains(cell); distance ++) {
+            // any cell that is adjacent to already visited cells (without repetitions) excluding the already visited ones
+            visited.addAll(visited.stream()
+                    .map(c -> c.getAdjacentCells().stream())
+                    .flatMap(Function.identity())
+                    .sorted(Comparator.comparingInt(Cell::getId))
+                    .distinct()
+                    .filter(c -> !visited.contains(c))
+                    .collect(Collectors.toList())
+            );
         }
         return distance;
     }

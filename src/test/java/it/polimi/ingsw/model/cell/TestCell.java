@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.cell;
 
 import it.polimi.ingsw.model.board.Room;
+import it.polimi.ingsw.model.exceptions.DistanceFromNullException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,7 +62,7 @@ public class TestCell {
 
 
     @Test
-    public void distance() {
+    public void distance() throws DistanceFromNullException {
         assertEquals(0, cell3.distance(cell3));
         assertEquals(1, cell5.distance(cell4));
         assertEquals(1, cell3.distance(cell6));
