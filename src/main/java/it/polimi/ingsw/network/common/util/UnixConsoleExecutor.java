@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-class UnixCommandLineExecutor implements CommandLineExecutor {
+class UnixConsoleExecutor implements ConsoleExecutor {
     private final String START_RMI_REGISTRY = "cd " + RMI_REGISTRY_EXECUTION_PATH + "&&" + "rmiregistry &";
     private final String STOP_RMI_REGISTRY = "pkill -f rmiregistry";
     private final String CLEAR_CONSOLE = "clear";
@@ -41,7 +41,8 @@ class UnixCommandLineExecutor implements CommandLineExecutor {
                 System.err.println(line);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace(); //never thrown before
+System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());;
         }
     }
 }

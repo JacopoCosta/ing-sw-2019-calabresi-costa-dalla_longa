@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ClientHandler implements Runnable {
     private CommunicationHub communicationHub;
@@ -27,7 +28,8 @@ public class ClientHandler implements Runnable {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace(); //never thrown before
+            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
             closeConnection();
         }
     }
@@ -37,7 +39,8 @@ public class ClientHandler implements Runnable {
             try {
                 in.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace(); //never thrown before
+                System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
             }
         }
 
@@ -45,30 +48,32 @@ public class ClientHandler implements Runnable {
             try {
                 out.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace(); //never thrown before
+                System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
             }
         }
 
         try {
             socket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace(); //never thrown before
+            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
         }
     }
 
     private Message refactor(Message message) {
         ClientCommunicationInterface clientInterface = new SocketClientCommunicationInterface(out);
-        String playerName = (String) message.getContent();
+        String playerName = message.getAuthor();
         Player player = new Player(playerName);
         player.setCommunicationInterface(clientInterface);
 
-        return Message.completeMessage(message.getAuthor(), MessageType.REGISTER_REQUEST, player);
+        return Message.completeMessage(message.getAuthor(), message.getType(), player);
     }
 
     @Override
     public void run() {
+        Message message;
         try {
-            Message message;
             do {
                 message = (Message) in.readObject();
 
@@ -77,8 +82,11 @@ public class ClientHandler implements Runnable {
 
                 communicationHub.handleMessage(message);
             } while (!message.getType().equals(MessageType.UNREGISTER_REQUEST));
+        } catch (SocketException ignored) {
+            //Client unexpectedly quit: the ClientHandler.connectionChecker will unregister it
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            //e.printStackTrace(); //never thrown before
+            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
         } finally {
             closeConnection();
         }

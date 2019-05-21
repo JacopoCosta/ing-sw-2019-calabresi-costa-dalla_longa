@@ -18,8 +18,8 @@ public class ServerController extends UnicastRemoteObject implements RmiControll
     }
 
     private Message refactor(Message message) {
-        String playerName = (String) (((Object[]) message.getContent())[0]);
-        RmiController clientController = (RmiController) (((Object[]) message.getContent())[1]);
+        String playerName = message.getAuthor();
+        RmiController clientController = (RmiController) message.getContent();
 
         ClientCommunicationInterface clientInterface = new RmiClientCommunicationInterface(clientController);
         Player player = new Player(playerName);

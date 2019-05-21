@@ -2,7 +2,7 @@ package it.polimi.ingsw.network.common.util;
 
 import it.polimi.ingsw.network.server.communication.rmi.ServerController;
 
-interface CommandLineExecutor {
+interface ConsoleExecutor {
     String RMI_REGISTRY_EXECUTION_PATH = ServerController.class
             .getProtectionDomain()
             .getCodeSource()

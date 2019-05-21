@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-class WindowsCommandLineExecutor implements CommandLineExecutor {
+class WindowsConsoleExecutor implements ConsoleExecutor {
     private final String START_RMI_REGISTRY_COMMAND = "cd /d " + RMI_REGISTRY_EXECUTION_PATH + "&&" + "start rmiregistry";
     private final String STOP_RMI_REGISTRY_COMMAND = "taskkill /im rmiregistry.exe";
     private final String CLEAR_CONSOLE_COMMAND = "cls";
@@ -41,7 +41,9 @@ class WindowsCommandLineExecutor implements CommandLineExecutor {
                 System.err.println(line);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            ////e.printStackTrace(); //never thrown before
+System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());; //never thrown before
+System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());;
         }
     }
 }
