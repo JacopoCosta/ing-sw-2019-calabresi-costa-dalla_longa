@@ -1,17 +1,7 @@
 package it.polimi.ingsw.network.server;
 
-/*
- * TODO:
- *  NOTE 3: logging activity is performed by System.out for now. In the future it will eventually be replaced
- *         with a proper logger.
- *  NOTE 4: an auto-save feature is required. This will be introduced in the future updates.
- *  NOTE 6: all exceptions are thrown as they are. In the final release they will be handled with proper
- *          user friendly messages (in both ServerController and ClientHandler).
- *
- * */
-
 import it.polimi.ingsw.network.common.controller.RmiController;
-import it.polimi.ingsw.network.common.util.CommandLineController;
+import it.polimi.ingsw.network.common.util.ConsoleController;
 import it.polimi.ingsw.network.server.communication.rmi.ServerController;
 import it.polimi.ingsw.network.server.communication.socket.ClientHandler;
 
@@ -29,14 +19,14 @@ public class Server {
     private static String serverAddress;
     private static int serverPort;
 
-    private static final CommandLineController commandLineController = new CommandLineController();
+    private static final ConsoleController CONSOLE_CONTROLLER = new ConsoleController();
 
     private static final ExecutorService executor = Executors.newFixedThreadPool(2);
 
     private static final Runnable socketServer = () -> {
         try (ServerSocket socket = new ServerSocket(serverPort, 0, InetAddress.getByName(serverAddress))) {
             System.out.println("LOG: socket server configured on " + serverAddress + ":" + serverPort);
-            System.out.println("LOG: socket ServerController bounded on " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
+            System.out.println("LOG: socket server bounded on " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
             System.out.println("STATUS: socket server running...");
             ExecutorService executor = Executors.newCachedThreadPool();
             while (true) {
@@ -50,7 +40,7 @@ public class Server {
 
     private static final Runnable rmiServer = () -> {
         System.out.println("LOG: Starting RMI registry...");
-        commandLineController.startRmiRegistry();
+        CONSOLE_CONTROLLER.startRmiRegistry();
         System.out.println("LOG: RMI service started");
 
         System.out.println("LOG: creating RMI protocol implementation...");
@@ -59,7 +49,7 @@ public class Server {
             serverController = new ServerController();
         } catch (RemoteException e) {
             System.err.println("ERROR: " + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
-            commandLineController.stopRmiRegistry();
+            CONSOLE_CONTROLLER.stopRmiRegistry();
             System.exit(-1);
             return;
         }
@@ -71,7 +61,7 @@ public class Server {
             registry = LocateRegistry.getRegistry();
         } catch (RemoteException e) {
             System.err.println("ERROR: " + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
-            commandLineController.stopRmiRegistry();
+            CONSOLE_CONTROLLER.stopRmiRegistry();
             System.exit(-1);
             return;
         }
@@ -81,7 +71,7 @@ public class Server {
             registry.bind(bindingName, serverController);
         } catch (RemoteException e) {
             System.err.println("ERROR: " + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
-            commandLineController.stopRmiRegistry();
+            CONSOLE_CONTROLLER.stopRmiRegistry();
             System.exit(-1);
         } catch (AlreadyBoundException e) {
             System.out.println("LOG: RMI registry service already bound, rebinding...");
@@ -89,14 +79,14 @@ public class Server {
                 registry.rebind(bindingName, serverController);
             } catch (RemoteException ex) {
                 System.err.println("ERROR: " + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
-                commandLineController.stopRmiRegistry();
+                CONSOLE_CONTROLLER.stopRmiRegistry();
                 System.exit(-1);
             }
             System.out.println("LOG: RMI service rebounded");
         }
         System.out.println("LOG: RMI done binding");
         System.out.println("LOG: RMI started on " + serverAddress + ":" + serverPort);
-        System.out.println("STATUS: RMI serverController is running...");
+        System.out.println("STATUS: RMI server is running...");
     };
 
     public static void main(String[] args) {
@@ -112,7 +102,7 @@ public class Server {
             System.err.println("ERROR: server port not in range [1025 - 65535]");
             System.exit(-1);
         }
-        commandLineController.clearConsole();
+        CONSOLE_CONTROLLER.clearConsole();
 
         executor.execute(socketServer);
         executor.execute(rmiServer);

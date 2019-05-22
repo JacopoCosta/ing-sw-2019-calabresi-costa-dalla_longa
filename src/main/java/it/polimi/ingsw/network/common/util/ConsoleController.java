@@ -1,15 +1,15 @@
 package it.polimi.ingsw.network.common.util;
 
-public class CommandLineController {
-    private final CommandLineExecutor executor;
+public class ConsoleController {
+    private final ConsoleExecutor executor;
 
-    public CommandLineController() {
+    public ConsoleController() {
         String osName = System.getProperty("os.name").toLowerCase();
 
         if (isWindowsOS(osName))
-            executor = new WindowsCommandLineExecutor();
+            executor = new WindowsConsoleExecutor();
         else if (isUnixOS(osName) || isMacOS(osName))
-            executor = new UnixCommandLineExecutor();
+            executor = new UnixConsoleExecutor();
         else
             throw new RuntimeException("invalid OS: unable to execute console commands");
     }

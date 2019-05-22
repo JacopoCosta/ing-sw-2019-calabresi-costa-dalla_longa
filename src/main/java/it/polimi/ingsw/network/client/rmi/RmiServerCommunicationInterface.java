@@ -32,7 +32,7 @@ public class RmiServerCommunicationInterface implements ServerCommunicationInter
                 registry.rebind("rmi://" + hostAddress + ":" + port + "/ClientController", controller);
             }
         } catch (RemoteException | NotBoundException e) {
-            throw new ConnectionException("RMI client connection error", e);
+            throw new ConnectionException("RMI connection error to the server", e);
         }
     }
 
@@ -40,31 +40,29 @@ public class RmiServerCommunicationInterface implements ServerCommunicationInter
         try {
             UnicastRemoteObject.unexportObject(clientController, false);
         } catch (NoSuchObjectException e) {
-            throw new ConnectionException("RMI client connection error", e);
+            throw new ConnectionException("RMI connection error to the server", e);
         }
-    }
-
-    private Message refactor(Message message) {
-        Object[] clientInfo = {message.getContent(), clientController};
-        return Message.completeMessage(message.getAuthor(), MessageType.REGISTER_REQUEST, clientInfo);
     }
 
     @Override
     public void sendMessage(Message message) throws ConnectionException {
         try {
             if (message.getType().equals(MessageType.REGISTER_REQUEST))
-                message = refactor(message);
+                message = Message.completeMessage(message.getAuthor(), message.getType(), clientController);
 
             serverController.notifyMessageReceived(message);
         } catch (RemoteException e) {
-            throw new ConnectionException("RMI client connection error", e);
+            throw new ConnectionException("RMI connection error to the server", e);
         }
     }
 
     public Message nextMessage() throws ConnectionException {
-        Message message = clientController.getMessage();
+        Message message;
 
-        if (message.getType().equals(MessageType.UNREGISTER_REQUEST))
+        do message = clientController.getMessage();
+        while (message.getType().equals(MessageType.PING_MESSAGE));
+
+        if (message.getType() == MessageType.UNREGISTER_SUCCESS)
             closeConnection();
 
         return message;

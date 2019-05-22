@@ -14,6 +14,9 @@ public class RmiClientCommunicationInterface implements ClientCommunicationInter
         this.clientController = clientController;
     }
 
+    /*
+    * message sent to the Client
+    * */
     @Override
     public void sendMessage(Message message) throws ConnectionException {
         try {
