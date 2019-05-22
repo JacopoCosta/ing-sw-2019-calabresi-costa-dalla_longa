@@ -1,14 +1,14 @@
-package it.polimi.ingsw.controller;
+package it.polimi.ingsw.view.virtual;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.Player;
 
-public class VirtualDispatcher {
+public class VirtualView {
     private static final String FATAL_ERROR = "You should never see this message. If you do, run for your life!";
 
     private Game game;
 
-    public VirtualDispatcher(Game game) {
+    public VirtualView(Game game) {
         this.game = game;
     }
 

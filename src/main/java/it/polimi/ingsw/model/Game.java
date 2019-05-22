@@ -1,13 +1,8 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.controller.VirtualDispatcher;
-import it.polimi.ingsw.model.ammo.AmmoTile;
+import it.polimi.ingsw.view.virtual.VirtualView;
 import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.board.Room;
-import it.polimi.ingsw.model.cell.AmmoCell;
-import it.polimi.ingsw.model.cell.Cell;
-import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.exceptions.FullHandException;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.powerups.PowerUp;
@@ -17,7 +12,6 @@ import it.polimi.ingsw.view.Dispatcher;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Game {
@@ -32,7 +26,7 @@ public class Game {
 
     private Board board;
     private Controller controller;
-    private VirtualDispatcher virtualDispatcher;
+    private VirtualView virtualDispatcher;
 
     public Board getBoard() {
         return this.board;
@@ -42,7 +36,7 @@ public class Game {
         return controller;
     }
 
-    public VirtualDispatcher getDispatcher() {
+    public VirtualView getDispatcher() {
         return virtualDispatcher;
     }
 
@@ -55,7 +49,7 @@ public class Game {
 
         this.board = Board.generate(this, boardType);
         this.controller = new Controller(this);
-        this.virtualDispatcher = new VirtualDispatcher(this);
+        this.virtualDispatcher = new VirtualView(this);
     }
 
     public static Game create(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {

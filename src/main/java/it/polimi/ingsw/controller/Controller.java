@@ -42,7 +42,6 @@ public class Controller implements Controllable {
             default:
                 break;
         }
-        Dispatcher.sendMessage(activity.getType().toString() + "completed.");
     }
 
     public void powerUpRoutine(Player subject, PowerUp powerUp) {
