@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.exceptions.DistanceFromNullException;
 import it.polimi.ingsw.view.virtual.VirtualView;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.exceptions.FullHandException;
@@ -8,15 +10,12 @@ import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
-import it.polimi.ingsw.view.Dispatcher;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Game {
-    private static final String RESPAWN_REQUEST = "Which power-up would you like to keep? You will respawn where indicated by the one you discard.";
-
     private boolean finalFrenzy;
     private int roundsLeft;
     private boolean gameOver;
@@ -26,7 +25,7 @@ public class Game {
 
     private Board board;
     private Controller controller;
-    private VirtualView virtualDispatcher;
+    private VirtualView virtualView;
 
     public Board getBoard() {
         return this.board;
@@ -37,7 +36,7 @@ public class Game {
     }
 
     public VirtualView getDispatcher() {
-        return virtualDispatcher;
+        return virtualView;
     }
 
     private Game(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {
@@ -46,10 +45,9 @@ public class Game {
         this.gameOver = false;
         this.participants = participants;
         this.currentTurnPlayer = 0;
-
         this.board = Board.generate(this, boardType);
-        this.controller = new Controller(this);
-        this.virtualDispatcher = new VirtualView(this);
+        this.controller = new Controller();
+        this.virtualView = new VirtualView(this);
     }
 
     public static Game create(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {
@@ -81,40 +79,62 @@ public class Game {
     }
 
     public void playTurn() {
-        Player subject = participants.get(currentTurnPlayer);
+        Player subject = participants.get(currentTurnPlayer); // TODO check still connected
 
         if(subject.getPosition() == null) {
-            printGameStatus();
-
             List<PowerUp> powerUps = new ArrayList<>();
-
             for(int i = 0; i <= 1; i ++)
-                powerUps.add(board.getPowerUpDeck().smartDraw(true).orElse(null));
+                powerUps.add(board.getPowerUpDeck().smartDraw(true).orElse(null)); //TODO i don't like null here
 
-            int keepIndex = Dispatcher.requestIndex(RESPAWN_REQUEST, powerUps);
-
-            PowerUp powerUpToKeep = powerUps.get(keepIndex);
-            PowerUp powerUpToRespawn = powerUps.get(1 - keepIndex);
-
-            subject.spawn(powerUpToRespawn.getSpawnPoint(board));
-            try {
-                subject.givePowerUp(powerUpToKeep);
-            } catch (FullHandException e) {
-                controller.discardPowerUpRoutine(subject);
-            }
+            virtualView.spawn(subject, powerUps);
         }
 
         subject.beginTurn();
         subject.savePosition();
         subject.resetRecentlyDamaged();
         while(subject.getRemainingExecutions() > 0) { // a turn is made by several executions
-            printGameStatus();
             List<Execution> options = Execution.getOptionsForPlayer(subject);
-            Execution choice = controller.requestExecution(subject, options);
+            Execution choice = virtualView.chooseExecution(subject, options);
 
-            for(Activity activity : choice.getActivities()) // each execution consists of some activities
-                this.controller.activityRoutine(subject, activity);
+            for(Activity activity : choice.getActivities()) { // each execution consists of some activities
 
+                switch(activity.getType()) {
+                    case MOVE:
+                        int maxDistance = ((Move) activity).getMaxDistance();
+                        List<Cell> validDestinations = board.getCells()
+                                .stream()
+                                .filter(c -> {
+                                    try {
+                                        return c.distance(subject.getPosition()) <= maxDistance;
+                                    } catch (DistanceFromNullException e) {
+                                        return false;
+                                    }
+                                })
+                                .collect(Collectors.toList());
+                        virtualView.move(subject, validDestinations);
+                        break;
+
+                    case GRAB:
+                        Cell position = subject.getPosition();
+                        if(position.isSpawnPoint()) {
+                            virtualView.grabWeapon(subject);
+                        }
+                        else
+                            virtualView.grabAmmo(subject);
+                        break;
+
+                    case SHOOT:
+                        virtualView.shoot(subject);
+                        break;
+
+                    case RELOAD:
+                        virtualView.reload(subject);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
             subject.endExecution();
         }
 
@@ -130,10 +150,6 @@ public class Game {
         while(!gameOver) {
             this.playTurn();
         }
-    }
-
-    public void printGameStatus() {
-        Dispatcher.sendMessage(this.toString());
     }
 
     @Override

@@ -7,8 +7,7 @@ public enum MessageType {
     //registration to the server
     REGISTER_REQUEST,
     REGISTER_SUCCESS,
-    CLIENT_ALREADY_REGISTERED_ERROR,,
-    CLIENT_NOT_REGISTERED_ERROR,
+    PLAYER_ALREADY_REGISTERED_ERROR,
 
     //unregistering from the server
     UNREGISTER_REQUEST,

@@ -4,7 +4,7 @@ package it.polimi.ingsw.model.weaponry.effects;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
-import it.polimi.ingsw.view.Dispatcher;
+import it.polimi.ingsw.view.remote.Dispatcher;
 
 public class Move extends Effect {
     protected int sourceAttackModuleId;

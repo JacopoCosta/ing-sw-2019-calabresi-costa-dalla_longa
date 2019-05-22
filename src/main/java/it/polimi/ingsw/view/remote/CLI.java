@@ -1,8 +1,6 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.view.remote;
 
 import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.weaponry.constraints.DistanceConstraint;
-import it.polimi.ingsw.view.BoardGraph;
 
 public class CLI extends View implements Viewable {
     

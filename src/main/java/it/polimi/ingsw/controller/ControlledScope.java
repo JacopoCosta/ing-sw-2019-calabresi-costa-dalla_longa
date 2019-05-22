@@ -2,7 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.view.Dispatcher;
+import it.polimi.ingsw.view.remote.Dispatcher;
 
 import java.util.List;
 import java.util.stream.Collectors;

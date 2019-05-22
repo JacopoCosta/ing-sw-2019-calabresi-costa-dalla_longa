@@ -2,7 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.view.Dispatcher;
+import it.polimi.ingsw.view.remote.Dispatcher;
 
 public abstract class ControlledGrenade {
     private static final String GRENADE_REQUEST = "Would you like to respond with a grenade?";

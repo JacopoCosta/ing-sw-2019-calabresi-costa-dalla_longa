@@ -63,7 +63,7 @@ public class Client {
                 case REGISTER_SUCCESS:
                     valid = true;
                     break;
-                case CLIENT_ALREADY_REGISTERED_ERROR:
+                case PLAYER_ALREADY_REGISTERED_ERROR:
                 default:
                     break;
             }

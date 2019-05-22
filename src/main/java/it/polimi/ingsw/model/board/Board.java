@@ -6,16 +6,14 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
-import it.polimi.ingsw.model.exceptions.CorruptedDeckException;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
-import it.polimi.ingsw.view.CLI;
+import it.polimi.ingsw.view.remote.CLI;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 

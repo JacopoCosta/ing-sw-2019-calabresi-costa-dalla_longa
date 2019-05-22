@@ -247,9 +247,7 @@ public class Player extends VirtualClient {
 
         List<PowerUp> grenades = powerUps.stream().filter(p -> p.getType() == PowerUpType.GRENADE).collect(Collectors.toList());
         if(grenades.size() > 0) { // if the player is able to respond with a tagback grenade
-            game.getController().powerUpRoutine(this,
-                    grenades.stream().findFirst().orElse(null) // null is never used due to the if condition
-            );
+            //TODO grenades
         }
     }
 

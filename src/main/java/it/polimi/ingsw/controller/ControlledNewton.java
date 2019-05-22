@@ -64,7 +64,7 @@ public abstract class ControlledNewton {
 
         AttackPattern attackPattern = new AttackPattern(first, content);
 
-        ControlledShoot.applyPattern(attackPattern, subject);
+    //    ControlledShoot.applyPattern(attackPattern, subject);
         subject.discardPowerUp(powerUp);
     }
 }
