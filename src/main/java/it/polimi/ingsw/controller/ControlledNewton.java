@@ -17,16 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ControlledNewton {
-    private static final int NEWTON_MOVES = 2;
-    private static final String PLAYER_CHOOSE = "Who would you like to move?";
-    private static final String CELL_CHOOSE = "Where would you like to move them?";
-
 
     protected static synchronized void routine(Player subject, PowerUp powerUp) {
 
         List<Constraint> playerConstraints = new ArrayList<>();
         TargetPlayer targetPlayer = new TargetPlayer(
-                PLAYER_CHOOSE,
+                "",
                 playerConstraints
         );
 
@@ -35,10 +31,10 @@ public abstract class ControlledNewton {
                 new VisibilityConstraint(-1, -1, 0, 1, true)
         );
         cellConstraints.add(
-                new DistanceConstraint(0, 0, 0, 1, 0, NEWTON_MOVES)
+                new DistanceConstraint(0, 0, 0, 1, 0, 2)
         );
         TargetCell targetCell = new TargetCell(
-                CELL_CHOOSE,
+                "",
                 cellConstraints
         );
 

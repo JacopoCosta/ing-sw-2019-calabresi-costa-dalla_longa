@@ -27,6 +27,8 @@ public enum Deliverable {
     SCOPE_REQUEST_TARGET("which"),
     GRENADE_REQUEST_IF("wha"),
     GRENADE_REQUEST_WHICH("wha"),
+    NEWTON_REQUEST_PLAYER("Who would you like to move?"),
+    NEWTON_REQUEST_CELL("Where would you like to move them?"),
     FATAL_ERROR("You should never see this message. If you do, run for your life!");
 
     public String message;

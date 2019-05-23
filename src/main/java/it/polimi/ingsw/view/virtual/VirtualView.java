@@ -274,4 +274,12 @@ public class VirtualView {
         subject.discardPowerUp(grenade);
         controller.grenade(subject, originalAttacker);
     }
+
+    public void newton(Player subject, List<PowerUp> newtons) {
+
+    }
+
+    public void teleport(Player subject, List<PowerUp> teleports) {
+
+    }
 }
