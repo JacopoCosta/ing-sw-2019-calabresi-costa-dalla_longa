@@ -8,24 +8,29 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.player.Execution;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.Weapon;
+import it.polimi.ingsw.model.weaponry.effects.Damage;
 import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.model.weaponry.targets.TargetCell;
 import it.polimi.ingsw.model.weaponry.targets.TargetPlayer;
 import it.polimi.ingsw.model.weaponry.targets.TargetRoom;
 import it.polimi.ingsw.view.remote.Dispatcher;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
-// Important note: this class often invokes the Dispatcher in its methods.
+// Important note: this class invokes the Dispatcher several times in its "send..." methods.
 // This will no longer be in the final version of the game, as the Dispatcher, unlike this class,
-// will be running on the client side, making it unreachable without a network protocol connecting the two.
+// will be running on the client side, making it unreachable without a network protocol bridging the two.
 // For this reason, all of the calls to the Dispatcher will have to be replaced with equivalent network protocol messages.
-// In addition to this, the "Deliverable" interface will be used by the client to determine what to display (and how).
-public class VirtualView implements Deliverable {
+// In addition to this, the "Deliverable" enum will be used by the client to determine what to display,
+// deciding autonomously whether to display it using a CLI or a GUI. Should the preferred output method be a CLI,
+// every instance of Deliverable offers, for this purpose, a .toString() method.
+public class VirtualView {
 
     private Game game;
     private Controller controller;
@@ -36,11 +41,19 @@ public class VirtualView implements Deliverable {
     }
 
     private void sendMessage(Player recipient, Deliverable message) {
-
+        Dispatcher.sendMessage(message.toString());
     }
 
-    private int sendRequest(Player recipient, Deliverable request) {
-        return 0;
+    private int sendRequest(Player recipient, Deliverable request, List<?> values, List<Integer> keys) {
+        return Dispatcher.requestNumberedOption(request.toString(), values, keys);
+    }
+
+    private int sendRequest(Player recipient, Deliverable request, List<?> values) {
+        return Dispatcher.requestIndex(request.toString(), values);
+    }
+
+    private boolean sendRequest(Player recipient, Deliverable request) {
+        return Dispatcher.requestBoolean(request.toString());
     }
 
     private void broadcast(Deliverable message) {
@@ -48,34 +61,34 @@ public class VirtualView implements Deliverable {
     }
 
     public void spawn(Player subject, List<PowerUp> options) {
-        int keepIndex = Dispatcher.requestIndex(SPAWN_REQUEST, options);
+        int keepIndex = sendRequest(subject, Deliverable.SPAWN_REQUEST, options);
         PowerUp powerUpToKeep = options.get(keepIndex);
         PowerUp powerUpToRespawn = options.get(1 - keepIndex);
         controller.spawn(subject, powerUpToKeep, powerUpToRespawn);
-        Dispatcher.sendMessage(SPAWN_SUCCESS);
+        sendMessage(subject, Deliverable.SPAWN_SUCCESS);
     }
 
     public void discardPowerUp(Player subject) {
         List<PowerUp> powerUps = subject.getPowerUps();
-        int discardIndex = Dispatcher.requestIndex(DISCARD_POWER_UP_REQUEST, powerUps);
+        int discardIndex = sendRequest(subject, Deliverable.DISCARD_POWER_UP_REQUEST, powerUps);
         PowerUp toDiscard = powerUps.get(discardIndex);
         controller.discardPowerUp(subject, toDiscard);
     }
 
     public void discardWeapon(Player subject) {
         List<Weapon> weapons = subject.getWeapons();
-        int discardIndex = Dispatcher.requestIndex(DISCARD_WEAPON_REQUEST, weapons);
+        int discardIndex = sendRequest(subject, Deliverable.DISCARD_WEAPON_REQUEST, weapons);
         Weapon toDiscard = weapons.get(discardIndex);
         controller.discardWeapon(subject, toDiscard);
     }
 
     public Execution chooseExecution(Player subject, List<Execution> options) {
-        int choiceIndex = Dispatcher.requestIndex(CHOOSE_EXECUTION_REQUEST, options);
+        int choiceIndex = sendRequest(subject, Deliverable.CHOOSE_EXECUTION_REQUEST, options);
         return options.get(choiceIndex);
     }
 
     public void move(Player subject, List<Cell> options) {
-        int destinationIndex = Dispatcher.requestIndex(MOVE_REQUEST, options);
+        int destinationIndex = sendRequest(subject, Deliverable.MOVE_REQUEST, options);
         Cell destination = options.get(destinationIndex);
         controller.move(subject, destination);
     }
@@ -83,22 +96,22 @@ public class VirtualView implements Deliverable {
     public void grabAmmo(Player subject) {
         boolean success = controller.grabAmmo(subject);
         if(success)
-            Dispatcher.sendMessage(GRAB_AMMO_SUCCESS);
+            sendMessage(subject, Deliverable.GRAB_AMMO_SUCCESS);
         else
-            Dispatcher.sendMessage(GRAB_AMMO_FAILURE);
+            sendMessage(subject, Deliverable.GRAB_AMMO_FAILURE);
     }
 
     public void grabWeapon(Player subject) {
-        boolean doPurchase = Dispatcher.requestBoolean(GRAB_WEAPON_REQUEST_IF);
+        boolean doPurchase = sendRequest(subject, Deliverable.GRAB_WEAPON_REQUEST_IF);
         if(!doPurchase)
             return;
         SpawnCell cell = (SpawnCell) subject.getPosition();
-        int weaponIndex = Dispatcher.requestIndex(GRAB_WEAPON_REQUEST_WHICH, cell.getWeaponShop());
+        int weaponIndex = sendRequest(subject, Deliverable.GRAB_WEAPON_REQUEST_WHICH, cell.getWeaponShop());
         boolean success = controller.grabWeapon(subject, weaponIndex);
         if(success)
-            Dispatcher.sendMessage(GRAB_WEAPON_SUCCESS);
+            sendMessage(subject, Deliverable.GRAB_WEAPON_SUCCESS);
         else
-            Dispatcher.sendMessage(GRAB_WEAPON_FAILURE);
+            sendMessage(subject, Deliverable.GRAB_WEAPON_FAILURE);
     }
 
     public void shoot(Player subject) {
@@ -108,17 +121,18 @@ public class VirtualView implements Deliverable {
                 .collect(Collectors.toList()); // gather all of the player's loaded weapons
                 // at the time this method is called and entered, it is assumed that the player is actually able to shoot with at least one weapon
 
-        int weaponIndex = Dispatcher.requestIndex(SHOOT_WEAPON_REQUEST, availableWeapons);
-        Weapon weapon = availableWeapons.get(weaponIndex); // choose a weapon
+        int weaponIndex = sendRequest(subject, Deliverable.SHOOT_WEAPON_REQUEST, availableWeapons);
+        Weapon weapon = availableWeapons.get(weaponIndex);
 
         AttackPattern pattern = weapon.getPattern();
-        controller.shoot(subject, pattern);
+        controller.prepareForShoot(subject, pattern);
+
+        shootAttackModule(subject, pattern, pattern.getFirst());
         weapon.unload();
     }
 
-    public int shootAttackModule(AttackPattern pattern) {
-        List<Integer> first = pattern.getFirst();
-        List<String> firstNames = first.stream()
+    public void shootAttackModule(Player subject, AttackPattern pattern, List<Integer> next) {
+        List<String> nextNames = next.stream()
                 .filter(i -> {
                     try {
                         return !pattern.getModule(i).isUsed();
@@ -129,19 +143,45 @@ public class VirtualView implements Deliverable {
                 .map(i -> {
                     try {
                         return pattern.getModule(i).getName() + ": " + pattern.getModule(i).getDescription();
-                    } catch (Exception e) { // -1 ends action
+                    } catch (IndexOutOfBoundsException e) { // -1 ends action
                         return "End action.";
                     }
                 })
                 .collect(Collectors.toList());
-        int moduleIndex = Dispatcher.requestIndex(SHOOT_MODULE_REQUEST, firstNames);
-        return first.get(moduleIndex);
+        int moduleIndex = sendRequest(subject, Deliverable.SHOOT_MODULE_REQUEST, nextNames);
+        int moduleId = next.get(moduleIndex);
+        controller.shoot(subject, pattern, moduleId);
     }
 
-    public Player shootPlayer(TargetPlayer target) {
+    public void acquireTargets(Player subject, AttackModule attackModule, List<Target> targets) {
+        for(Target target : targets) {
+            switch(target.getType()) {
+                case PLAYER:
+                    Player acquiredPlayer = shootPlayer(subject, (TargetPlayer) target);
+                        ((TargetPlayer) target).setPlayer(acquiredPlayer);
+                    break;
+
+                case CELL:
+                    Cell acquiredCell = shootCell(subject, (TargetCell) target);
+                        ((TargetCell) target).setCell(acquiredCell);
+                    break;
+
+                case ROOM:
+                    Room acquiredRoom = shootRoom(subject, (TargetRoom) target);
+                        ((TargetRoom) target).setRoom(acquiredRoom);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        controller.shootTargets(subject, attackModule, targets);
+    }
+
+    private Player shootPlayer(Player subject, TargetPlayer target) {
         List<Player> players = target.filter();
         if(players.size() == 0) {
-            Dispatcher.sendMessage(SHOOT_PLAYER_FAILURE);
+            sendMessage(subject, Deliverable.SHOOT_PLAYER_FAILURE);
             return null;
         }
 
@@ -152,10 +192,10 @@ public class VirtualView implements Deliverable {
         return players.get(playerIndex);
     }
 
-    public Cell shootCell(TargetCell target) {
+    private Cell shootCell(Player subject, TargetCell target) {
         List<Cell> cells = target.filter();
         if(cells.size() == 0) {
-            Dispatcher.sendMessage(SHOOT_CELL_FAILURE);
+            sendMessage(subject, Deliverable.SHOOT_CELL_FAILURE);
             return null;
         }
 
@@ -166,10 +206,10 @@ public class VirtualView implements Deliverable {
         return cells.get(cellIndex);
     }
 
-    public Room shootRoom(TargetRoom target) {
+    private Room shootRoom(Player subject, TargetRoom target) {
         List<Room> rooms = target.filter();
         if(rooms.size() == 0) {
-            Dispatcher.sendMessage(SHOOT_ROOM_FAILURE);
+            sendMessage(subject, Deliverable.SHOOT_ROOM_FAILURE);
             return null;
         }
 
@@ -184,29 +224,54 @@ public class VirtualView implements Deliverable {
         List<Weapon> weapons = subject.getWeapons().stream()
                 .filter(w -> !w.isLoaded())
                 .collect(Collectors.toList());
-        int weaponCount = weapons.size();
-
         boolean keepReloading = true;
 
-        while(weaponCount > 0 && keepReloading) {
-            keepReloading = Dispatcher.requestBoolean(RELOAD_REQUEST_IF);
+        while(weapons.size() > 0 && keepReloading) {
+            keepReloading = sendRequest(subject, Deliverable.RELOAD_REQUEST_IF);
 
             if(keepReloading) {
-                int reloadIndex = Dispatcher.requestIndex(RELOAD_REQUEST_WHICH, weapons);
+                int reloadIndex = sendRequest(subject, Deliverable.RELOAD_REQUEST_WHICH, weapons);
                 Weapon weaponToReload = weapons.get(reloadIndex);
                 boolean success = controller.reload(subject, weaponToReload);
                 if(success)
-                    Dispatcher.sendMessage(RELOAD_SUCCESS);
+                    sendMessage(subject, Deliverable.RELOAD_SUCCESS);
                 else
-                    Dispatcher.sendMessage(RELOAD_FAILURE);
+                    sendMessage(subject, Deliverable.RELOAD_FAILURE);
             }
 
             // re-evaluate situation before continuing
             weapons = subject.getWeapons().stream()
                     .filter(w -> !w.isLoaded())
                     .collect(Collectors.toList());
-            weaponCount = weapons.size();
         }
     }
 
+    public void scope(Damage damage, List<PowerUp> scopes, List<Player> targets) {
+        Player subject = damage.getAuthor();
+        List<Player> scopedPlayers = new ArrayList<>();
+        boolean useScope = true;
+        while(useScope) {
+            useScope = sendRequest(subject, Deliverable.SCOPE_REQUEST_IF);
+            if (useScope) {
+                int scopeId = sendRequest(subject, Deliverable.SCOPE_REQUEST_WHICH, scopes);
+                PowerUp scope = scopes.get(scopeId);
+                subject.discardPowerUp(scope);
+
+                int targetId = sendRequest(subject, Deliverable.SCOPE_REQUEST_TARGET, targets);
+                scopedPlayers.add(targets.get(targetId));
+            }
+        }
+        controller.scope(damage, targets, scopedPlayers);
+    }
+
+    public void grenade(Player subject, List<PowerUp> grenades, Player originalAttacker) {
+        boolean useGrenade = sendRequest(subject, Deliverable.GRENADE_REQUEST_IF);
+        if(!useGrenade)
+            return;
+
+        int grenadeIndex = sendRequest(subject, Deliverable.GRENADE_REQUEST_WHICH, grenades);
+        PowerUp grenade = grenades.get(grenadeIndex);
+        subject.discardPowerUp(grenade);
+        controller.grenade(subject, originalAttacker);
+    }
 }

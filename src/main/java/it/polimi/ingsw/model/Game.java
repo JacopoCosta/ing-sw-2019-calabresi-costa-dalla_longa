@@ -35,7 +35,7 @@ public class Game {
         return controller;
     }
 
-    public VirtualView getDispatcher() {
+    public VirtualView getVirtualView() {
         return virtualView;
     }
 
@@ -91,7 +91,6 @@ public class Game {
 
         subject.beginTurn();
         subject.savePosition();
-        subject.resetRecentlyDamaged();
         while(subject.getRemainingExecutions() > 0) { // a turn is made by several executions
             List<Execution> options = Execution.getOptionsForPlayer(subject);
             Execution choice = virtualView.chooseExecution(subject, options);

@@ -18,4 +18,8 @@ public abstract class OffensiveEffect extends Effect {
     public void setAuthor(Player author) {
         this.author = author;
     }
+
+    public Player getAuthor() {
+        return author;
+    }
 }

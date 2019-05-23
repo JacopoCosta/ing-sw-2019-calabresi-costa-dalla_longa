@@ -27,6 +27,10 @@ public class Mark extends OffensiveEffect{
             targets.forEach(p -> p.applyMarking(author));
     }
 
+    public void grenade(Player author, Player target) {
+        target.applyMarking(author);
+    }
+
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder(amount + " mark(s) to player such that");

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.ammo.AmmoTile;
-import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
@@ -12,12 +11,11 @@ import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.Weapon;
+import it.polimi.ingsw.model.weaponry.effects.Damage;
 import it.polimi.ingsw.model.weaponry.effects.EffectType;
+import it.polimi.ingsw.model.weaponry.effects.Mark;
 import it.polimi.ingsw.model.weaponry.effects.OffensiveEffect;
 import it.polimi.ingsw.model.weaponry.targets.Target;
-import it.polimi.ingsw.model.weaponry.targets.TargetCell;
-import it.polimi.ingsw.model.weaponry.targets.TargetPlayer;
-import it.polimi.ingsw.model.weaponry.targets.TargetRoom;
 import it.polimi.ingsw.view.virtual.VirtualView;
 
 import java.util.List;
@@ -27,7 +25,6 @@ public class Controller {
     private VirtualView virtualView;
 
     //TODO constructor
-
 
     public void spawn(Player subject, PowerUp powerUpToKeep, PowerUp powerUpToRespawn) {
         subject.spawn(powerUpToRespawn.getSpawnPoint(subject.getPosition().getBoard()));
@@ -98,71 +95,68 @@ public class Controller {
         return true;
     }
 
-    public void shoot(Player subject, AttackPattern pattern) {
+    public void prepareForShoot(Player subject, AttackPattern pattern) {
         pattern.setAuthor(subject);
         pattern.resetAllModules();
+    }
 
-        int moduleId = virtualView.shootAttackModule(pattern);
-        while(moduleId != -1) {
-            AttackModule attackModule = pattern.getModule(moduleId);
-            List<Target> targets = attackModule.getTargets();
-            boolean invalid = false;
+    public void shoot(Player subject, AttackPattern pattern, int moduleId) {
+        AttackModule attackModule = pattern.getModule(moduleId);
+        List<Target> targets = attackModule.getTargets();
 
-            for(Target target : targets) {
-                switch(target.getType()) {
-                    case PLAYER:
-                        Player acquiredPlayer = virtualView.shootPlayer((TargetPlayer) target);
-                        if(acquiredPlayer == null)
-                            invalid = true;
-                        else
-                            ((TargetPlayer) target).setPlayer(acquiredPlayer);
-                        break;
+        VirtualView virtualView = subject.getGame().getVirtualView();
+        virtualView.acquireTargets(subject, attackModule, targets);
+    }
 
-                    case CELL:
-                        Cell acquiredCell = virtualView.shootCell((TargetCell) target);
-                        if(acquiredCell == null)
-                            invalid = true;
-                        else
-                        ((TargetCell) target).setCell(acquiredCell);
-                        break;
-
-                    case ROOM:
-                        Room acquiredRoom = virtualView.shootRoom((TargetRoom) target);
-                        if(acquiredRoom == null)
-                            invalid = true;
-                        else
-                        ((TargetRoom) target).setRoom(acquiredRoom);
-                        break;
-
-                    default:
-                        break;
+    public void shootTargets(Player subject, AttackModule attackModule, List<Target> targets) {
+        boolean invalid = targets.stream().map( t -> {
+            switch (t.getType()) {
+                case PLAYER:
+                    return t.getPlayer() == null;
+                case CELL:
+                    return t.getCell() == null;
+                case ROOM:
+                    return t.getRoom() == null;
+                default:
+                    return true;
                 }
-            }
+            })
+            .reduce(false, (a, b) -> a || b);
 
-            if(!invalid)
-                attackModule.getEffects().forEach(e -> {
-                    if (e.getType() == EffectType.MOVE)
-                        e.apply();
-                    else {
-                        OffensiveEffect oe = (OffensiveEffect) e;
-                        oe.setAuthor(subject);
-                        oe.apply();
-                    }
-                });
+        if(!invalid)
+            attackModule.getEffects().forEach(e -> {
+                if (e.getType() == EffectType.MOVE)
+                    e.apply();
+                else {
+                    OffensiveEffect oe = (OffensiveEffect) e;
+                    oe.setAuthor(subject);
+                    oe.apply();
+                }
+            });
 
-            attackModule.setUsed(true);
-            moduleId = virtualView.shootAttackModule(pattern);
-        }
+        attackModule.setUsed(true);
     }
 
     public boolean reload(Player subject, Weapon weapon) {
         try {
             subject.takeAmmoCubes(weapon.getReloadCost()); // this might throw an exception
-            weapon.reload();; // if the player can't afford, this won't be executed
+            weapon.reload(); // if the player can't afford, this won't be executed
         }
         catch (CannotAffordException e) {
             return false;
         }
         return true;
+    }
+
+    public void scope(Damage damage, List<Player> targets, List<Player> scopedPlayers) {
+        damage.applyAfterScopes(targets, scopedPlayers);
+    }
+
+    public void grenade(Player subject, Player originalAttacker) {
+        if(originalAttacker == null)
+            return;
+
+        Mark mark = new Mark(1, null);
+        mark.grenade(subject, originalAttacker);
     }
 }

@@ -47,8 +47,6 @@ public class Player extends VirtualClient {
     private Cell position;
     private Cell savedPosition;
 
-    private List<Player> recentlyDamaged;
-
     public Player(String name) {
         super(name);
 
@@ -64,7 +62,6 @@ public class Player extends VirtualClient {
         this.ammoCubes = new AmmoCubes();
         this.position = null;
         this.savedPosition = null;
-        this.recentlyDamaged = new ArrayList<>();
     }
 
     public int getID() {
@@ -98,14 +95,6 @@ public class Player extends VirtualClient {
 
     public List<Player> getDamagersList() {
         return this.damage;
-    }
-
-    public List<Player> getRecentlyDamaged() {
-        return this.recentlyDamaged;
-    }
-
-    public void resetRecentlyDamaged() {
-        this.recentlyDamaged.clear();
     }
 
     // returns the amount of damage points the player has taken by a given opponent
@@ -208,6 +197,12 @@ public class Player extends VirtualClient {
         this.onFrenzy = true;
     }
 
+    public List<PowerUp> getGrenades() {
+        return powerUps.stream()
+                .filter(p -> p.getType() == PowerUpType.GRENADE)
+                .collect(Collectors.toList());
+    }
+
     public void discardPowerUp(PowerUp powerUp) {
         powerUps.remove(powerUp);
         game.getBoard().getPowerUpDeck().discard(powerUp);
@@ -242,8 +237,6 @@ public class Player extends VirtualClient {
                 this.damage.add(author);
             }
         }
-
-        author.recentlyDamaged.add(this);
 
         List<PowerUp> grenades = powerUps.stream().filter(p -> p.getType() == PowerUpType.GRENADE).collect(Collectors.toList());
         if(grenades.size() > 0) { // if the player is able to respond with a tagback grenade
