@@ -156,6 +156,19 @@ public class Board {
             case 3:
                 break;
             case 4:
+                cells.add(new AmmoCell(0, 0));
+                cells.add(new AmmoCell(1, 0));
+                cells.add(new SpawnCell(2, 0, new AmmoCubes(0, 0, 1)));
+                cells.add(new AmmoCell(3, 0));
+                cells.add(new SpawnCell(0, 1, new AmmoCubes(1, 0, 0)));
+                cells.add(new AmmoCell(1, 1));
+                cells.add(new AmmoCell(2, 1));
+                cells.add(new AmmoCell(3, 1));
+                cells.add(new AmmoCell(0, 2));
+                cells.add(new AmmoCell(1, 2));
+                cells.add(new AmmoCell(2, 2));
+                cells.add(new SpawnCell(3, 2, new AmmoCubes(0, 1, 0)));
+
                 break;
             default:
                 break;

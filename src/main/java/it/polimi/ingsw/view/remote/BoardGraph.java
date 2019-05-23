@@ -159,14 +159,19 @@ public class BoardGraph {
             CLI.print("            ");   //12 spaces
         }
         else {
-            if(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() > 0)
-                CLI.print(" RED: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() + "     ");
+            try {
+                if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() > 0)
+                    CLI.print(" RED: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() + "     ");
 
-            else if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() > 0)
-                CLI.print(" YELLOW: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() + "  ");
+                else if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() > 0)
+                    CLI.print(" YELLOW: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() + "  ");
 
-            else
-                CLI.print("BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + "    ");
+                else
+                    CLI.print("BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + "    ");
+            }
+            catch(NullPointerException e) {
+                CLI.print("            ");
+            }
         }
     }
 
@@ -189,23 +194,27 @@ public class BoardGraph {
             }
         }
         else {  //cell is AmmoCell
-            if(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() > 0) {
-                //red cubes have been printed by printFirstLine method, so this has to print yellow or blue cubes
-                if(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() > 0)
-                    CLI.print(" YELLOW: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() + "  ");
+            try {
+                if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() > 0) {
+                    //red cubes have been printed by printFirstLine method, so this has to print yellow or blue cubes
+                    if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() > 0)
+                        CLI.print(" YELLOW: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() + "  ");
 
-                else if(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() > 0)
-                    CLI.print("BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + "    ");
+                    else if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() > 0)
+                        CLI.print("BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + "    ");
 
-                else    //if you are here, that means the cell contained only red cubes, so there aren't any more to print
-                    CLI.print("            ");   //12 spaces
+                    else    //if you are here, that means the cell contained only red cubes, so there aren't any more to print
+                        CLI.print("            ");   //12 spaces
+                } else {
+                    //yellow cubes has already been printed by printFirstLine, so this must print blue cubes, if any
+                    if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() > 0)
+                        CLI.print("BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + "    ");
+                    else
+                        CLI.print("            ");   //12 spaces
+                }
             }
-            else {
-                //yellow cubes has already been printed by printFirstLine, so this must print blue cubes, if any
-                if(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() > 0)
-                    CLI.print("BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + "    ");
-                else
-                    CLI.print("            ");   //12 spaces
+            catch(NullPointerException e) {
+                CLI.print("            ");
             }
         }
     }
@@ -217,11 +226,16 @@ public class BoardGraph {
         if(cell.isSpawnPoint())
             CLI.print(" SPAWN/SHOP ");
         else {
-            //only power-ups may be displayed
-            if(((AmmoCell) cell).getAmmoTile().includesPowerUp())
-                CLI.println(" *POWER UP* ");
-            else
-                CLI.print("            ");   //12 spaces
+            try {
+                //only power-ups may be displayed
+                if (((AmmoCell) cell).getAmmoTile().includesPowerUp())
+                    CLI.println(" *POWER UP* ");
+                else
+                    CLI.print("            ");   //12 spaces
+            }
+            catch(NullPointerException e) {
+                CLI.print("            ");
+            }
         }
     }
 

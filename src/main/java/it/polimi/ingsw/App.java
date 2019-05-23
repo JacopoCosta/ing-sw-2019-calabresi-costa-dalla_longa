@@ -1,21 +1,18 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.view.remote.Viewable;
+import it.polimi.ingsw.view.remote.BoardArt;
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public class App extends Application {
+public class App extends Application implements EventHandler<javafx.event.ActionEvent> {
 
     public static void main(String[] args) {
-    //    launch(args);
+        //launch(args);
 
+        /*
         List<Player> participants = new ArrayList<>();
         participants.add(new Player("Aldo"));
         participants.add(new Player("Giovanni sulla stessa cella"));
@@ -28,20 +25,21 @@ public class App extends Application {
 
         Game game = Game.create(true, 5, 2, participants);
 
-        game.play();
+        ((CLI) game.getView()).printBoard();
+        */
+
+        //game.play();
     }
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Drawing Operations Test");
 
-        StackPane layout = new StackPane();
-        Button button = new Button("Nope");
-        layout.getChildren().add(button);
-
-        Scene scene = new Scene(layout, 300, 300);
-        primaryStage.setScene(scene);
-
-        primaryStage.show();
+        BoardArt.displayLogin(primaryStage);
     }
+
+    @Override
+    public void handle(javafx.event.ActionEvent event) {
+        //nothing for now
+    }
+
 }
