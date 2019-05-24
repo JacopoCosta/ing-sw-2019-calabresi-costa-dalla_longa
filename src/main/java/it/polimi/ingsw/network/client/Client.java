@@ -1,8 +1,6 @@
 package it.polimi.ingsw.network.client;
 
-import it.polimi.ingsw.network.common.exceptions.ConnectionException;
-import it.polimi.ingsw.network.common.message.Message;
-import it.polimi.ingsw.network.common.message.MessageType;
+import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.util.ConsoleController;
 
 import java.util.*;
@@ -19,8 +17,6 @@ public class Client {
 
     private static CommunicationHandler communicationHandler;
 
-    private static String username;
-    private static String lobbyName;
     private static final List<String> lobbies = Collections.synchronizedList(new ArrayList<>());
 
     private static Runnable updateTask;
@@ -43,66 +39,43 @@ public class Client {
     //register a Client into the Server
     private static void register() {
         boolean valid = false;
-        Message message;
 
         do {
             out("Username: ");
-            username = in();
-
-            message = Message.simpleMessage(username, MessageType.REGISTER_REQUEST);
+            String username = in();
 
             try {
-                communicationHandler.sendMessage(message);
-                message = communicationHandler.nextMessage();
+                communicationHandler.register(username);
+                valid = true;
             } catch (ConnectionException e) {
-                err(e.getMessage() + "\n");
+                e.printStackTrace();
                 System.exit(-1);
-            }
-
-            switch (message.getType()) {
-                case REGISTER_SUCCESS:
-                    valid = true;
-                    break;
-                case PLAYER_ALREADY_REGISTERED_ERROR:
-                default:
-                    break;
+            } catch (ClientAlreadyRegisteredException ignored) {
             }
         } while (!valid);
     }
 
     //unregister the Client from the Server global list
     private static void unregister() {
-        Message message = Message.simpleMessage(username, MessageType.UNREGISTER_REQUEST);
         try {
-            communicationHandler.sendMessage(message);
-            message = communicationHandler.nextMessage();
-
-            switch (message.getType()) {
-                case UNREGISTER_SUCCESS:
-                    out("Logout success\n");
-                    System.exit(0);
-                case PLAYER_NOT_REGISTERED_ERROR:
-                default:
-                    err("client not registered, unregistering failed\n");
-            }
-        } catch (ConnectionException e) {
-            err(e.getMessage() + "\n");
-            unregister();
+            communicationHandler.unregister();
+        } catch (ConnectionException | ClientNotRegisteredException e) {
+            e.printStackTrace();
+            System.exit(-1);
         }
-        System.exit(-1);
+        System.exit(0);
     }
 
     //update the Lobby list and print them
     private static void startUpdateAndPrint() {
         updateTask = () -> {
-            Message update = Message.simpleMessage(username, MessageType.LOBBY_LIST_UPDATE_REQUEST);
+
             Map<String, String> lobbyInfo;
 
             try {
-                communicationHandler.sendMessage(update);
-                lobbyInfo = (Map<String, String>) communicationHandler.nextMessage().getContent();
+                lobbyInfo = communicationHandler.requestUpdate();
             } catch (ConnectionException e) {
-                unregister();
+                e.printStackTrace();
                 System.exit(-1);
                 return;
             }
@@ -126,86 +99,51 @@ public class Client {
 
     //create a new Lobby and login the Lobby author
     private static void initLobby() {
-        boolean success = false;
-        String lobbyPassword;
+        boolean valid = false;
         do {
-            lobbyName = requestLobbyName();
-            lobbyPassword = requestLobbyPassword();
-
-            String[] lobbyInfo = {lobbyName, lobbyPassword};
-            Message message = Message.completeMessage(username, MessageType.LOBBY_INIT_REQUEST, lobbyInfo);
+            String lobbyName = requestLobbyName();
+            String lobbyPassword = requestLobbyPassword();
 
             try {
-                communicationHandler.sendMessage(message);
-                message = communicationHandler.nextMessage();
+                communicationHandler.newLobby(lobbyName, lobbyPassword);
+                valid = true;
             } catch (ConnectionException e) {
-                //err(e.getMessage() + "\n");
                 e.printStackTrace();
-                unregister();
                 System.exit(-1);
+            } catch (LobbyAlreadyExistsException e) {
+                out(e.getMessage());
             }
 
-            switch (message.getType()) {
-                case LOBBY_INIT_SUCCESS:
-                    out("Lobby successfully created!\n");
-                    success = true;
-                    break;
-                case LOBBY_INIT_FAILED:
-                    //TODO handle error messages
-                    break;
+            try {
+                communicationHandler.login(lobbyName, lobbyPassword);
+                out("Lobby creation success!\n");
+            } catch (ConnectionException | LobbyNotFoundException | LobbyFullException | InvalidPasswordException e) {
+                e.printStackTrace();
+                System.exit(-1);
             }
-        } while (!success);
+        } while (!valid);
     }
 
     //log a registered Client into a chosen Lobby
     private static void loginToLobby() {
+        String lobbyName = requestLobbyName();
         String lobbyPassword = requestLobbyPassword();
-        String[] lobbyInfo = {lobbyName, lobbyPassword};
-
-        Message message = Message.completeMessage(username, MessageType.LOBBY_INIT_REQUEST, lobbyInfo);
 
         try {
-            communicationHandler.sendMessage(message);
-            message = communicationHandler.nextMessage();
-        } catch (ConnectionException e) {
-            //out(e.getMessage() + "\n");
-            e.printStackTrace();
-            unregister();
+            communicationHandler.login(lobbyName, lobbyPassword);
+            out("Lobby login success!\n");
+        } catch (ConnectionException | LobbyNotFoundException | LobbyFullException | InvalidPasswordException e) {
+            out(e.getMessage());
             System.exit(-1);
-            return;
-        }
-
-        switch (message.getType()) {
-            case LOBBY_LOGIN_SUCCESS:
-                out("Login success!\n");
-                break;
-            case LOBBY_LOGIN_FAILED:
-                //TODO handle error messages
-                break;
         }
     }
 
     private static void logoutFromLobby() {
-        Message message = Message.completeMessage(username, MessageType.LOBBY_LOGOUT_REQUEST, lobbyName);
-
         try {
-            communicationHandler.sendMessage(message);
-            message = communicationHandler.nextMessage();
+            communicationHandler.logout();
+            out("Lobby logout success!\n");
         } catch (ConnectionException e) {
-            //out(e.getMessage() + "\n");
             e.printStackTrace();
-            unregister();
-            System.exit(-1);
-            return;
-        }
-
-        switch (message.getType()) {
-            case LOBBY_LOGOUT_SUCCESS:
-                out("Login success!\n");
-                break;
-            case LOBBY_LOGOUT_FAILED:
-                //TODO handle error messages
-                break;
         }
     }
 
@@ -276,7 +214,7 @@ public class Client {
     private static void printAll(Map<String, String> lobbies) {
         new ConsoleController().clearConsole();
 
-        out("Welcome to Adrenaline, " + username + " !\n");
+        out("Welcome to Adrenaline, " + communicationHandler.getUsername() + " !\n");
         out("List of all Lobbies:\n\n");
 
         int i = 0;
@@ -347,7 +285,6 @@ public class Client {
         if (choice.equals("n")) //Client wants to create a new Lobby
             initLobby();
         else { //Client wants to join an existing Lobby (choice is the lobby name)
-            lobbyName = choice;
             loginToLobby();
         }
 
