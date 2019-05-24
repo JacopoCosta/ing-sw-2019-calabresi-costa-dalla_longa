@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
@@ -8,6 +9,7 @@ import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.exceptions.FullHandException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.model.powerups.PowerUpType;
 import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.Weapon;
@@ -24,7 +26,9 @@ public class Controller {
 
     private VirtualView virtualView;
 
-    //TODO constructor
+    public Controller(Game game) {
+        this.virtualView = game.getVirtualView();
+    }
 
     public void spawn(Player subject, PowerUp powerUpToKeep, PowerUp powerUpToRespawn) {
         subject.spawn(powerUpToRespawn.getSpawnPoint(subject.getPosition().getBoard()));
@@ -146,6 +150,13 @@ public class Controller {
             return false;
         }
         return true;
+    }
+
+    public void usePowerUp(Player subject, PowerUp powerUp) {
+        if(powerUp.getType() == PowerUpType.NEWTON)
+            virtualView.newton(subject, powerUp);
+        else if(powerUp.getType() == PowerUpType.TELEPORT)
+            virtualView.teleport(subject, powerUp);
     }
 
     public void scope(Damage damage, List<Player> targets, List<Player> scopedPlayers) {

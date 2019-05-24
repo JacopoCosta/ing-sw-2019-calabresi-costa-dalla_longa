@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.player.Execution;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.model.powerups.PowerUpType;
 import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.Weapon;
@@ -21,7 +22,6 @@ import it.polimi.ingsw.view.remote.Dispatcher;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 // Important note: this class invokes the Dispatcher several times in its "send..." methods.
 // This will no longer be in the final version of the game, as the Dispatcher, unlike this class,
@@ -88,7 +88,10 @@ public class VirtualView {
     }
 
     public void move(Player subject, List<Cell> options) {
-        int destinationIndex = sendRequest(subject, Deliverable.MOVE_REQUEST, options);
+        List<Integer> cellIds = options.stream()
+                .map(Cell::getId)
+                .collect(Collectors.toList());
+        int destinationIndex = sendRequest(subject, Deliverable.MOVE_REQUEST, options, cellIds);
         Cell destination = options.get(destinationIndex);
         controller.move(subject, destination);
     }
@@ -188,7 +191,8 @@ public class VirtualView {
         List<String> playerNames = players.stream()
                 .map(Player::getName)
                 .collect(Collectors.toList());
-        int playerIndex = Dispatcher.requestIndex(target.getMessage(), playerNames);
+        Deliverable.SHOOT_TARGET_GENERIC.message = target.getMessage();
+        int playerIndex = sendRequest(subject, Deliverable.SHOOT_TARGET_GENERIC, playerNames);
         return players.get(playerIndex);
     }
 
@@ -202,13 +206,17 @@ public class VirtualView {
         List<String> cellNames = cells.stream()
                 .map(Cell::toString)
                 .collect(Collectors.toList());
-        int cellIndex = Dispatcher.requestIndex(target.getMessage(), cellNames);
+        List<Integer> cellIds = cells.stream()
+                .map(Cell::getId)
+                .collect(Collectors.toList());
+        Deliverable.SHOOT_TARGET_GENERIC.message = target.getMessage();
+        int cellIndex = sendRequest(subject, Deliverable.SHOOT_TARGET_GENERIC, cellNames, cellIds);
         return cells.get(cellIndex);
     }
 
     private Room shootRoom(Player subject, TargetRoom target) {
         List<Room> rooms = target.filter();
-        if(rooms.size() == 0) {
+        if (rooms.size() == 0) {
             sendMessage(subject, Deliverable.SHOOT_ROOM_FAILURE);
             return null;
         }
@@ -216,7 +224,8 @@ public class VirtualView {
         List<String> roomNames = rooms.stream()
                 .map(Room::toString)
                 .collect(Collectors.toList());
-        int roomIndex = Dispatcher.requestIndex(target.getMessage(), roomNames);
+        Deliverable.SHOOT_TARGET_GENERIC.message = target.getMessage();
+        int roomIndex = sendRequest(subject, Deliverable.SHOOT_TARGET_GENERIC, roomNames);
         return rooms.get(roomIndex);
     }
 
@@ -244,6 +253,23 @@ public class VirtualView {
                     .filter(w -> !w.isLoaded())
                     .collect(Collectors.toList());
         }
+    }
+
+    public void usePowerUp(Player subject) {
+        List<PowerUp> powerUps = subject.getPowerUps()
+                .stream()
+                .filter(p -> p.getType() != PowerUpType.GRENADE) // can't use grenade arbitrarily
+                .filter(p -> p.getType() != PowerUpType.SCOPE) // can't use scope arbitrarily
+                .collect(Collectors.toList());
+
+        boolean usePowerUp = sendRequest(subject, Deliverable.POWERUP_REQUEST_IF);
+        if(!usePowerUp)
+            return;
+
+        int powerUpIndex = sendRequest(subject, Deliverable.POWERUP_REQUEST_WHICH, powerUps);
+        PowerUp powerUp = powerUps.get(powerUpIndex);
+        subject.discardPowerUp(powerUp);
+        controller.usePowerUp(subject, powerUp);
     }
 
     public void scope(Damage damage, List<PowerUp> scopes, List<Player> targets) {
@@ -275,11 +301,11 @@ public class VirtualView {
         controller.grenade(subject, originalAttacker);
     }
 
-    public void newton(Player subject, List<PowerUp> newtons) {
+    public void newton(Player subject, PowerUp newton) {
 
     }
 
-    public void teleport(Player subject, List<PowerUp> teleports) {
+    public void teleport(Player subject, PowerUp teleport) {
 
     }
 }

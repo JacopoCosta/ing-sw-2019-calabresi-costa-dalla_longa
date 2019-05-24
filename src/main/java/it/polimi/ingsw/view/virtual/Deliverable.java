@@ -18,22 +18,27 @@ public enum Deliverable {
     SHOOT_PLAYER_FAILURE("Looks like there aren't any valid players to select."),
     SHOOT_CELL_FAILURE("Looks like there aren't any valid cells to select."),
     SHOOT_ROOM_FAILURE("Looks like there aren't any valid rooms to select."),
+    SHOOT_TARGET_GENERIC(""), // needs to be empty
     RELOAD_REQUEST_IF("Would you like to reload a weapon?"),
     RELOAD_REQUEST_WHICH("Which weapon would you like to reload?"),
     RELOAD_SUCCESS("You have reloaded."),
     RELOAD_FAILURE("Looks like you don't have enough ammo to reload this weapon."),
-    SCOPE_REQUEST_IF("Scope request if"),
-    SCOPE_REQUEST_WHICH("which"),
-    SCOPE_REQUEST_TARGET("which"),
-    GRENADE_REQUEST_IF("wha"),
-    GRENADE_REQUEST_WHICH("wha"),
+    POWERUP_REQUEST_IF("Would you like to use a power-up?"),
+    POWERUP_REQUEST_WHICH("Choose one:"),
+    SCOPE_REQUEST_IF("Would you like to use a scope and deal additional damage to one of your targets?"),
+    SCOPE_REQUEST_WHICH("Choose a Scope power-up to discard:"),
+    SCOPE_REQUEST_TARGET("Who do you want to deal additional damage to?"),
+    GRENADE_REQUEST_IF("Would you like to respond to the fire with a tagback grenade?"),
+    GRENADE_REQUEST_WHICH("Choose a Grenade power-up to discard:"),
+    NEWTON_REQUEST_WHICH("Choose a Newton power-up to discard:"),
     NEWTON_REQUEST_PLAYER("Who would you like to move?"),
     NEWTON_REQUEST_CELL("Where would you like to move them?"),
+    TELEPORT_REQUEST_WHICH("Choose a Teleport power-up to discard:"),
+    TELEPORT_REQUEST_CELL("Where would you like to teleport?"),
     FATAL_ERROR("You should never see this message. If you do, run for your life!");
 
     public String message;
     Deliverable(String message) {
         this.message = message;
     }
-
 }

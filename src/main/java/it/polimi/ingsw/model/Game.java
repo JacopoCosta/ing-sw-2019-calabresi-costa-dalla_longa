@@ -27,18 +27,6 @@ public class Game {
     private Controller controller;
     private VirtualView virtualView;
 
-    public Board getBoard() {
-        return this.board;
-    }
-
-    public Controller getController() {
-        return controller;
-    }
-
-    public VirtualView getVirtualView() {
-        return virtualView;
-    }
-
     private Game(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {
         this.finalFrenzy = finalFrenzy;
         this.roundsLeft = roundsToPlay;
@@ -46,7 +34,7 @@ public class Game {
         this.participants = participants;
         this.currentTurnPlayer = 0;
         this.board = Board.generate(this, boardType);
-        this.controller = new Controller();
+        this.controller = new Controller(this);
         this.virtualView = new VirtualView(this);
     }
 
@@ -54,6 +42,18 @@ public class Game {
         Game game = new Game(finalFrenzy, roundsToPlay, boardType, participants);
         participants.forEach(p -> p.setGame(game));
         return game;
+    }
+
+    public Board getBoard() {
+        return this.board;
+    }
+
+    public VirtualView getVirtualView() {
+        return virtualView;
+    }
+
+    public Controller getController() {
+        return controller;
     }
 
     public List<Player> getParticipants() {
@@ -91,6 +91,7 @@ public class Game {
 
         subject.beginTurn();
         subject.savePosition();
+        virtualView.usePowerUp(subject);
         while(subject.getRemainingExecutions() > 0) { // a turn is made by several executions
             List<Execution> options = Execution.getOptionsForPlayer(subject);
             Execution choice = virtualView.chooseExecution(subject, options);
@@ -135,6 +136,7 @@ public class Game {
                 }
             }
             subject.endExecution();
+            virtualView.usePowerUp(subject);
         }
 
         participants.stream() // score all dead players
