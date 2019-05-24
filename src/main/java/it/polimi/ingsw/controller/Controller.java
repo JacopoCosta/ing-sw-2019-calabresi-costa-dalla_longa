@@ -131,15 +131,12 @@ public class Controller {
         attackModule.setUsed(true);
     }
 
-    public boolean reload(Player subject, Weapon weapon) {
+    public void reload(Player subject, Weapon weapon) {
         try {
             subject.takeAmmoCubes(weapon.getReloadCost()); // this might throw an exception
             weapon.reload(); // if the player can't afford, this won't be executed
         }
-        catch (CannotAffordException e) {
-            return false;
-        }
-        return true;
+        catch (CannotAffordException ignored) { }
     }
 
     public void usePowerUp(Player subject, PowerUp powerUp) {

@@ -340,7 +340,7 @@
                                         "type": "identity",
                                         "sourceAttackModuleId": -3,
                                         "sourceTargetId": -3,
-                                        "drainAttackModuleId": 1,
+                                        "drainAttackModuleId": 0,
                                         "drainTargetId": 0,
                                         "truth": false
                                     }
@@ -462,6 +462,14 @@
                                         "drainAttackModuleId": -3,
                                         "drainTargetId": -3,
                                         "truth": true
+                                    },
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": 0,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
+                                        "truth": false
                                     }
                                 ]
                             }
@@ -512,6 +520,22 @@
                                         "drainAttackModuleId": -3,
                                         "drainTargetId": -3,
                                         "truth": true
+                                    },
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": 0,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
+                                        "truth": false
+                                    },
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": 1,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
+                                        "truth": false
                                     }
                                 ]
                             }
