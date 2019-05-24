@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 import it.polimi.ingsw.view.remote.Dispatcher;
+import it.polimi.ingsw.view.virtual.VirtualView;
 
 public class Move extends Effect {
     protected int sourceAttackModuleId;
@@ -24,9 +25,10 @@ public class Move extends Effect {
     public void apply() {
         Player target = Constraint.getTarget(context, sourceAttackModuleId, sourceTargetId).getPlayer();
         Cell destination = Constraint.getTarget(context, drainAttackModuleId, drainTargetId).getCell();
-
-        Dispatcher.sendMessage(target.getName() + " moves to " + destination.getId() + ".\n");
         target.setPosition(destination);
+
+        VirtualView virtualView = author.getGame().getVirtualView();
+        virtualView.announceMove(author, target, destination);
     }
 
     @Override

@@ -76,7 +76,6 @@ public abstract class Constraint {
             return target;
         }
         if(attackModuleId >= 0 && targetId >= 0) {
-            System.out.println(attackModuleId + "PIIIPO" + targetId);
             return context.getModule(attackModuleId).getTargets().get(targetId);
         }
         throw new IllegalArgumentException("Generic targets are not gettable.");
@@ -92,7 +91,6 @@ public abstract class Constraint {
         List<List<Player>> targetTable = new ArrayList<>();
 
         for(Constraint constraint : constraints) {
-            System.out.println("Started constraint " + constraint.toString());
             targetTable.add(constraint.filterPlayers(context));
         }
 

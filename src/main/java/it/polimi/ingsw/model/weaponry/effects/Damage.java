@@ -3,9 +3,7 @@ package it.polimi.ingsw.model.weaponry.effects;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.powerups.PowerUpType;
-import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
-import it.polimi.ingsw.view.remote.Dispatcher;
 import it.polimi.ingsw.view.virtual.VirtualView;
 
 import java.util.List;
@@ -29,10 +27,6 @@ public class Damage extends OffensiveEffect {
                 .filter(p -> p.getType() == PowerUpType.SCOPE)
                 .collect(Collectors.toList());
 
-
-        Dispatcher.sendMessage(author.getName() + " deals " + amount + " damage to " + Table.list(targets.stream()
-                .map(Player::getName).collect(Collectors.toList())) + ".\n");
-
         VirtualView virtualView = author.getGame().getVirtualView();
         virtualView.scope(this, scopes, targets);
     }
@@ -45,6 +39,8 @@ public class Damage extends OffensiveEffect {
             int trueDamage = amount + scopeCount;
             for(int i = 0; i < trueDamage; i ++)
                 target.applyDamage(author);
+            VirtualView virtualView = author.getGame().getVirtualView();
+            virtualView.announceDamage(author, target, trueDamage);
         });
 
         VirtualView virtualView = author.getGame().getVirtualView();

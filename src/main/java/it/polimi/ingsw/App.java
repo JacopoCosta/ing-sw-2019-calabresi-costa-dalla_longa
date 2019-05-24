@@ -1,10 +1,14 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.view.remote.Viewable;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.view.remote.BoardArt;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class App extends Application implements EventHandler<javafx.event.ActionEvent> {
@@ -12,7 +16,6 @@ public class App extends Application implements EventHandler<javafx.event.Action
     public static void main(String[] args) {
         //launch(args);
 
-        /*
         List<Player> participants = new ArrayList<>();
         participants.add(new Player("Aldo"));
         participants.add(new Player("Giovanni sulla stessa cella"));
@@ -25,10 +28,7 @@ public class App extends Application implements EventHandler<javafx.event.Action
 
         Game game = Game.create(true, 5, 2, participants);
 
-        ((CLI) game.getView()).printBoard();
-        */
-
-        //game.play();
+        game.play();
     }
 
     @Override

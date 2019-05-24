@@ -26,7 +26,6 @@ public class DistanceConstraint extends Constraint {
 
     private boolean verify(Cell sourceCell, Cell drainCell) {
         int distance;
-        System.out.println("RAPEPINO" + sourceCell);
         try {
             distance = sourceCell.distance(drainCell);
         } catch (DistanceFromNullException e) {

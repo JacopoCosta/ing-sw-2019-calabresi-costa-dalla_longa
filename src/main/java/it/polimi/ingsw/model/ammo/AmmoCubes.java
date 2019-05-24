@@ -1,10 +1,7 @@
 package it.polimi.ingsw.model.ammo;
 
-import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
-
-import java.lang.reflect.Array;
 
 /**
  * This class represents the game's currency. Ammo cubes come in three colours (red, yellow, blue). Players

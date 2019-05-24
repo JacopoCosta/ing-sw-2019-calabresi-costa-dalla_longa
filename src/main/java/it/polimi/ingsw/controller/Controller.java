@@ -14,9 +14,7 @@ import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.Weapon;
 import it.polimi.ingsw.model.weaponry.effects.Damage;
-import it.polimi.ingsw.model.weaponry.effects.EffectType;
 import it.polimi.ingsw.model.weaponry.effects.Mark;
-import it.polimi.ingsw.model.weaponry.effects.OffensiveEffect;
 import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.view.virtual.VirtualView;
 
@@ -129,13 +127,8 @@ public class Controller {
 
         if(!invalid)
             attackModule.getEffects().forEach(e -> {
-                if (e.getType() == EffectType.MOVE)
+                    e.setAuthor(subject);
                     e.apply();
-                else {
-                    OffensiveEffect oe = (OffensiveEffect) e;
-                    oe.setAuthor(subject);
-                    oe.apply();
-                }
             });
 
         attackModule.setUsed(true);
@@ -154,9 +147,9 @@ public class Controller {
 
     public void usePowerUp(Player subject, PowerUp powerUp) {
         if(powerUp.getType() == PowerUpType.NEWTON)
-            virtualView.newton(subject, powerUp);
+            virtualView.newton(subject);
         else if(powerUp.getType() == PowerUpType.TELEPORT)
-            virtualView.teleport(subject, powerUp);
+            virtualView.teleport(subject);
     }
 
     public void scope(Damage damage, List<Player> targets, List<Player> scopedPlayers) {
@@ -169,5 +162,13 @@ public class Controller {
 
         Mark mark = new Mark(1, null);
         mark.grenade(subject, originalAttacker);
+    }
+
+    public void newton(Player target, Cell destination) {
+        target.setPosition(destination);
+    }
+
+    public void teleport(Player subject, Cell destination) {
+        subject.setPosition(destination);
     }
 }
