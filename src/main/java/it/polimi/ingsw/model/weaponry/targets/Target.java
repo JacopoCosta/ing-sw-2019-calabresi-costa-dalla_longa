@@ -21,7 +21,7 @@ public abstract class Target {
         String type = jTarget.getString("type");
 
         List<Constraint> constraints = new ArrayList<>();
-        String message = jTarget.getString("message");
+        String message = jTarget.getString("string");
         List<DecoratedJSONObject> jConstraints = jTarget.getArray("constraints").asList();
         for(DecoratedJSONObject jConstraint : jConstraints) {
             constraints.add(Constraint.build(jConstraint));

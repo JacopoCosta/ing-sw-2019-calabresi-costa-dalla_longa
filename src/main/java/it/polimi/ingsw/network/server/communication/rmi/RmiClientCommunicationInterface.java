@@ -15,7 +15,7 @@ public class RmiClientCommunicationInterface implements ClientCommunicationInter
     }
 
     /*
-    * message sent to the Client
+    * string sent to the Client
     * */
     @Override
     public void sendMessage(Message message) throws ConnectionException {

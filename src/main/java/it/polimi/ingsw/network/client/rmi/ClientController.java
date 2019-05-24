@@ -10,7 +10,7 @@ public class ClientController extends MessageController implements RmiController
     }
 
     /*
-     * called when a new message has been message received from the server
+     * called when a new string has been string received from the server
      * */
     @Override
     public synchronized void notifyMessageReceived(Message message) {

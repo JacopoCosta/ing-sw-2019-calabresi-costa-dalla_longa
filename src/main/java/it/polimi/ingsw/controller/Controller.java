@@ -29,7 +29,7 @@ public class Controller {
     }
 
     public void spawn(Player subject, PowerUp powerUpToKeep, PowerUp powerUpToRespawn) {
-        subject.spawn(powerUpToRespawn.getSpawnPoint(subject.getPosition().getBoard()));
+        subject.spawn(powerUpToRespawn.getSpawnPoint(subject.getGame().getBoard()));
         try {
             subject.givePowerUp(powerUpToKeep);
         } catch (FullHandException e) {
@@ -73,7 +73,7 @@ public class Controller {
         return true;
     }
 
-    public boolean grabWeapon(Player subject, int weaponIndex) {
+    public void grabWeapon(Player subject, int weaponIndex) {
         SpawnCell spawnCell = (SpawnCell) subject.getPosition();
         List<Weapon> weapons = spawnCell.getWeaponShop();
 
@@ -91,10 +91,7 @@ public class Controller {
                     .smartDraw(false)
                     .ifPresent(spawnCell::addToWeaponShop); // refill the shop if there are available cards
 
-        } catch (CannotAffordException e) {
-            return false;
-        }
-        return true;
+        } catch (CannotAffordException ignored) { }
     }
 
     public void prepareForShoot(Player subject, AttackPattern pattern) {

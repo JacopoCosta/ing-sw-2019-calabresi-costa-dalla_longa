@@ -34,7 +34,7 @@ public class CommunicationHub {
             for (Player player : players)
                 try {
                     player.sendMessage(ping);
-                    System.out.println(("MESSAGE: message " + ping.getType().toString() + " sent to Client \"" + player.getName() + "\""));
+                    System.out.println(("MESSAGE: string " + ping.getType().toString() + " sent to Client \"" + player.getName() + "\""));
                 } catch (ConnectionException ignored) {
                     System.err.println("ERROR: Client \"" + player.getName() + "\" lost connection, unregistering...");
                     try {
@@ -125,7 +125,7 @@ public class CommunicationHub {
 
         try {
             player.sendMessage(message);
-            System.out.println(("MESSAGE: message " + message.getType().toString() + " sent to Client \"" + player.getName() + "\""));
+            System.out.println(("MESSAGE: string " + message.getType().toString() + " sent to Client \"" + player.getName() + "\""));
         } catch (ConnectionException e) {
             //e.printStackTrace(); //never thrown before
             System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
@@ -155,7 +155,7 @@ public class CommunicationHub {
 
         try {
             player.sendMessage(message);
-            System.out.println(("MESSAGE: message " + message.getType().toString() + " sent to Client \"" + player.getName() + "\""));
+            System.out.println(("MESSAGE: string " + message.getType().toString() + " sent to Client \"" + player.getName() + "\""));
         } catch (ConnectionException e) {
             //e.printStackTrace(); //never thrown before
             System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());

@@ -10,7 +10,7 @@ public abstract class MessageController {
     }
 
     /*
-     * called when a new message has been received
+     * called when a new string has been received
      * */
     public synchronized void onMessageReceived(Message message) {
         this.message = message;

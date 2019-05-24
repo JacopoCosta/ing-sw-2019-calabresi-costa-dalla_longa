@@ -35,6 +35,10 @@ public abstract class PowerUp {
         return type;
     }
 
+    public AmmoCubes getAmmoCubes() {
+        return ammoCubes;
+    }
+
     public Cell getSpawnPoint(Board board) {
         return board.getCells()
                 .stream()

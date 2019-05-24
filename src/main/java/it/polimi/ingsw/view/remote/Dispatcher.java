@@ -6,17 +6,17 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// offers the final delivery of a message to the client
-// if the message is a request, it awaits for a valid response that will be returned to the caller
+// offers the final delivery of a string to the client
+// if the string is a request, it awaits for a valid response that will be returned to the caller
 // used to request values for setup, settings, game choices, and updates about the game status
 public abstract class Dispatcher {
 
-    // outputs a message
+    // outputs a string
     public static void sendMessage(String message) {
         CLI.print(message);
     }
 
-    // prints a request message and returns the response inserted via System.in (terminal)
+    // prints a request string and returns the response inserted via System.in (terminal)
     private static String requestRoutine(String message) {
         sendMessage("\n" + message);
         String response;

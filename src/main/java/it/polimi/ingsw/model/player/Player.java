@@ -189,8 +189,13 @@ public class Player extends VirtualClient {
         return this.savedPosition;
     }
 
-    public void restorePosition() {
-        this.position = savedPosition;
+    public boolean canAfford(AmmoCubes cost) {
+        return ammoCubes.covers(cost);
+    }
+
+    public boolean canAffordWithPowerUps(AmmoCubes cost) {
+        AmmoCubes augmentedBalance = ammoCubes.augment(powerUps);
+        return augmentedBalance.covers(cost);
     }
 
     public void activateFrenzy() {

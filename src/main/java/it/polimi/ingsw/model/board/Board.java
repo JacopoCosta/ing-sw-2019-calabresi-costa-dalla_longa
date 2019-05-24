@@ -282,7 +282,7 @@ public class Board {
                         .map(Cell::getId)
                         .collect(Collectors.toList())))
                 .collect(Collectors.toList()),
-                cells.stream().map(c -> "contains: " + (c.isSpawnPoint() ?
+                cells.stream().map(c -> "covers: " + (c.isSpawnPoint() ?
                         (
                                 Table.list(((SpawnCell) c).getWeaponShop()
                                         .stream()

@@ -230,7 +230,7 @@ public abstract class Cell {
             if(!adjacentRooms.contains(r))
                 adjacentRooms.add(r);
         }
-        // for each room found above, if any contains the cell, then the cell is visible
+        // for each room found above, if any covers the cell, then the cell is visible
         for(Room r : adjacentRooms)
             if(r.contains(cell))
                 return true;

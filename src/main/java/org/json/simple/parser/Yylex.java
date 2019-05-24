@@ -195,7 +195,7 @@ class Yylex {
     };
 
     /**
-     * ZZ_ATTRIBUTE[aState] contains the attributes of state <code>aState</code>
+     * ZZ_ATTRIBUTE[aState] covers the attributes of state <code>aState</code>
      */
     private static final int[] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
@@ -239,7 +239,7 @@ class Yylex {
     private int zzLexicalState = YYINITIAL;
 
     /**
-     * this buffer contains the current text to be matched and is
+     * this buffer covers the current text to be matched and is
      * the source of the yytext() string
      */
     private char[] zzBuffer = new char[ZZ_BUFFERSIZE];

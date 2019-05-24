@@ -62,7 +62,7 @@ public class Game {
 
     public void setup() {
 
-        // <temp>
+        /*/ <temp>
         for(int i = 0; i < 21; i ++) {
             try {
                 participants.get(0).giveWeapon(board.getWeaponDeck().smartDraw(false).orElse(null));
@@ -72,7 +72,7 @@ public class Game {
         int[] positions = {7, 7, 6, 9, 3, 4, 0};
         for(int i = 0; i < positions.length; i ++)
             participants.get(i).setPosition(board.getCells().get(positions[i]));
-        // </temp>
+        // </temp> */
 
         board.spreadAmmo();
         board.spreadWeapons();
@@ -84,7 +84,7 @@ public class Game {
         if(subject.getPosition() == null) {
             List<PowerUp> powerUps = new ArrayList<>();
             for(int i = 0; i <= 1; i ++)
-                powerUps.add(board.getPowerUpDeck().smartDraw(true).orElse(null)); //TODO i don't like null here
+                powerUps.add(board.getPowerUpDeck().smartDraw(true).orElseThrow()); //TODO i don't like null here
 
             virtualView.spawn(subject, powerUps);
         }

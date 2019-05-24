@@ -1,7 +1,11 @@
 package it.polimi.ingsw.model.ammo;
 
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
+import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents the game's currency. Ammo cubes come in three colours (red, yellow, blue). Players
@@ -149,10 +153,22 @@ public class AmmoCubes {
     /**
      * no
      */
-    public boolean contains(AmmoCubes that) {
-        return  this.getRed() >= that.getRed() &&
-                this.getYellow() >= that.getYellow() &&
-                this.getBlue() >= that.getBlue();
+    public boolean covers(AmmoCubes cost) {
+        return  this.getRed() >= cost.getRed() &&
+                this.getYellow() >= cost.getYellow() &&
+                this.getBlue() >= cost.getBlue();
+    }
+
+    public AmmoCubes augment(List<PowerUp> powerUps) {
+        return powerUps.stream()
+                .map(PowerUp::getAmmoCubes)
+                .reduce(this, AmmoCubes::sum);
+    }
+
+    public AmmoCubes augment(PowerUp powerUp) {
+        List<PowerUp> singlePowerUp = new ArrayList<>();
+        singlePowerUp.add(powerUp);
+        return augment(singlePowerUp);
     }
 
     /**

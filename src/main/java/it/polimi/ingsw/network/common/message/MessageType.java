@@ -37,6 +37,6 @@ public enum MessageType {
     LOBBY_EMPTY_ERROR,
     PLAYER_NOT_FOUND_ERROR,
 
-    //user message
+    //user string
     CLIENT_MESSAGE
 }
