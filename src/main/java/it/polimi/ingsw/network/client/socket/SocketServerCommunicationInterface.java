@@ -2,8 +2,8 @@ package it.polimi.ingsw.network.client.socket;
 
 import it.polimi.ingsw.network.client.ServerCommunicationInterface;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
-import it.polimi.ingsw.network.common.message.Message;
 import it.polimi.ingsw.network.common.message.MessageType;
+import it.polimi.ingsw.network.common.message.NetworkMessage;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -34,7 +34,7 @@ public class SocketServerCommunicationInterface implements ServerCommunicationIn
     }
 
     @Override
-    public void sendMessage(Message message) throws ConnectionException {
+    public void sendMessage(NetworkMessage message) throws ConnectionException {
         try {
             out.writeObject(message);
         } catch (IOException e) {
@@ -43,11 +43,11 @@ public class SocketServerCommunicationInterface implements ServerCommunicationIn
     }
 
     @Override
-    public Message nextMessage() throws ConnectionException {
+    public NetworkMessage nextMessage() throws ConnectionException {
         try {
-            Message message;
+            NetworkMessage message;
 
-            do message = (Message) in.readObject();
+            do message = (NetworkMessage) in.readObject();
             while (message.getType().equals(MessageType.PING_MESSAGE));
 
             if (message.getType() == MessageType.UNREGISTER_SUCCESS)

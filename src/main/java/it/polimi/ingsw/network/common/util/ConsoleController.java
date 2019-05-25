@@ -37,4 +37,24 @@ public class ConsoleController {
     public void clearConsole() {
         executor.clearConsole();
     }
+
+    public static void out(String message) {
+        System.out.print(message);
+    }
+
+    public static void mex(String message) {
+        System.out.println("MESSAGE: " + message);
+    }
+
+    public static void log(String message) {
+        System.out.println("LOG: " + message);
+    }
+
+    public static void stat(String message) {
+        System.out.println("STATUS: " + message);
+    }
+
+    public static void err(String message) {
+        System.err.println("ERROR: " + message);
+    }
 }

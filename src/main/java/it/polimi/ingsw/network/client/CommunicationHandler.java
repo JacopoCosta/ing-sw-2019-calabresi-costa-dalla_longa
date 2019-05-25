@@ -4,8 +4,8 @@ import it.polimi.ingsw.network.client.rmi.RmiServerCommunicationInterface;
 import it.polimi.ingsw.network.client.socket.SocketServerCommunicationInterface;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.message.MessageType;
+import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.view.virtual.Deliverable;
-import it.polimi.ingsw.view.virtual.Message;
 
 import java.util.Map;
 
@@ -20,7 +20,7 @@ public class CommunicationHandler {
 
     private final ServerCommunicationInterface communicationInterface;
 
-    public CommunicationHandler(String hostAddress, int port, Interface interfaceType) throws ConnectionException {
+    CommunicationHandler(String hostAddress, int port, Interface interfaceType) throws ConnectionException {
         username = null;
         lobbyName = null;
 
@@ -52,21 +52,21 @@ public class CommunicationHandler {
         return lobbyName;
     }
 
-    private void sendMessage(it.polimi.ingsw.network.common.message.Message message) throws ConnectionException {
+    private void sendMessage(NetworkMessage message) throws ConnectionException {
         communicationInterface.sendMessage(message);
     }
 
-    private it.polimi.ingsw.network.common.message.Message nextMessage() throws ConnectionException {
+    private NetworkMessage nextMessage() throws ConnectionException {
         return communicationInterface.nextMessage();
     }
 
     public void deliver(Deliverable deliverable) throws ConnectionException {
-        it.polimi.ingsw.network.common.message.Message message = it.polimi.ingsw.network.common.message.Message.completeMessage(username, MessageType.CLIENT_MESSAGE, deliverable);
+        NetworkMessage message = NetworkMessage.completeClientMessage(username, MessageType.CLIENT_MESSAGE, deliverable);
         sendMessage(message);
     }
 
     public Deliverable nextDeliverable() throws ConnectionException {
-        it.polimi.ingsw.network.common.message.Message message;
+        NetworkMessage message;
         do {
             message = nextMessage();
         } while (message.getType().equals(MessageType.PING_MESSAGE));
@@ -77,7 +77,7 @@ public class CommunicationHandler {
     }
 
     public void register(String username) throws ConnectionException, ClientAlreadyRegisteredException {
-        it.polimi.ingsw.network.common.message.Message message = it.polimi.ingsw.network.common.message.Message.simpleMessage(username, MessageType.REGISTER_REQUEST);
+        NetworkMessage message = NetworkMessage.simpleClientMessage(username, MessageType.REGISTER_REQUEST);
 
         sendMessage(message);
         do {
@@ -95,7 +95,7 @@ public class CommunicationHandler {
     }
 
     public void unregister() throws ConnectionException, ClientNotRegisteredException {
-        it.polimi.ingsw.network.common.message.Message message = it.polimi.ingsw.network.common.message.Message.simpleMessage(username, MessageType.UNREGISTER_REQUEST);
+        NetworkMessage message = NetworkMessage.simpleClientMessage(username, MessageType.UNREGISTER_REQUEST);
 
         sendMessage(message);
         do {
@@ -113,7 +113,7 @@ public class CommunicationHandler {
     }
 
     public Map<String, String> requestUpdate() throws ConnectionException {
-        it.polimi.ingsw.network.common.message.Message message = it.polimi.ingsw.network.common.message.Message.simpleMessage(username, MessageType.LOBBY_LIST_UPDATE_REQUEST);
+        NetworkMessage message = NetworkMessage.simpleClientMessage(username, MessageType.LOBBY_LIST_UPDATE_REQUEST);
 
         sendMessage(message);
         do {
@@ -125,9 +125,9 @@ public class CommunicationHandler {
         return (Map<String, String>) message.getContent(); //safe conversion guaranteed by string type
     }
 
-    public void newLobby(String lobbyName, String lobbyPassword) throws ConnectionException, LobbyAlreadyExistsException {
+    public void initLobby(String lobbyName, String lobbyPassword) throws ConnectionException, LobbyAlreadyExistsException {
         String[] lobbyInfo = {lobbyName, lobbyPassword};
-        it.polimi.ingsw.network.common.message.Message message = it.polimi.ingsw.network.common.message.Message.completeMessage(username, MessageType.LOBBY_CREATE_REQUEST, lobbyInfo);
+        NetworkMessage message = NetworkMessage.completeClientMessage(username, MessageType.LOBBY_CREATE_REQUEST, lobbyInfo);
 
         sendMessage(message);
         do {
@@ -154,7 +154,7 @@ public class CommunicationHandler {
     public void login(String lobbyName, String lobbyPassword)
             throws ConnectionException, LobbyNotFoundException, LobbyFullException, InvalidPasswordException {
         String[] lobbyInfo = {lobbyName, lobbyPassword};
-        it.polimi.ingsw.network.common.message.Message message = it.polimi.ingsw.network.common.message.Message.completeMessage(username, MessageType.LOBBY_LOGIN_REQUEST, lobbyInfo);
+        NetworkMessage message = NetworkMessage.completeClientMessage(username, MessageType.LOBBY_LOGIN_REQUEST, lobbyInfo);
 
         sendMessage(message);
         do {
@@ -177,7 +177,7 @@ public class CommunicationHandler {
     }
 
     public void logout() throws ConnectionException {
-        it.polimi.ingsw.network.common.message.Message message = it.polimi.ingsw.network.common.message.Message.completeMessage(username, MessageType.LOBBY_LOGOUT_REQUEST, lobbyName);
+        NetworkMessage message = NetworkMessage.completeClientMessage(username, MessageType.LOBBY_LOGOUT_REQUEST, lobbyName);
 
         sendMessage(message);
         do {

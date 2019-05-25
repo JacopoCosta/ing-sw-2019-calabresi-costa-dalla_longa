@@ -1,8 +1,8 @@
 package it.polimi.ingsw.network.client.rmi;
 
 import it.polimi.ingsw.network.common.controller.RmiController;
-import it.polimi.ingsw.network.common.message.Message;
 import it.polimi.ingsw.network.common.message.MessageController;
+import it.polimi.ingsw.network.common.message.NetworkMessage;
 
 public class ClientController extends MessageController implements RmiController {
     ClientController() {
@@ -10,14 +10,14 @@ public class ClientController extends MessageController implements RmiController
     }
 
     /*
-     * called when a new string has been string received from the server
+     * called when a new Message has been received from the server
      * */
     @Override
-    public synchronized void notifyMessageReceived(Message message) {
+    public synchronized void notifyMessageReceived(NetworkMessage message) {
         onMessageReceived(message);
     }
 
-    public Message getMessage() {
+    public NetworkMessage getMessage() {
         return getNextMessage();
     }
 }

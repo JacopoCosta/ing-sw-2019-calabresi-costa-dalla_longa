@@ -1,10 +1,10 @@
 package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
-import it.polimi.ingsw.network.common.message.Message;
+import it.polimi.ingsw.network.common.message.NetworkMessage;
 
 public interface ServerCommunicationInterface {
-    void sendMessage(Message message) throws ConnectionException;
+    void sendMessage(NetworkMessage message) throws ConnectionException;
 
-    Message nextMessage() throws ConnectionException;
+    NetworkMessage nextMessage() throws ConnectionException;
 }

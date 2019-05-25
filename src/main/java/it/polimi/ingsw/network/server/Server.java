@@ -25,42 +25,42 @@ public class Server {
 
     private static final Runnable socketServer = () -> {
         try (ServerSocket socket = new ServerSocket(serverPort, 0, InetAddress.getByName(serverAddress))) {
-            System.out.println("LOG: socket server configured on " + serverAddress + ":" + serverPort);
-            System.out.println("LOG: socket server bounded on " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
-            System.out.println("STATUS: socket server running...");
+            ConsoleController.log("socket server configured on " + serverAddress + ":" + serverPort);
+            ConsoleController.log("socket server bounded on " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
+            ConsoleController.stat("socket server running...");
             ExecutorService executor = Executors.newCachedThreadPool();
             while (true) {
                 ClientHandler clientHandler = new ClientHandler(socket.accept()); //create a User thread to represent the Client
                 executor.execute(clientHandler); //execute the user thread
             }
         } catch (IOException e) {
-            System.err.println("ERROR: " + e.getClass().toString() + " error in socketServer: " + e.getMessage());
+            ConsoleController.err("" + e.getClass().toString() + " error in socketServer: " + e.getMessage());
         }
     };
 
     private static final Runnable rmiServer = () -> {
-        System.out.println("LOG: Starting RMI registry...");
+        ConsoleController.log("Starting RMI registry...");
         CONSOLE_CONTROLLER.startRmiRegistry();
-        System.out.println("LOG: RMI service started");
+        ConsoleController.log("RMI service started");
 
-        System.out.println("LOG: creating RMI protocol implementation...");
+        ConsoleController.log("creating RMI protocol implementation...");
         RmiController serverController;
         try {
             serverController = new ServerController();
         } catch (RemoteException e) {
-            System.err.println("ERROR: " + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
+            ConsoleController.err("" + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
             CONSOLE_CONTROLLER.stopRmiRegistry();
             System.exit(-1);
             return;
         }
-        System.out.println("LOG: RMI done creating");
+        ConsoleController.log("RMI done creating");
 
-        System.out.println("LOG: binding RMI protocol implementation to registry...");
+        ConsoleController.log("binding RMI protocol implementation to registry...");
         Registry registry;
         try {
             registry = LocateRegistry.getRegistry();
         } catch (RemoteException e) {
-            System.err.println("ERROR: " + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
+            ConsoleController.err("" + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
             CONSOLE_CONTROLLER.stopRmiRegistry();
             System.exit(-1);
             return;
@@ -70,28 +70,28 @@ public class Server {
         try {
             registry.bind(bindingName, serverController);
         } catch (RemoteException e) {
-            System.err.println("ERROR: " + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
+            ConsoleController.err("" + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
             CONSOLE_CONTROLLER.stopRmiRegistry();
             System.exit(-1);
         } catch (AlreadyBoundException e) {
-            System.out.println("LOG: RMI registry service already bound, rebinding...");
+            ConsoleController.log("RMI registry service already bound, rebinding...");
             try {
                 registry.rebind(bindingName, serverController);
             } catch (RemoteException ex) {
-                System.err.println("ERROR: " + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
+                ConsoleController.err("" + e.getClass().toString() + " error in rmiServer: " + e.getMessage());
                 CONSOLE_CONTROLLER.stopRmiRegistry();
                 System.exit(-1);
             }
-            System.out.println("LOG: RMI service rebounded");
+            ConsoleController.log("RMI service rebounded");
         }
-        System.out.println("LOG: RMI done binding");
-        System.out.println("LOG: RMI started on " + serverAddress + ":" + serverPort);
-        System.out.println("STATUS: RMI server is running...");
+        ConsoleController.log("RMI done binding");
+        ConsoleController.log("RMI started on " + serverAddress + ":" + serverPort);
+        ConsoleController.stat("RMI server is running...");
     };
 
     public static void main(String[] args) {
         if (args.length != 2) {
-            System.err.println("ERROR: correct syntax is: Server [serverAddress] [serverPort]");
+            ConsoleController.err("correct syntax is: Server [serverAddress] [serverPort]");
             System.exit(-1);
         }
         serverAddress = args[0];
@@ -99,7 +99,7 @@ public class Server {
         try {
             serverPort = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
-            System.err.println("ERROR: server port not in range [1025 - 65535]");
+            ConsoleController.err("server port not in range [1025 - 65535]");
             System.exit(-1);
         }
         CONSOLE_CONTROLLER.clearConsole();

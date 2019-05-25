@@ -41,7 +41,8 @@ class Lobby {
         if (players.contains(player))
             throw new PlayerAlreadyAddedException("Player \"" + player.getName() + "\" already found into Lobby \"" + name + "\"");
 
-        if (this.password != password)
+        if ((this.password != null && !this.password.isBlank() && !this.password.equals(password))
+                || ((this.password == null || this.password.isBlank()) && (password != null && !password.isBlank())))
             throw new InvalidPasswordException("password \"" + password + "\" invalid for Lobby \"" + name + "\"");
 
         players.add(player);
@@ -66,15 +67,19 @@ class Lobby {
         adjustTimer();
     }
 
-    public List<Player> getPlayers() {
-        return players;
-    }
-
     public String getName() {
         return name;
     }
 
-    Map.Entry<String, String> getLobbyStatus() {
+    int getCurrentPlayers() {
+        return currentPlayers;
+    }
+
+    boolean contains(Player player) {
+        return players.contains(player);
+    }
+
+    Map.Entry<String, String> getStatus() {
         return new AbstractMap.SimpleEntry<>(name, "[" + currentPlayers + "/" + MAX_PLAYERS + "]");
     }
 

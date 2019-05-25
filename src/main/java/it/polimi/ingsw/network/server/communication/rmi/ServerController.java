@@ -2,8 +2,8 @@ package it.polimi.ingsw.network.server.communication.rmi;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.controller.RmiController;
-import it.polimi.ingsw.network.common.message.Message;
 import it.polimi.ingsw.network.common.message.MessageType;
+import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.server.communication.ClientCommunicationInterface;
 import it.polimi.ingsw.network.server.communication.CommunicationHub;
 
@@ -17,7 +17,7 @@ public class ServerController extends UnicastRemoteObject implements RmiControll
         communicationHub = CommunicationHub.getInstance();
     }
 
-    private Message refactor(Message message) {
+    private NetworkMessage refactor(NetworkMessage message) {
         String playerName = message.getAuthor();
         RmiController clientController = (RmiController) message.getContent();
 
@@ -25,14 +25,14 @@ public class ServerController extends UnicastRemoteObject implements RmiControll
         Player player = new Player(playerName);
         player.setCommunicationInterface(clientInterface);
 
-        return Message.completeMessage(message.getAuthor(), MessageType.REGISTER_REQUEST, player);
+        return NetworkMessage.completeClientMessage(message.getAuthor(), MessageType.REGISTER_REQUEST, player);
     }
 
     /*
      * messages received from the Client
      * */
     @Override
-    public void notifyMessageReceived(Message message) {
+    public void notifyMessageReceived(NetworkMessage message) {
         if (message.getType().equals(MessageType.REGISTER_REQUEST))
             message = refactor(message);
 

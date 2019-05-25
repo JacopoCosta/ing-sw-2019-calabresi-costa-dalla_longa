@@ -3,8 +3,8 @@ package it.polimi.ingsw.network.client.rmi;
 import it.polimi.ingsw.network.client.ServerCommunicationInterface;
 import it.polimi.ingsw.network.common.controller.RmiController;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
-import it.polimi.ingsw.network.common.message.Message;
 import it.polimi.ingsw.network.common.message.MessageType;
+import it.polimi.ingsw.network.common.message.NetworkMessage;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.NoSuchObjectException;
@@ -45,10 +45,10 @@ public class RmiServerCommunicationInterface implements ServerCommunicationInter
     }
 
     @Override
-    public void sendMessage(Message message) throws ConnectionException {
+    public void sendMessage(NetworkMessage message) throws ConnectionException {
         try {
             if (message.getType().equals(MessageType.REGISTER_REQUEST))
-                message = Message.completeMessage(message.getAuthor(), message.getType(), clientController);
+                message = NetworkMessage.completeClientMessage(message.getAuthor(), message.getType(), clientController);
 
             serverController.notifyMessageReceived(message);
         } catch (RemoteException e) {
@@ -56,8 +56,8 @@ public class RmiServerCommunicationInterface implements ServerCommunicationInter
         }
     }
 
-    public Message nextMessage() throws ConnectionException {
-        Message message;
+    public NetworkMessage nextMessage() throws ConnectionException {
+        NetworkMessage message;
 
         do message = clientController.getMessage();
         while (message.getType().equals(MessageType.PING_MESSAGE));

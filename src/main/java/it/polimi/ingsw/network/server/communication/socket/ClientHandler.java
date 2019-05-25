@@ -1,8 +1,8 @@
 package it.polimi.ingsw.network.server.communication.socket;
 
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.network.common.message.Message;
 import it.polimi.ingsw.network.common.message.MessageType;
+import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.server.communication.ClientCommunicationInterface;
 import it.polimi.ingsw.network.server.communication.CommunicationHub;
 
@@ -61,21 +61,21 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private Message refactor(Message message) {
+    private NetworkMessage refactor(NetworkMessage message) {
         ClientCommunicationInterface clientInterface = new SocketClientCommunicationInterface(out);
         String playerName = message.getAuthor();
         Player player = new Player(playerName);
         player.setCommunicationInterface(clientInterface);
 
-        return Message.completeMessage(message.getAuthor(), message.getType(), player);
+        return NetworkMessage.completeClientMessage(message.getAuthor(), message.getType(), player);
     }
 
     @Override
     public void run() {
-        Message message;
+        NetworkMessage message;
         try {
             do {
-                message = (Message) in.readObject();
+                message = (NetworkMessage) in.readObject();
 
                 if (message.getType().equals(MessageType.REGISTER_REQUEST))
                     message = refactor(message);

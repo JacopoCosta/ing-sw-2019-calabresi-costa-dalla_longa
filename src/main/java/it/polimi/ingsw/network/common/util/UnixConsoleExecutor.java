@@ -31,6 +31,11 @@ class UnixConsoleExecutor implements ConsoleExecutor {
             builder.redirectErrorStream(true);
             builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
             Process p = builder.start();
+            try {
+                p.waitFor();
+            } catch (InterruptedException e) {
+                System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            }
             BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while (true) {
@@ -41,8 +46,7 @@ class UnixConsoleExecutor implements ConsoleExecutor {
                 System.err.println(line);
             }
         } catch (IOException e) {
-            //e.printStackTrace(); //never thrown before
-System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());;
+            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
         }
     }
 }

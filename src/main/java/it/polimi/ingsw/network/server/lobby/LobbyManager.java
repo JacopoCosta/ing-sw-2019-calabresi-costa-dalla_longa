@@ -56,14 +56,28 @@ public class LobbyManager {
         if (player == null)
             throw new NullPointerException("Player is null");
 
-        getLobbyByName(lobbyName).remove(player);
+        Lobby lobby = getLobbyByName(lobbyName);
+
+        lobby.remove(player);
+        if (lobby.getCurrentPlayers() == 0) {
+            synchronized (lobbies) {
+                lobbies.remove(lobby);
+            }
+        }
+    }
+
+    public synchronized String getLobbyNameByPlayer(Player player) throws PlayerNotFoundException {
+        for (Lobby lobby : lobbies)
+            if (lobby.contains(player))
+                return lobby.getName();
+        throw new PlayerNotFoundException("Player \"" + player.getName() + "\" not found in any Lobby");
     }
 
     //returns all the Lobbies on the Server as <lobbyName, [number_of_users/MAX_USERS]>
     public Map<String, String> getLobbiesStatus() {
         return lobbies
                 .stream()
-                .map(Lobby::getLobbyStatus)
+                .map(Lobby::getStatus)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

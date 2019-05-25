@@ -26,11 +26,15 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
 
     private void execute(String command) {
         try {
-            ProcessBuilder builder = new ProcessBuilder(
-                    "cmd.exe", "/c", command);
+            ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", command);
             builder.redirectErrorStream(true);
             builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
             Process p = builder.start();
+            try {
+                p.waitFor();
+            } catch (InterruptedException e) {
+                System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            }
             BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while (true) {
@@ -41,9 +45,7 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
                 System.err.println(line);
             }
         } catch (IOException e) {
-            ////e.printStackTrace(); //never thrown before
-System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());; //never thrown before
-System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());;
+            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
         }
     }
 }

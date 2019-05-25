@@ -1,7 +1,7 @@
 package it.polimi.ingsw.network.common.message;
 
 public abstract class MessageController {
-    private Message message;
+    private NetworkMessage message;
     private boolean received;
 
     protected MessageController() {
@@ -10,9 +10,9 @@ public abstract class MessageController {
     }
 
     /*
-     * called when a new string has been received
+     * called when a new Message has been received
      * */
-    public synchronized void onMessageReceived(Message message) {
+    public synchronized void onMessageReceived(NetworkMessage message) {
         this.message = message;
         received = true;
     }
@@ -21,12 +21,12 @@ public abstract class MessageController {
         return received;
     }
 
-    private synchronized Message getMessage() {
+    private synchronized NetworkMessage getMessage() {
         received = false;
         return message;
     }
 
-    protected Message getNextMessage() {
+    protected NetworkMessage getNextMessage() {
         while (!newMessageReceived()) ;
         return getMessage();
     }

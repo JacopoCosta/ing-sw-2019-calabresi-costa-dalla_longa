@@ -2,8 +2,9 @@ package it.polimi.ingsw.network.server.communication;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.*;
-import it.polimi.ingsw.network.common.message.Message;
 import it.polimi.ingsw.network.common.message.MessageType;
+import it.polimi.ingsw.network.common.message.NetworkMessage;
+import it.polimi.ingsw.network.common.util.ConsoleController;
 import it.polimi.ingsw.network.server.lobby.LobbyManager;
 
 import java.util.Map;
@@ -29,21 +30,34 @@ public class CommunicationHub {
 
         connectionChecker = Executors.newSingleThreadScheduledExecutor();
         checkConnectionTask = () -> {
-            Message ping = Message.simpleMessage(null, MessageType.PING_MESSAGE);
+            NetworkMessage ping = NetworkMessage.simpleServerMessage(MessageType.PING_MESSAGE);
 
             for (Player player : players)
                 try {
                     player.sendMessage(ping);
-                    System.out.println(("MESSAGE: string " + ping.getType().toString() + " sent to Client \"" + player.getName() + "\""));
+                    ConsoleController.mex(("message " + ping.getType().toString() + " sent to Client \"" + player.getName() + "\""));
                 } catch (ConnectionException ignored) {
-                    System.err.println("ERROR: Client \"" + player.getName() + "\" lost connection, unregistering...");
+                    ConsoleController.err("Client \"" + player.getName() + "\" lost connection, logging out from his lobby...");
                     try {
+                        try {
+                            String lobbyName = lobbyManager.getLobbyNameByPlayer(player);
+                            lobbyManager.remove(lobbyName, player);
+                            ConsoleController.log("Client \"" + player.getName() + "\" successfully logged out from Lobby \"" + lobbyName + "\"");
+                        } catch (LobbyNotFoundException e) {
+                            //e.printStackTrace(); //never thrown before
+                            ConsoleController.log(e.getMessage() + "");
+                        } catch (PlayerNotFoundException | LobbyEmptyException e) {
+                            //e.printStackTrace(); //never thrown before
+                            ConsoleController.err(e.getMessage());
+                        }
+                        ConsoleController.log("unregistering Client \"" + player.getName() + "\"...");
                         unregister(player);
+
                     } catch (ClientNotRegisteredException e) {
                         //e.printStackTrace(); //never thrown before
-                        System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+                        ConsoleController.err(e.getMessage());
                     }
-                    System.out.println("LOG: Client \"" + player.getName() + "\" successfully unregistered");
+                    ConsoleController.log("Client \"" + player.getName() + "\" successfully unregistered");
                 }
         };
         connectionChecker.scheduleAtFixedRate(checkConnectionTask, 0, CONNECTION_CHECK_PERIOD, TimeUnit.SECONDS);
@@ -81,8 +95,8 @@ public class CommunicationHub {
         players.remove(player);
     }
 
-    public synchronized void handleMessage(Message message) {
-        System.out.println("LOG: Message " + message.getType().toString() + " received from Client \"" + message.getAuthor() + "\"");
+    public synchronized void handleMessage(NetworkMessage message) {
+        ConsoleController.log("Message " + message.getType().toString() + " received from Client \"" + message.getAuthor() + "\"");
 
         switch (message.getType()) {
             case REGISTER_REQUEST:
@@ -106,86 +120,86 @@ public class CommunicationHub {
             case CLIENT_MESSAGE:
                 notifyPlayer(message);
             default:
-                System.err.println("ERROR: Message " + message.getType() + " received from Client \"" + message.getAuthor() + "\": ignored");
+                ConsoleController.err("Message " + message.getType() + " received from Client \"" + message.getAuthor() + "\": ignored");
         }
     }
 
-    private void handleRegistration(Message message) {
+    private void handleRegistration(NetworkMessage message) {
         Player player = (Player) message.getContent();
 
-        System.out.println("LOG: registering Client \"" + player.getName() + "\"...");
+        ConsoleController.log("registering Client \"" + player.getName() + "\"...");
         try {
             register(player);
-            message = Message.simpleMessage(null, MessageType.REGISTER_SUCCESS);
-            System.out.println("LOG: Client \"" + player.getName() + "\" successfully registered");
+            message = NetworkMessage.simpleServerMessage(MessageType.REGISTER_SUCCESS);
+            ConsoleController.log("Client \"" + player.getName() + "\" successfully registered");
         } catch (ClientAlreadyRegisteredException e) {
-            message = Message.simpleMessage(null, MessageType.CLIENT_ALREADY_REGISTERED_ERROR);
-            System.err.println("ERROR: " + e.getMessage());
+            message = NetworkMessage.simpleServerMessage(MessageType.CLIENT_ALREADY_REGISTERED_ERROR);
+            ConsoleController.err(e.getMessage());
         }
 
         try {
             player.sendMessage(message);
-            System.out.println(("MESSAGE: string " + message.getType().toString() + " sent to Client \"" + player.getName() + "\""));
+            ConsoleController.mex(("message " + message.getType().toString() + " sent to Client \"" + player.getName() + "\""));
         } catch (ConnectionException e) {
             //e.printStackTrace(); //never thrown before
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
         }
     }
 
-    private void handleUnregistering(Message message) {
+    private void handleUnregistering(NetworkMessage message) {
         Player player;
 
         try {
             player = (getPlayerByName(message.getAuthor()));
         } catch (ClientNotRegisteredException e) {
             //e.printStackTrace(); //never thrown before
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
             return;
         }
 
-        System.out.println("LOG: unregistering Client \"" + player.getName() + "\"...");
+        ConsoleController.log("unregistering Client \"" + player.getName() + "\"...");
         try {
             unregister(player);
-            message = Message.simpleMessage(null, MessageType.UNREGISTER_SUCCESS);
-            System.out.println("LOG: Client \"" + player.getName() + "\" successfully unregistered");
+            message = NetworkMessage.simpleServerMessage(MessageType.UNREGISTER_SUCCESS);
+            ConsoleController.log("Client \"" + player.getName() + "\" successfully unregistered");
         } catch (ClientNotRegisteredException e) {
-            message = Message.simpleMessage(null, MessageType.CLIENT_NOT_REGISTERED_ERROR);
-            System.err.println("ERROR: " + e.getMessage());
+            message = NetworkMessage.simpleServerMessage(MessageType.CLIENT_NOT_REGISTERED_ERROR);
+            ConsoleController.err(e.getMessage());
         }
 
         try {
             player.sendMessage(message);
-            System.out.println(("MESSAGE: string " + message.getType().toString() + " sent to Client \"" + player.getName() + "\""));
+            ConsoleController.mex("message " + message.getType().toString() + " sent to Client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
             //e.printStackTrace(); //never thrown before
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
         }
     }
 
-    private void handleUpdateRequest(Message message) {
+    private void handleUpdateRequest(NetworkMessage message) {
         Player player;
 
         try {
             player = getPlayerByName(message.getAuthor());
         } catch (ClientNotRegisteredException e) {
             //e.printStackTrace(); //never thrown before
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
             return;
         }
 
         Map<String, String> lobbies = lobbyManager.getLobbiesStatus();
-        message = Message.completeMessage(null, MessageType.LOBBY_LIST_UPDATE_RESPONSE, lobbies);
+        message = NetworkMessage.completeServerMessage(MessageType.LOBBY_LIST_UPDATE_RESPONSE, lobbies);
 
         try {
             player.sendMessage(message);
-            System.out.println("LOG: update sent to Client \"" + player.getName() + "\"");
+            ConsoleController.mex("update sent to Client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
             //e.printStackTrace(); //never thrown before
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
         }
     }
 
-    private void handleLobbyCreation(Message message) {
+    private void handleLobbyCreation(NetworkMessage message) {
         String[] lobbyInfo = ((String[]) (message.getContent()));
         String lobbyName = lobbyInfo[0];
         String lobbyPassword = lobbyInfo[1];
@@ -195,44 +209,45 @@ public class CommunicationHub {
             player = (getPlayerByName(message.getAuthor()));
         } catch (ClientNotRegisteredException e) {
             //e.printStackTrace(); //never thrown before
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
             return;
         }
 
         try {
             lobbyManager.newLobby(lobbyName, lobbyPassword);
-            System.out.println("LOG: Client \"" + message.getAuthor() + "\" created new Lobby \"" + lobbyName + "\" with password \"" + lobbyPassword + "\"");
+            ConsoleController.log("Client \"" + message.getAuthor() + "\" created new Lobby \"" + lobbyName + "\" with password \"" + lobbyPassword + "\"");
 
             try {
                 lobbyManager.add(lobbyName, player, lobbyPassword);
-                System.out.println("LOG: Client \"" + message.getAuthor() + "\" logged into Lobby \"" + lobbyName + "\"");
-                message = Message.simpleMessage(null, MessageType.LOBBY_CREATE_SUCCESS);
+                ConsoleController.log("Client \"" + message.getAuthor() + "\" logged into Lobby \"" + lobbyName + "\"");
+                message = NetworkMessage.simpleServerMessage(MessageType.LOBBY_CREATE_SUCCESS);
             } catch (LobbyNotFoundException e) {
-                System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
-                message = Message.simpleMessage(null, MessageType.LOBBY_NOT_FOUND_ERROR);
+                ConsoleController.err(e.getClass() + ": " + e.getMessage());
+                message = NetworkMessage.simpleServerMessage(MessageType.LOBBY_NOT_FOUND_ERROR);
             } catch (LobbyFullException e) {
-                System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
-                message = Message.simpleMessage(null, MessageType.LOBBY_FULL_ERROR);
+                ConsoleController.err(e.getClass() + ": " + e.getMessage());
+                message = NetworkMessage.simpleServerMessage(MessageType.LOBBY_FULL_ERROR);
             } catch (PlayerAlreadyAddedException e) {
-                System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
-                message = Message.simpleMessage(null, MessageType.PLAYER_ALREADY_ADDED_ERROR);
+                ConsoleController.err(e.getClass() + ": " + e.getMessage());
+                message = NetworkMessage.simpleServerMessage(MessageType.PLAYER_ALREADY_ADDED_ERROR);
             } catch (InvalidPasswordException e) {
-                System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
-                message = Message.simpleMessage(null, MessageType.PASSWORD_NOT_VALID_ERROR);
+                ConsoleController.err(e.getClass() + ": " + e.getMessage());
+                message = NetworkMessage.simpleServerMessage(MessageType.PASSWORD_NOT_VALID_ERROR);
             }
         } catch (LobbyAlreadyExistsException e) {
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
-            message = Message.simpleMessage(null, MessageType.LOBBY_ALREADY_EXISTS_ERROR);
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
+            message = NetworkMessage.simpleServerMessage(MessageType.LOBBY_ALREADY_EXISTS_ERROR);
         }
 
         try {
             player.sendMessage(message);
+            ConsoleController.mex("message " + message.getType() + " sent to client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
         }
     }
 
-    private void handleLobbyLogin(Message message) {
+    private void handleLobbyLogin(NetworkMessage message) {
         String[] lobbyInfo = ((String[]) (message.getContent()));
         String lobbyName = lobbyInfo[0];
         String lobbyPassword = lobbyInfo[1];
@@ -241,36 +256,37 @@ public class CommunicationHub {
         try {
             player = getPlayerByName(message.getAuthor());
         } catch (ClientNotRegisteredException e) {
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
             return;
         }
 
         try {
             lobbyManager.add(lobbyName, player, lobbyPassword);
-            System.out.println("LOG: Client \"" + message.getAuthor() + "\" logged into Lobby \"" + lobbyName + "\"");
-            message = Message.simpleMessage(null, MessageType.LOBBY_LOGIN_SUCCESS);
+            ConsoleController.log("Client \"" + message.getAuthor() + "\" logged into Lobby \"" + lobbyName + "\"");
+            message = NetworkMessage.simpleServerMessage(MessageType.LOBBY_LOGIN_SUCCESS);
         } catch (LobbyNotFoundException e) {
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
-            message = Message.simpleMessage(null, MessageType.LOBBY_NOT_FOUND_ERROR);
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
+            message = NetworkMessage.simpleServerMessage(MessageType.LOBBY_NOT_FOUND_ERROR);
         } catch (LobbyFullException e) {
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
-            message = Message.simpleMessage(null, MessageType.LOBBY_FULL_ERROR);
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
+            message = NetworkMessage.simpleServerMessage(MessageType.LOBBY_FULL_ERROR);
         } catch (PlayerAlreadyAddedException e) {
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
-            message = Message.simpleMessage(null, MessageType.PLAYER_ALREADY_ADDED_ERROR);
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
+            message = NetworkMessage.simpleServerMessage(MessageType.PLAYER_ALREADY_ADDED_ERROR);
         } catch (InvalidPasswordException e) {
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
-            message = Message.simpleMessage(null, MessageType.PASSWORD_NOT_VALID_ERROR);
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
+            message = NetworkMessage.simpleServerMessage(MessageType.PASSWORD_NOT_VALID_ERROR);
         }
 
         try {
             player.sendMessage(message);
+            ConsoleController.mex("message " + message.getType() + " sent to client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
         }
     }
 
-    private void handleLobbyLogout(Message message) {
+    private void handleLobbyLogout(NetworkMessage message) {
         String lobbyName = (String) message.getContent();
         Player player;
 
@@ -278,38 +294,45 @@ public class CommunicationHub {
             player = getPlayerByName(message.getAuthor());
         } catch (ClientNotRegisteredException e) {
             //e.printStackTrace(); //never thrown before
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
             return;
         }
 
         try {
             lobbyManager.remove(lobbyName, player);
-            message = Message.simpleMessage(null, MessageType.LOBBY_LOGOUT_SUCCESS);
+            message = NetworkMessage.simpleServerMessage(MessageType.LOBBY_LOGOUT_SUCCESS);
         } catch (LobbyNotFoundException e) {
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
-            message = Message.simpleMessage(null, MessageType.LOBBY_NOT_FOUND_ERROR);
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
+            message = NetworkMessage.simpleServerMessage(MessageType.LOBBY_NOT_FOUND_ERROR);
         } catch (PlayerNotFoundException e) {
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
-            message = Message.simpleMessage(null, MessageType.PLAYER_NOT_FOUND_ERROR);
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
+            message = NetworkMessage.simpleServerMessage(MessageType.PLAYER_NOT_FOUND_ERROR);
         } catch (LobbyEmptyException e) {
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
-            message = Message.simpleMessage(null, MessageType.LOBBY_EMPTY_ERROR);
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
+            message = NetworkMessage.simpleServerMessage(MessageType.LOBBY_EMPTY_ERROR);
         }
 
         try {
             player.sendMessage(message);
+            ConsoleController.mex("message " + message.getType() + " sent to client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
             //e.printStackTrace(); //never thrown before
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
         }
     }
 
-    private void notifyPlayer(Message message) {
+    private void notifyPlayer(NetworkMessage message) {
+        Player player;
+
         try {
-            getPlayerByName(message.getAuthor()).onMessageReceived(message);
+            player = getPlayerByName(message.getAuthor());
         } catch (ClientNotRegisteredException e) {
             //e.printStackTrace(); //never thrown before
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            ConsoleController.err(e.getClass() + ": " + e.getMessage());
+            return;
         }
+
+        player.onMessageReceived(message);
+        ConsoleController.mex("notification " + message.getType() + " sent to Player \"" + player.getName() + "\"");
     }
 }
