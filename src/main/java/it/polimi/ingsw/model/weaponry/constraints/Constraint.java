@@ -94,54 +94,64 @@ public abstract class Constraint {
             targetTable.add(constraint.filterPlayers(context));
         }
 
-        Predicate<Player> inEveryList = p -> targetTable.stream()
-                .map(list -> list.contains(p))
-                .reduce(true, (a, b) -> a && b);
+        Predicate<Player> missingFromAtLeastOneList = p -> targetTable.stream()
+                .map(list -> !list.contains(p))
+                .reduce(false, (a, b) -> a || b);
 
-        return targetTable.stream()
-                .map(Collection::stream)
-                .flatMap(Function.identity())
+        return context.getAuthor()
+                .getGame()
+                .getParticipants()
+                .stream()
                 .sorted(Comparator.comparingInt(Player::getID))
                 .distinct()
-                .filter(inEveryList)
+                .filter(p -> !missingFromAtLeastOneList.test(p))
+                .filter(p -> !p.equals(context.getAuthor()))
+                .filter(p -> p.getPosition() != null)
                 .collect(Collectors.toList());
     }
 
     public static List<Cell> filterCells(AttackPattern context, List<Constraint> constraints) {
         List<List<Cell>> targetTable = new ArrayList<>();
 
-        for(Constraint constraint : constraints)
+        for(Constraint constraint : constraints) {
             targetTable.add(constraint.filterCells(context));
+        }
 
-        Predicate<Cell> inEveryList = c -> targetTable.stream()
-                .map(list -> list.contains(c))
-                .reduce(true, (a, b) -> a && b);
+        Predicate<Cell> missingFromAtLeastOneList = c -> targetTable.stream()
+                .map(list -> !list.contains(c))
+                .reduce(false, (a, b) -> a || b);
 
-        return targetTable.stream()
-                .map(Collection::stream)
-                .flatMap(Function.identity())
+        return context.getAuthor()
+                .getGame()
+                .getBoard()
+                .getCells()
+                .stream()
                 .sorted(Comparator.comparingInt(Cell::getId))
                 .distinct()
-                .filter(inEveryList)
+                .filter(p -> !missingFromAtLeastOneList.test(p))
                 .collect(Collectors.toList());
     }
 
     public static List<Room> filterRooms(AttackPattern context, List<Constraint> constraints) {
         List<List<Room>> targetTable = new ArrayList<>();
 
-        for(Constraint constraint : constraints)
+        for(Constraint constraint : constraints) {
             targetTable.add(constraint.filterRooms(context));
+        }
 
-        Predicate<Room> inEveryList = r -> targetTable.stream()
-                .map(list -> list.contains(r))
-                .reduce(true, (a, b) -> a && b);
+        Predicate<Room> missingFromAtLeastOneList = r -> targetTable.stream()
+                .map(list -> !list.contains(r))
+                .reduce(false, (a, b) -> a || b);
 
-        return targetTable.stream()
-                .map(Collection::stream)
-                .flatMap(Function.identity())
-                .sorted()
+        return context.getAuthor()
+                .getGame()
+                .getBoard()
+                .getCells()
+                .stream()
+                .map(Cell::getRoom)
+                .sorted(Comparator.comparing(Room::toString))
                 .distinct()
-                .filter(inEveryList)
+                .filter(p -> !missingFromAtLeastOneList.test(p))
                 .collect(Collectors.toList());
     }
 

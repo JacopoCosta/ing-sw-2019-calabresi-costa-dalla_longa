@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.TargetInheritanceException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public class TargetRoom extends Target {
     }
 
     public List<Room> filter() {
+        System.out.println("AWA" + Table.list(Constraint.filterRooms(context, constraints)));
         return Constraint.filterRooms(context, constraints);
     }
 }

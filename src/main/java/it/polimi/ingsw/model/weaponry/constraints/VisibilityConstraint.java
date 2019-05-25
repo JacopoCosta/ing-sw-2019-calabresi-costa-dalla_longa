@@ -25,6 +25,12 @@ public class VisibilityConstraint extends Constraint {
         return sourceCell.canSee(drainCell) == truth;
     }
 
+    private boolean verify(Cell sourceCell, Room drainRoom) {
+        return drainRoom.getCells()
+                .stream()
+                .anyMatch(sourceCell::canSee);
+    }
+
     @Override
     public List<Player> filterPlayers(AttackPattern context) {
         if(sourceAttackModuleId == -3 && sourceTargetId == -3) {
@@ -85,7 +91,20 @@ public class VisibilityConstraint extends Constraint {
 
     @Override
     public List<Room> filterRooms(AttackPattern context) {
-        throw new InvalidFilterInvocationException("A room can't be \"between\".");
+        if(drainAttackModuleId == -3 && drainTargetId == -3) {
+            Cell sourceCell = Constraint.getTarget(context, sourceAttackModuleId, sourceTargetId).getCell();
+
+            return context.getAuthor()
+                    .getGame()
+                    .getBoard()
+                    .getCells()
+                    .stream()
+                    .map(Cell::getRoom)
+                    .filter(r -> this.verify(sourceCell, r))
+                    .distinct()
+                    .collect(Collectors.toList());
+        }
+        throw new InvalidFilterInvocationException("This instance of constraint can't use a filter.");
     }
 
     @Override

@@ -36,7 +36,13 @@ public class RoomConstraint extends Constraint {
                     .getParticipants()
                     .stream()
                     .filter(p -> !p.equals(context.getAuthor()))
-                    .filter(p -> this.verify(p.getPosition().getRoom(), drainRoom))
+                    .filter(p -> {
+                        try {
+                            return this.verify(p.getPosition().getRoom(), drainRoom);
+                        } catch (NullPointerException e) {
+                            return false;
+                        }
+                    })
                     .distinct()
                     .collect(Collectors.toList());
         }
@@ -48,7 +54,13 @@ public class RoomConstraint extends Constraint {
                     .getParticipants()
                     .stream()
                     .filter(p -> !p.equals(context.getAuthor()))
-                    .filter(p -> this.verify(sourceRoom, p.getPosition().getRoom()))
+                    .filter(p -> {
+                        try {
+                            return this.verify(sourceRoom, p.getPosition().getRoom());
+                        } catch (NullPointerException e) {
+                            return false;
+                        }
+                    })
                     .distinct()
                     .collect(Collectors.toList());
         }

@@ -1098,6 +1098,15 @@
                                         "drainAttackModuleId": -3,
                                         "drainTargetId": -3,
                                         "truth": true
+                                    },
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
+                                        "lowerBound": 1,
+                                        "upperBound": -1
                                     }
                                 ]
                             },
@@ -1109,8 +1118,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": 0,
                                         "sourceTargetId": 0,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 1,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 1
                                     }
@@ -1267,7 +1276,7 @@
                             },
                             {
                                 "type": "damage",
-                                "amount": 2,
+                                "amount": 1,
                                 "constraints": [
                                     {
                                         "type": "identity",
@@ -1332,6 +1341,14 @@
                                         "drainAttackModuleId": -3,
                                         "drainTargetId": -3,
                                         "truth": false
+                                    },
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
+                                        "truth": true
                                     }
                                 ]
                             }

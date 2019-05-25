@@ -19,7 +19,6 @@ public class Damage extends OffensiveEffect {
     @Override
     public void apply() {
         List<Player> targets = Constraint.filterPlayers(context, constraints);
-
         // as long as the author has (and wants to use) targeting scopes, they may do so;
         // this will increase the amount of damage dealt to any of its current targets
         List<PowerUp> scopes = author.getPowerUps()

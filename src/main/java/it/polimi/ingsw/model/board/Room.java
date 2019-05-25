@@ -20,6 +20,10 @@ public class Room {
         return this.cells.contains(cell);
     }
 
+    public List<Cell> getCells() {
+        return cells;
+    }
+
     @Override
     public String toString() {
         return "room #" + cells.stream()
