@@ -105,6 +105,6 @@ public class Server {
         CONSOLE_CONTROLLER.clearConsole();
 
         executor.execute(socketServer);
-        executor.execute(rmiServer);
+        //executor.execute(rmiServer);
     }
 }

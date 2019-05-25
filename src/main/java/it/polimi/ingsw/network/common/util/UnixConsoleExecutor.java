@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 class UnixConsoleExecutor implements ConsoleExecutor {
-    private final String START_RMI_REGISTRY = "cd " + RMI_REGISTRY_EXECUTION_PATH + "&&" + "rmiregistry &";
+
+    private String RMI_COMMAND_BEFORE_ = "rmic it.polimi.ingsw.network.server.communication.rmi.ServerController";
+    private final String START_RMI_REGISTRY = "cd " + RMI_REGISTRY_EXECUTION_PATH + "&&" + RMI_COMMAND_BEFORE_ + "&&" + "rmiregistry 65432 &";
     private final String STOP_RMI_REGISTRY = "pkill -f rmiregistry";
     private final String CLEAR_CONSOLE = "clear";
 
