@@ -91,6 +91,6 @@ public class Server {
         console.stat("Running on " + console.getOsName() + "...");
 
         executor.execute(socketServer);
-        //executor.execute(rmiServer);
+        executor.execute(rmiServer);
     }
 }
