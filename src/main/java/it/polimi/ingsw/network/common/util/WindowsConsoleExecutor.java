@@ -5,47 +5,25 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 class WindowsConsoleExecutor implements ConsoleExecutor {
-    private final String START_RMI_REGISTRY_COMMAND = "cd /d " + RMI_REGISTRY_EXECUTION_PATH + "&&" + "start rmiregistry";
-    private final String STOP_RMI_REGISTRY_COMMAND = "taskkill /im rmiregistry.exe";
-    private final String CLEAR_CONSOLE_COMMAND = "cls";
 
-    @Override
-    public void startRmiRegistry() {
-        execute(START_RMI_REGISTRY_COMMAND);
+    private String execute(String command) throws IOException, InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", command);
+        pb.redirectErrorStream(true);
+        pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+
+        Process p = pb.start();
+        p.waitFor();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        StringBuilder sb = new StringBuilder();
+        String s;
+        while ((s = br.readLine()) != null)
+            sb.append(s);
+        return sb.toString();
     }
 
     @Override
-    public void stopRmiRegistry() {
-        execute(STOP_RMI_REGISTRY_COMMAND);
-    }
-
-    @Override
-    public void clearConsole() {
-        execute(CLEAR_CONSOLE_COMMAND);
-    }
-
-    private void execute(String command) {
-        try {
-            ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", command);
-            builder.redirectErrorStream(true);
-            builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-            Process p = builder.start();
-            try {
-                p.waitFor();
-            } catch (InterruptedException e) {
-                System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
-            }
-            BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while (true) {
-                line = r.readLine();
-                if (line == null) {
-                    break;
-                }
-                System.err.println(line);
-            }
-        } catch (IOException e) {
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
-        }
+    public String clear() throws IOException, InterruptedException {
+        return execute("cls");
     }
 }

@@ -1,16 +1,16 @@
 package it.polimi.ingsw.network.server.communication.rmi;
 
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.network.common.controller.RmiController;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
+import it.polimi.ingsw.network.common.rmi.RMIController;
 import it.polimi.ingsw.network.server.communication.ClientCommunicationInterface;
 import it.polimi.ingsw.network.server.communication.CommunicationHub;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class ServerController extends UnicastRemoteObject implements RmiController {
+public class ServerController extends UnicastRemoteObject implements RMIController {
     private final CommunicationHub communicationHub;
 
     public ServerController() throws RemoteException {
@@ -19,9 +19,9 @@ public class ServerController extends UnicastRemoteObject implements RmiControll
 
     private NetworkMessage refactor(NetworkMessage message) {
         String playerName = message.getAuthor();
-        RmiController clientController = (RmiController) message.getContent();
+        RMIController clientController = (RMIController) message.getContent();
 
-        ClientCommunicationInterface clientInterface = new RmiClientCommunicationInterface(clientController);
+        ClientCommunicationInterface clientInterface = new RMIClientCommunicationInterface(clientController);
         Player player = new Player(playerName);
         player.setCommunicationInterface(clientInterface);
 

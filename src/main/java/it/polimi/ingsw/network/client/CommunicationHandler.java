@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.client;
 
-import it.polimi.ingsw.network.client.rmi.RmiServerCommunicationInterface;
+import it.polimi.ingsw.network.client.rmi.RMIServerCommunicationInterface;
 import it.polimi.ingsw.network.client.socket.SocketServerCommunicationInterface;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.message.MessageType;
@@ -34,9 +34,10 @@ public class CommunicationHandler {
                 break;
             case RMI_INTERFACE:
                 try {
-                    this.communicationInterface = new RmiServerCommunicationInterface(hostAddress, port);
+                    this.communicationInterface = new RMIServerCommunicationInterface(hostAddress, port);
                 } catch (ConnectionException e) {
-                    throw new ConnectionException("RmiServerCommunicationInterface configuration failed", e);
+                    e.printStackTrace();
+                    throw new ConnectionException("RMIServerCommunicationInterface configuration failed", e);
                 }
                 break;
             default:

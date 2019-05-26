@@ -13,20 +13,12 @@ public class NetworkMessage implements Serializable {
         this.content = content;
     }
 
-    public static NetworkMessage simpleMessage(String author, MessageType type) {
-        return new NetworkMessage(author, type, null);
-    }
-
     public static NetworkMessage simpleClientMessage(String author, MessageType type) {
         return new NetworkMessage(author, type, null);
     }
 
     public static NetworkMessage simpleServerMessage(MessageType type) {
         return new NetworkMessage(null, type, null);
-    }
-
-    public static NetworkMessage completeMessage(String author, MessageType type, Object content) {
-        return new NetworkMessage(author, type, content);
     }
 
     public static NetworkMessage completeClientMessage(String author, MessageType type, Object content) {

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.network.common.exceptions.*;
-import it.polimi.ingsw.network.common.util.ConsoleController;
+import it.polimi.ingsw.network.common.util.Console;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -24,11 +24,13 @@ public class Client {
     private static Future<?> futureUpdate;
     private static final int UPDATE_REQUEST_PERIOD = 5;
 
+    private static final Console console = new Console();
+
     private static String in() {
         try {
             return in.nextLine();
         } catch (NoSuchElementException e) {
-            ConsoleController.err(e.getMessage());
+            console.err(e.getMessage());
             System.exit(-1);
             return null;
         }
@@ -45,10 +47,10 @@ public class Client {
                 communicationHandler.register(username);
                 valid = true;
             } catch (ConnectionException e) {
-                ConsoleController.err(e.getMessage() + "\n");
+                console.err(e.getMessage() + "\n");
                 System.exit(-1);
             } catch (ClientAlreadyRegisteredException e) {
-                ConsoleController.err(e.getMessage() + "\n");
+                console.err(e.getMessage() + "\n");
             }
         } while (!valid);
     }
@@ -58,7 +60,7 @@ public class Client {
         try {
             communicationHandler.unregister();
         } catch (ConnectionException | ClientNotRegisteredException e) {
-            ConsoleController.err(e.getMessage() + "\n");
+            console.err(e.getMessage() + "\n");
             System.exit(-1);
         }
         System.exit(0);
@@ -73,7 +75,7 @@ public class Client {
             try {
                 lobbyInfo = communicationHandler.requestUpdate();
             } catch (ConnectionException e) {
-                ConsoleController.err(e.getMessage() + "\n");
+                console.err(e.getMessage() + "\n");
                 System.exit(-1);
                 return;
             }
@@ -105,12 +107,12 @@ public class Client {
             try {
                 communicationHandler.initLobby(lobbyName, lobbyPassword);
                 valid = true;
-                ConsoleController.out("Lobby creation success!\n\n");
+                console.out("Lobby creation success!\n\n");
             } catch (ConnectionException e) {
-                ConsoleController.err(e.getMessage() + "\n");
+                console.err(e.getMessage() + "\n");
                 System.exit(-1);
             } catch (LobbyAlreadyExistsException e) {
-                ConsoleController.err(e.getMessage() + "\n");
+                console.err(e.getMessage() + "\n");
             }
         } while (!valid);
     }
@@ -121,9 +123,9 @@ public class Client {
 
         try {
             communicationHandler.login(lobbyName, lobbyPassword);
-            ConsoleController.out("Lobby login success!\n");
+            console.out("Lobby login success!\n");
         } catch (ConnectionException | LobbyNotFoundException | LobbyFullException | InvalidPasswordException e) {
-            ConsoleController.err(e.getMessage() + "\n");
+            console.err(e.getMessage() + "\n");
             System.exit(-1);
         }
     }
@@ -131,9 +133,9 @@ public class Client {
     private static void logoutFromLobby() {
         try {
             communicationHandler.logout();
-            ConsoleController.out("Lobby logout success!\n");
+            console.out("Lobby logout success!\n");
         } catch (ConnectionException e) {
-            ConsoleController.err(e.getMessage() + "\n");
+            console.err(e.getMessage() + "\n");
             System.exit(-1);
         }
     }
@@ -142,10 +144,10 @@ public class Client {
     private static int requestAction() {
         int action = 0;
         boolean valid = false;
-        ConsoleController.out("Choose an action:\n\n");
-        ConsoleController.out("[0] Logout\n\n");
+        console.out("Choose an action:\n\n");
+        console.out("[0] Logout\n\n");
         do {
-            ConsoleController.out("Action: ");
+            console.out("Action: ");
             try {
                 action = Integer.parseInt(in());
                 if (action == 0)
@@ -159,7 +161,7 @@ public class Client {
     private static String requestUsername() {
         String name;
         do {
-            ConsoleController.out("Username: ");
+            console.out("Username: ");
             name = in();
         } while (name == null || name.isBlank());
         return name;
@@ -169,7 +171,7 @@ public class Client {
     private static String requestLobbyName() {
         String name;
         do {
-            ConsoleController.out("Lobby name: ");
+            console.out("Lobby name: ");
             name = in();
         } while (name == null || name.isBlank());
         return name;
@@ -177,7 +179,7 @@ public class Client {
 
     //request a Lobby password
     private static String requestLobbyPassword() {
-        ConsoleController.out("Password: ");
+        console.out("Password: ");
         return in();
     }
 
@@ -186,7 +188,7 @@ public class Client {
         String choice; //the Client choice
         boolean valid = false;
         do {
-            ConsoleController.out("Choice: ");
+            console.out("Choice: ");
             choice = in();
 
             if (choice.equals("n")) {
@@ -206,28 +208,28 @@ public class Client {
 
     //prints a welcome screen
     private static void printWelcomeScreen() {
-        new ConsoleController().clearConsole();
-        ConsoleController.out("Welcome to Adrenaline !\n");
+        console.clear();
+        console.out("Welcome to Adrenaline !\n");
     }
 
     //print the given Lobbies and some other commands
     private static void printAll(Map<String, String> lobbies) {
-        new ConsoleController().clearConsole();
+        console.clear();
 
-        ConsoleController.out("Welcome to Adrenaline, " + communicationHandler.getUsername() + " !\n");
-        ConsoleController.out("List of all Lobbies:\n\n");
+        console.out("Welcome to Adrenaline, " + communicationHandler.getUsername() + " !\n");
+        console.out("List of all Lobbies:\n\n");
 
         int i = 0;
         for (Map.Entry<String, String> lobby : lobbies.entrySet())
-            ConsoleController.out("[" + i++ + "] " + lobby.getValue() + " " + lobby.getKey() + "\n");
+            console.out("[" + i++ + "] " + lobby.getValue() + " " + lobby.getKey() + "\n");
 
-        ConsoleController.out("[n] to create a new lobby\n\n");
-        ConsoleController.out("Choice: ");
+        console.out("[n] to create a new lobby\n\n");
+        console.out("Choice: ");
     }
 
     public static void main(String[] args) {
         if (args.length != 4) {
-            ConsoleController.err("correct syntax is: Client [ip address] [port] -conn [s/r]\n");
+            console.err("correct syntax is: Client [ip address] [port] -conn [s/r]\n");
             System.exit(-1);
             return;
         }
@@ -236,13 +238,13 @@ public class Client {
         try {
             port = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
-            ConsoleController.err("server port not in range [1025 - 65535]\n");
+            console.err("server port not in range [1025 - 65535]\n");
             System.exit(-1);
             return;
         }
 
         if (!args[2].equals("-conn")) {
-            ConsoleController.err("correct syntax is: Client [ip address] [port] -conn [s/r]\n");
+            console.err("correct syntax is: Client [ip address] [port] -conn [s/r]\n");
             System.exit(-1);
             return;
         }
@@ -254,7 +256,7 @@ public class Client {
         } else if (interfaceType.equals("r")) {
             communicationInterface = CommunicationHandler.Interface.RMI_INTERFACE;
         } else {
-            ConsoleController.err("options for param \"-conn\" must be [s] or [r]\n");
+            console.err("options for param \"-conn\" must be [s] or [r]\n");
             System.exit(-1);
             return;
         }
@@ -262,7 +264,7 @@ public class Client {
         try {
             communicationHandler = new CommunicationHandler(hostAddress, port, communicationInterface);
         } catch (ConnectionException e) {
-            ConsoleController.err(e.getMessage() + "\n");
+            console.err(e.getMessage() + "\n");
             System.exit(-1);
             return;
         }

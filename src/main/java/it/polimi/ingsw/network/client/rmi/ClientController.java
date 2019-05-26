@@ -1,10 +1,10 @@
 package it.polimi.ingsw.network.client.rmi;
 
-import it.polimi.ingsw.network.common.controller.RmiController;
 import it.polimi.ingsw.network.common.message.MessageController;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
+import it.polimi.ingsw.network.common.rmi.RMIController;
 
-public class ClientController extends MessageController implements RmiController {
+public class ClientController extends MessageController implements RMIController {
     ClientController() {
         super();
     }

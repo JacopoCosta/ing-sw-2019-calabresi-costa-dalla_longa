@@ -1,16 +1,16 @@
 package it.polimi.ingsw.network.server.communication.rmi;
 
-import it.polimi.ingsw.network.common.controller.RmiController;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
+import it.polimi.ingsw.network.common.rmi.RMIController;
 import it.polimi.ingsw.network.server.communication.ClientCommunicationInterface;
 
 import java.rmi.RemoteException;
 
-public class RmiClientCommunicationInterface implements ClientCommunicationInterface {
-    private final RmiController clientController;
+public class RMIClientCommunicationInterface implements ClientCommunicationInterface {
+    private final RMIController clientController;
 
-    RmiClientCommunicationInterface(RmiController clientController) {
+    RMIClientCommunicationInterface(RMIController clientController) {
         this.clientController = clientController;
     }
 
