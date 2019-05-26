@@ -2,7 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.cell.Cell;
-import it.polimi.ingsw.model.exceptions.DistanceFromNullException;
+import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.view.virtual.VirtualView;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.player.*;
@@ -94,7 +94,7 @@ public class Game {
                                 .filter(c -> {
                                     try {
                                         return c.distance(subject.getPosition()) <= maxDistance;
-                                    } catch (DistanceFromNullException e) {
+                                    } catch (NullCellOperationException e) {
                                         return false;
                                     }
                                 })

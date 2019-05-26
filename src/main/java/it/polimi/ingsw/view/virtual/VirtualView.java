@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
-import it.polimi.ingsw.model.exceptions.DistanceFromNullException;
+import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.model.player.Execution;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.Newton;
@@ -362,7 +362,7 @@ public class VirtualView {
                 .filter(c -> {
                     try {
                         return targetPlayer.getPosition().distance(c) <= Newton.NEWTON_MAX_DISTANCE;
-                    } catch (DistanceFromNullException e) {
+                    } catch (NullCellOperationException e) {
                         return false;
                     }
                 })

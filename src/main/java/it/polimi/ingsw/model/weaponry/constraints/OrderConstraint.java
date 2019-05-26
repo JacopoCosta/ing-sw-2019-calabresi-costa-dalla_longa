@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.weaponry.constraints;
 
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.model.exceptions.InvalidFilterInvocationException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
@@ -24,7 +25,11 @@ public class OrderConstraint extends Constraint {
     }
 
     private boolean verify(Cell sourceCell, Cell gateCell, Cell drainCell) {
-        return gateCell.isBetween(sourceCell, drainCell);
+        try {
+            return gateCell.isBetween(sourceCell, drainCell);
+        } catch (NullCellOperationException | NullPointerException e) {
+            return false;
+        }
     }
 
     @Override

@@ -1246,4 +1246,711 @@ public class TestWeapon {
         assertEquals(targetFarAwayStartingPosition, targetFarAway.getPosition());
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
+
+    @Test
+    public void hellion() {
+        Weapon weapon = null;
+        do try {
+            weapon = board.getWeaponDeck().draw();
+        } catch (EmptyDeckException e) {
+            fail();
+        } while(!weapon.getName().equals("Hellion"));
+
+        // for a more thorough testing -- it's still adjacent so the name is technically not wrong
+        targetAdjacent.setPosition(targetOtherRoomStartingPosition);
+
+        AttackPattern attackPattern = weapon.getPattern();
+        controller.prepareForShoot(author, attackPattern);
+        AttackModule module0 = attackPattern.getModule(0);
+
+        List<Target> targets0 = module0.getTargets();
+
+        TargetPlayer target00 = (TargetPlayer) targets0.get(0);
+        List<Player> actual0 = target00.filter();
+        List<Player> expected0 = new ArrayList<>();
+        expected0.add(targetAdjacent);
+        expected0.add(targetSameRoom);
+        expected0.add(targetOtherRoom);
+        assertTrue(actual0.containsAll(expected0));
+        assertTrue(expected0.containsAll(actual0));
+        target00.setPlayer(targetOtherRoom);
+
+        module0.getEffects().forEach(e -> {
+            e.setAuthor(author);
+            e.apply();
+        });
+
+        assertEquals(0, author.getDamageByAuthor(author));
+        assertEquals(0, targetSameCell.getDamageByAuthor(author));
+        assertEquals(0, targetAdjacent.getDamageByAuthor(author));
+        assertEquals(0, targetSameRoom.getDamageByAuthor(author));
+        assertEquals(1, targetOtherRoom.getDamageByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getDamageByAuthor(author));
+        assertEquals(0, targetFarAway.getDamageByAuthor(author));
+        assertEquals(0, targetNullPosition.getDamageByAuthor(author));
+
+        assertEquals(0, author.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameCell.getMarkingsByAuthor(author));
+        assertEquals(1, targetAdjacent.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameRoom.getMarkingsByAuthor(author));
+        assertEquals(1, targetOtherRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getMarkingsByAuthor(author));
+        assertEquals(0, targetFarAway.getMarkingsByAuthor(author));
+        assertEquals(0, targetNullPosition.getMarkingsByAuthor(author));
+
+        assertEquals(authorStartingPosition, author.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetSameCell.getPosition());
+        assertEquals(targetOtherRoomStartingPosition, targetAdjacent.getPosition());
+        assertEquals(targetSameRoomStartingPosition, targetSameRoom.getPosition());
+        assertEquals(targetOtherRoomStartingPosition, targetOtherRoom.getPosition());
+        assertEquals(targetAlignedNotVisibleStartingPosition, targetAlignedNotVisible.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetFarAway.getPosition());
+        assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
+
+        AttackModule module1 = attackPattern.getModule(1);
+
+        List<Target> targets1 = module1.getTargets();
+
+        TargetPlayer target10 = (TargetPlayer) targets1.get(0);
+        List<Player> actual1 = target10.filter();
+        List<Player> expected1 = new ArrayList<>();
+        expected1.add(targetAdjacent);
+        expected1.add(targetSameRoom);
+        expected1.add(targetOtherRoom);
+        assertTrue(actual1.containsAll(expected1));
+        assertTrue(expected1.containsAll(actual1));
+        target10.setPlayer(targetAdjacent);
+
+        module1.getEffects().forEach(e -> {
+            e.setAuthor(author);
+            e.apply();
+        });
+
+        // take into account marks from the previous round
+        assertEquals(0, author.getDamageByAuthor(author));
+        assertEquals(0, targetSameCell.getDamageByAuthor(author));
+        assertEquals(2, targetAdjacent.getDamageByAuthor(author));
+        assertEquals(0, targetSameRoom.getDamageByAuthor(author));
+        assertEquals(1, targetOtherRoom.getDamageByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getDamageByAuthor(author));
+        assertEquals(0, targetFarAway.getDamageByAuthor(author));
+        assertEquals(0, targetNullPosition.getDamageByAuthor(author));
+
+        assertEquals(0, author.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameCell.getMarkingsByAuthor(author));
+        assertEquals(2, targetAdjacent.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameRoom.getMarkingsByAuthor(author));
+        assertEquals(3, targetOtherRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getMarkingsByAuthor(author));
+        assertEquals(0, targetFarAway.getMarkingsByAuthor(author));
+        assertEquals(0, targetNullPosition.getMarkingsByAuthor(author));
+
+        assertEquals(authorStartingPosition, author.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetSameCell.getPosition());
+        assertEquals(targetOtherRoomStartingPosition, targetAdjacent.getPosition());
+        assertEquals(targetSameRoomStartingPosition, targetSameRoom.getPosition());
+        assertEquals(targetOtherRoomStartingPosition, targetOtherRoom.getPosition());
+        assertEquals(targetAlignedNotVisibleStartingPosition, targetAlignedNotVisible.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetFarAway.getPosition());
+        assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
+    }
+
+    @Test
+    public void flamethrower() {
+        Weapon weapon = null;
+        do try {
+            weapon = board.getWeaponDeck().draw();
+        } catch (EmptyDeckException e) {
+            fail();
+        } while(!weapon.getName().equals("Flamethrower"));
+
+        AttackPattern attackPattern = weapon.getPattern();
+        controller.prepareForShoot(author, attackPattern);
+        AttackModule module0 = attackPattern.getModule(0);
+
+        List<Target> targets0 = module0.getTargets();
+
+        TargetPlayer target00 = (TargetPlayer) targets0.get(0);
+        List<Player> actual0 = target00.filter();
+        List<Player> expected0 = new ArrayList<>();
+        expected0.add(targetAdjacent);
+        expected0.add(targetOtherRoom);
+        assertTrue(actual0.containsAll(expected0));
+        assertTrue(expected0.containsAll(actual0));
+        target00.setPlayer(targetAdjacent);
+
+        module0.getEffects().forEach(e -> {
+            e.setAuthor(author);
+            e.apply();
+        });
+
+        assertEquals(0, author.getDamageByAuthor(author));
+        assertEquals(0, targetSameCell.getDamageByAuthor(author));
+        assertEquals(1, targetAdjacent.getDamageByAuthor(author));
+        assertEquals(0, targetSameRoom.getDamageByAuthor(author));
+        assertEquals(0, targetOtherRoom.getDamageByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getDamageByAuthor(author));
+        assertEquals(0, targetFarAway.getDamageByAuthor(author));
+        assertEquals(0, targetNullPosition.getDamageByAuthor(author));
+
+        assertEquals(0, author.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameCell.getMarkingsByAuthor(author));
+        assertEquals(0, targetAdjacent.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetOtherRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getMarkingsByAuthor(author));
+        assertEquals(0, targetFarAway.getMarkingsByAuthor(author));
+        assertEquals(0, targetNullPosition.getMarkingsByAuthor(author));
+
+        assertEquals(authorStartingPosition, author.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetSameCell.getPosition());
+        assertEquals(targetAdjacentStartingPosition, targetAdjacent.getPosition());
+        assertEquals(targetSameRoomStartingPosition, targetSameRoom.getPosition());
+        assertEquals(targetOtherRoomStartingPosition, targetOtherRoom.getPosition());
+        assertEquals(targetAlignedNotVisibleStartingPosition, targetAlignedNotVisible.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetFarAway.getPosition());
+        assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
+
+        AttackModule module1 = attackPattern.getModule(1);
+
+        List<Target> targets1 = module1.getTargets();
+
+        TargetPlayer target10 = (TargetPlayer) targets1.get(0);
+        List<Player> actual1 = target10.filter();
+        assertEquals(0, actual1.size());
+
+        assertEquals(0, author.getDamageByAuthor(author));
+        assertEquals(0, targetSameCell.getDamageByAuthor(author));
+        assertEquals(1, targetAdjacent.getDamageByAuthor(author));
+        assertEquals(0, targetSameRoom.getDamageByAuthor(author));
+        assertEquals(0, targetOtherRoom.getDamageByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getDamageByAuthor(author));
+        assertEquals(0, targetFarAway.getDamageByAuthor(author));
+        assertEquals(0, targetNullPosition.getDamageByAuthor(author));
+
+        assertEquals(0, author.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameCell.getMarkingsByAuthor(author));
+        assertEquals(0, targetAdjacent.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetOtherRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getMarkingsByAuthor(author));
+        assertEquals(0, targetFarAway.getMarkingsByAuthor(author));
+        assertEquals(0, targetNullPosition.getMarkingsByAuthor(author));
+
+        assertEquals(authorStartingPosition, author.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetSameCell.getPosition());
+        assertEquals(targetAdjacentStartingPosition, targetAdjacent.getPosition());
+        assertEquals(targetSameRoomStartingPosition, targetSameRoom.getPosition());
+        assertEquals(targetOtherRoomStartingPosition, targetOtherRoom.getPosition());
+        assertEquals(targetAlignedNotVisibleStartingPosition, targetAlignedNotVisible.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetFarAway.getPosition());
+        assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
+
+        // for a more thorough testing
+        author.setPosition(board.getCells().get(10));
+
+        AttackModule module2 = attackPattern.getModule(2);
+
+        List<Target> targets2 = module2.getTargets();
+
+        TargetCell target20 = (TargetCell) targets2.get(0);
+        List<Cell> actual2 = target20.filter();
+        List<Cell> expected2 = new ArrayList<>();
+        expected2.add(targetSameCellStartingPosition);
+        expected2.add(targetSameRoomStartingPosition);
+        assertTrue(actual2.containsAll(expected2));
+        assertTrue(expected2.containsAll(actual2));
+        target20.setCell(targetSameCellStartingPosition);
+
+        module2.getEffects().forEach(e -> {
+            e.setAuthor(author);
+            e.apply();
+        });
+
+        assertEquals(0, author.getDamageByAuthor(author));
+        assertEquals(2, targetSameCell.getDamageByAuthor(author));
+        assertEquals(1, targetAdjacent.getDamageByAuthor(author));
+        assertEquals(0, targetSameRoom.getDamageByAuthor(author));
+        assertEquals(0, targetOtherRoom.getDamageByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getDamageByAuthor(author));
+        assertEquals(0, targetFarAway.getDamageByAuthor(author));
+        assertEquals(0, targetNullPosition.getDamageByAuthor(author));
+
+        assertEquals(0, author.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameCell.getMarkingsByAuthor(author));
+        assertEquals(0, targetAdjacent.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetOtherRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getMarkingsByAuthor(author));
+        assertEquals(0, targetFarAway.getMarkingsByAuthor(author));
+        assertEquals(0, targetNullPosition.getMarkingsByAuthor(author));
+
+        assertEquals(board.getCells().get(10), author.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetSameCell.getPosition());
+        assertEquals(targetAdjacentStartingPosition, targetAdjacent.getPosition());
+        assertEquals(targetSameRoomStartingPosition, targetSameRoom.getPosition());
+        assertEquals(targetOtherRoomStartingPosition, targetOtherRoom.getPosition());
+        assertEquals(targetAlignedNotVisibleStartingPosition, targetAlignedNotVisible.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetFarAway.getPosition());
+        assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
+
+        AttackModule module3 = attackPattern.getModule(3);
+
+        List<Target> targets3 = module3.getTargets();
+
+        TargetCell target30 = (TargetCell) targets3.get(0);
+        List<Cell> actual3 = target30.filter();
+        List<Cell> expected3 = new ArrayList<>();
+        expected3.add(targetOtherRoomStartingPosition);
+        assertTrue(actual3.containsAll(expected3));
+        assertTrue(expected3.containsAll(actual3));
+        target30.setCell(targetOtherRoomStartingPosition);
+
+        module3.getEffects().forEach(e -> {
+            e.setAuthor(author);
+            e.apply();
+        });
+
+        assertEquals(0, author.getDamageByAuthor(author));
+        assertEquals(2, targetSameCell.getDamageByAuthor(author));
+        assertEquals(1, targetAdjacent.getDamageByAuthor(author));
+        assertEquals(0, targetSameRoom.getDamageByAuthor(author));
+        assertEquals(1, targetOtherRoom.getDamageByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getDamageByAuthor(author));
+        assertEquals(0, targetFarAway.getDamageByAuthor(author));
+        assertEquals(0, targetNullPosition.getDamageByAuthor(author));
+
+        assertEquals(0, author.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameCell.getMarkingsByAuthor(author));
+        assertEquals(0, targetAdjacent.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetOtherRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getMarkingsByAuthor(author));
+        assertEquals(0, targetFarAway.getMarkingsByAuthor(author));
+        assertEquals(0, targetNullPosition.getMarkingsByAuthor(author));
+
+        assertEquals(board.getCells().get(10), author.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetSameCell.getPosition());
+        assertEquals(targetAdjacentStartingPosition, targetAdjacent.getPosition());
+        assertEquals(targetSameRoomStartingPosition, targetSameRoom.getPosition());
+        assertEquals(targetOtherRoomStartingPosition, targetOtherRoom.getPosition());
+        assertEquals(targetAlignedNotVisibleStartingPosition, targetAlignedNotVisible.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetFarAway.getPosition());
+        assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
+    }
+
+    @Test
+    public void grenadeLauncher() {
+        Weapon weapon = null;
+        do try {
+            weapon = board.getWeaponDeck().draw();
+        } catch (EmptyDeckException e) {
+            fail();
+        } while(!weapon.getName().equals("Grenade Launcher"));
+
+        AttackPattern attackPattern = weapon.getPattern();
+        controller.prepareForShoot(author, attackPattern);
+        AttackModule module0 = attackPattern.getModule(0);
+
+        List<Target> targets0 = module0.getTargets();
+
+        TargetPlayer target00 = (TargetPlayer) targets0.get(0);
+        List<Player> actual0 = target00.filter();
+        List<Player> expected0 = new ArrayList<>();
+        expected0.add(targetSameCell);
+        expected0.add(targetAdjacent);
+        expected0.add(targetSameRoom);
+        expected0.add(targetOtherRoom);
+        assertTrue(actual0.containsAll(expected0));
+        assertTrue(expected0.containsAll(actual0));
+        target00.setPlayer(targetOtherRoom);
+
+        TargetCell target01 = (TargetCell) targets0.get(1);
+        List<Cell> actual01 = target01.filter();
+        List<Cell> expected01 = new ArrayList<>();
+        expected01.add(board.getCells().get(2));
+        expected01.add(board.getCells().get(3));
+        expected01.add(board.getCells().get(7));
+        assertTrue(actual01.containsAll(expected01));
+        assertTrue(expected01.containsAll(actual01));
+        target01.setCell(board.getCells().get(7));
+
+        module0.getEffects().forEach(e -> {
+            e.setAuthor(author);
+            e.apply();
+        });
+
+        assertEquals(0, author.getDamageByAuthor(author));
+        assertEquals(0, targetSameCell.getDamageByAuthor(author));
+        assertEquals(0, targetAdjacent.getDamageByAuthor(author));
+        assertEquals(0, targetSameRoom.getDamageByAuthor(author));
+        assertEquals(1, targetOtherRoom.getDamageByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getDamageByAuthor(author));
+        assertEquals(0, targetFarAway.getDamageByAuthor(author));
+        assertEquals(0, targetNullPosition.getDamageByAuthor(author));
+
+        assertEquals(0, author.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameCell.getMarkingsByAuthor(author));
+        assertEquals(0, targetAdjacent.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetOtherRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getMarkingsByAuthor(author));
+        assertEquals(0, targetFarAway.getMarkingsByAuthor(author));
+        assertEquals(0, targetNullPosition.getMarkingsByAuthor(author));
+
+        assertEquals(authorStartingPosition, author.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetSameCell.getPosition());
+        assertEquals(targetAdjacentStartingPosition, targetAdjacent.getPosition());
+        assertEquals(targetSameRoomStartingPosition, targetSameRoom.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetOtherRoom.getPosition());
+        assertEquals(targetAlignedNotVisibleStartingPosition, targetAlignedNotVisible.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetFarAway.getPosition());
+        assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
+
+        AttackModule module1 = attackPattern.getModule(1);
+
+        List<Target> targets1 = module1.getTargets();
+
+        TargetCell target10 = (TargetCell) targets1.get(0);
+        List<Cell> actual1 = target10.filter();
+        List<Cell> expected1 = new ArrayList<>();
+        expected1.add(board.getCells().get(3));
+        expected1.add(board.getCells().get(6));
+        expected1.add(board.getCells().get(7));
+        expected1.add(board.getCells().get(9));
+        expected1.add(board.getCells().get(10));
+        assertTrue(actual1.containsAll(expected1));
+        assertTrue(expected1.containsAll(actual1));
+        target10.setCell(board.getCells().get(7));
+
+        module1.getEffects().forEach(e -> {
+            e.setAuthor(author);
+            e.apply();
+        });
+
+        assertEquals(0, author.getDamageByAuthor(author));
+        assertEquals(1, targetSameCell.getDamageByAuthor(author));
+        assertEquals(0, targetAdjacent.getDamageByAuthor(author));
+        assertEquals(0, targetSameRoom.getDamageByAuthor(author));
+        assertEquals(2, targetOtherRoom.getDamageByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getDamageByAuthor(author));
+        assertEquals(0, targetFarAway.getDamageByAuthor(author));
+        assertEquals(0, targetNullPosition.getDamageByAuthor(author));
+
+        assertEquals(0, author.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameCell.getMarkingsByAuthor(author));
+        assertEquals(0, targetAdjacent.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetOtherRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getMarkingsByAuthor(author));
+        assertEquals(0, targetFarAway.getMarkingsByAuthor(author));
+        assertEquals(0, targetNullPosition.getMarkingsByAuthor(author));
+
+        assertEquals(authorStartingPosition, author.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetSameCell.getPosition());
+        assertEquals(targetAdjacentStartingPosition, targetAdjacent.getPosition());
+        assertEquals(targetSameRoomStartingPosition, targetSameRoom.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetOtherRoom.getPosition());
+        assertEquals(targetAlignedNotVisibleStartingPosition, targetAlignedNotVisible.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetFarAway.getPosition());
+        assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
+    }
+
+    @Test
+    public void rocketLauncher() {
+        Weapon weapon = null;
+        do try {
+            weapon = board.getWeaponDeck().draw();
+        } catch (EmptyDeckException e) {
+            fail();
+        } while(!weapon.getName().equals("Rocket Launcher"));
+
+        // for a more thorough testing -- this will be important later
+        targetSameRoom.setPosition(targetFarAwayStartingPosition);
+        
+        AttackPattern attackPattern = weapon.getPattern();
+        controller.prepareForShoot(author, attackPattern);
+        AttackModule module0 = attackPattern.getModule(0);
+
+        List<Target> targets0 = module0.getTargets();
+
+        TargetPlayer target00 = (TargetPlayer) targets0.get(0);
+        List<Player> actual0 = target00.filter();
+        List<Player> expected0 = new ArrayList<>();
+        expected0.add(targetAdjacent);
+        expected0.add(targetOtherRoom);
+        assertTrue(actual0.containsAll(expected0));
+        assertTrue(expected0.containsAll(actual0));
+        target00.setPlayer(targetOtherRoom);
+
+        TargetCell target01 = (TargetCell) targets0.get(1);
+        List<Cell> actual01 = target01.filter();
+        List<Cell> expected01 = new ArrayList<>();
+        expected01.add(board.getCells().get(2));
+        expected01.add(board.getCells().get(3));
+        expected01.add(board.getCells().get(7));
+        assertTrue(actual01.containsAll(expected01));
+        assertTrue(expected01.containsAll(actual01));
+        target01.setCell(board.getCells().get(7));
+
+        module0.getEffects().forEach(e -> {
+            e.setAuthor(author);
+            e.apply();
+        });
+
+        assertEquals(0, author.getDamageByAuthor(author));
+        assertEquals(0, targetSameCell.getDamageByAuthor(author));
+        assertEquals(0, targetAdjacent.getDamageByAuthor(author));
+        assertEquals(0, targetSameRoom.getDamageByAuthor(author));
+        assertEquals(2, targetOtherRoom.getDamageByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getDamageByAuthor(author));
+        assertEquals(0, targetFarAway.getDamageByAuthor(author));
+        assertEquals(0, targetNullPosition.getDamageByAuthor(author));
+
+        assertEquals(0, author.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameCell.getMarkingsByAuthor(author));
+        assertEquals(0, targetAdjacent.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetOtherRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getMarkingsByAuthor(author));
+        assertEquals(0, targetFarAway.getMarkingsByAuthor(author));
+        assertEquals(0, targetNullPosition.getMarkingsByAuthor(author));
+
+        assertEquals(authorStartingPosition, author.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetSameCell.getPosition());
+        assertEquals(targetAdjacentStartingPosition, targetAdjacent.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetSameRoom.getPosition());
+        assertEquals(authorStartingPosition, targetOtherRoom.getPosition());
+        assertEquals(targetAlignedNotVisibleStartingPosition, targetAlignedNotVisible.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetFarAway.getPosition());
+        assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
+
+        AttackModule module1 = attackPattern.getModule(1);
+
+        List<Target> targets1 = module1.getTargets();
+
+        TargetCell target10 = (TargetCell) targets1.get(0);
+        List<Cell> actual1 = target10.filter();
+        List<Cell> expected1 = new ArrayList<>();
+        expected1.add(board.getCells().get(2));
+        expected1.add(board.getCells().get(3));
+        expected1.add(board.getCells().get(6));
+        expected1.add(board.getCells().get(7));
+        expected1.add(board.getCells().get(9));
+        expected1.add(board.getCells().get(10));
+        assertTrue(actual1.containsAll(expected1));
+        assertTrue(expected1.containsAll(actual1));
+        target10.setCell(board.getCells().get(2));
+
+        module1.getEffects().forEach(e -> {
+            e.setAuthor(author);
+            e.apply();
+        });
+
+        assertEquals(0, author.getDamageByAuthor(author));
+        assertEquals(0, targetSameCell.getDamageByAuthor(author));
+        assertEquals(0, targetAdjacent.getDamageByAuthor(author));
+        assertEquals(0, targetSameRoom.getDamageByAuthor(author));
+        assertEquals(2, targetOtherRoom.getDamageByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getDamageByAuthor(author));
+        assertEquals(0, targetFarAway.getDamageByAuthor(author));
+        assertEquals(0, targetNullPosition.getDamageByAuthor(author));
+
+        assertEquals(0, author.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameCell.getMarkingsByAuthor(author));
+        assertEquals(0, targetAdjacent.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetOtherRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getMarkingsByAuthor(author));
+        assertEquals(0, targetFarAway.getMarkingsByAuthor(author));
+        assertEquals(0, targetNullPosition.getMarkingsByAuthor(author));
+
+        assertEquals(board.getCells().get(2), author.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetSameCell.getPosition());
+        assertEquals(targetAdjacentStartingPosition, targetAdjacent.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetSameRoom.getPosition());
+        assertEquals(authorStartingPosition, targetOtherRoom.getPosition());
+        assertEquals(targetAlignedNotVisibleStartingPosition, targetAlignedNotVisible.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetFarAway.getPosition());
+        assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
+
+        AttackModule module2 = attackPattern.getModule(2);
+
+        List<Target> targets2 = module2.getTargets();
+
+        TargetPlayer target20 = (TargetPlayer) targets2.get(0);
+        List<Player> actual2 = target20.filter();
+        List<Player> expected2 = new ArrayList<>();
+        expected2.add(targetSameCell);
+        expected2.add(targetAdjacent);
+        expected2.add(targetSameRoom);
+        expected2.add(targetOtherRoom);
+        expected2.add(targetFarAway);
+        assertTrue(actual2.containsAll(expected2));
+        assertTrue(expected2.containsAll(actual2));
+        target20.setPlayer(targetFarAway);
+
+        TargetCell target21 = (TargetCell) targets2.get(1);
+        List<Cell> actual21 = target21.filter();
+        List<Cell> expected21 = new ArrayList<>();
+        expected21.add(board.getCells().get(0));
+        expected21.add(board.getCells().get(1));
+        expected21.add(board.getCells().get(4));
+        assertTrue(actual21.containsAll(expected21));
+        assertTrue(expected21.containsAll(actual21));
+        target21.setCell(board.getCells().get(4));
+        
+        module2.getEffects().forEach(e -> {
+            e.setAuthor(author);
+            e.apply();
+        });
+
+        // there's still a base 2 damage on targetOtherRoom due to the first module
+        assertEquals(0, author.getDamageByAuthor(author));
+        assertEquals(0, targetSameCell.getDamageByAuthor(author));
+        assertEquals(0, targetAdjacent.getDamageByAuthor(author));
+        assertEquals(1, targetSameRoom.getDamageByAuthor(author));
+        assertEquals(2, targetOtherRoom.getDamageByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getDamageByAuthor(author));
+        assertEquals(3, targetFarAway.getDamageByAuthor(author));
+        assertEquals(0, targetNullPosition.getDamageByAuthor(author));
+
+        assertEquals(0, author.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameCell.getMarkingsByAuthor(author));
+        assertEquals(0, targetAdjacent.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetOtherRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getMarkingsByAuthor(author));
+        assertEquals(0, targetFarAway.getMarkingsByAuthor(author));
+        assertEquals(0, targetNullPosition.getMarkingsByAuthor(author));
+
+        assertEquals(board.getCells().get(2), author.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetSameCell.getPosition());
+        assertEquals(targetAdjacentStartingPosition, targetAdjacent.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetSameRoom.getPosition());
+        assertEquals(authorStartingPosition, targetOtherRoom.getPosition());
+        assertEquals(targetAlignedNotVisibleStartingPosition, targetAlignedNotVisible.getPosition());
+        assertEquals(targetAlignedNotVisibleStartingPosition, targetFarAway.getPosition());
+        assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
+    }
+
+    @Test
+    public void railGun() {
+        Weapon weapon = null;
+        do try {
+            weapon = board.getWeaponDeck().draw();
+        } catch (EmptyDeckException e) {
+            fail();
+        } while(!weapon.getName().equals("Railgun"));
+
+        AttackPattern attackPattern = weapon.getPattern();
+        controller.prepareForShoot(author, attackPattern);
+        AttackModule module0 = attackPattern.getModule(0);
+
+        List<Target> targets0 = module0.getTargets();
+
+        TargetPlayer target00 = (TargetPlayer) targets0.get(0);
+        List<Player> actual0 = target00.filter();
+        List<Player> expected0 = new ArrayList<>();
+        expected0.add(targetSameCell);
+        expected0.add(targetAdjacent);
+        expected0.add(targetOtherRoom);
+        expected0.add(targetAlignedNotVisible);
+        assertTrue(actual0.containsAll(expected0));
+        assertTrue(expected0.containsAll(actual0));
+        target00.setPlayer(targetAdjacent);
+
+        module0.getEffects().forEach(e -> {
+            e.setAuthor(author);
+            e.apply();
+        });
+
+        assertEquals(0, author.getDamageByAuthor(author));
+        assertEquals(0, targetSameCell.getDamageByAuthor(author));
+        assertEquals(3, targetAdjacent.getDamageByAuthor(author));
+        assertEquals(0, targetSameRoom.getDamageByAuthor(author));
+        assertEquals(0, targetOtherRoom.getDamageByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getDamageByAuthor(author));
+        assertEquals(0, targetFarAway.getDamageByAuthor(author));
+        assertEquals(0, targetNullPosition.getDamageByAuthor(author));
+
+        assertEquals(0, author.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameCell.getMarkingsByAuthor(author));
+        assertEquals(0, targetAdjacent.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetOtherRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getMarkingsByAuthor(author));
+        assertEquals(0, targetFarAway.getMarkingsByAuthor(author));
+        assertEquals(0, targetNullPosition.getMarkingsByAuthor(author));
+
+        assertEquals(authorStartingPosition, author.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetSameCell.getPosition());
+        assertEquals(targetAdjacentStartingPosition, targetAdjacent.getPosition());
+        assertEquals(targetSameRoomStartingPosition, targetSameRoom.getPosition());
+        assertEquals(targetOtherRoomStartingPosition, targetOtherRoom.getPosition());
+        assertEquals(targetAlignedNotVisibleStartingPosition, targetAlignedNotVisible.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetFarAway.getPosition());
+        assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
+
+        // for a more thorough testing
+        
+        targetSameRoom.setPosition(targetAdjacentStartingPosition);
+        
+        AttackModule module1 = attackPattern.getModule(1);
+
+        List<Target> targets1 = module1.getTargets();
+
+        TargetPlayer target10 = (TargetPlayer) targets1.get(0);
+        List<Player> actual1 = target10.filter();
+        List<Player> expected1 = new ArrayList<>();
+        expected1.add(targetSameCell);
+        expected1.add(targetAdjacent);
+        expected1.add(targetSameRoom);
+        expected1.add(targetOtherRoom);
+        expected1.add(targetAlignedNotVisible);
+        assertTrue(actual1.containsAll(expected1));
+        assertTrue(expected1.containsAll(actual1));
+        target10.setPlayer(targetAdjacent);
+
+        TargetPlayer target11 = (TargetPlayer) targets1.get(1);
+        List<Player> actual11 = target11.filter();
+        List<Player> expected11 = new ArrayList<>();
+        expected11.add(targetSameRoom);
+        expected11.add(targetAlignedNotVisible);
+        assertTrue(actual11.containsAll(expected11));
+        assertTrue(expected11.containsAll(actual11));
+        target11.setPlayer(targetAlignedNotVisible);
+        
+        module1.getEffects().forEach(e -> {
+            e.setAuthor(author);
+            e.apply();
+        });
+
+        assertEquals(0, author.getDamageByAuthor(author));
+        assertEquals(0, targetSameCell.getDamageByAuthor(author));
+        assertEquals(5, targetAdjacent.getDamageByAuthor(author));
+        assertEquals(0, targetSameRoom.getDamageByAuthor(author));
+        assertEquals(0, targetOtherRoom.getDamageByAuthor(author));
+        assertEquals(2, targetAlignedNotVisible.getDamageByAuthor(author));
+        assertEquals(0, targetFarAway.getDamageByAuthor(author));
+        assertEquals(0, targetNullPosition.getDamageByAuthor(author));
+
+        assertEquals(0, author.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameCell.getMarkingsByAuthor(author));
+        assertEquals(0, targetAdjacent.getMarkingsByAuthor(author));
+        assertEquals(0, targetSameRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetOtherRoom.getMarkingsByAuthor(author));
+        assertEquals(0, targetAlignedNotVisible.getMarkingsByAuthor(author));
+        assertEquals(0, targetFarAway.getMarkingsByAuthor(author));
+        assertEquals(0, targetNullPosition.getMarkingsByAuthor(author));
+
+        assertEquals(authorStartingPosition, author.getPosition());
+        assertEquals(targetSameCellStartingPosition, targetSameCell.getPosition());
+        assertEquals(targetAdjacentStartingPosition, targetAdjacent.getPosition());
+        assertEquals(targetAdjacentStartingPosition, targetSameRoom.getPosition());
+        assertEquals(targetOtherRoomStartingPosition, targetOtherRoom.getPosition());
+        assertEquals(targetAlignedNotVisibleStartingPosition, targetAlignedNotVisible.getPosition());
+        assertEquals(targetFarAwayStartingPosition, targetFarAway.getPosition());
+        assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
+    }
 }

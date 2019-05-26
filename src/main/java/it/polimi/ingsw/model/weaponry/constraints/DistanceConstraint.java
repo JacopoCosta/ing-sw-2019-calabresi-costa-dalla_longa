@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.weaponry.constraints;
 
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
-import it.polimi.ingsw.model.exceptions.DistanceFromNullException;
+import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.model.exceptions.InvalidFilterInvocationException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
@@ -28,7 +28,7 @@ public class DistanceConstraint extends Constraint {
         int distance;
         try {
             distance = sourceCell.distance(drainCell);
-        } catch (DistanceFromNullException | NullPointerException e) {
+        } catch (NullCellOperationException | NullPointerException e) {
             return false;
         }
         return (distance >= lowerBound) && (distance <= upperBound || upperBound < 0);

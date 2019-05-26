@@ -1,12 +1,9 @@
 package it.polimi.ingsw.model.cell;
 
-import com.sun.javafx.geom.transform.Identity;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.Room;
-import it.polimi.ingsw.model.exceptions.DistanceFromNullException;
+import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.model.exceptions.SelfAdjacentCellException;
-import it.polimi.ingsw.model.utilities.Table;
-import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -164,9 +161,9 @@ public abstract class Cell {
      * @param cell the target cell.
      * @return the distance between the cell this method is called upon and the cell passed as argument.
      */
-    public int distance(Cell cell) throws DistanceFromNullException {
+    public int distance(Cell cell) throws NullCellOperationException {
         if(cell == null)
-            throw new DistanceFromNullException("Attempted to measure distance from null.");
+            throw new NullCellOperationException("Attempted to measure distance from null.");
 
         List<Cell> visited = new ArrayList<>();
         // consider the starting cell already visited
@@ -247,7 +244,9 @@ public abstract class Cell {
      * @param cell the comparison cell.
      * @return whether or not the cell this method is called upon is aligned with the cell passed as argument.
      */
-    public boolean isAligned(Cell cell) {
+    public boolean isAligned(Cell cell) throws NullCellOperationException {
+        if(cell == null)
+            throw new NullCellOperationException("Attempted to measure alignment with a null cell.");
         return cell.xCoord == this.xCoord || cell.yCoord == this.yCoord;
     }
 
@@ -263,7 +262,10 @@ public abstract class Cell {
      * @return whether or not the cell this method is called upon is between the two cells passed as arguments.
      * @see Cell#isAligned(Cell)
      */
-    public boolean isBetween(Cell cell1, Cell cell2) {
+    public boolean isBetween(Cell cell1, Cell cell2) throws NullCellOperationException {
+        if(cell1 == null || cell2 == null)
+            throw new NullCellOperationException("Tried to verify alignment with null cells.");
+
         if(cell1.xCoord == this.xCoord && this.xCoord == cell2.xCoord)
             return (cell1.yCoord - this.yCoord) * (this.yCoord - cell2.yCoord) >= 0;
 

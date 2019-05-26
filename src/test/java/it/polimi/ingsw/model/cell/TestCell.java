@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.cell;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.exceptions.DistanceFromNullException;
+import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ public class TestCell {
 
 
     @Test
-    public void distance() throws DistanceFromNullException {
+    public void distance() throws NullCellOperationException {
         assertEquals(0, cell8.distance(cell8));
         assertEquals(1, cell8.distance(cell7));
         assertEquals(1, cell4.distance(cell8));
@@ -75,23 +75,31 @@ public class TestCell {
 
     @Test
     public void isAligned() {
-        assertTrue(cell4.isAligned(cell4));
-        assertTrue(cell1.isAligned(cell5));
-        assertTrue(cell5.isAligned(cell8));
-        assertFalse(cell1.isAligned(cell8));
+        try {
+            assertTrue(cell4.isAligned(cell4));
+            assertTrue(cell1.isAligned(cell5));
+            assertTrue(cell5.isAligned(cell8));
+            assertFalse(cell1.isAligned(cell8));
+        } catch (NullCellOperationException e) {
+            fail();
+        }
     }
 
     @Test
     public void isBetween() {
-        assertTrue(cell3.isBetween(cell3, cell3));
-        assertTrue(cell2.isBetween(cell3, cell2));
-        assertTrue(cell6.isBetween(cell5, cell7));
-        assertTrue(cell7.isBetween(cell10, cell3));
-        assertTrue(cell11.isBetween(cell9, cell11));
-        assertFalse(cell9.isBetween(cell11, cell11));
-        assertFalse(cell9.isBetween(cell2, cell4));
-        assertFalse(cell9.isBetween(cell6, cell10));
-        assertFalse(cell1.isBetween(cell4, cell2));
-        assertFalse(cell5.isBetween(cell9, cell2));
+        try {
+            assertTrue(cell3.isBetween(cell3, cell3));
+            assertTrue(cell2.isBetween(cell3, cell2));
+            assertTrue(cell6.isBetween(cell5, cell7));
+            assertTrue(cell7.isBetween(cell10, cell3));
+            assertTrue(cell11.isBetween(cell9, cell11));
+            assertFalse(cell9.isBetween(cell11, cell11));
+            assertFalse(cell9.isBetween(cell2, cell4));
+            assertFalse(cell9.isBetween(cell6, cell10));
+            assertFalse(cell1.isBetween(cell4, cell2));
+            assertFalse(cell5.isBetween(cell9, cell2));
+        } catch (NullCellOperationException e) {
+            fail();
+        }
     }
 }

@@ -1555,6 +1555,14 @@
                                         "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": -1
+                                    },
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
+                                        "truth": true
                                     }
                                 ]
                             }
@@ -1618,6 +1626,14 @@
                                         "drainTargetId": -3,
                                         "lowerBound": 1,
                                         "upperBound": -1
+                                    },
+                                    {
+                                        "type": "visibility",
+                                        "sourceAttackModuleId": -1,
+                                        "sourceTargetId": -1,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
+                                        "truth": true
                                     }
                                 ]
                             }
@@ -2119,8 +2135,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": 0,
                                         "sourceTargetId": 0,
-                                        "drainAttackModuleId": 0,
-                                        "drainTargetId": 1,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 1
                                     }
@@ -2247,8 +2263,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": 2,
                                         "sourceTargetId": 0,
-                                        "drainAttackModuleId": 2,
-                                        "drainTargetId": 1,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 1
                                     }
@@ -2387,7 +2403,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "closest",
                                 "constraints": [
                                     {
                                         "type": "alignment",
@@ -2401,7 +2417,7 @@
                             },
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "farthest",
                                 "constraints": [
                                     {
                                         "type": "order",
@@ -2411,6 +2427,14 @@
                                         "gateTargetId": 0,
                                         "drainAttackModuleId": -3,
                                         "drainTargetId": -3
+                                    },
+                                    {
+                                        "type": "identity",
+                                        "sourceAttackModuleId": 1,
+                                        "sourceTargetId": 0,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
+                                        "truth": false
                                     }
                                 ]
                             }
