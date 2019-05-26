@@ -2977,7 +2977,7 @@
                                         "sourceAttackModuleId": -3,
                                         "sourceTargetId": -3,
                                         "drainAttackModuleId": 0,
-                                        "drainTargetId": 1,
+                                        "drainTargetId": 0,
                                         "lowerBound": 0,
                                         "upperBound": 1
                                     }
@@ -3227,6 +3227,15 @@
                                 "type": "player",
                                 "message": "",
                                 "constraints": [
+                                    {
+                                        "type": "distance",
+                                        "sourceAttackModuleId": -2,
+                                        "sourceTargetId": -2,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
+                                        "lowerBound": 2,
+                                        "upperBound": 2
+                                    },
                                     {
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
@@ -3621,8 +3630,8 @@
                                         "type": "distance",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 1,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "lowerBound": 0,
                                         "upperBound": 2
                                     },
@@ -3630,8 +3639,8 @@
                                         "type": "alignment",
                                         "sourceAttackModuleId": -1,
                                         "sourceTargetId": -1,
-                                        "drainAttackModuleId": 1,
-                                        "drainTargetId": 1,
+                                        "drainAttackModuleId": -3,
+                                        "drainTargetId": -3,
                                         "truth": true
                                     }
                                 ]
