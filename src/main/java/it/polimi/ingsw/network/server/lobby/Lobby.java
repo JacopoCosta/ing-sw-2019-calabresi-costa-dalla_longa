@@ -2,13 +2,14 @@ package it.polimi.ingsw.network.server.lobby;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.*;
+import it.polimi.ingsw.network.server.observer.Observer;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-class Lobby {
+class Lobby implements Observer {
     private final int MAX_PLAYERS = 5;
     private int currentPlayers;
 
@@ -29,6 +30,7 @@ class Lobby {
         players = new ArrayList<>(MAX_PLAYERS);
 
         timer = new CountDownTimer(WAITING_TIME);
+        timer.addObserver(this);
     }
 
     void add(Player player, String password) throws LobbyFullException, PlayerAlreadyAddedException, InvalidPasswordException {
@@ -108,5 +110,11 @@ class Lobby {
          *  CountdownTimer.STARTED
          *  CountdownTimer.STOPPED
          * */
+    }
+
+    @Override
+    public void onEvent() {
+        //TODO: start a new Game in a separate thread
+        timer.removeObserver(this);
     }
 }

@@ -1,12 +1,17 @@
 package it.polimi.ingsw.network.server.lobby;
 
+import it.polimi.ingsw.network.server.observer.Observable;
+import it.polimi.ingsw.network.server.observer.Observer;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-class CountDownTimer {
+class CountDownTimer implements Observable {
     public enum TimerState {
         //the timer has been created successfully, but is not started yet
         NOT_STARTED,
@@ -30,6 +35,8 @@ class CountDownTimer {
     private final ScheduledExecutorService executor; //the timer responsible for the actual countdown
     private ScheduledFuture<?> future;
 
+    private final List<Observer> observers;
+
     //the task to execute every PERIOD
     private Runnable tick = () -> {
         if (currentSeconds.decrementAndGet() < 0)
@@ -42,6 +49,8 @@ class CountDownTimer {
         timerState = TimerState.NOT_STARTED;
 
         executor = Executors.newSingleThreadScheduledExecutor();
+
+        observers = new ArrayList<>();
     }
 
     /*
@@ -62,8 +71,11 @@ class CountDownTimer {
      * */
     void stop() {
         timerState = TimerState.STOPPED;
+
         future.cancel(true);
         executor.shutdown();
+
+        notifyObservers();
     }
 
     /*
@@ -78,5 +90,21 @@ class CountDownTimer {
      * */
     TimerState getState() {
         return timerState;
+    }
+
+    @Override
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer observer : observers)
+            observer.onEvent();
     }
 }
