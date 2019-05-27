@@ -6,6 +6,7 @@ import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.server.communication.ClientCommunicationInterface;
 import it.polimi.ingsw.network.server.communication.CommunicationHub;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -28,8 +29,8 @@ public class ClientHandler implements Runnable {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            //e.printStackTrace(); //never thrown before
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            e.printStackTrace(); //never thrown before
+            //System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
             closeConnection();
         }
     }
@@ -39,8 +40,8 @@ public class ClientHandler implements Runnable {
             try {
                 in.close();
             } catch (IOException e) {
-                //e.printStackTrace(); //never thrown before
-                System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+                e.printStackTrace(); //never thrown before
+               // System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
             }
         }
 
@@ -48,16 +49,16 @@ public class ClientHandler implements Runnable {
             try {
                 out.close();
             } catch (IOException e) {
-                //e.printStackTrace(); //never thrown before
-                System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+                e.printStackTrace(); //never thrown before
+                //System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
             }
         }
 
         try {
             socket.close();
         } catch (IOException e) {
-            //e.printStackTrace(); //never thrown before
-            System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
+            e.printStackTrace(); //never thrown before
+            //System.err.println("ERROR: " + e.getClass() + ": " + e.getMessage());
         }
     }
 
@@ -82,7 +83,7 @@ public class ClientHandler implements Runnable {
 
                 communicationHub.handleMessage(message);
             } while (!message.getType().equals(MessageType.UNREGISTER_REQUEST));
-        } catch (SocketException ignored) {
+        } catch (SocketException | EOFException ignored) {
             //Client unexpectedly quit: the ClientHandler.connectionChecker will unregister it
         } catch (IOException | ClassNotFoundException e) {
             //e.printStackTrace(); //never thrown before

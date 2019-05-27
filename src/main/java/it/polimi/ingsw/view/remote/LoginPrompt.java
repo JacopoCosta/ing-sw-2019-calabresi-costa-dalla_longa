@@ -1,5 +1,8 @@
 package it.polimi.ingsw.view.remote;
 
+import it.polimi.ingsw.network.client.CommunicationHandler;
+import it.polimi.ingsw.network.common.exceptions.ClientAlreadyRegisteredException;
+import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -14,23 +17,25 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.ArcType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-import org.w3c.dom.Text;
 
 public class LoginPrompt {
+    CommunicationHandler communicationHandler;
+    LoginManagement loginManagement;
 
-    public static void display() {
+    public LoginPrompt(CommunicationHandler communicationHandler){
+        this.communicationHandler = communicationHandler;
+        loginManagement = new LoginManagement(communicationHandler);
+    }
+
+    public void display() {
 
         //setting nodes
         Label nickLabel = new Label("Choose your nickname:");
-        Label pswLabel = new Label("Choose a password:");
-        Button close = new Button("Close");
         Button done = new Button("Done");
         TextField nickText = new TextField();
-        TextField pswText = new TextField();
 
         HBox layout = new HBox();
-        layout.getChildren().addAll(nickLabel, nickText, pswLabel, pswText, close, done);
+        layout.getChildren().addAll(nickLabel, nickText, done);
         layout.setSpacing(10);
 
         Scene scene = new Scene(layout);
@@ -41,10 +46,19 @@ public class LoginPrompt {
         window.setHeight(300);
         window.initModality(Modality.APPLICATION_MODAL);
 
-        //setting buttons actions
-        close.setOnAction(event -> window.close());
         done.setOnAction(event -> {
-            LoginManagement.display();
+
+            //requesting access
+            String username;
+                username = nickText.getText();
+
+                try {
+                    communicationHandler.register(username);
+                    loginManagement.display();
+
+                } catch (ConnectionException e) {
+                    System.exit(-1);
+                } catch (ClientAlreadyRegisteredException e) { }
         });
 
         window.showAndWait();

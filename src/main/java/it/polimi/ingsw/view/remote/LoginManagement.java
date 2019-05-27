@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view.remote;
 
+import it.polimi.ingsw.network.client.CommunicationHandler;
+import it.polimi.ingsw.network.common.exceptions.*;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -17,26 +19,77 @@ import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import org.w3c.dom.Text;
 
-public class LoginManagement {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-    public static void display() {
+public class LoginManagement {
+    CommunicationHandler communicationHandler;
+
+    private static final List<String> lobbies = Collections.synchronizedList(new ArrayList<>());
+
+    private static Runnable updateTask;
+    private static ScheduledExecutorService executor;
+    private static Future<?> futureUpdate;
+    private static final int UPDATE_REQUEST_PERIOD = 5;
+
+
+    public LoginManagement(CommunicationHandler communicationHandler){
+        this.communicationHandler = communicationHandler;
+    }
+
+    private void requestUpdate(){
+        updateTask = () -> {
+
+            Map<String, String> lobbyInfo;
+
+            try {
+                lobbyInfo = communicationHandler.requestUpdate();
+            } catch (ConnectionException e) {
+                System.exit(-1);
+                return;
+            }
+            synchronized (lobbies) {
+                lobbies.clear();
+                lobbies.addAll(lobbyInfo.entrySet().stream().map(l -> l.getKey() + " " + l.getValue()).collect(Collectors.toList()));
+
+                choiceBox.getItems().clear();
+                choiceBox.getItems().add(0, "<Select a lobby>");
+                choiceBox.getItems().addAll(lobbies);
+            }
+        };
+        executor = Executors.newSingleThreadScheduledExecutor();
+        futureUpdate = executor.scheduleAtFixedRate(updateTask, 0, UPDATE_REQUEST_PERIOD, TimeUnit.SECONDS);
+    }
+
+    private void stopUpdate() {
+        if (!futureUpdate.isDone()) {
+            futureUpdate.cancel(true);
+            executor.shutdown();
+        }
+    }
+
+    ChoiceBox<String> choiceBox = new ChoiceBox<>();
+
+    public void display() {
+
+        requestUpdate();
 
         VBox layout = new VBox();
 
-        ChoiceBox<String> choiceBox = new ChoiceBox<>();
-
-        for(int i=0; i < 4; i++) {
-            choiceBox.getItems().add("Item " + i);
-        }
-
         Button newLobby = new Button("Create new");
         Button ok = new Button("Ok");
-        Button back = new Button("Back");
 
         Scene scene = new Scene(layout);
         Stage window = new Stage();
 
-        layout.getChildren().addAll(choiceBox, ok, back, newLobby);
+        layout.getChildren().addAll(choiceBox, ok, newLobby);
         window.setTitle("Lobbies choice");
         window.setScene(scene);
         window.setWidth(800);
@@ -44,9 +97,36 @@ public class LoginManagement {
         window.initModality(Modality.APPLICATION_MODAL);
 
         ok.setOnAction(event -> {
-            getChoice(choiceBox);
+            stopUpdate();
+            //getChoice(choiceBox); DEBUG ONLY
+
+            String lobbyName = choiceBox.getValue();
+            if(!lobbyName.equals("<Select a lobby>")) {
+
+                lobbyName = lobbyName.substring(0, lobbyName.length() - 6);
+                String lobbyPassword = "password";
+
+                try {
+                    communicationHandler.login(lobbyName, lobbyPassword);
+                } catch (ConnectionException | LobbyNotFoundException | LobbyFullException | InvalidPasswordException e) {
+                    System.exit(-1);
+                }
+            }
+
         });
-        back.setOnAction(event -> window.close());
+
+        newLobby.setOnAction(event -> {
+            stopUpdate();
+
+            String lobbyName = communicationHandler.getUsername() + "'s lobby";
+            String lobbyPassword = "password";  //hardcoded for now
+
+            try {
+                communicationHandler.initLobby(lobbyName, lobbyPassword);
+            } catch (ConnectionException e) {
+                System.exit(-1);
+            } catch (LobbyAlreadyExistsException e) { }
+        });
 
         window.showAndWait();
     }

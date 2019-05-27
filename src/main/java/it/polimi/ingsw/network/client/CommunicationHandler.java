@@ -20,7 +20,7 @@ public class CommunicationHandler {
 
     private final ServerCommunicationInterface communicationInterface;
 
-    CommunicationHandler(String hostAddress, int port, Interface interfaceType) throws ConnectionException {
+    public CommunicationHandler(String hostAddress, int port, Interface interfaceType) throws ConnectionException {
         username = null;
         lobbyName = null;
 

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.remote;
 
 import it.polimi.ingsw.App;
+import it.polimi.ingsw.network.client.CommunicationHandler;
 import it.polimi.ingsw.view.remote.LoginPrompt;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -18,7 +19,16 @@ import javafx.event.ActionEvent;
 
 public class BoardArt {
 
-    public static void displayLogin (Stage window) {
+    CommunicationHandler communicationHandler;
+
+    LoginPrompt loginPrompt;
+
+    public BoardArt (CommunicationHandler communicationHandler) {
+        this.communicationHandler = communicationHandler;
+        loginPrompt = new LoginPrompt(communicationHandler);
+    }
+
+    public void displayLogin (Stage window) {
 
         window.setTitle("ADRENALINE - Login");
 
@@ -37,36 +47,16 @@ public class BoardArt {
         exitButton.relocate(tempWidth/3, tempHeight/2);
 
         Scene startScene = new Scene(startLayout, tempWidth, tempHeight);
-        //TextInputDialog loginDialog = new TextInputDialog();
-        //TextInputDialog pswDialog = new TextInputDialog();
-
-        //setting login Window (NOTE: IT'S A COMPLETE NEW WINDOW THAT WILL BE CLOSED AFTER SUCCESSFUL LOGIN OR BY PRESSING BACK)
-        Button back = new Button("Back");
-        Button ok = new Button("Ok");
-
-        DialogPane loginLayout = new DialogPane();
-        //loginDialog.setTitle("Choose your nickname:");
-        //pswDialog.setTitle("Choose a password:");
-        loginLayout.getChildren().add(back);
-        loginLayout.getChildren().add(ok);
-
-        Scene loginScene = new Scene(loginLayout);
 
         loginButton.setOnAction(event -> {
-            ok.relocate((ok.getScene().getWidth()/3)*2, ok.getScene().getHeight()/2);
-            back.relocate(back.getScene().getWidth()/3, back.getScene().getHeight()/2);
-
-            LoginPrompt.display();
+            loginPrompt.display();
         });
 
         exitButton.setOnAction(event -> System.exit(0));
+        /*
+            TODO: fixing EOFException in server caused by this method
+         */
 
-        back.setOnAction(event -> {
-            exitButton.relocate(exitButton.getScene().getWidth()/3, exitButton.getScene().getHeight()/2);
-            loginButton.relocate((exitButton.getScene().getWidth()/3)*2, exitButton.getScene().getHeight()/2);
-            window.setScene(startScene);
-            window.show();
-        });
 
         window.setScene(startScene);
         window.show();
