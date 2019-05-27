@@ -14,8 +14,9 @@ import java.util.List;
 public class App extends Application implements EventHandler<javafx.event.ActionEvent> {
 
     public static void main(String[] args) {
-        //launch(args);
+        launch(args);
 
+        /*
         List<Player> participants = new ArrayList<>();
         participants.add(new Player("Aldo"));
         participants.add(new Player("Giovanni sulla stessa cella"));
@@ -29,6 +30,8 @@ public class App extends Application implements EventHandler<javafx.event.Action
         Game game = Game.create(true, 5, 2, participants);
 
         game.play();
+
+         */
     }
 
     @Override

@@ -17,37 +17,41 @@ import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import org.w3c.dom.Text;
 
-public class LoginPrompt {
+public class LoginManagement {
 
     public static void display() {
 
-        //setting nodes
-        Label nickLabel = new Label("Choose your nickname:");
-        Label pswLabel = new Label("Choose a password:");
-        Button close = new Button("Close");
-        Button done = new Button("Done");
-        TextField nickText = new TextField();
-        TextField pswText = new TextField();
+        VBox layout = new VBox();
 
-        HBox layout = new HBox();
-        layout.getChildren().addAll(nickLabel, nickText, pswLabel, pswText, close, done);
-        layout.setSpacing(10);
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
+
+        for(int i=0; i < 4; i++) {
+            choiceBox.getItems().add("Item " + i);
+        }
+
+        Button newLobby = new Button("Create new");
+        Button ok = new Button("Ok");
+        Button back = new Button("Back");
 
         Scene scene = new Scene(layout);
         Stage window = new Stage();
-        window.setTitle("Login");
+
+        layout.getChildren().addAll(choiceBox, ok, back, newLobby);
+        window.setTitle("Lobbies choice");
         window.setScene(scene);
         window.setWidth(800);
         window.setHeight(300);
         window.initModality(Modality.APPLICATION_MODAL);
 
-        //setting buttons actions
-        close.setOnAction(event -> window.close());
-        done.setOnAction(event -> {
-            LoginManagement.display();
+        ok.setOnAction(event -> {
+            getChoice(choiceBox);
         });
+        back.setOnAction(event -> window.close());
 
         window.showAndWait();
     }
 
+    private static void getChoice(ChoiceBox<String> choiceBox) {
+        System.out.println(choiceBox.getValue());
+    }
 }
