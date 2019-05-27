@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.virtual;
 
-public enum Message {
+public enum DeliverableType {
     SPAWN_REQUEST("Which power-up would you like to keep? You will spawn where indicated by the one you discard."),
     SPAWN_SUCCESS("You spawned."),
     DISCARD_POWERUP_REQUEST("Looks like your hand is full of power-ups, please discard one:"),
@@ -33,10 +33,11 @@ public enum Message {
     NEWTON_REQUEST_CELL("Where would you like to move them?"),
     NEWTON_FAILURE("Looks like you can't move this player to a cell you can see."),
     TELEPORT_REQUEST_CELL("Where would you like to teleport?"),
+    GENERIC(""),
     FATAL_ERROR("You should never see this string. If you do, run for your life!");
 
-    public final String string;
-    Message(String string) {
-        this.string = string;
+    public final String message;
+    DeliverableType(String message) {
+        this.message = message;
     }
 }

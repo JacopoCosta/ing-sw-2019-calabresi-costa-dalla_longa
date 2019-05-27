@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.weaponry;
 
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
+import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +16,14 @@ public class AttackPattern {
         this.content = content;
     }
 
-    public static AttackPattern build(DecoratedJSONObject jPattern) {
+    public static AttackPattern build(DecoratedJsonObject jPattern) {
         List<Integer> ids = new ArrayList<>();
         List<AttackModule> attackModules = new ArrayList<>();
 
-        for(DecoratedJSONObject jId : jPattern.getArray("first").asList()) {
+        for(DecoratedJsonObject jId : jPattern.getArray("first").asList()) {
             ids.add(jId.getInt("id"));
         }
-        for(DecoratedJSONObject jAttackModule : jPattern.getArray("content").asList()) {
+        for(DecoratedJsonObject jAttackModule : jPattern.getArray("content").asList()) {
             attackModules.add(AttackModule.build(jAttackModule));
         }
 
@@ -42,12 +42,12 @@ public class AttackPattern {
         return first;
     }
 
-    public Player getAuthor() {
-        return author;
-    }
-
     public void setAuthor(Player author) {
         this.author = author;
+    }
+
+    public Player getAuthor() {
+        return author;
     }
 
     public void resetAllModules() {

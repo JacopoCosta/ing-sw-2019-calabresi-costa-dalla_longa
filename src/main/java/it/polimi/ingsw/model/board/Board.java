@@ -27,8 +27,8 @@ public class Board {
     private List<Cell> cells;
 
     private Deck<Weapon> weaponDeck;
-    private Deck<AmmoTile> ammoTileDeck;
     private Deck<PowerUp> powerUpDeck;
+    private Deck<AmmoTile> ammoTileDeck;
 
     private Board() {}
 
@@ -42,10 +42,10 @@ public class Board {
         board.doubleKillers = new ArrayList<>();
 
         board.weaponDeck = Deck.generateWeapons();
-        board.ammoTileDeck = Deck.generateAmmoTiles();
         board.powerUpDeck = Deck.generatePowerUps();
+        board.ammoTileDeck = Deck.generateAmmoTiles();
 
-    //    board.weaponDeck.shuffle();
+        board.weaponDeck.shuffle();
         board.ammoTileDeck.shuffle();
         board.powerUpDeck.shuffle();
 
@@ -56,7 +56,7 @@ public class Board {
         return board;
     }
 
-    protected static List<Cell> configureCells(int boardType) {
+    private static List<Cell> configureCells(int boardType) {
         List<Cell> cells = new ArrayList<>();
         switch(boardType) {
             case 1:
@@ -176,13 +176,6 @@ public class Board {
         return cells;
     }
 
-    /**
-     * This method sorts {@code List<Cell> cells}, first along the horizontal coordinate, then along the vertical coordinates, returning a
-     * cell configuration that can be sequentially read in a natural visualization order (i.e. from left ro right and from above to the bottom).
-     * This method invocation is necessary for the correct printing of the game board when using the CLI-visualization view.
-     * @see CLI#printBoard()
-     */
-
     public Cell findSpawnPoint(AmmoCubes ammoCubeColor) {
         for(Cell cell : cells) {
             if(cell.isSpawnPoint() && ((SpawnCell)cell).getAmmoCubeColor().equals(ammoCubeColor))
@@ -199,13 +192,13 @@ public class Board {
         return null;
     }
 
-    public int getBoardWidth() {
+    public int getWidth() {
         return cells.stream()
                 .map(Cell::getXCoord)
                 .reduce(0, Integer::max);
     }
 
-    public int getBoardHeight() {
+    public int getHeight() {
         return cells.stream()
                 .map(Cell::getYCoord)
                 .reduce(0, Integer::max);

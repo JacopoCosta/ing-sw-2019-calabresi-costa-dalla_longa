@@ -2,12 +2,10 @@ package it.polimi.ingsw.model.weaponry.effects;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.model.powerups.PowerUpType;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 import it.polimi.ingsw.view.virtual.VirtualView;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Damage extends OffensiveEffect {
     public Damage(int amount, List<Constraint> constraints) {
@@ -21,10 +19,7 @@ public class Damage extends OffensiveEffect {
         List<Player> targets = Constraint.filterPlayers(context, constraints);
         // as long as the author has (and wants to use) targeting scopes, they may do so;
         // this will increase the amount of damage dealt to any of its current targets
-        List<PowerUp> scopes = author.getPowerUps()
-                .stream()
-                .filter(p -> p.getType() == PowerUpType.SCOPE)
-                .collect(Collectors.toList());
+        List<PowerUp> scopes = author.getScopes();
 
         VirtualView virtualView = author.getGame().getVirtualView();
         virtualView.scope(this, scopes, targets);

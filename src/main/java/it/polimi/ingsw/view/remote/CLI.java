@@ -1,8 +1,6 @@
 package it.polimi.ingsw.view.remote;
 
 import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.weaponry.constraints.DistanceConstraint;
-import it.polimi.ingsw.view.remote.BoardGraph;
 
 public class CLI extends View implements Viewable {
     
@@ -16,8 +14,8 @@ public class CLI extends View implements Viewable {
     
     public void drawBoard() {
         Board board = getGame().getBoard();     //SHORTHAND
-        int boardWidth = board.getBoardWidth();
-        int boardHeight = board.getBoardHeight();
+        int boardWidth = board.getWidth();
+        int boardHeight = board.getHeight();
 
         //displays the board
         for(int h = 0; h < boardHeight; h++) {
@@ -87,8 +85,8 @@ public class CLI extends View implements Viewable {
         Board board = getGame().getBoard();         //SHORTHAND
         BoardGraph graph = new BoardGraph();
 
-        int boardWidth = board.getBoardWidth();
-        int boardHeight = board.getBoardHeight();
+        int boardWidth = board.getWidth();
+        int boardHeight = board.getHeight();
 
         for(int h=0; h < boardHeight; h++) {
 

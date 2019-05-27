@@ -85,12 +85,8 @@ public abstract class Cell {
         return spawnPoint;
     }
 
-    /**
-     * When constructing a new room, this method is called on each cell to set its membership in the room.
-     * @param room the room needed to contain the cell this method was called upon.
-     */
-    public void setRoom(Room room) {
-        this.room = room;
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     /**
@@ -101,8 +97,12 @@ public abstract class Cell {
         return board;
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
+    /**
+     * When constructing a new room, this method is called on each cell to set its membership in the room.
+     * @param room the room needed to contain the cell this method was called upon.
+     */
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     /**
@@ -277,7 +277,6 @@ public abstract class Cell {
 
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder("Cell #" + getId() + " (" + xCoord + "," + yCoord + ")");
-        return s.toString();
+        return "Cell #" + getId() + " (" + xCoord + "," + yCoord + ")";
     }
 }

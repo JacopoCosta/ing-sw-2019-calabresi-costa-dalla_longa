@@ -44,22 +44,22 @@ public class VirtualView {
 
     private void sendMessage(Player recipient, Deliverable deliverable) {
         System.out.println(game.toString()); // temp
-        Dispatcher.sendMessage(deliverable.unpack());
+        Dispatcher.sendMessage(deliverable.getMessage());
     }
 
     private int sendRequest(Player recipient, Deliverable deliverable, List<?> values, List<Integer> keys) {
         System.out.println(game.toString()); // temp
-        return Dispatcher.requestNumberedOption(deliverable.unpack(), values, keys);
+        return Dispatcher.requestNumberedOption(deliverable.getMessage(), values, keys);
     }
 
     private int sendRequest(Player recipient, Deliverable deliverable, List<?> values) {
         System.out.println(game.toString()); // temp
-        return Dispatcher.requestIndex(deliverable.unpack(), values);
+        return Dispatcher.requestIndex(deliverable.getMessage(), values);
     }
 
     private boolean sendRequest(Player recipient, Deliverable deliverable) {
         System.out.println(game.toString()); // temp
-        return Dispatcher.requestBoolean(deliverable.unpack());
+        return Dispatcher.requestBoolean(deliverable.getMessage());
     }
 
     private void broadcast(Deliverable deliverable) {
@@ -67,29 +67,29 @@ public class VirtualView {
     }
 
     public void spawn(Player subject, List<PowerUp> options) {
-        int keepIndex = sendRequest(subject, new Deliverable(Message.SPAWN_REQUEST), options);
+        int keepIndex = sendRequest(subject, new Deliverable(DeliverableType.SPAWN_REQUEST), options);
         PowerUp powerUpToKeep = options.get(keepIndex);
         PowerUp powerUpToRespawn = options.get(1 - keepIndex);
         controller.spawn(subject, powerUpToKeep, powerUpToRespawn);
-        sendMessage(subject, new Deliverable(Message.SPAWN_SUCCESS));
+        sendMessage(subject, new Deliverable(DeliverableType.SPAWN_SUCCESS));
     }
 
     public void discardPowerUp(Player subject) {
         List<PowerUp> powerUps = subject.getPowerUps();
-        int discardIndex = sendRequest(subject, new Deliverable(Message.DISCARD_POWERUP_REQUEST), powerUps);
+        int discardIndex = sendRequest(subject, new Deliverable(DeliverableType.DISCARD_POWERUP_REQUEST), powerUps);
         PowerUp toDiscard = powerUps.get(discardIndex);
         controller.discardPowerUp(subject, toDiscard);
     }
 
     public void discardWeapon(Player subject) {
         List<Weapon> weapons = subject.getWeapons();
-        int discardIndex = sendRequest(subject, new Deliverable(Message.DISCARD_WEAPON_REQUEST), weapons);
+        int discardIndex = sendRequest(subject, new Deliverable(DeliverableType.DISCARD_WEAPON_REQUEST), weapons);
         Weapon toDiscard = weapons.get(discardIndex);
         controller.discardWeapon(subject, toDiscard);
     }
 
     public Execution chooseExecution(Player subject, List<Execution> options) {
-        int choiceIndex = sendRequest(subject, new Deliverable(Message.CHOOSE_EXECUTION_REQUEST), options);
+        int choiceIndex = sendRequest(subject, new Deliverable(DeliverableType.CHOOSE_EXECUTION_REQUEST), options);
         return options.get(choiceIndex);
     }
 
@@ -97,7 +97,7 @@ public class VirtualView {
         List<Integer> cellIds = options.stream()
                 .map(Cell::getId)
                 .collect(Collectors.toList());
-        int destinationIndex = sendRequest(subject, new Deliverable(Message.MOVE_REQUEST), options, cellIds);
+        int destinationIndex = sendRequest(subject, new Deliverable(DeliverableType.MOVE_REQUEST), options, cellIds);
         Cell destination = options.get(destinationIndex);
         controller.move(subject, destination);
     }
@@ -105,9 +105,9 @@ public class VirtualView {
     public void grabAmmo(Player subject) {
         boolean success = controller.grabAmmo(subject);
         if(success)
-            sendMessage(subject, new Deliverable(Message.GRAB_AMMO_SUCCESS));
+            sendMessage(subject, new Deliverable(DeliverableType.GRAB_AMMO_SUCCESS));
         else
-            sendMessage(subject, new Deliverable(Message.GRAB_AMMO_FAILURE));
+            sendMessage(subject, new Deliverable(DeliverableType.GRAB_AMMO_FAILURE));
     }
 
     public void grabWeapon(Player subject) {
@@ -120,13 +120,13 @@ public class VirtualView {
         if(weapons.size() == 0)
             return;
 
-        boolean doPurchase = sendRequest(subject, new Deliverable(Message.GRAB_WEAPON_REQUEST_IF));
+        boolean doPurchase = sendRequest(subject, new Deliverable(DeliverableType.GRAB_WEAPON_REQUEST_IF));
         if(!doPurchase)
             return;
         /*int weaponIndex = sendRequest(subject, new Deliverable(Message.GRAB_WEAPON_REQUEST_WHICH), cell.getWeaponShop());
         controller.grabWeapon(subject, weaponIndex); */
 
-        int purchaseIndex = sendRequest(subject, new Deliverable(Message.GRAB_WEAPON_REQUEST_WHICH), weapons);
+        int purchaseIndex = sendRequest(subject, new Deliverable(DeliverableType.GRAB_WEAPON_REQUEST_WHICH), weapons);
         Weapon weaponToPurchase = weapons.get(purchaseIndex);
         List<PowerUp> powerUps = new ArrayList<>(); // power-ups can be used to cover the costs of buying a weapon
 
@@ -136,12 +136,12 @@ public class VirtualView {
                     .filter(powerUp -> weaponToPurchase.getPurchaseCost().covers(subject.getAmmoCubes().augment(powerUps).augment(powerUp)))
                     .collect(Collectors.toList());
 
-            int suitableForPaymentPowerUpIndex = sendRequest(subject, new Deliverable(Message.GRAB_WEAPON_NEEDS_POWERUP), suitableForPaymentPowerUps);
+            int suitableForPaymentPowerUpIndex = sendRequest(subject, new Deliverable(DeliverableType.GRAB_WEAPON_NEEDS_POWERUP), suitableForPaymentPowerUps);
             PowerUp payablePowerUp = suitableForPaymentPowerUps.get(suitableForPaymentPowerUpIndex);
             powerUps.add(payablePowerUp);
         }
 
-        sendMessage(subject, new Deliverable(Message.GRAB_WEAPON_SUCCESS));
+        sendMessage(subject, new Deliverable(DeliverableType.GRAB_WEAPON_SUCCESS));
         int weaponShopIndex = ((SpawnCell) subject.getPosition()).getWeaponShop().indexOf(weaponToPurchase);
         controller.grabWeapon(subject, weaponShopIndex);
         powerUps.forEach(subject::discardPowerUp);
@@ -154,7 +154,7 @@ public class VirtualView {
                 .collect(Collectors.toList()); // gather all of the player's loaded weapons
                 // at the time this method is called and entered, it is assumed that the player is actually able to shoot with at least one weapon
 
-        int weaponIndex = sendRequest(subject, new Deliverable(Message.SHOOT_WEAPON_REQUEST), availableWeapons);
+        int weaponIndex = sendRequest(subject, new Deliverable(DeliverableType.SHOOT_WEAPON_REQUEST), availableWeapons);
         Weapon weapon = availableWeapons.get(weaponIndex);
 
         AttackPattern pattern = weapon.getPattern();
@@ -181,7 +181,7 @@ public class VirtualView {
                     }
                 })
                 .collect(Collectors.toList());
-        int moduleIndex = sendRequest(subject, new Deliverable(Message.SHOOT_MODULE_REQUEST), nextNames);
+        int moduleIndex = sendRequest(subject, new Deliverable(DeliverableType.SHOOT_MODULE_REQUEST), nextNames);
         int moduleId = next.get(moduleIndex);
         controller.shoot(subject, pattern, moduleId);
     }
@@ -214,7 +214,7 @@ public class VirtualView {
     private Player shootPlayer(Player subject, TargetPlayer target) {
         List<Player> players = target.filter();
         if(players.size() == 0) {
-            sendMessage(subject, new Deliverable(Message.SHOOT_PLAYER_FAILURE));
+            sendMessage(subject, new Deliverable(DeliverableType.SHOOT_PLAYER_FAILURE));
             return null;
         }
 
@@ -228,7 +228,7 @@ public class VirtualView {
     private Cell shootCell(Player subject, TargetCell target) {
         List<Cell> cells = target.filter();
         if(cells.size() == 0) {
-            sendMessage(subject, new Deliverable(Message.SHOOT_CELL_FAILURE));
+            sendMessage(subject, new Deliverable(DeliverableType.SHOOT_CELL_FAILURE));
             return null;
         }
 
@@ -245,7 +245,7 @@ public class VirtualView {
     private Room shootRoom(Player subject, TargetRoom target) {
         List<Room> rooms = target.filter();
         if (rooms.size() == 0) {
-            sendMessage(subject, new Deliverable(Message.SHOOT_ROOM_FAILURE));
+            sendMessage(subject, new Deliverable(DeliverableType.SHOOT_ROOM_FAILURE));
             return null;
         }
 
@@ -264,10 +264,10 @@ public class VirtualView {
         boolean keepReloading = true;
 
         while(weapons.size() > 0 && keepReloading) {
-            keepReloading = sendRequest(subject, new Deliverable(Message.RELOAD_REQUEST_IF));
+            keepReloading = sendRequest(subject, new Deliverable(DeliverableType.RELOAD_REQUEST_IF));
 
             if(keepReloading) {
-                int reloadIndex = sendRequest(subject, new Deliverable(Message.RELOAD_REQUEST_WHICH), weapons);
+                int reloadIndex = sendRequest(subject, new Deliverable(DeliverableType.RELOAD_REQUEST_WHICH), weapons);
                 Weapon weaponToReload = weapons.get(reloadIndex);
                 List<PowerUp> powerUps = new ArrayList<>(); // power-ups can be used to cover the costs of reloading a weapon
 
@@ -277,12 +277,12 @@ public class VirtualView {
                             .filter(powerUp -> weaponToReload.getReloadCost().covers(subject.getAmmoCubes().augment(powerUps).augment(powerUp)))
                             .collect(Collectors.toList());
 
-                    int suitableForPaymentPowerUpIndex = sendRequest(subject, new Deliverable(Message.RELOAD_NEEDS_POWERUP), suitableForPaymentPowerUps);
+                    int suitableForPaymentPowerUpIndex = sendRequest(subject, new Deliverable(DeliverableType.RELOAD_NEEDS_POWERUP), suitableForPaymentPowerUps);
                     PowerUp payablePowerUp = suitableForPaymentPowerUps.get(suitableForPaymentPowerUpIndex);
                     powerUps.add(payablePowerUp);
                 }
 
-                sendMessage(subject, new Deliverable(Message.RELOAD_SUCCESS));
+                sendMessage(subject, new Deliverable(DeliverableType.RELOAD_SUCCESS));
                 controller.reload(subject, weaponToReload);
                 powerUps.forEach(subject::discardPowerUp);
             }
@@ -305,11 +305,11 @@ public class VirtualView {
         if(powerUps.size() == 0)
             return;
 
-        boolean usePowerUp = sendRequest(subject, new Deliverable(Message.POWERUP_REQUEST_IF));
+        boolean usePowerUp = sendRequest(subject, new Deliverable(DeliverableType.POWERUP_REQUEST_IF));
         if(!usePowerUp)
             return;
 
-        int powerUpIndex = sendRequest(subject, new Deliverable(Message.POWERUP_REQUEST_WHICH), powerUps);
+        int powerUpIndex = sendRequest(subject, new Deliverable(DeliverableType.POWERUP_REQUEST_WHICH), powerUps);
         PowerUp powerUp = powerUps.get(powerUpIndex);
         subject.discardPowerUp(powerUp);
         controller.usePowerUp(subject, powerUp);
@@ -320,13 +320,13 @@ public class VirtualView {
         List<Player> scopedPlayers = new ArrayList<>();
         boolean useScope = true;
         while(scopes.size() > 0 && useScope) {
-            useScope = sendRequest(subject, new Deliverable(Message.SCOPE_REQUEST_IF));
+            useScope = sendRequest(subject, new Deliverable(DeliverableType.SCOPE_REQUEST_IF));
             if(useScope) {
-                int scopeId = sendRequest(subject, new Deliverable(Message.SCOPE_REQUEST_WHICH), scopes);
+                int scopeId = sendRequest(subject, new Deliverable(DeliverableType.SCOPE_REQUEST_WHICH), scopes);
                 PowerUp scope = scopes.get(scopeId);
                 subject.discardPowerUp(scope);
 
-                int targetId = sendRequest(subject, new Deliverable(Message.SCOPE_REQUEST_TARGET), targets);
+                int targetId = sendRequest(subject, new Deliverable(DeliverableType.SCOPE_REQUEST_TARGET), targets);
                 scopedPlayers.add(targets.get(targetId));
             }
         }
@@ -334,11 +334,11 @@ public class VirtualView {
     }
 
     public void grenade(Player subject, List<PowerUp> grenades, Player originalAttacker) {
-        boolean useGrenade = sendRequest(subject, new Deliverable(Message.GRENADE_REQUEST_IF));
+        boolean useGrenade = sendRequest(subject, new Deliverable(DeliverableType.GRENADE_REQUEST_IF));
         if(!useGrenade)
             return;
 
-        int grenadeIndex = sendRequest(subject, new Deliverable(Message.GRENADE_REQUEST_WHICH), grenades);
+        int grenadeIndex = sendRequest(subject, new Deliverable(DeliverableType.GRENADE_REQUEST_WHICH), grenades);
         PowerUp grenade = grenades.get(grenadeIndex);
         subject.discardPowerUp(grenade);
         controller.grenade(subject, originalAttacker);
@@ -352,7 +352,7 @@ public class VirtualView {
         List<String> playerNames = targetPlayers.stream()
                 .map(Player::getName)
                 .collect(Collectors.toList());
-        int targetPlayerId = sendRequest(subject, new Deliverable(Message.NEWTON_REQUEST_PLAYER), playerNames);
+        int targetPlayerId = sendRequest(subject, new Deliverable(DeliverableType.NEWTON_REQUEST_PLAYER), playerNames);
         Player targetPlayer = targetPlayers.get(targetPlayerId);
 
         List<Cell> targetCells = game.getBoard()
@@ -361,7 +361,7 @@ public class VirtualView {
                 .filter(c -> subject.getPosition().canSee(c))
                 .filter(c -> {
                     try {
-                        return targetPlayer.getPosition().distance(c) <= Newton.NEWTON_MAX_DISTANCE;
+                        return targetPlayer.getPosition().distance(c) <= Newton.getMaxDistance();
                     } catch (NullCellOperationException e) {
                         return false;
                     }
@@ -369,7 +369,7 @@ public class VirtualView {
                 .collect(Collectors.toList());
 
         if(targetCells.size() == 0) {
-            sendMessage(subject, new Deliverable(Message.NEWTON_FAILURE));
+            sendMessage(subject, new Deliverable(DeliverableType.NEWTON_FAILURE));
             return;
         }
 
@@ -377,7 +377,7 @@ public class VirtualView {
                 .map(Cell::getId)
                 .collect(Collectors.toList());
 
-        int targetCellId = sendRequest(subject, new Deliverable(Message.NEWTON_REQUEST_CELL), targetCells, cellIds);
+        int targetCellId = sendRequest(subject, new Deliverable(DeliverableType.NEWTON_REQUEST_CELL), targetCells, cellIds);
         Cell targetCell = targetCells.get(targetCellId);
 
         controller.newton(targetPlayer, targetCell);
@@ -388,7 +388,7 @@ public class VirtualView {
         List<Integer> cellIds = options.stream()
                 .map(Cell::getId)
                 .collect(Collectors.toList());
-        int cellIndex = sendRequest(subject, new Deliverable(Message.TELEPORT_REQUEST_CELL), options, cellIds);
+        int cellIndex = sendRequest(subject, new Deliverable(DeliverableType.TELEPORT_REQUEST_CELL), options, cellIds);
         Cell destination = options.get(cellIndex);
         controller.teleport(subject, destination);
     }

@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.ammo;
 
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
+import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +64,7 @@ public class AmmoCubes {
      * @throws IllegalArgumentException when the properties include values not suitable for the explicit constructor.
      * @see AmmoCubes#AmmoCubes(int, int, int)
      */
-    public static AmmoCubes build(DecoratedJSONObject jAmmoCube) throws IllegalArgumentException {
+    public static AmmoCubes build(DecoratedJsonObject jAmmoCube) throws IllegalArgumentException {
         int red = jAmmoCube.getInt("red");
         int yellow = jAmmoCube.getInt("yellow");
         int blue = jAmmoCube.getInt("blue");
@@ -100,13 +100,13 @@ public class AmmoCubes {
      * This methods sums the values of two sets of ammo cubes. The sum is evaluated on each colour individually
      * and differently coloured cubes do not interfere with each other or with the final result. Should any of the
      * colours end up having more than three cubes, the final result will be truncated to have at most that many.
-     * @param a the other set of ammo cubes that needs to be summed with the current set.
+     * @param ammoCubes the other set of ammo cubes that needs to be summed with the current set.
      * @return a new object where each colour's amount is equal to the sum of that same colour's amounts in the addends, limited to three.
      */
-    public AmmoCubes sum(AmmoCubes a) {
-        int red = Math.min(MAX_AMMO_CUBES, this.getRed() + a.getRed());
-        int yellow = Math.min(MAX_AMMO_CUBES, this.getYellow() + a.getYellow());
-        int blue = Math.min(MAX_AMMO_CUBES, this.getBlue() + a.getBlue());
+    public AmmoCubes sum(AmmoCubes ammoCubes) {
+        int red = Math.min(MAX_AMMO_CUBES, this.getRed() + ammoCubes.getRed());
+        int yellow = Math.min(MAX_AMMO_CUBES, this.getYellow() + ammoCubes.getYellow());
+        int blue = Math.min(MAX_AMMO_CUBES, this.getBlue() + ammoCubes.getBlue());
         return new AmmoCubes(red, yellow, blue);
     }
 
@@ -114,15 +114,15 @@ public class AmmoCubes {
      * This methods subtracts the values of a sets of ammo cubes from the values of another set. The difference is evaluated on each colour individually
      * and differently coloured cubes do not interfere with each other or with the final result. Should any of the
      * colours end up having a negative number of cubes, the operation is aborted and an exception is thrown.
-     * @param a the other set of ammo cubes that needs to be subtracted from the current set.
+     * @param ammoCubes the other set of ammo cubes that needs to be subtracted from the current set.
      * @return a new object where each colour's amount is equal to the difference between that same colour's amount in the object this method was
      * called upon and that same colour's amount in the object passed as argument.
      * @throws CannotAffordException when trying to take away more ammo cubes than there actually are for at least one colour.
      */
-    public AmmoCubes take(AmmoCubes a) throws CannotAffordException {
-        int red = this.getRed() - a.getRed();
-        int yellow = this.getYellow() - a.getYellow();
-        int blue = this.getBlue() - a.getBlue();
+    public AmmoCubes take(AmmoCubes ammoCubes) throws CannotAffordException {
+        int red = this.getRed() - ammoCubes.getRed();
+        int yellow = this.getYellow() - ammoCubes.getYellow();
+        int blue = this.getBlue() - ammoCubes.getBlue();
 
         if(red < 0 || yellow < 0 || blue < 0)
             throw new CannotAffordException("Attempted to take more ammo cubes than available.");

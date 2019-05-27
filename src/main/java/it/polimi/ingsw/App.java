@@ -1,8 +1,5 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.view.remote.BoardArt;
@@ -11,9 +8,6 @@ import it.polimi.ingsw.network.common.util.Console;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class App extends Application implements EventHandler<javafx.event.ActionEvent> {

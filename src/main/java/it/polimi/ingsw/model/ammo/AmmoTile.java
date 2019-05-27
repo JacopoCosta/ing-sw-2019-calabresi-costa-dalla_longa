@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.ammo;
 
-import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
+import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 
 // an ammo tile depicts some ammo cubes and may include the ability to draw 1 power-up card
 public class AmmoTile {
@@ -12,19 +12,19 @@ public class AmmoTile {
         this.includesPowerUp = includesPowerUp;
     }
 
-    public static AmmoTile build(DecoratedJSONObject jAmmoTile) {
-        DecoratedJSONObject jAmmoCube = jAmmoTile.getObject("ammoCubes");
+    public static AmmoTile build(DecoratedJsonObject jAmmoTile) {
+        DecoratedJsonObject jAmmoCube = jAmmoTile.getObject("ammoCubes");
         AmmoCubes ammoCubes = AmmoCubes.build(jAmmoCube);
         boolean includesPowerUp = jAmmoTile.getBoolean("includesPowerUp");
         return new AmmoTile(ammoCubes, includesPowerUp);
     }
 
-    public boolean includesPowerUp() {
-        return includesPowerUp;
-    }
-
     public AmmoCubes getAmmoCubes() {
         return ammoCubes;
+    }
+
+    public boolean includesPowerUp() {
+        return includesPowerUp;
     }
 
     @Override

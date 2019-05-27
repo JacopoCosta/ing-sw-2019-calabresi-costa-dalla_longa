@@ -5,18 +5,17 @@ import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.InvalidPowerUpTypeException;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
+import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 
 public abstract class PowerUp {
-    protected AmmoCubes ammoCubes;
     protected PowerUpType type;
+    protected AmmoCubes ammoCubes;
 
     public PowerUp(AmmoCubes ammoCubes) {
         this.ammoCubes = ammoCubes;
     }
 
-    public static PowerUp build(DecoratedJSONObject jPowerUp) throws InvalidPowerUpTypeException {
+    public static PowerUp build(DecoratedJsonObject jPowerUp) throws InvalidPowerUpTypeException {
         String type = jPowerUp.getString("type");
         AmmoCubes ammoCubes = AmmoCubes.build(jPowerUp.getObject("ammoCubes"));
 

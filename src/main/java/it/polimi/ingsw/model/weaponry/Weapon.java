@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.weaponry;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.exceptions.WeaponAlreadyLoadedException;
 import it.polimi.ingsw.model.exceptions.WeaponAlreadyUnloadedException;
-import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
+import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 
 public class Weapon {
     private String name;
@@ -53,7 +53,7 @@ public class Weapon {
         this.loaded = false;
     }
 
-    public static Weapon build(DecoratedJSONObject jWeapon) {
+    public static Weapon build(DecoratedJsonObject jWeapon) {
         String name = jWeapon.getString("name");
         AmmoCubes purchaseCost = AmmoCubes.build(jWeapon.getObject("purchaseCost"));
         AmmoCubes reloadCost = AmmoCubes.build(jWeapon.getObject("reloadCost"));

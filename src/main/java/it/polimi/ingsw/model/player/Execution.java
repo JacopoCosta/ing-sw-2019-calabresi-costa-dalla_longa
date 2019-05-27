@@ -30,12 +30,7 @@ public class Execution {
         return this.activities;
     }
 
-    private static void concatenateReload(List<Activity> a, Player subject) { // each last execution of a non-frenzy turn also offers a reload at the end
-        if(!subject.isOnFrenzy() && subject.getRemainingExecutions() == 1) // this is the last execution of a non-frenzy turn
-            a.add(new Reload());
-    }
-
-    public static Execution generateMove(Player subject) { // moves only
+    private static Execution generateMove(Player subject) { // moves only
         List<Activity> a = new ArrayList<>();
         a.add(new Move(
                 subject.isOnFrenzy() ? MAX_MOVES_FRENETIC : MAX_MOVES
@@ -44,7 +39,7 @@ public class Execution {
         return new Execution(a);
     }
 
-    public static Execution generateGrab(Player subject) { // moves, then grabs
+    private static Execution generateGrab(Player subject) { // moves, then grabs
         List<Activity> a = new ArrayList<>();
         a.add(new Move(
                 subject.isOnFrenzy() ?
@@ -56,7 +51,7 @@ public class Execution {
         return new Execution(a);
     }
 
-    public static Execution generateShoot(Player subject) { // moves (unless not enhanced and not on frenzy), then shoots -- reloads before shooting if on frenzy
+    private static Execution generateShoot(Player subject) { // moves (unless not enhanced and not on frenzy), then shoots -- reloads before shooting if on frenzy
         List<Activity> a = new ArrayList<>();
         if(subject.isOnFrenzy() || subject.getDamage() >= SHOOT_ENHANCE_THRESHOLD) { // the moves will not be included unless the player is either well damaged or on frenzy
             a.add(new Move(
@@ -70,6 +65,11 @@ public class Execution {
         a.add(new Shoot());
         concatenateReload(a, subject);
         return new Execution(a);
+    }
+
+    private static void concatenateReload(List<Activity> activityList, Player subject) { // each last execution of a non-frenzy turn also offers a reload at the end
+        if(!subject.isOnFrenzy() && subject.getRemainingExecutions() == 1) // this is the last execution of a non-frenzy turn
+            activityList.add(new Reload());
     }
 
     public static List<Execution> getOptionsForPlayer(Player subject) {

@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.weaponry.effects;
 
 import it.polimi.ingsw.model.exceptions.InvalidEffectTypeException;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
+import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 
@@ -14,14 +14,14 @@ public abstract class Effect {
     protected AttackPattern context;
     protected Player author;
 
-    public static Effect build(DecoratedJSONObject jEffect) throws InvalidEffectTypeException {
+    public static Effect build(DecoratedJsonObject jEffect) throws InvalidEffectTypeException {
         String type = jEffect.getString("type");
 
         if(type.equals("damage")) {
             List<Constraint> constraints = new ArrayList<>();
             int amount = jEffect.getInt("amount");
-            List<DecoratedJSONObject> jConstraints = jEffect.getArray("constraints").asList();
-            for(DecoratedJSONObject jConstraint : jConstraints) {
+            List<DecoratedJsonObject> jConstraints = jEffect.getArray("constraints").asList();
+            for(DecoratedJsonObject jConstraint : jConstraints) {
                 constraints.add(Constraint.build(jConstraint));
             }
             return new Damage(amount, constraints);
@@ -29,8 +29,8 @@ public abstract class Effect {
         if(type.equals("mark")) {
             List<Constraint> constraints = new ArrayList<>();
             int amount = jEffect.getInt("amount");
-            List<DecoratedJSONObject> jConstraints = jEffect.getArray("constraints").asList();
-            for(DecoratedJSONObject jConstraint : jConstraints) {
+            List<DecoratedJsonObject> jConstraints = jEffect.getArray("constraints").asList();
+            for(DecoratedJsonObject jConstraint : jConstraints) {
                 constraints.add(Constraint.build(jConstraint));
             }
             return new Mark(amount, constraints);

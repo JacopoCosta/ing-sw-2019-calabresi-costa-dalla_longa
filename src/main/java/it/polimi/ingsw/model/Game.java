@@ -43,25 +43,23 @@ public class Game {
         return game;
     }
 
-    public Board getBoard() {
-        return this.board;
+    public List<Player> getParticipants() {
+        return participants;
     }
 
-    public VirtualView getVirtualView() {
-        return virtualView;
+    public Board getBoard() {
+        return this.board;
     }
 
     public Controller getController() {
         return controller;
     }
 
-    public List<Player> getParticipants() {
-        return participants;
+    public VirtualView getVirtualView() {
+        return virtualView;
     }
 
     public void setup() {
-
-
         board.spreadAmmo();
         board.spreadWeapons();
     }
@@ -152,15 +150,15 @@ public class Game {
 
         s += "Players:\n";
         s += Table.create(
-                participants.stream().map(p -> "#" + p.getID()).collect(Collectors.toList()),
+                participants.stream().map(p -> "#" + p.getId()).collect(Collectors.toList()),
                 participants.stream().map(Player::getName).collect(Collectors.toList()),
                 participants.stream().map(Player::getScore).collect(Collectors.toList()),
                 participants.stream().map(Player::getPosition).map(c -> "@" +  (c == null ? "null" : c.getId())).collect(Collectors.toList()),
                 participants.stream().map(p -> "Damage[" +
-                        Table.list(p.getDamagersList().stream().map(Player::getID).collect(Collectors.toList()))
+                        Table.list(p.getDamageAsList().stream().map(Player::getId).collect(Collectors.toList()))
                         + "]").collect(Collectors.toList()),
                 participants.stream().map(p -> "Marks[" +
-                        Table.list(p.getMarkersList().stream().map(Player::getID).collect(Collectors.toList()))
+                        Table.list(p.getMarkingsAsList().stream().map(Player::getId).collect(Collectors.toList()))
                         + "]").collect(Collectors.toList()),
                 participants.stream().map(p -> "| Weapons[" +
                         Table.list(p.getWeapons().stream().map(Weapon::getName).collect(Collectors.toList()))

@@ -5,17 +5,15 @@ import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.InvalidConstraintTypeException;
 import it.polimi.ingsw.model.exceptions.InvalidEffectTypeException;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
+import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.model.weaponry.targets.TargetCell;
 import it.polimi.ingsw.model.weaponry.targets.TargetPlayer;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -28,7 +26,7 @@ public abstract class Constraint {
     protected int drainTargetId;
     protected AttackPattern context;
 
-    public static Constraint build(DecoratedJSONObject jConstraint) throws InvalidConstraintTypeException {
+    public static Constraint build(DecoratedJsonObject jConstraint) throws InvalidConstraintTypeException {
         int sourceAttackModuleId = jConstraint.getInt("sourceAttackModuleId");
         int sourceTargetId = jConstraint.getInt("sourceTargetId");
         int drainAttackModuleId = jConstraint.getInt("drainAttackModuleId");
@@ -102,7 +100,7 @@ public abstract class Constraint {
                 .getGame()
                 .getParticipants()
                 .stream()
-                .sorted(Comparator.comparingInt(Player::getID))
+                .sorted(Comparator.comparingInt(Player::getId))
                 .distinct()
                 .filter(p -> !missingFromAtLeastOneList.test(p))
                 .filter(p -> !p.equals(context.getAuthor()))

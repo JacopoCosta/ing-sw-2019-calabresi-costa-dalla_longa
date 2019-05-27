@@ -26,8 +26,8 @@ public class Player extends VirtualClient {
 
     private static final int MAX_CARDS_IN_HAND = 3;
 
-    private static final int[] scoreboardDefault = {8, 6, 4, 2, 1, 1};
-    private static final int[] scoreboardFrenzy = {2, 1, 1, 1};
+    private static final int[] SCOREBOARD_DEFAULT = {8, 6, 4, 2, 1, 1};
+    private static final int[] SCOREBOARD_FRENZY = {2, 1, 1, 1};
 
     private Game game;
 
@@ -64,7 +64,15 @@ public class Player extends VirtualClient {
         this.savedPosition = null;
     }
 
-    public int getID() {
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public int getId() {
         return this.game.getParticipants().indexOf(this) + 1; // non-programmer friendly, ids start from 1
     }
 
@@ -80,7 +88,7 @@ public class Player extends VirtualClient {
         return this.damage.size() > KILL_THRESHOLD;
     }
 
-    public boolean isOverKilled() {
+    public boolean isOverkilled() {
         return this.damage.size() > OVERKILL_THRESHOLD;
     }
 
@@ -89,11 +97,7 @@ public class Player extends VirtualClient {
         return this.damage.size();
     }
 
-    public Player getMostRecentDamager() {
-        return this.damage.get(this.damage.size() - 1);
-    }
-
-    public List<Player> getDamagersList() {
+    public List<Player> getDamageAsList() {
         return this.damage;
     }
 
@@ -106,6 +110,10 @@ public class Player extends VirtualClient {
         return count;
     }
 
+    public List<Player> getMarkingsAsList() {
+        return this.markings;
+    }
+
     // returns the amount of markings the player has taken by a given opponent
     public int getMarkingsByAuthor(Player author) {
         int count = 0;
@@ -113,10 +121,6 @@ public class Player extends VirtualClient {
             if(auth == author)
                 count ++;
         return count;
-    }
-
-    public List<Player> getMarkersList() {
-        return this.markings;
     }
 
     public boolean isOnFrenzy() {
@@ -143,8 +147,28 @@ public class Player extends VirtualClient {
         return ammoCubes;
     }
 
-    public Cell getPosition() {
-        return this.position;
+    public void giveWeapon(Weapon weapon) throws FullHandException {
+        this.weapons.add(weapon);
+
+        if(this.weapons.size() > MAX_CARDS_IN_HAND)
+            throw new FullHandException("There can't be more than 3 weapons in a player's hand.");
+    }
+
+    public void discardWeapon(Weapon weapon) {
+        weapons.remove(weapon);
+        game.getBoard().getWeaponDeck().discard(weapon);
+    }
+
+    public void givePowerUp(PowerUp powerUp) throws FullHandException {
+        this.powerUps.add(powerUp);
+
+        if(this.powerUps.size() > MAX_CARDS_IN_HAND)
+            throw new FullHandException("There can't be more than 3 power-ups in a player's hand.");
+    }
+
+    public void discardPowerUp(PowerUp powerUp) {
+        powerUps.remove(powerUp);
+        game.getBoard().getPowerUpDeck().discard(powerUp);
     }
 
     public void giveAmmoCubes(AmmoCubes ammoCubes) {
@@ -155,30 +179,12 @@ public class Player extends VirtualClient {
         this.ammoCubes = this.ammoCubes.take(ammoCubes);
     }
 
-    public void givePowerUp(PowerUp powerUp) throws FullHandException {
-        this.powerUps.add(powerUp);
-
-        if(this.powerUps.size() > MAX_CARDS_IN_HAND)
-            throw new FullHandException("There can't be more than 3 power-ups in a player's hand.");
-    }
-
-    public void giveWeapon(Weapon weapon) throws FullHandException {
-        this.weapons.add(weapon);
-
-        if(this.weapons.size() > MAX_CARDS_IN_HAND)
-            throw new FullHandException("There can't be more than 3 weapons in a player's hand.");
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
     public void setPosition(Cell cell) {
         this.position = cell;
+    }
+
+    public Cell getPosition() {
+        return this.position;
     }
 
     public void savePosition() {
@@ -202,33 +208,29 @@ public class Player extends VirtualClient {
         this.onFrenzy = true;
     }
 
+    public List<PowerUp> getScopes() {
+        return powerUps.stream()
+                .filter(p -> p.getType() == PowerUpType.SCOPE)
+                .collect(Collectors.toList());
+    }
+
     public List<PowerUp> getGrenades() {
         return powerUps.stream()
                 .filter(p -> p.getType() == PowerUpType.GRENADE)
                 .collect(Collectors.toList());
     }
 
-    public void discardPowerUp(PowerUp powerUp) {
-        powerUps.remove(powerUp);
-        game.getBoard().getPowerUpDeck().discard(powerUp);
-    }
-
-    public void discardWeapon(Weapon weapon) {
-        weapons.remove(weapon);
-        game.getBoard().getWeaponDeck().discard(weapon);
+    public void beginTurn() {
+        this.remainingExecutions = this.onFrenzy ? EXECUTIONS_PER_TURN_FRENETIC : EXECUTIONS_PER_TURN;
     }
 
     public void endExecution() {
         this.remainingExecutions --;
     }
 
-    public void beginTurn() {
-        this.remainingExecutions = this.onFrenzy ? EXECUTIONS_PER_TURN_FRENETIC : EXECUTIONS_PER_TURN;
-    }
-
     // inflicts the player with a damage point
     public void applyDamage(Player author) {
-        if(!this.isOverKilled()) // no more than the max amount of tokens can be stored, any excess tokens are ignored
+        if(!this.isOverkilled()) // no more than the max amount of tokens can be stored, any excess tokens are ignored
             this.damage.add(author);
 
         // if the damage's author has markings on the targeted player ...
@@ -237,7 +239,7 @@ public class Player extends VirtualClient {
 
         for(int i = 0; i < awaitingMarkings; i ++) {
             // ... each marking is turned into a damage point
-            if(!this.isOverKilled()) {
+            if(!this.isOverkilled()) {
                 this.markings.remove(author);
                 this.damage.add(author);
             }
@@ -255,8 +257,8 @@ public class Player extends VirtualClient {
             this.markings.add(author);
     }
 
-    public void giveScore(int amount) {
-        this.score += amount;
+    public void giveScore(int score) {
+        this.score += score;
     }
 
     // this is used immediately before respawning
@@ -264,7 +266,7 @@ public class Player extends VirtualClient {
     // ties are broken in favor of chronological earliness (lowest minimum index)
     // first blood dealer is awarded 1 extra point
     public void scoreUponDeath() {
-        final int[] scoreboard = this.onFrenzy ? scoreboardFrenzy : scoreboardDefault;
+        final int[] scoreboard = this.onFrenzy ? SCOREBOARD_FRENZY : SCOREBOARD_DEFAULT;
         final int scoreboardSize = scoreboard.length;
 
         // this comparator sorts players from the MOST to the LEAST damaging

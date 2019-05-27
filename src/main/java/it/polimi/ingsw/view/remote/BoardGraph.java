@@ -108,7 +108,7 @@ public class BoardGraph {
     public void printPlayerStatus(Board board, Player player) {
 
         //given a player, it displays damageboard, list of weapon, owned ammocubes and so on.
-        CLI.println("Player number " + player.getID() + ", codename: " + player.getName());
+        CLI.println("Player number " + player.getId() + ", codename: " + player.getName());
         //printing weapons
         if(player.getWeapons().size() == 0) {
             CLI.println("This player has no weapons!");
@@ -128,8 +128,8 @@ public class BoardGraph {
 
         //printing damageboard
         CLI.print("Damage taken:\t");
-        for(Player p: player.getDamagersList()) {
-            CLI.print(Integer.toString(p.getID()));
+        for(Player p: player.getDamageAsList()) {
+            CLI.print(Integer.toString(p.getId()));
         } //end for
 
         CLI.println("\nMarkers taken:");
@@ -137,7 +137,7 @@ public class BoardGraph {
 
             int m = player.getMarkingsByAuthor(author);
             if(m > 0)
-                CLI.println(m + " by player number " + author.getID() + " [codename: " + author.getName() + "]");
+                CLI.println(m + " by player number " + author.getId() + " [codename: " + author.getName() + "]");
         } //end for
         CLI.println("Dead " + player.getDeathCount() + " times");
 
@@ -246,7 +246,7 @@ public class BoardGraph {
         //this time, it doesn't matter whether the cell is a SpawnCell or not
         for(Player p: cell.getBoard().getGame().getParticipants()) {
             if (p.getPosition() == cell) {
-                CLI.print(" " + p.getID());
+                CLI.print(" " + p.getId());
                 charCounter += 2;
             }
         }
@@ -270,11 +270,11 @@ public class BoardGraph {
         for(Player p: board.getKillers()) {
             if(p != null) {
                 if(board.getKillers().get(board.getKillers().indexOf(p) + 1) == null) {
-                    CLI.print(" " + p.getID() + " (x2)");
+                    CLI.print(" " + p.getId() + " (x2)");
                 }
                 else {
                     emptyList = false;
-                    CLI.print(" " + p.getID());
+                    CLI.print(" " + p.getId());
                 }
             }
         }
@@ -285,7 +285,7 @@ public class BoardGraph {
         CLI.print("\nDouble kills list:");
         for(Player p: board.getDoubleKillers()) {
             emptyList = false;
-            CLI.print(" " + p.getID());
+            CLI.print(" " + p.getId());
         }
         if(emptyList)
             CLI.print("\t<No doublekills yet>");

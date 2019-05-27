@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.weaponry;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
-import it.polimi.ingsw.model.utilities.DecoratedJSONObject;
+import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 import it.polimi.ingsw.model.weaponry.effects.Effect;
 import it.polimi.ingsw.model.weaponry.targets.Target;
 
@@ -32,7 +32,7 @@ public class AttackModule {
         this.used = false;
     }
 
-    public static AttackModule build(DecoratedJSONObject jAttackModule) {
+    public static AttackModule build(DecoratedJsonObject jAttackModule) {
         int id = jAttackModule.getInt("id");
         String name = jAttackModule.getString("name");
         String description = jAttackModule.getString("description");
@@ -41,11 +41,11 @@ public class AttackModule {
         List<Effect> effects = new ArrayList<>();
         List<Integer> next = new ArrayList<>();
 
-        for(DecoratedJSONObject jTarget : jAttackModule.getArray("targets").asList())
+        for(DecoratedJsonObject jTarget : jAttackModule.getArray("targets").asList())
             targets.add(Target.build(jTarget));
-        for(DecoratedJSONObject jEffect : jAttackModule.getArray("effects").asList())
+        for(DecoratedJsonObject jEffect : jAttackModule.getArray("effects").asList())
             effects.add(Effect.build(jEffect));
-        for(DecoratedJSONObject jNext : jAttackModule.getArray("next").asList())
+        for(DecoratedJsonObject jNext : jAttackModule.getArray("next").asList())
             next.add(jNext.getInt("id"));
 
         return new AttackModule(id, name, description, summonCost, targets, effects, next);
