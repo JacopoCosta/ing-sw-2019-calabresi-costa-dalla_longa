@@ -1835,7 +1835,7 @@ public class TestWeapon {
     }
 
     @Test
-    public void railGun() {
+    public void railgun() {
         Weapon weapon = null;
         do try {
             weapon = board.getWeaponDeck().draw();

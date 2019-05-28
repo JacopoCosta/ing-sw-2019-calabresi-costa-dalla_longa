@@ -44,7 +44,7 @@ public class VirtualView {
 
     private void sendMessage(Player recipient, Deliverable deliverable) {
         System.out.println(game.toString()); // temp
-        Dispatcher.sendMessage(deliverable.getMessage());
+        Dispatcher.sendMessage(deliverable.getMessage()); // TODO try/catch
     }
 
     private int sendRequest(Player recipient, Deliverable deliverable, List<?> values, List<Integer> keys) {
