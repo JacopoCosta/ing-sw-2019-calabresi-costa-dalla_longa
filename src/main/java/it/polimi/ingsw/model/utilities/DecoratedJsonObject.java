@@ -1,18 +1,24 @@
 package it.polimi.ingsw.model.utilities;
 
+import it.polimi.ingsw.model.exceptions.JsonException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class DecoratedJsonObject {
     private JSONObject common;
 
-    protected DecoratedJsonObject(JSONObject jsonObject) {
-        this.common = jsonObject;
+    public DecoratedJsonObject(JSONObject jsonObject) {
+        common = jsonObject;
+    }
+
+    public DecoratedJsonObject() {
+        common = new JSONObject();
     }
 
     public static DecoratedJsonObject getFromFile(String path) {
@@ -21,9 +27,29 @@ public class DecoratedJsonObject {
         try {
             return new DecoratedJsonObject((JSONObject) parser.parse(new FileReader(path)));
         } catch (ParseException | IOException e) {
-            e.printStackTrace();
+            throw new JsonException("Could not find file to read.");
         }
-        return null;
+    }
+
+    public void writeToFile(String path) {
+        try {
+            FileWriter fileWriter = new FileWriter(path);
+            fileWriter.write(common.toJSONString());
+        } catch (IOException e) {
+            throw new JsonException("Could not find file to write.");
+        }
+    }
+
+    public void putArray(String key, DecoratedJsonArray value) {
+        common.put(key, value);
+    }
+
+    public void putObject(String key, DecoratedJsonObject value) {
+        common.put(key, value);
+    }
+
+    public void putValue(String key, Object value) {
+        common.put(key, value);
     }
 
     public DecoratedJsonArray getArray(String key) {

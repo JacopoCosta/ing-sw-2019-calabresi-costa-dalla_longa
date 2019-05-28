@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.exceptions.CorruptedDeckException;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.powerups.*;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
-import it.polimi.ingsw.model.utilities.PathGenerator;
+import it.polimi.ingsw.model.utilities.JsonPathGenerator;
 import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
@@ -63,7 +63,7 @@ public class Deck<T> {
     public static Deck<Weapon> generateWeapons() {
         Deck<Weapon> deck = new Deck<>();
 
-        DecoratedJsonObject jDeck = DecoratedJsonObject.getFromFile(PathGenerator.getPath("weapons.json"));
+        DecoratedJsonObject jDeck = DecoratedJsonObject.getFromFile(JsonPathGenerator.getPath("weapons.json"));
         for(DecoratedJsonObject jWeapon : jDeck.getArray("weapons").asList()) {
             deck.cards.add(Weapon.build(jWeapon));
         }

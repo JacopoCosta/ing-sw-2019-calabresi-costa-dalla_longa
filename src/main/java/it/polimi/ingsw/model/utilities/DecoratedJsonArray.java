@@ -9,8 +9,13 @@ import java.util.List;
 public class DecoratedJsonArray {
     private JSONArray common;
 
-    protected DecoratedJsonArray(JSONArray jsonArray) {
-        this.common = jsonArray;
+    public DecoratedJsonArray(List<?> content, Object uselessObject) {
+        common = new JSONArray();
+        common.addAll(content);
+    }
+
+    public DecoratedJsonArray(JSONArray jsonArray) {
+        common = jsonArray;
     }
 
     public DecoratedJsonObject get(int index) {

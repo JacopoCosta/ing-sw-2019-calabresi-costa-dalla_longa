@@ -3,6 +3,8 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.NullCellOperationException;
+import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
+import it.polimi.ingsw.model.utilities.JsonPathGenerator;
 import it.polimi.ingsw.view.virtual.VirtualView;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.player.*;
@@ -137,6 +139,20 @@ public class Game {
         while(!gameOver) {
             this.playTurn();
         }
+    }
+
+    public void save() {
+        DecoratedJsonObject saved = new DecoratedJsonObject();
+        DecoratedJsonObject testObject = new DecoratedJsonObject();
+        testObject.putValue("testKey", "testValue");
+        saved.putObject("saved", testObject);
+        saved.writeToFile(JsonPathGenerator.getPath("saved.json"));
+    }
+
+    public void load() {
+        DecoratedJsonObject saved = DecoratedJsonObject.getFromFile("saved.json");
+        DecoratedJsonObject testObject = saved.getObject("saved");
+        System.out.println(testObject.getString("testObject"));
     }
 
     @Override
