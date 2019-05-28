@@ -22,7 +22,7 @@ public class RMIClientCommunicationInterface implements ClientCommunicationInter
         try {
             clientController.notifyMessageReceived(message);
         } catch (RemoteException e) {
-            throw new ConnectionException("Server communication error", e);
+            throw new ConnectionException(e);
         }
     }
 }

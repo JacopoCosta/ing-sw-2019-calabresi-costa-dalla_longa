@@ -29,14 +29,16 @@ public class CommunicationHandler {
                 try {
                     this.communicationInterface = new SocketServerCommunicationInterface(hostAddress, port);
                 } catch (ConnectionException e) {
-                    throw new ConnectionException("SocketServerCommunicationInterface configuration failed", e);
+                    //e.printStackTrace();
+                    throw new ConnectionException(e);
                 }
                 break;
             case RMI_INTERFACE:
                 try {
                     this.communicationInterface = new RMIServerCommunicationInterface(hostAddress, port);
                 } catch (ConnectionException e) {
-                    throw new ConnectionException("RMIServerCommunicationInterface configuration failed", e);
+                    //e.printStackTrace();
+                    throw new ConnectionException(e);
                 }
                 break;
             default:

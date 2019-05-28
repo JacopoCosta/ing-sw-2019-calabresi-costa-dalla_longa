@@ -17,19 +17,22 @@ public class RMIServerCommunicationInterface implements ServerCommunicationInter
     private final RMIController rmiController;
     private final ClientController clientController;
 
-    private static Registry registry;
+    private static Registry remoteRegistry;
+    private static Registry localRegistry;
 
     public RMIServerCommunicationInterface(String hostAddress, int port) throws ConnectionException {
         try {
-            registry = LocateRegistry.getRegistry(hostAddress, RMIController.DEFAULT_PORT);
-            rmiController = (RMIController) registry.lookup("rmi://" + hostAddress + ":" + RMIController.DEFAULT_PORT + "/RMIController");
+            remoteRegistry = LocateRegistry.getRegistry(hostAddress, RMIController.DEFAULT_PORT);
+            rmiController = (RMIController) remoteRegistry.lookup("rmi://" + hostAddress + ":" + RMIController.DEFAULT_PORT + "/RMIController");
 
             clientController = new ClientController();
             RMIController controller = (RMIController) UnicastRemoteObject.exportObject(clientController, 0);
 
-            registry.rebind("rmi://" + hostAddress + ":" + port + "/ClientController", controller);
+            localRegistry = LocateRegistry.createRegistry(RMIController.DEFAULT_PORT);
+            localRegistry.rebind("rmi://" + "127.0.0.1" + ":" + port + "/ClientController", controller);
         } catch (RemoteException | NotBoundException e) {
-            throw new ConnectionException("RMI connection error to the server", e);
+            e.printStackTrace();
+            throw new ConnectionException(e);
         }
     }
 
@@ -37,7 +40,7 @@ public class RMIServerCommunicationInterface implements ServerCommunicationInter
         try {
             UnicastRemoteObject.unexportObject(clientController, false);
         } catch (NoSuchObjectException e) {
-            throw new ConnectionException("RMI connection error to the server", e);
+            throw new ConnectionException(e);
         }
     }
 
@@ -49,7 +52,7 @@ public class RMIServerCommunicationInterface implements ServerCommunicationInter
 
             rmiController.notifyMessageReceived(message);
         } catch (RemoteException e) {
-            throw new ConnectionException("RMI connection error to the server", e);
+            throw new ConnectionException(e);
         }
     }
 

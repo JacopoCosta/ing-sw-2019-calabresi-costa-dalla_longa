@@ -6,8 +6,8 @@ import it.polimi.ingsw.network.common.util.Console;
 
 import java.util.*;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class Client {
@@ -22,7 +22,7 @@ public class Client {
 
     private static Runnable updateTask;
     private static ScheduledExecutorService executor;
-    private static Future<?> futureUpdate;
+    private static ScheduledFuture<?> futureUpdate;
     private static final int UPDATE_REQUEST_PERIOD = 5;
 
     private static final Console console = new Console();
@@ -237,11 +237,11 @@ public class Client {
         hostAddress = args[0];
 
         try {
-            port = Integer.parseInt(args[1]);
+            port = Integer.parseInt(args[3]);
+            if (port <= 0 || port > 65535)
+                console.err("port number not in range [1025-65535]. Type \"help\" to see more.");
         } catch (NumberFormatException e) {
-            console.err("server port not in range [1025 - 65535]\n");
-            System.exit(-1);
-            return;
+            console.err("port argument must be an integer value");
         }
 
         if (!args[2].equals("-conn")) {
@@ -265,7 +265,7 @@ public class Client {
         try {
             communicationHandler = new CommunicationHandler(hostAddress, port, communicationInterface);
         } catch (ConnectionException e) {
-            console.err(e.getMessage() + "\n");
+            console.err(e.getClass() + ": " + e.getMessage() + "\n");
             System.exit(-1);
             return;
         }

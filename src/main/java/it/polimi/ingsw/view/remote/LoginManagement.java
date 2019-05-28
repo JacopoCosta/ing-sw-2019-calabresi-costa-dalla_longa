@@ -3,7 +3,8 @@ package it.polimi.ingsw.view.remote;
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.*;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -13,8 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -25,15 +26,15 @@ public class LoginManagement {
 
     private static Runnable updateTask;
     private static ScheduledExecutorService executor;
-    private static Future<?> futureUpdate;
+    private static ScheduledFuture<?> futureUpdate;
     private static final int UPDATE_REQUEST_PERIOD = 5;
 
 
-    public LoginManagement(CommunicationHandler communicationHandler){
+    public LoginManagement(CommunicationHandler communicationHandler) {
         this.communicationHandler = communicationHandler;
     }
 
-    private void requestUpdate(){
+    private void requestUpdate() {
         updateTask = () -> {
 
             Map<String, String> lobbyInfo;
@@ -90,7 +91,7 @@ public class LoginManagement {
             //getChoice(choiceBox); DEBUG ONLY
 
             String lobbyName = choiceBox.getValue();
-            if(!lobbyName.equals("<Select a lobby>")) {
+            if (!lobbyName.equals("<Select a lobby>")) {
 
                 lobbyName = lobbyName.substring(0, lobbyName.length() - 6);
                 String lobbyPassword = "password";
@@ -114,7 +115,8 @@ public class LoginManagement {
                 communicationHandler.initLobby(lobbyName, lobbyPassword);
             } catch (ConnectionException e) {
                 System.exit(-1);
-            } catch (LobbyAlreadyExistsException e) { }
+            } catch (LobbyAlreadyExistsException e) {
+            }
         });
 
         window.showAndWait();

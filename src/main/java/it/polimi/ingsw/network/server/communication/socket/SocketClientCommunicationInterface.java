@@ -19,7 +19,7 @@ public class SocketClientCommunicationInterface implements ClientCommunicationIn
         try {
             out.writeObject(message);
         } catch (IOException e) {
-            throw new ConnectionException("Client connection error", e);
+            throw new ConnectionException(e);
         }
     }
 }

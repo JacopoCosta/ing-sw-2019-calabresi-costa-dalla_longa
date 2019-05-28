@@ -23,7 +23,8 @@ public class SocketServerCommunicationInterface implements ServerCommunicationIn
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            throw new ConnectionException("Socket connection error to the server", e);
+            e.printStackTrace();
+            throw new ConnectionException(e);
         }
     }
 
@@ -38,7 +39,7 @@ public class SocketServerCommunicationInterface implements ServerCommunicationIn
         try {
             out.writeObject(message);
         } catch (IOException e) {
-            throw new ConnectionException("Socket connection error to the server", e);
+            throw new ConnectionException(e);
         }
     }
 
@@ -55,7 +56,7 @@ public class SocketServerCommunicationInterface implements ServerCommunicationIn
 
             return message;
         } catch (IOException | ClassNotFoundException e) {
-            throw new ConnectionException("Socket connection error to the server", e);
+            throw new ConnectionException(e);
         }
     }
 }

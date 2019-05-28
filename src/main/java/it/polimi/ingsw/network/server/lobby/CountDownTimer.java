@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class CountDownTimer implements Observable {
-    public enum TimerState {
+    protected enum TimerState {
         //the timer has been created successfully, but is not started yet
         NOT_STARTED,
 
@@ -34,14 +34,13 @@ class CountDownTimer implements Observable {
 
     private final ScheduledExecutorService executor; //the timer responsible for the actual countdown
     private ScheduledFuture<?> future;
-
-    private final List<Observer> observers;
-
     //the task to execute every PERIOD
     private Runnable tick = () -> {
         if (currentSeconds.decrementAndGet() < 0)
             stop();
     };
+
+    private final List<Observer> observers;
 
     CountDownTimer(int statingSeconds) {
         this.statingSeconds = statingSeconds;
