@@ -8,30 +8,30 @@ import org.json.simple.parser.ParseException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class DecoratedJSONObject {
+public class DecoratedJsonObject {
     private JSONObject common;
 
-    protected DecoratedJSONObject(JSONObject jsonObject) {
+    protected DecoratedJsonObject(JSONObject jsonObject) {
         this.common = jsonObject;
     }
 
-    public static DecoratedJSONObject getFromFile(String path) {
+    public static DecoratedJsonObject getFromFile(String path) {
         JSONParser parser = new JSONParser();
 
         try {
-            return new DecoratedJSONObject((JSONObject) parser.parse(new FileReader(path)));
+            return new DecoratedJsonObject((JSONObject) parser.parse(new FileReader(path)));
         } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public DecoratedJSONArray getArray(String key) {
-        return new DecoratedJSONArray((JSONArray) this.common.get(key));
+    public DecoratedJsonArray getArray(String key) {
+        return new DecoratedJsonArray((JSONArray) this.common.get(key));
     }
 
-    public DecoratedJSONObject getObject(String key) {
-        return new DecoratedJSONObject((JSONObject) this.common.get(key));
+    public DecoratedJsonObject getObject(String key) {
+        return new DecoratedJsonObject((JSONObject) this.common.get(key));
     }
 
     public String getString(String key) {
