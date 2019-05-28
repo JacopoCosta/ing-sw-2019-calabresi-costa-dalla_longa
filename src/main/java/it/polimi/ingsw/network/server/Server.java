@@ -65,8 +65,8 @@ public class Server {
         try {
             registry.rebind(bindingName, serverController);
         } catch (RemoteException e) {
-            //console.err("" + e.getClass().toString() + " error in RMI Server: " + e.getMessage());
-            e.printStackTrace();
+            console.err("" + e.getClass().toString() + " error in RMI Server: " + e.getMessage());
+            //e.printStackTrace();
             System.exit(-1);
         }
         console.log("RMI done binding");
@@ -91,6 +91,6 @@ public class Server {
         console.stat("Running on " + console.getOsName() + "...");
 
         executor.execute(socketServer);
-        //executor.execute(rmiServer);
+        executor.execute(rmiServer);
     }
 }
