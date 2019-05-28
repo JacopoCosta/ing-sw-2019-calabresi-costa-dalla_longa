@@ -203,9 +203,44 @@ public class App extends Application implements EventHandler<ActionEvent> {
                 break;
         }*/
 
+        if (args.length > 4 || args.length == 0)
+            console.err("insert [ip address] [port] as App arguments");
+
+        ipAddress = args[0];
+
+        try {
+            port = Integer.parseInt(args[1]);
+
+            if (port <= 1024 || port > 65535) {
+                console.err("port argument not in range [1023-65535]");
+                System.exit(-1);
+            }
+        } catch (NumberFormatException e) {
+            console.err("port argument must be an integer value");
+            System.exit(-1);
+        }
+
+        if (!args[2].equals("-conn")) {
+            console.err("third argument must be \"-conn\"");
+            System.exit(-1);
+        }
+
+        interfaceType = args[3];
+        CommunicationHandler.Interface communicationInterface;
+
+        if (interfaceType.equals("s")) {
+            communicationInterface = CommunicationHandler.Interface.SOCKET_INTERFACE;
+        } else if (interfaceType.equals("r")) {
+            communicationInterface = CommunicationHandler.Interface.RMI_INTERFACE;
+        } else {
+            console.err("\"-conn\" parameter must be [s/r]");
+            System.exit(-1);
+            return;
+        }
+
         CommunicationHandler communicationHandler;
         try {
-            communicationHandler = new CommunicationHandler("127.0.0.1", 60000, CommunicationHandler.Interface.RMI_INTERFACE);
+            communicationHandler = new CommunicationHandler(ipAddress, port, communicationInterface);
         } catch (ConnectionException e) {
             e.printStackTrace();
             return;
@@ -217,7 +252,6 @@ public class App extends Application implements EventHandler<ActionEvent> {
 
     @Override   //needed for JavaFX
     public void start(Stage primaryStage) {
-
         boardArt.displayLogin(primaryStage);
     }
 
@@ -225,5 +259,4 @@ public class App extends Application implements EventHandler<ActionEvent> {
     public void handle(javafx.event.ActionEvent event) {
         //blank, as events are handled by using lambda functions
     }
-
 }

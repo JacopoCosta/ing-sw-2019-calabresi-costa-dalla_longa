@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.remote;
 
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.*;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -49,9 +50,11 @@ public class LoginManagement {
                 lobbies.clear();
                 lobbies.addAll(lobbyInfo.entrySet().stream().map(l -> l.getKey() + " " + l.getValue()).collect(Collectors.toList()));
 
-                choiceBox.getItems().clear();
-                choiceBox.getItems().add(0, "<Select a lobby>");
-                choiceBox.getItems().addAll(lobbies);
+                Platform.runLater(() -> {
+                    choiceBox.getItems().clear();
+                    choiceBox.getItems().add(0, "<Select a lobby>");
+                    choiceBox.getItems().addAll(lobbies);
+                });
             }
         };
         executor = Executors.newSingleThreadScheduledExecutor();
@@ -120,9 +123,5 @@ public class LoginManagement {
         });
 
         window.showAndWait();
-    }
-
-    private static void getChoice(ChoiceBox<String> choiceBox) {
-        System.out.println(choiceBox.getValue());
     }
 }

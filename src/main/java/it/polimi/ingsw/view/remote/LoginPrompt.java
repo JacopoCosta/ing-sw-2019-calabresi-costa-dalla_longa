@@ -3,9 +3,10 @@ package it.polimi.ingsw.view.remote;
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ClientAlreadyRegisteredException;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
-
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -14,7 +15,7 @@ public class LoginPrompt {
     CommunicationHandler communicationHandler;
     LoginManagement loginManagement;
 
-    public LoginPrompt(CommunicationHandler communicationHandler){
+    public LoginPrompt(CommunicationHandler communicationHandler) {
         this.communicationHandler = communicationHandler;
         loginManagement = new LoginManagement(communicationHandler);
     }
@@ -39,21 +40,20 @@ public class LoginPrompt {
         window.initModality(Modality.APPLICATION_MODAL);
 
         done.setOnAction(event -> {
-
             //requesting access
             String username;
-                username = nickText.getText();
+            username = nickText.getText();
 
-                try {
-                    communicationHandler.register(username);
-                    loginManagement.display();
+            try {
+                communicationHandler.register(username);
+                loginManagement.display();
 
-                } catch (ConnectionException e) {
-                    System.exit(-1);
-                } catch (ClientAlreadyRegisteredException e) { }
+            } catch (ConnectionException e) {
+                System.exit(-1);
+            } catch (ClientAlreadyRegisteredException e) {
+            }
         });
 
         window.showAndWait();
     }
-
 }
