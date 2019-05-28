@@ -29,7 +29,6 @@ public class RMIServerCommunicationInterface implements ServerCommunicationInter
 
             registry.rebind("rmi://" + hostAddress + ":" + port + "/ClientController", controller);
         } catch (RemoteException | NotBoundException e) {
-            e.printStackTrace();
             throw new ConnectionException("RMI connection error to the server", e);
         }
     }

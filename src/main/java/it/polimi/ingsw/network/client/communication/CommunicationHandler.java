@@ -36,7 +36,6 @@ public class CommunicationHandler {
                 try {
                     this.communicationInterface = new RMIServerCommunicationInterface(hostAddress, port);
                 } catch (ConnectionException e) {
-                    e.printStackTrace();
                     throw new ConnectionException("RMIServerCommunicationInterface configuration failed", e);
                 }
                 break;
