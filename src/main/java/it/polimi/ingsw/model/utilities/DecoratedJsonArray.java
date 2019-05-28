@@ -6,22 +6,22 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DecoratedJsonArray {
+public class DecoratedJSONArray {
     private JSONArray common;
 
-    protected DecoratedJsonArray(JSONArray jsonArray) {
+    protected DecoratedJSONArray(JSONArray jsonArray) {
         this.common = jsonArray;
     }
 
-    public DecoratedJsonObject get(int index) {
-        return new DecoratedJsonObject((JSONObject) this.common.get(index));
+    public DecoratedJSONObject get(int index) {
+        return new DecoratedJSONObject((JSONObject) this.common.get(index));
     }
 
-    public List<DecoratedJsonObject> asList() {
-        List<DecoratedJsonObject> list = new ArrayList<>();
+    public List<DecoratedJSONObject> asList() {
+        List<DecoratedJSONObject> list = new ArrayList<>();
 
         for(Object o : common) {
-            list.add(new DecoratedJsonObject((JSONObject) o));
+            list.add(new DecoratedJSONObject((JSONObject) o));
         }
 
         return list;

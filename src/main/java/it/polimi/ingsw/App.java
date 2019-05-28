@@ -9,6 +9,19 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 
+public class App extends Application implements EventHandler<ActionEvent> {
+    private static final Console console = new Console();
+
+    private enum Configuration {
+        SERVER,
+
+        CLIENT_SOCKET_CLI,
+        CLIENT_SOCKET_GUI,
+        CLIENT_RMI_CLI,
+        CLIENT_RMI_GUI,
+
+        ERROR
+    }
 
     private static String ipAddress;
     private static int port;
