@@ -88,15 +88,15 @@ public class App extends Application implements EventHandler<ActionEvent> {
 
     }
 
-    @Override
+    @Override   //needed for JavaFX
     public void start(Stage primaryStage) {
 
         boardArt.displayLogin(primaryStage);
     }
 
-    @Override
+    @Override   //needed for JavaFX
     public void handle(javafx.event.ActionEvent event) {
-        //nothing for now
+        //blank, as events are handled by using lambda functions
     }
 
 }
