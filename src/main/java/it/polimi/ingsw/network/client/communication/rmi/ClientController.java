@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.client.rmi;
+package it.polimi.ingsw.network.client.communication.rmi;
 
 import it.polimi.ingsw.network.common.message.MessageController;
 import it.polimi.ingsw.network.common.message.NetworkMessage;

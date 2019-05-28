@@ -1,16 +1,20 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.network.client.CommunicationHandler;
+import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
-import it.polimi.ingsw.view.remote.BoardArt;
 import it.polimi.ingsw.network.common.util.Console;
-
+import it.polimi.ingsw.view.remote.BoardArt;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 
 
-public class App extends Application implements EventHandler<javafx.event.ActionEvent> {
+    private static String ipAddress;
+    private static int port;
+
+    private static String connectionType;
+    private static String interfaceType;
 
     private static BoardArt boardArt;
 

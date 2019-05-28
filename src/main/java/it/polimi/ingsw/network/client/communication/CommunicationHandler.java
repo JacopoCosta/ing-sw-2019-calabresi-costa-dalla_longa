@@ -1,7 +1,7 @@
-package it.polimi.ingsw.network.client;
+package it.polimi.ingsw.network.client.communication;
 
-import it.polimi.ingsw.network.client.rmi.RMIServerCommunicationInterface;
-import it.polimi.ingsw.network.client.socket.SocketServerCommunicationInterface;
+import it.polimi.ingsw.network.client.communication.rmi.RMIServerCommunicationInterface;
+import it.polimi.ingsw.network.client.communication.socket.SocketServerCommunicationInterface;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;

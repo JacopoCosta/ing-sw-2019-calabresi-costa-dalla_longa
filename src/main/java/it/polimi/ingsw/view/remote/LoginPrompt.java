@@ -1,20 +1,11 @@
 package it.polimi.ingsw.view.remote;
 
-import it.polimi.ingsw.network.client.CommunicationHandler;
+import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ClientAlreadyRegisteredException;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.ArcType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 

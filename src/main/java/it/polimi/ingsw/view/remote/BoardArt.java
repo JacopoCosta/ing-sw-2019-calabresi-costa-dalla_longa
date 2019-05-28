@@ -1,21 +1,10 @@
 package it.polimi.ingsw.view.remote;
 
-import it.polimi.ingsw.App;
-import it.polimi.ingsw.network.client.CommunicationHandler;
-import it.polimi.ingsw.view.remote.LoginPrompt;
-import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
+import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.ArcType;
 import javafx.stage.Stage;
-import javafx.event.ActionEvent;
 
 public class BoardArt {
 

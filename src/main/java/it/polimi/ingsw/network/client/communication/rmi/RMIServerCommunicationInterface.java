@@ -1,6 +1,6 @@
-package it.polimi.ingsw.network.client.rmi;
+package it.polimi.ingsw.network.client.communication.rmi;
 
-import it.polimi.ingsw.network.client.ServerCommunicationInterface;
+import it.polimi.ingsw.network.client.communication.ServerCommunicationInterface;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;

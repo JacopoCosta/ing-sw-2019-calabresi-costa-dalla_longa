@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.client;
+package it.polimi.ingsw.network.client.communication;
 
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
