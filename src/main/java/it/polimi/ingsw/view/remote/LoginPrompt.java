@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.remote;
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ClientAlreadyRegisteredException;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
+
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;

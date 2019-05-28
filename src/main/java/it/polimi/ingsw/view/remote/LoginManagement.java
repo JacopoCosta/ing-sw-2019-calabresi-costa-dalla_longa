@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class LoginManagement {
-    CommunicationHandler communicationHandler;
+    private CommunicationHandler communicationHandler;
 
     private static final List<String> lobbies = Collections.synchronizedList(new ArrayList<>());
 
@@ -65,7 +65,7 @@ public class LoginManagement {
         }
     }
 
-    ChoiceBox<String> choiceBox = new ChoiceBox<>();
+    private ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
     public void display() {
 
