@@ -33,7 +33,7 @@ public class Board {
     private Board() {}
 
     public static Board generate(Game game, int type) {
-        Board board = new Board();
+        Board board = new Board(); // <--- TODO this statement is found guilty
 
         board.game = game;
 

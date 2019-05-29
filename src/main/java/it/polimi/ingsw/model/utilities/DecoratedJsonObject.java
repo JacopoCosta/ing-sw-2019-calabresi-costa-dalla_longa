@@ -27,6 +27,7 @@ public class DecoratedJsonObject {
         try {
             return new DecoratedJsonObject((JSONObject) parser.parse(new FileReader(path)));
         } catch (ParseException | IOException e) {
+            e.printStackTrace();
             throw new JsonException("Could not find file to read.");
         }
     }
@@ -36,6 +37,7 @@ public class DecoratedJsonObject {
             FileWriter fileWriter = new FileWriter(path);
             fileWriter.write(common.toJSONString());
         } catch (IOException e) {
+            e.printStackTrace();
             throw new JsonException("Could not find file to write.");
         }
     }

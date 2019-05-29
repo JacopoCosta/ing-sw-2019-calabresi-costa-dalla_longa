@@ -150,7 +150,7 @@ public class Game {
     }
 
     public void load() {
-        DecoratedJsonObject saved = DecoratedJsonObject.getFromFile("saved.json");
+        DecoratedJsonObject saved = DecoratedJsonObject.getFromFile(JsonPathGenerator.getPath("saved.json"));
         DecoratedJsonObject testObject = saved.getObject("saved");
         System.out.println(testObject.getString("testObject"));
     }
