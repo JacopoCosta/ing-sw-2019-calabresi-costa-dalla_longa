@@ -9,13 +9,19 @@ import java.util.List;
 public class DecoratedJsonArray {
     private JSONArray common;
 
-    public DecoratedJsonArray(List<?> content, Object uselessObject) {
+    public DecoratedJsonArray(List<DecoratedJsonObject> content, Object uselessObject) {
         common = new JSONArray();
-        common.addAll(content);
+        content.stream()
+                .map(DecoratedJsonObject::unpack)
+                .forEach(o -> common.add(o));
     }
 
     public DecoratedJsonArray(JSONArray jsonArray) {
         common = jsonArray;
+    }
+
+    public JSONArray unpack() {
+        return common;
     }
 
     public DecoratedJsonObject get(int index) {

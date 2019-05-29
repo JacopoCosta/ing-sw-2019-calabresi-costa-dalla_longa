@@ -21,6 +21,15 @@ public class DecoratedJsonObject {
         common = new JSONObject();
     }
 
+    public DecoratedJsonObject(String key, Object value) {
+        common = new JSONObject();
+        common.put(key, value);
+    }
+
+    public JSONObject unpack() {
+        return common;
+    }
+
     public static DecoratedJsonObject getFromFile(String path) {
         JSONParser parser = new JSONParser();
 
@@ -33,8 +42,8 @@ public class DecoratedJsonObject {
     }
 
     public void writeToFile(String path) {
-        try {
-            FileWriter fileWriter = new FileWriter(path);
+        try (FileWriter fileWriter = new FileWriter(path)) {
+            System.out.println(common.toJSONString());
             fileWriter.write(common.toJSONString());
         } catch (IOException e) {
             e.printStackTrace();
@@ -43,11 +52,11 @@ public class DecoratedJsonObject {
     }
 
     public void putArray(String key, DecoratedJsonArray value) {
-        common.put(key, value);
+        common.put(key, value.unpack());
     }
 
     public void putObject(String key, DecoratedJsonObject value) {
-        common.put(key, value);
+        common.put(key, value.common);
     }
 
     public void putValue(String key, Object value) {

@@ -3,6 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.NullCellOperationException;
+import it.polimi.ingsw.model.utilities.DecoratedJsonArray;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 import it.polimi.ingsw.model.utilities.JsonPathGenerator;
 import it.polimi.ingsw.view.virtual.VirtualView;
@@ -143,16 +144,46 @@ public class Game {
 
     public void save() {
         DecoratedJsonObject saved = new DecoratedJsonObject();
-        DecoratedJsonObject testObject = new DecoratedJsonObject();
-        testObject.putValue("testKey", "testValue");
-        saved.putObject("saved", testObject);
-        saved.writeToFile(JsonPathGenerator.getPath("saved.json"));
+
+        DecoratedJsonObject jObject = new DecoratedJsonObject();
+        jObject.putValue("name", "I am a test");
+        jObject.putValue("number", 4);
+
+        saved.putObject("data", jObject);
+
+        List<DecoratedJsonObject> fruits = new ArrayList<>();
+        fruits.add(new DecoratedJsonObject("frutto", "Mela"));
+        fruits.add(new DecoratedJsonObject("frutto", "Pera"));
+        fruits.add(new DecoratedJsonObject("frutto", "Cococmer"));
+        fruits.add(new DecoratedJsonObject("frutto", "Bregni"));
+        DecoratedJsonArray jArray = new DecoratedJsonArray(fruits, null);
+
+        saved.putArray("frutta", jArray);
+
+        DecoratedJsonObject tl = new DecoratedJsonObject();
+        tl.putObject("saved", saved);
+
+        tl.writeToFile(JsonPathGenerator.getPath("saved.json"));
     }
 
     public void load() {
-        DecoratedJsonObject saved = DecoratedJsonObject.getFromFile(JsonPathGenerator.getPath("saved.json"));
-        DecoratedJsonObject testObject = saved.getObject("saved");
-        System.out.println(testObject.getString("testObject"));
+        DecoratedJsonObject tl = DecoratedJsonObject.getFromFile(JsonPathGenerator.getPath("saved.json"));
+        DecoratedJsonObject jSaved = tl.getObject("saved");
+
+        DecoratedJsonObject jObject = jSaved.getObject("data");
+
+        String name = jObject.getString("name");
+        int number = jObject.getInt("number");
+
+        List<DecoratedJsonObject> fruits = jSaved.getArray("frutta").asList();
+        List<String> fruitGiudizi = fruits.stream()
+                .map(d -> d.getString("frutto"))
+                .collect(Collectors.toList());
+
+        System.out.println("Name is " +  name);
+        System.out.println("Number is " + number);
+        System.out.println("Fruits are:");
+        fruitGiudizi.forEach(System.out::println);
     }
 
     @Override

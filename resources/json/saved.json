@@ -1,5 +1,22 @@
 {
     "saved": {
-        "testKey": "testValue"
+        "frutta": [
+            {
+                "frutto": "Mela"
+            },
+            {
+                "frutto": "Pera"
+            },
+            {
+                "frutto": "Cococmer"
+            },
+            {
+                "frutto": "Bregni"
+            }
+        ],
+        "data": {
+            "number": 4,
+            "name": "I am a test"
+        }
     }
 }
