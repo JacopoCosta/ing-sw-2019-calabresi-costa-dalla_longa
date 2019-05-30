@@ -456,6 +456,10 @@ public class Game {
                     int blue = jAmmoCubes.getInt("blue");
                     AmmoCubes ammoCubes = new AmmoCubes(red, yellow, blue);
                     player.giveAmmoCubes(ammoCubes);
+
+                    int positionId = jp.getInt("position");
+                    Cell position = positionId == -1 ? null : game.getBoard().getCells().get(positionId - 1);
+                    player.setPosition(position);
                 }
         );
 
