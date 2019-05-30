@@ -43,7 +43,6 @@ public class DecoratedJsonObject {
 
     public void writeToFile(String path) {
         try (FileWriter fileWriter = new FileWriter(path)) {
-            System.out.println(common.toJSONString());
             fileWriter.write(common.toJSONString());
         } catch (IOException e) {
             e.printStackTrace();

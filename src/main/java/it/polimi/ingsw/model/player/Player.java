@@ -34,7 +34,7 @@ public class Player extends VirtualClient {
     private int score;
     private int deathCount;
     private boolean onFrenzy;
-    private boolean onFrenzyBeforeStartingPlayer;
+    private boolean causedFrenzy;
     private int remainingExecutions;
 
     private List<Player> damage;
@@ -53,7 +53,7 @@ public class Player extends VirtualClient {
         this.score = 0;
         this.deathCount = 0;
         this.onFrenzy = false;
-        this.onFrenzyBeforeStartingPlayer = false;
+        this.causedFrenzy = false;
         this.remainingExecutions = EXECUTIONS_PER_TURN;
         this.damage = new ArrayList<>();
         this.markings = new ArrayList<>();
@@ -131,8 +131,17 @@ public class Player extends VirtualClient {
         return this.onFrenzy;
     }
 
-    public boolean isOnFrenzyBeforeStartingPlayer() { // this is used to determine which executions the player should be allowed to pick from, after final frenzy has been triggered
-        return this.onFrenzyBeforeStartingPlayer;
+    public boolean causedFrenzy() { // this is used to determine which executions the player should be allowed to pick from, after final frenzy has been triggered
+        return this.causedFrenzy;
+    }
+
+    public boolean isOnFrenzyBeforeStartingPlayer() {
+        return this.getId() > game.getParticipants()
+                .stream()
+                .filter(Player::causedFrenzy)
+                .map(Player::getId)
+                .findFirst()
+                .orElse(-1);
     }
 
     public int getRemainingExecutions() {
@@ -212,8 +221,8 @@ public class Player extends VirtualClient {
         this.onFrenzy = true;
     }
 
-    public void activateFrenzyBeforeStartingPlayer() {
-        this.onFrenzyBeforeStartingPlayer = true;
+    public void causeFrenzy() {
+        this.causedFrenzy = true;
     }
 
     public List<PowerUp> getScopes() {
@@ -251,11 +260,6 @@ public class Player extends VirtualClient {
                 this.markings.remove(author);
                 this.damage.add(author);
             }
-        }
-
-        List<PowerUp> grenades = powerUps.stream().filter(p -> p.getType() == PowerUpType.GRENADE).collect(Collectors.toList());
-        if(grenades.size() > 0) { // if the player is able to respond with a tagback grenade
-            //TODO grenades
         }
     }
 
@@ -312,6 +316,11 @@ public class Player extends VirtualClient {
 
         // one extra point to the player who drew first blood
         this.damage.get(0).giveScore(1);
+    }
+
+    public void die() {
+        this.deathCount ++;
+        this.position = null;
     }
 
     public void spawn(Cell cell) {

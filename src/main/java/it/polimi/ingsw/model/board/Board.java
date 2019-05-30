@@ -244,30 +244,19 @@ public class Board {
     public void spreadAmmo() {
         cells.stream()
                 .filter(c -> !c.isSpawnPoint())
-                .forEach(
-                        c -> {
-                            AmmoTile at = ammoTileDeck.smartDraw(true).orElse(null);
-                            ((AmmoCell) c).setAmmoTile(at);
-                        }
-                );
+                .map(c -> (AmmoCell) c)
+                .filter(ac -> ac.getAmmoTile() == null)
+                .forEach(ac -> ammoTileDeck.smartDraw(true).ifPresent(ac::setAmmoTile));
     }
 
     public void spreadWeapons() {
         cells.stream()
                 .filter(Cell::isSpawnPoint)
+                .map(c -> (SpawnCell) c)
                 .forEach(
-                        c -> {
-                            List<Weapon> weapons = new ArrayList<>();
-
-                            // draw a fixed amount of times -- if the deck is empty, do nothing
-                            for(int i = 0; i < MAX_WEAPONS_PER_SPAWNPOINT; i ++) {
-                                try {
-                                    weapons.add(weaponDeck.draw());
-                                } catch (EmptyDeckException ignored) { }
-                            }
-
-                            // add all drawn weapons to the weapon shop
-                            weapons.forEach(((SpawnCell) c)::addToWeaponShop);
+                        sc -> {
+                            for(int i = sc.getWeaponShop().size(); i < MAX_WEAPONS_PER_SPAWNPOINT; i ++)
+                                weaponDeck.smartDraw(false).ifPresent(sc::addToWeaponShop);
                         }
                 );
     }

@@ -77,7 +77,7 @@ public class Execution {
         if(!subject.isOnFrenzy() || subject.isOnFrenzyBeforeStartingPlayer()) // the "move only" execution is not available outside of these conditions
             e.add(generateMove(subject));
         e.add(generateGrab(subject));
-        if(subject.getWeapons().stream().filter(Weapon::isLoaded).count() > 0)
+        if(subject.getWeapons().stream().anyMatch(Weapon::isLoaded))
             e.add(generateShoot(subject));
         return e;
     }

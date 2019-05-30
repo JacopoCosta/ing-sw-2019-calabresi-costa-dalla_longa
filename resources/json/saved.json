@@ -1,5 +1,217 @@
 {
     "saved": {
-        "valid": false
+        "valid": true,
+        "boardType": 2,
+        "cells": [
+            {
+                "ammoTile": {
+                    "red": 1,
+                    "blue": 1,
+                    "yellow": 0,
+                    "includesPowerUp": true
+                },
+                "id": 1
+            },
+            {
+                "ammoTile": {
+                    "red": 0,
+                    "blue": 0,
+                    "yellow": 2,
+                    "includesPowerUp": true
+                },
+                "id": 2
+            },
+            {
+                "id": 3,
+                "weaponShop": [
+                    {
+                        "name": "Electroscythe"
+                    },
+                    {
+                        "name": "Vortex Cannon"
+                    },
+                    {
+                        "name": "Furnace"
+                    }
+                ]
+            },
+            {
+                "ammoTile": {
+                    "red": 0,
+                    "blue": 1,
+                    "yellow": 2,
+                    "includesPowerUp": false
+                },
+                "id": 4
+            },
+            {
+                "id": 5,
+                "weaponShop": [
+                    {
+                        "name": "Power Glove"
+                    },
+                    {
+                        "name": "Shotgun"
+                    },
+                    {
+                        "name": "Grenade Launcher"
+                    }
+                ]
+            },
+            {
+                "ammoTile": {
+                    "red": 1,
+                    "blue": 0,
+                    "yellow": 2,
+                    "includesPowerUp": false
+                },
+                "id": 6
+            },
+            {
+                "ammoTile": {
+                    "red": 1,
+                    "blue": 2,
+                    "yellow": 0,
+                    "includesPowerUp": false
+                },
+                "id": 7
+            },
+            {
+                "ammoTile": {
+                    "red": 2,
+                    "blue": 1,
+                    "yellow": 0,
+                    "includesPowerUp": false
+                },
+                "id": 8
+            },
+            {
+                "ammoTile": {
+                    "red": 1,
+                    "blue": 0,
+                    "yellow": 1,
+                    "includesPowerUp": true
+                },
+                "id": 9
+            },
+            {
+                "ammoTile": {
+                    "red": 0,
+                    "blue": 1,
+                    "yellow": 1,
+                    "includesPowerUp": true
+                },
+                "id": 10
+            },
+            {
+                "id": 11,
+                "weaponShop": [
+                    {
+                        "name": "ZX-2"
+                    },
+                    {
+                        "name": "Hellion"
+                    },
+                    {
+                        "name": "Machine Gun"
+                    }
+                ]
+            }
+        ],
+        "killers": [],
+        "currentTurnPlayer": 0,
+        "doubleKillers": [],
+        "finalFrenzy": false,
+        "roundsLeft": 2,
+        "participants": [
+            {
+                "score": 0,
+                "damage": [],
+                "markings": [],
+                "ammoCubes": {
+                    "red": 0,
+                    "blue": 0,
+                    "yellow": 0
+                },
+                "causedFrenzy": false,
+                "name": "Aldo",
+                "deathCount": 0,
+                "onFrenzy": false,
+                "id": 1,
+                "position": 10,
+                "weapons": [
+                    {
+                        "name": "T.H.O.R."
+                    },
+                    {
+                        "name": "Lock Rifle"
+                    }
+                ],
+                "powerUps": [
+                    {
+                        "color": "red",
+                        "type": "grenade"
+                    },
+                    {
+                        "color": "yellow",
+                        "type": "scope"
+                    }
+                ]
+            },
+            {
+                "score": 0,
+                "damage": [],
+                "markings": [],
+                "ammoCubes": {
+                    "red": 0,
+                    "blue": 0,
+                    "yellow": 0
+                },
+                "causedFrenzy": false,
+                "name": "Giovanni",
+                "deathCount": 0,
+                "onFrenzy": false,
+                "id": 2,
+                "position": -1,
+                "weapons": [],
+                "powerUps": []
+            },
+            {
+                "score": 0,
+                "damage": [],
+                "markings": [],
+                "ammoCubes": {
+                    "red": 0,
+                    "blue": 0,
+                    "yellow": 0
+                },
+                "causedFrenzy": false,
+                "name": "Giacomo",
+                "deathCount": 0,
+                "onFrenzy": false,
+                "id": 3,
+                "position": -1,
+                "weapons": [],
+                "powerUps": []
+            },
+            {
+                "score": 0,
+                "damage": [],
+                "markings": [],
+                "ammoCubes": {
+                    "red": 0,
+                    "blue": 0,
+                    "yellow": 0
+                },
+                "causedFrenzy": false,
+                "name": "Roberto",
+                "deathCount": 0,
+                "onFrenzy": false,
+                "id": 4,
+                "position": -1,
+                "weapons": [],
+                "powerUps": []
+            }
+        ]
     }
 }

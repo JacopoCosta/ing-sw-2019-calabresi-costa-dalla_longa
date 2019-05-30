@@ -72,21 +72,16 @@ public class Game {
         return virtualView;
     }
 
-    private void setup() {
+    private void playTurn() {
         board.spreadAmmo();
         board.spreadWeapons();
-    }
 
-    private void playTurn() {
         Player subject = participants.get(currentTurnPlayer); // TODO check still connected
-
-        save();
 
         if(subject.getPosition() == null) {
             List<PowerUp> powerUps = new ArrayList<>();
             for(int i = 0; i <= 1; i ++)
                 board.getPowerUpDeck().smartDraw(true).ifPresent(powerUps::add);
-
             virtualView.spawn(subject, powerUps);
         }
 
@@ -98,7 +93,6 @@ public class Game {
             Execution choice = virtualView.chooseExecution(subject, options);
 
             for(Activity activity : choice.getActivities()) { // each execution consists of some activities
-
                 switch(activity.getType()) {
                     case MOVE:
                         int maxDistance = ((Move) activity).getMaxDistance();
@@ -142,16 +136,33 @@ public class Game {
 
         participants.stream() // score all dead players
                 .filter(Player::isKilled)
-                .forEach(Player::scoreUponDeath);
+                .forEach(p -> {
+                    p.scoreUponDeath();
+                    p.die();
+                    if(roundsLeft > 0)
+                        roundsLeft --;
+                    else if(finalFrenzy)
+                        p.activateFrenzy();
+                });
 
-        this.currentTurnPlayer = (this.currentTurnPlayer + 1) % this.participants.size();
+        if(roundsLeft == 0) { // when the last skull has been removed from the killshot track
+            if(finalFrenzy && !subject.causedFrenzy()) {
+                subject.causeFrenzy();
+                this.currentTurnPlayer = (this.currentTurnPlayer + 1) % this.participants.size(); // pass the turn on to the next player
+                save(); // save the game state at the end of each turn
+            }
+            else {
+                gameOver = true;
+                invalidateSaveState();
+            }
+        }
     }
 
     public void play() {
-        setup();
-        while(!gameOver) {
+        while(!gameOver)
             this.playTurn();
-        }
+
+        //TODO winning ceremony
     }
 
     public void save() {
@@ -228,7 +239,7 @@ public class Game {
                     jPlayer.putValue("score", p.getScore());
                     jPlayer.putValue("deathCount", p.getDeathCount());
                     jPlayer.putValue("onFrenzy", p.isOnFrenzy());
-                    jPlayer.putValue("onFrenzyBeforeStartingPlayer", p.isOnFrenzyBeforeStartingPlayer());
+                    jPlayer.putValue("causedFrenzy", p.causedFrenzy());
                     jPlayer.putArray("damage", new DecoratedJsonArray(
                             p.getDamageAsList()
                                     .stream()
@@ -344,7 +355,7 @@ public class Game {
                 .map(djo -> djo.getInt("id") - 1)
                 .map(participants::get)
                 .collect(Collectors.toList());
-        game.getBoard().setKillers(doubleKillers);
+        game.getBoard().setDoubleKillers(doubleKillers);
 
         List<DecoratedJsonObject> jCells = jSaved.getArray("cells").asList();
         jCells.forEach(
@@ -390,9 +401,9 @@ public class Game {
                     if(onFrenzy)
                         player.activateFrenzy();
 
-                    boolean onFrenzyBeforeStartingPlayer = jp.getBoolean("onFrenzyBeforeStartingPlayer");
-                    if(onFrenzyBeforeStartingPlayer)
-                        player.activateFrenzyBeforeStartingPlayer();
+                    boolean causedFrenzy = jp.getBoolean("causedFrenzy");
+                    if(causedFrenzy)
+                        player.causeFrenzy();
 
                     jp.getArray("damage")
                             .asList()
