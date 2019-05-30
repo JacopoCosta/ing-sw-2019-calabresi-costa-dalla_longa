@@ -84,6 +84,10 @@ public class Player extends VirtualClient {
         return this.deathCount;
     }
 
+    public void setDeathCount(int deathCount) {
+        this.deathCount = deathCount;
+    }
+
     public boolean isKilled() {
         return this.damage.size() > KILL_THRESHOLD;
     }
@@ -97,6 +101,10 @@ public class Player extends VirtualClient {
         return this.damage.size();
     }
 
+    public void setDamage(List<Player> damage) {
+        this.damage = damage;
+    }
+
     public List<Player> getDamageAsList() {
         return this.damage;
     }
@@ -108,6 +116,10 @@ public class Player extends VirtualClient {
             if(auth == author)
                 count ++;
         return count;
+    }
+
+    public void setMarkings(List<Player> markings) {
+        this.markings = markings;
     }
 
     public List<Player> getMarkingsAsList() {

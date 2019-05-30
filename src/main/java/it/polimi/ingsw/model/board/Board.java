@@ -8,13 +8,14 @@ import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.model.powerups.*;
 import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 import it.polimi.ingsw.view.remote.CLI;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Board {
@@ -33,7 +34,7 @@ public class Board {
     private Board() {}
 
     public static Board generate(Game game, int type) {
-        Board board = new Board(); // <--- TODO this statement is found guilty
+        Board board = new Board();
 
         board.game = game;
 
@@ -212,8 +213,16 @@ public class Board {
         return this.killers;
     }
 
+    public void setKillers(List<Player> killers) {
+        this.killers = killers;
+    }
+
     public List<Player> getDoubleKillers() {
         return this.doubleKillers;
+    }
+
+    public void setDoubleKillers(List<Player> doubleKillers) {
+        this.doubleKillers = doubleKillers;
     }
 
     public Deck<Weapon> getWeaponDeck() {
@@ -261,6 +270,91 @@ public class Board {
                             weapons.forEach(((SpawnCell) c)::addToWeaponShop);
                         }
                 );
+    }
+
+    public Optional<Weapon> fetchWeapon(String name) {
+        Weapon weapon = null;
+        try {
+            do {
+                try {
+                    weaponDeck.discard(weapon);
+                } catch (NullPointerException ignored) { }
+                weapon = weaponDeck.draw();
+            } while(!weapon.getName().equals(name));
+        } catch (EmptyDeckException e) {
+            return Optional.empty();
+        } finally {
+            weaponDeck.regenerate();
+        }
+        return Optional.of(weapon);
+    }
+
+    public Optional<PowerUp> fetchPowerUp(String type, String color) {
+        AmmoCubes ammoCubeColor;
+        switch (color) {
+            case "red":
+                ammoCubeColor = AmmoCubes.red();
+                break;
+            case "yellow":
+                ammoCubeColor = AmmoCubes.yellow();
+                break;
+            case "blue":
+                ammoCubeColor = AmmoCubes.blue();
+                break;
+            default:
+                throw new IllegalArgumentException(color + " is not an ammo cube color.");
+        }
+        PowerUp comparisonPowerUp;
+        switch (type) {
+            case "grenade":
+                comparisonPowerUp = new Grenade(ammoCubeColor);
+                break;
+            case "newton":
+                comparisonPowerUp = new Newton(ammoCubeColor);
+                break;
+            case "scope":
+                comparisonPowerUp = new Scope(ammoCubeColor);
+                break;
+            case "teleport":
+                comparisonPowerUp = new Teleport(ammoCubeColor);
+                break;
+            default:
+                throw new IllegalArgumentException(type + "is not a powerup type.");
+        }
+
+        PowerUp powerUp = null;
+        try {
+            do {
+                try {
+                    powerUpDeck.discard(powerUp);
+                } catch (NullPointerException ignored) { }
+                powerUp = powerUpDeck.draw();
+            } while(!powerUp.getType().equals(comparisonPowerUp.getType()) || !powerUp.getAmmoCubes().equals(comparisonPowerUp.getAmmoCubes()));
+        } catch (EmptyDeckException e) {
+            return Optional.empty();
+        } finally {
+            powerUpDeck.regenerate();
+        }
+        return Optional.of(powerUp);
+    }
+
+    public Optional<AmmoTile> fetchAmmoTile(int red, int yellow, int blue, boolean includesPowerUp) {
+        AmmoCubes comparisonAmmoCubes = new AmmoCubes(red, yellow, blue);
+
+        AmmoTile ammoTile = null;
+        try {
+            do {
+                try {
+                    ammoTileDeck.discard(ammoTile);
+                } catch (NullPointerException ignored) { }
+                ammoTile = ammoTileDeck.draw();
+            } while(!ammoTile.getAmmoCubes().equals(comparisonAmmoCubes) || ! ammoTile.includesPowerUp() == includesPowerUp);
+        } catch (EmptyDeckException e) {
+            return Optional.empty();
+        } finally {
+            ammoTileDeck.regenerate();
+        }
+        return Optional.of(ammoTile);
     }
 
     @Override

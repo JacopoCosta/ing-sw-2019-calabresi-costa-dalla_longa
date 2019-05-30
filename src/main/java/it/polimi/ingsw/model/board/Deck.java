@@ -29,6 +29,8 @@ public class Deck<T> {
     }
 
     public void discard(T card) {
+        if(card == null)
+            throw new NullPointerException("Attempted to discard null.");
         discarded.add(card);
     }
 
@@ -37,7 +39,7 @@ public class Deck<T> {
     }
 
     public void regenerate() {
-        this.cards = this.discarded;
+        this.cards.addAll(this.discarded);
         this.discarded.clear();
     }
 
@@ -109,9 +111,7 @@ public class Deck<T> {
                                 .filter(other -> !other.equals(u))
                                 .map(other -> other.sum(other).sum(u))
                                 .forEach( // three per colour per pair of equal colours (total 2 * 3 * 3 = 18)
-                                        s -> {
-                                            unitCubes.forEach(r -> deck.cards.add(new AmmoTile(s, false)));
-                                        }
+                                        s -> unitCubes.forEach(r -> deck.cards.add(new AmmoTile(s, false)))
                                 )
                 )
                 .map(
