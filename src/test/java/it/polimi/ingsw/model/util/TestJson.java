@@ -15,6 +15,12 @@ import static org.junit.Assert.fail;
 public class TestJson {
 
     @Test
+    public void invalidateSaveState() {
+        Game game = Game.create(false ,2, 2, new ArrayList<>());
+        game.invalidateSaveState();
+    }
+
+    @Test
     public void save() {
         List<Player> participants = new ArrayList<>();
         participants.add(new Player("Aldo"));

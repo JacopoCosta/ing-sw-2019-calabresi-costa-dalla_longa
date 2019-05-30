@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
@@ -71,12 +72,12 @@ public class Game {
         return virtualView;
     }
 
-    public void setup() {
+    private void setup() {
         board.spreadAmmo();
         board.spreadWeapons();
     }
 
-    public void playTurn() {
+    private void playTurn() {
         Player subject = participants.get(currentTurnPlayer); // TODO check still connected
 
         save();
@@ -84,7 +85,7 @@ public class Game {
         if(subject.getPosition() == null) {
             List<PowerUp> powerUps = new ArrayList<>();
             for(int i = 0; i <= 1; i ++)
-                powerUps.add(board.getPowerUpDeck().smartDraw(true).orElse(null)); //TODO i don't like null here
+                board.getPowerUpDeck().smartDraw(true).ifPresent(powerUps::add);
 
             virtualView.spawn(subject, powerUps);
         }
@@ -389,25 +390,25 @@ public class Game {
                     if(onFrenzy)
                         player.activateFrenzy();
 
-                    //TODO manage starting player
+                    boolean onFrenzyBeforeStartingPlayer = jp.getBoolean("onFrenzyBeforeStartingPlayer");
+                    if(onFrenzyBeforeStartingPlayer)
+                        player.activateFrenzyBeforeStartingPlayer();
 
-                    List<Player> damage = jp.getArray("damage")
+                    jp.getArray("damage")
                             .asList()
                             .stream()
                             .map(djo -> djo.getInt("id"))
                             .map(pid -> pid - 1)
                             .map(participants::get)
-                            .collect(Collectors.toList());
-                    player.setDamage(damage);
+                            .forEach(player::applyDamage);
 
-                    List<Player> markings = jp.getArray("markings")
+                    jp.getArray("markings")
                             .asList()
                             .stream()
                             .map(djo -> djo.getInt("id"))
                             .map(pid -> pid - 1)
                             .map(participants::get)
-                            .collect(Collectors.toList());
-                    player.setMarkings(markings);
+                            .forEach(player::applyMarking);
 
                     jp.getArray("weapons")
                             .asList()
@@ -437,6 +438,13 @@ public class Game {
                                         );
                                     }
                             );
+
+                    DecoratedJsonObject jAmmoCubes = jp.getObject("ammoCubes");
+                    int red = jAmmoCubes.getInt("red");
+                    int yellow = jAmmoCubes.getInt("yellow");
+                    int blue = jAmmoCubes.getInt("blue");
+                    AmmoCubes ammoCubes = new AmmoCubes(red, yellow, blue);
+                    player.giveAmmoCubes(ammoCubes);
                 }
         );
 

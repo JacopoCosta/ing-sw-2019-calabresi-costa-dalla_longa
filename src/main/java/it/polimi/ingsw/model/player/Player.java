@@ -101,10 +101,6 @@ public class Player extends VirtualClient {
         return this.damage.size();
     }
 
-    public void setDamage(List<Player> damage) {
-        this.damage = damage;
-    }
-
     public List<Player> getDamageAsList() {
         return this.damage;
     }
@@ -116,10 +112,6 @@ public class Player extends VirtualClient {
             if(auth == author)
                 count ++;
         return count;
-    }
-
-    public void setMarkings(List<Player> markings) {
-        this.markings = markings;
     }
 
     public List<Player> getMarkingsAsList() {
@@ -218,6 +210,10 @@ public class Player extends VirtualClient {
 
     public void activateFrenzy() {
         this.onFrenzy = true;
+    }
+
+    public void activateFrenzyBeforeStartingPlayer() {
+        this.onFrenzyBeforeStartingPlayer = true;
     }
 
     public List<PowerUp> getScopes() {
