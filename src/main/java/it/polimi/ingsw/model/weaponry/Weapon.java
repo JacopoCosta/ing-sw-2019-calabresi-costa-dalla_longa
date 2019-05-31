@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.weaponry;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
+import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.exceptions.WeaponAlreadyLoadedException;
 import it.polimi.ingsw.model.exceptions.WeaponAlreadyUnloadedException;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
@@ -64,6 +65,11 @@ public class Weapon {
 
     @Override
     public String toString() {
-        return name;
+        try {
+            AmmoCubes difference = reloadCost.take(purchaseCost);
+            return name + " [" + purchaseCost + "(" + difference + ")]";
+        } catch (CannotAffordException ignored) {
+            return toString();
+        }
     }
 }

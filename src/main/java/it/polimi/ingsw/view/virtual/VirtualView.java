@@ -39,26 +39,30 @@ public class VirtualView {
 
     public VirtualView(Game game) {
         this.game = game;
-        this.controller = game.getController();
+        this.controller = new Controller(this);
+    }
+
+    public Controller getController() {
+        return controller;
     }
 
     private void sendMessage(Player recipient, Deliverable deliverable) {
-        System.out.println(game.toString()); // temp
+        Dispatcher.sendMessage(game.toString());
         Dispatcher.sendMessage(deliverable.getMessage()); // TODO try/catch
     }
 
     private int sendRequest(Player recipient, Deliverable deliverable, List<?> values, List<Integer> keys) {
-        System.out.println(game.toString()); // temp
+        Dispatcher.sendMessage(game.toString());
         return Dispatcher.requestNumberedOption(deliverable.getMessage(), values, keys);
     }
 
     private int sendRequest(Player recipient, Deliverable deliverable, List<?> values) {
-        System.out.println(game.toString()); // temp
+        Dispatcher.sendMessage(game.toString());
         return Dispatcher.requestIndex(deliverable.getMessage(), values);
     }
 
     private boolean sendRequest(Player recipient, Deliverable deliverable) {
-        System.out.println(game.toString()); // temp
+        Dispatcher.sendMessage(game.toString());
         return Dispatcher.requestBoolean(deliverable.getMessage());
     }
 
@@ -348,10 +352,15 @@ public class VirtualView {
         List<Player> targetPlayers = game.getParticipants()
                 .stream()
                 .filter(p -> !p.equals(subject))
+                .filter(p -> p.getPosition() != null)
                 .collect(Collectors.toList());
+        if(targetPlayers.size() == 0)
+            return;
+
         List<String> playerNames = targetPlayers.stream()
                 .map(Player::getName)
                 .collect(Collectors.toList());
+
         int targetPlayerId = sendRequest(subject, new Deliverable(DeliverableType.NEWTON_REQUEST_PLAYER), playerNames);
         Player targetPlayer = targetPlayers.get(targetPlayerId);
 

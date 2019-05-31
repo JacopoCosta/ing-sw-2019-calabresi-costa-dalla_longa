@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.utilities;
 
 import it.polimi.ingsw.model.exceptions.JsonException;
+import it.polimi.ingsw.model.exceptions.JullPointerException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -74,8 +75,10 @@ public class DecoratedJsonObject {
         return (String) this.common.get(key);
     }
 
-    public int getInt(String key) {
-        return ((Long) this.common.get(key)).intValue();
+    public int getInt(String key) throws JullPointerException {
+            if(common == null)
+                throw new JullPointerException("");
+            return ((Long) this.common.get(key)).intValue();
     }
 
     public boolean getBoolean(String key) {

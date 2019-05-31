@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
+import it.polimi.ingsw.model.exceptions.CannotDiscardFirstCardOfDeckException;
 import it.polimi.ingsw.model.exceptions.FullHandException;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.powerups.PowerUpType;
@@ -26,7 +27,7 @@ public class Player extends VirtualClient {
 
     private static final int MAX_CARDS_IN_HAND = 3;
 
-    private static final int[] SCOREBOARD_DEFAULT = {8, 6, 4, 2, 1, 1};
+    public static final int[] SCOREBOARD_DEFAULT = {8, 6, 4, 2, 1, 1};
     private static final int[] SCOREBOARD_FRENZY = {2, 1, 1, 1};
 
     private Game game;
@@ -169,7 +170,9 @@ public class Player extends VirtualClient {
 
     public void discardWeapon(Weapon weapon) {
         weapons.remove(weapon);
-        game.getBoard().getWeaponDeck().discard(weapon);
+        try {
+            game.getBoard().getWeaponDeck().discard(weapon);
+        } catch (CannotDiscardFirstCardOfDeckException ignored) { }
     }
 
     public void givePowerUp(PowerUp powerUp) throws FullHandException {
@@ -181,7 +184,9 @@ public class Player extends VirtualClient {
 
     public void discardPowerUp(PowerUp powerUp) {
         powerUps.remove(powerUp);
-        game.getBoard().getPowerUpDeck().discard(powerUp);
+        try {
+            game.getBoard().getPowerUpDeck().discard(powerUp);
+        } catch (CannotDiscardFirstCardOfDeckException ignored) { }
     }
 
     public void giveAmmoCubes(AmmoCubes ammoCubes) {

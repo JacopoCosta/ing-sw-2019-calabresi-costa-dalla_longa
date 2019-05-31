@@ -78,6 +78,8 @@ public class TestJson {
         participants.add(new Player("Roberto"));
 
         try {
+            Game game = Game.create(false, 1, 2, participants);
+            game.save();
             Game.load(participants);
         } catch (InvalidSaveStateException | UnmatchedSavedParticipantsException e) {
             fail();

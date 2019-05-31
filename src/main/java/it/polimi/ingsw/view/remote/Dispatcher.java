@@ -47,7 +47,7 @@ public abstract class Dispatcher {
     public static int requestNumberedOption(String message, List<?> options, List<Integer> numbers) {
         int length = options.size();
 
-        StringBuilder messageBuilder = new StringBuilder(message);
+        StringBuilder messageBuilder = new StringBuilder(message); // TODO there is a chance somewhere in the code 'null' is passed as a message
         for(int i = 0; i < length; i ++) {
             Object option = options.get(i);
             int id = numbers.get(i);

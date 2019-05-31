@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
+import it.polimi.ingsw.model.exceptions.CannotDiscardFirstCardOfDeckException;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.*;
@@ -14,8 +15,10 @@ import it.polimi.ingsw.model.weaponry.Weapon;
 import it.polimi.ingsw.view.remote.CLI;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Board {
@@ -261,13 +264,50 @@ public class Board {
                 );
     }
 
+    public void scoreUponGameOver() {
+        int[] scoreBoard = Player.SCOREBOARD_DEFAULT;
+
+        Comparator<Player> better = (p1, p2) -> {
+            int kills1 = countKills(p1);
+            int kills2 = countKills(p2);
+            if(kills1 != kills2)
+                return kills2 - kills1; // if p1 has more kills, this expression evaluates to a negative
+            return killers.indexOf(p1) - killers.indexOf(p2); // if p1 was earlier, their index is lower and a negative is returned
+        };
+        Predicate<Player> atLeastOneKill = p -> killers.indexOf(p) != -1;
+
+        List<Player> killers = game.getParticipants()
+                .stream()
+                .filter(atLeastOneKill)
+                .sorted(better)
+                .collect(Collectors.toList());
+
+        for(int i = 0; i < killers.size(); i ++)
+            killers.get(i).giveScore(scoreBoard[i]); // give scores in descending order to the players sorted best to worst
+
+        doubleKillers.forEach(p -> p.giveScore(1)); // one extra point for each double kill scored
+
+     }
+
+    private int countKills(Player author) {
+        int count = 0;
+        Player lastKiller = null;
+        for(Player p : killers) {
+            if(p != null)
+                lastKiller = p;
+            if(lastKiller == author);
+                count ++;
+        }
+        return count;
+    }
+
     public Optional<Weapon> fetchWeapon(String name) {
         Weapon weapon = null;
         try {
             do {
                 try {
                     weaponDeck.discard(weapon);
-                } catch (NullPointerException ignored) { }
+                } catch (CannotDiscardFirstCardOfDeckException ignored) { }
                 weapon = weaponDeck.draw();
             } while(!weapon.getName().equals(name));
         } catch (EmptyDeckException e) {
@@ -316,7 +356,7 @@ public class Board {
             do {
                 try {
                     powerUpDeck.discard(powerUp);
-                } catch (NullPointerException ignored) { }
+                } catch (CannotDiscardFirstCardOfDeckException ignored) { }
                 powerUp = powerUpDeck.draw();
             } while(!powerUp.getType().equals(comparisonPowerUp.getType()) || !powerUp.getAmmoCubes().equals(comparisonPowerUp.getAmmoCubes()));
         } catch (EmptyDeckException e) {
@@ -335,7 +375,7 @@ public class Board {
             do {
                 try {
                     ammoTileDeck.discard(ammoTile);
-                } catch (NullPointerException ignored) { }
+                } catch (CannotDiscardFirstCardOfDeckException ignored) { }
                 ammoTile = ammoTileDeck.draw();
             } while(!ammoTile.getAmmoCubes().equals(comparisonAmmoCubes) || ! ammoTile.includesPowerUp() == includesPowerUp);
         } catch (EmptyDeckException e) {

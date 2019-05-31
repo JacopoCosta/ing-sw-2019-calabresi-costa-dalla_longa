@@ -1,10 +1,13 @@
 package it.polimi.ingsw.model.ammo;
 
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
+import it.polimi.ingsw.model.exceptions.JsonException;
+import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 /**
@@ -65,11 +68,15 @@ public class AmmoCubes {
      * @see AmmoCubes#AmmoCubes(int, int, int)
      */
     public static AmmoCubes build(DecoratedJsonObject jAmmoCube) throws IllegalArgumentException {
-        int red = jAmmoCube.getInt("red");
-        int yellow = jAmmoCube.getInt("yellow");
-        int blue = jAmmoCube.getInt("blue");
+        try {
+            int red = jAmmoCube.getInt("red");
+            int yellow = jAmmoCube.getInt("yellow");
+            int blue = jAmmoCube.getInt("blue");
 
-        return new AmmoCubes(red, yellow, blue);
+            return new AmmoCubes(red, yellow, blue);
+        } catch (JullPointerException e) {
+            throw new JsonException("Can't load ammo cubes.");
+        }
     }
 
     /**

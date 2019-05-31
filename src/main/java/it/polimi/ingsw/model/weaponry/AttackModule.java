@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.weaponry;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
+import it.polimi.ingsw.model.exceptions.JsonException;
+import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 import it.polimi.ingsw.model.weaponry.effects.Effect;
 import it.polimi.ingsw.model.weaponry.targets.Target;
@@ -33,7 +35,12 @@ public class AttackModule {
     }
 
     public static AttackModule build(DecoratedJsonObject jAttackModule) {
-        int id = jAttackModule.getInt("id");
+        int id;
+        try {
+            id = jAttackModule.getInt("id");
+        } catch (JullPointerException e) {
+            throw new JsonException("Can't find attack module id");
+        }
         String name = jAttackModule.getString("name");
         String description = jAttackModule.getString("description");
         AmmoCubes summonCost = AmmoCubes.build(jAttackModule.getObject("summonCost"));
@@ -46,7 +53,11 @@ public class AttackModule {
         for(DecoratedJsonObject jEffect : jAttackModule.getArray("effects").asList())
             effects.add(Effect.build(jEffect));
         for(DecoratedJsonObject jNext : jAttackModule.getArray("next").asList())
-            next.add(jNext.getInt("id"));
+            try {
+                next.add(jNext.getInt("id"));
+            } catch (JullPointerException e) {
+                throw new JsonException("Can't find next");
+            }
 
         return new AttackModule(id, name, description, summonCost, targets, effects, next);
     }

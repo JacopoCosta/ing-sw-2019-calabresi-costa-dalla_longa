@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.weaponry;
 
+import it.polimi.ingsw.model.exceptions.JsonException;
+import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 
@@ -21,7 +23,11 @@ public class AttackPattern {
         List<AttackModule> attackModules = new ArrayList<>();
 
         for(DecoratedJsonObject jId : jPattern.getArray("first").asList()) {
-            ids.add(jId.getInt("id"));
+            try {
+                ids.add(jId.getInt("id"));
+            } catch (JullPointerException e) {
+                throw new JsonException("Can't build first list in pattern.");
+            }
         }
         for(DecoratedJsonObject jAttackModule : jPattern.getArray("content").asList()) {
             attackModules.add(AttackModule.build(jAttackModule));

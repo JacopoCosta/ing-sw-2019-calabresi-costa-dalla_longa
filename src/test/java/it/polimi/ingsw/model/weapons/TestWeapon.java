@@ -59,7 +59,7 @@ public class TestWeapon {
 
         Game game = Game.create(true, 5, 2, participants);
         board = game.getBoard();
-        controller = game.getController();
+        controller = game.getVirtualView().getController();
 
         int[] positions = {7, 7, 6, 9, 3, 4, 0};
         for(int i = 0; i < positions.length; i ++)

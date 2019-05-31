@@ -27,8 +27,10 @@ public class DistanceConstraint extends Constraint {
     private boolean verify(Cell sourceCell, Cell drainCell) {
         int distance;
         try {
+            if(sourceCell == null)
+                return false;
             distance = sourceCell.distance(drainCell);
-        } catch (NullCellOperationException | NullPointerException e) {
+        } catch (NullCellOperationException e) {
             return false;
         }
         return (distance >= lowerBound) && (distance <= upperBound || upperBound < 0);

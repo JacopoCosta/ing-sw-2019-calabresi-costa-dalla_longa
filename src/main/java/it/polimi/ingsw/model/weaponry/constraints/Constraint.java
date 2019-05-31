@@ -4,6 +4,8 @@ import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.InvalidConstraintTypeException;
 import it.polimi.ingsw.model.exceptions.InvalidEffectTypeException;
+import it.polimi.ingsw.model.exceptions.JsonException;
+import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
@@ -27,39 +29,43 @@ public abstract class Constraint {
     protected AttackPattern context;
 
     public static Constraint build(DecoratedJsonObject jConstraint) throws InvalidConstraintTypeException {
-        int sourceAttackModuleId = jConstraint.getInt("sourceAttackModuleId");
-        int sourceTargetId = jConstraint.getInt("sourceTargetId");
-        int drainAttackModuleId = jConstraint.getInt("drainAttackModuleId");
-        int drainTargetId = jConstraint.getInt("drainTargetId");
-        String type = jConstraint.getString("type");
+        try {
+            int sourceAttackModuleId = jConstraint.getInt("sourceAttackModuleId");
+            int sourceTargetId = jConstraint.getInt("sourceTargetId");
+            int drainAttackModuleId = jConstraint.getInt("drainAttackModuleId");
+            int drainTargetId = jConstraint.getInt("drainTargetId");
+            String type = jConstraint.getString("type");
 
-        if(type.equals("alignment")) {
-            boolean truth = jConstraint.getBoolean("truth");
-            return new AlignmentConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
+            if (type.equals("alignment")) {
+                boolean truth = jConstraint.getBoolean("truth");
+                return new AlignmentConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
+            }
+            if (type.equals("distance")) {
+                int lowerBound = jConstraint.getInt("lowerBound");
+                int upperBound = jConstraint.getInt("upperBound");
+                return new DistanceConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, lowerBound, upperBound);
+            }
+            if (type.equals("identity")) {
+                boolean truth = jConstraint.getBoolean("truth");
+                return new IdentityConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
+            }
+            if (type.equals("order")) {
+                int gateAttackModuleId = jConstraint.getInt("gateAttackModuleId");
+                int gateTargetId = jConstraint.getInt("gateTargetId");
+                return new OrderConstraint(sourceAttackModuleId, sourceTargetId, gateAttackModuleId, gateTargetId, drainAttackModuleId, drainTargetId);
+            }
+            if (type.equals("room")) {
+                boolean truth = jConstraint.getBoolean("truth");
+                return new RoomConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
+            }
+            if (type.equals("visibility")) {
+                boolean truth = jConstraint.getBoolean("truth");
+                return new VisibilityConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
+            }
+            throw new InvalidEffectTypeException(type + " is not a valid name for a Constraint type. Use \"alignment\", \"distance\", \"identity\", \"order\", \"room\", or \"visibility\"");
+        } catch (JullPointerException e) {
+            throw new JsonException("Can't load constraint");
         }
-        if(type.equals("distance")) {
-            int lowerBound = jConstraint.getInt("lowerBound");
-            int upperBound = jConstraint.getInt("upperBound");
-            return new DistanceConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, lowerBound, upperBound);
-        }
-        if(type.equals("identity")) {
-            boolean truth = jConstraint.getBoolean("truth");
-            return new IdentityConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
-        }
-        if(type.equals("order")) {
-            int gateAttackModuleId = jConstraint.getInt("gateAttackModuleId");
-            int gateTargetId = jConstraint.getInt("gateTargetId");
-            return new OrderConstraint(sourceAttackModuleId, sourceTargetId, gateAttackModuleId, gateTargetId, drainAttackModuleId, drainTargetId);
-        }
-        if(type.equals("room")) {
-            boolean truth = jConstraint.getBoolean("truth");
-            return new RoomConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
-        }
-        if(type.equals("visibility")) {
-            boolean truth = jConstraint.getBoolean("truth");
-            return new VisibilityConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
-        }
-        throw new InvalidEffectTypeException(type + " is not a valid name for a Constraint type. Use \"alignment\", \"distance\", \"identity\", \"order\", \"room\", or \"visibility\"");
     }
 
     public static Target getTarget(AttackPattern context, int attackModuleId, int targetId) {

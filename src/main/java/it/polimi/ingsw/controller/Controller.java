@@ -1,6 +1,5 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
@@ -24,8 +23,8 @@ public class Controller {
 
     private VirtualView virtualView;
 
-    public Controller(Game game) {
-        this.virtualView = game.getVirtualView();
+    public Controller(VirtualView virtualView) {
+        this.virtualView = virtualView;
     }
 
     public void spawn(Player subject, PowerUp powerUpToKeep, PowerUp powerUpToRespawn) {

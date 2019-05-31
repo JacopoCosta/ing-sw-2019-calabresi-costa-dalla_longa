@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.board;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.ammo.AmmoTile;
+import it.polimi.ingsw.model.exceptions.CannotDiscardFirstCardOfDeckException;
 import it.polimi.ingsw.model.exceptions.CorruptedDeckException;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.powerups.*;
@@ -28,9 +29,9 @@ public class Deck<T> {
         return this.cards.remove(0);
     }
 
-    public void discard(T card) {
+    public void discard(T card) throws CannotDiscardFirstCardOfDeckException {
         if(card == null)
-            throw new NullPointerException("Attempted to discard null.");
+            throw new CannotDiscardFirstCardOfDeckException("Attempted to discard null.");
         discarded.add(card);
     }
 
