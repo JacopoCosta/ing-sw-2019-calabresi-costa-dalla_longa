@@ -24,20 +24,26 @@ public class CommunicationHandler {
         username = null;
         lobbyName = null;
 
+        int socketPort = port;
+        int rmiPort;
+
+        if (socketPort == 65535)
+            rmiPort = socketPort - 1;
+        else
+            rmiPort = socketPort + 1;
+
         switch (interfaceType) {
             case SOCKET_INTERFACE:
                 try {
-                    this.communicationInterface = new SocketServerCommunicationInterface(hostAddress, port);
+                    this.communicationInterface = new SocketServerCommunicationInterface(hostAddress, socketPort);
                 } catch (ConnectionException e) {
-                    //e.printStackTrace();
                     throw new ConnectionException(e);
                 }
                 break;
             case RMI_INTERFACE:
                 try {
-                    this.communicationInterface = new RMIServerCommunicationInterface(hostAddress, port);
+                    this.communicationInterface = new RMIServerCommunicationInterface(hostAddress, rmiPort);
                 } catch (ConnectionException e) {
-                    //e.printStackTrace();
                     throw new ConnectionException(e);
                 }
                 break;

@@ -33,7 +33,6 @@ public class ClientHandler implements Runnable {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            //e.printStackTrace(); //never thrown before
             console.err(e.getClass() + ": " + e.getMessage());
             closeConnection();
         }
@@ -44,7 +43,6 @@ public class ClientHandler implements Runnable {
             try {
                 in.close();
             } catch (IOException e) {
-                //e.printStackTrace(); //never thrown before
                 console.err(e.getClass() + ": " + e.getMessage());
             }
         }
@@ -53,7 +51,6 @@ public class ClientHandler implements Runnable {
             try {
                 out.close();
             } catch (IOException e) {
-                //e.printStackTrace(); //never thrown before
                 console.err(e.getClass() + ": " + e.getMessage());
             }
         }
@@ -61,7 +58,6 @@ public class ClientHandler implements Runnable {
         try {
             socket.close();
         } catch (IOException e) {
-            //e.printStackTrace(); //never thrown before
             console.err(e.getClass() + ": " + e.getMessage());
         }
     }
@@ -90,7 +86,6 @@ public class ClientHandler implements Runnable {
         } catch (SocketException ignored) {
             //Client unexpectedly quit: the ClientHandler.connectionChecker will unregister it
         } catch (IOException | ClassNotFoundException e) {
-            //e.printStackTrace(); //never thrown before
             console.err(e.getClass() + ": " + e.getMessage());
         } finally {
             closeConnection();

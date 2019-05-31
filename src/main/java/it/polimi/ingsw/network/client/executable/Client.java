@@ -1,8 +1,13 @@
-package it.polimi.ingsw.network.client;
+package it.polimi.ingsw.network.client.executable;
 
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.util.Console;
+import it.polimi.ingsw.view.remote.BoardArt;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.stage.Stage;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -10,9 +15,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class Client {
-    private static String hostAddress;
-    private static int port;
+public class Client extends Application implements Runnable, EventHandler<ActionEvent> {
+    private String hostAddress;
+    private int port;
+    private CommunicationHandler.Interface communicationInterface;
+    private String graphicalInterface;
 
     private static final Scanner in = new Scanner(System.in);
 
@@ -25,13 +32,30 @@ public class Client {
     private static ScheduledFuture<?> futureUpdate;
     private static final int UPDATE_REQUEST_PERIOD = 5;
 
+    private static BoardArt boardArt;
+
+    private String[] args;
+
     private static final Console console = new Console();
+
+    public Client() {
+        //without this the GUI app won't start :(
+    }
+
+    public Client(String hostAddress, int port, CommunicationHandler.Interface communicationInterface, String graphicalInterface, String[] args) {
+        this.hostAddress = hostAddress;
+        this.port = port;
+        this.communicationInterface = communicationInterface;
+        this.graphicalInterface = graphicalInterface;
+
+        this.args = args;
+    }
 
     private static String in() {
         try {
             return in.nextLine();
         } catch (NoSuchElementException e) {
-            console.err(e.getMessage());
+            console.err(e.getClass() + ": " + e.getMessage());
             System.exit(-1);
             return null;
         }
@@ -48,10 +72,10 @@ public class Client {
                 communicationHandler.register(username);
                 valid = true;
             } catch (ConnectionException e) {
-                console.err(e.getMessage() + "\n");
+                console.err(e.getClass() + ": " + e.getMessage());
                 System.exit(-1);
             } catch (ClientAlreadyRegisteredException e) {
-                console.err(e.getMessage() + "\n");
+                console.err(e.getMessage());
             }
         } while (!valid);
     }
@@ -61,7 +85,7 @@ public class Client {
         try {
             communicationHandler.unregister();
         } catch (ConnectionException | ClientNotRegisteredException e) {
-            console.err(e.getMessage() + "\n");
+            console.err(e.getClass() + ": " + e.getMessage());
             System.exit(-1);
         }
         System.exit(0);
@@ -76,7 +100,7 @@ public class Client {
             try {
                 lobbyInfo = communicationHandler.requestUpdate();
             } catch (ConnectionException e) {
-                console.err(e.getMessage() + "\n");
+                console.err(e.getClass() + ": " + e.getMessage());
                 System.exit(-1);
                 return;
             }
@@ -108,12 +132,12 @@ public class Client {
             try {
                 communicationHandler.initLobby(lobbyName, lobbyPassword);
                 valid = true;
-                console.out("Lobby creation success!\n\n");
+                console.tinyPrintln("Lobby creation success!\n");
             } catch (ConnectionException e) {
-                console.err(e.getMessage() + "\n");
+                console.err(e.getClass() + ": " + e.getMessage());
                 System.exit(-1);
             } catch (LobbyAlreadyExistsException e) {
-                console.err(e.getMessage() + "\n");
+                console.err(e.getMessage());
             }
         } while (!valid);
     }
@@ -124,9 +148,9 @@ public class Client {
 
         try {
             communicationHandler.login(lobbyName, lobbyPassword);
-            console.out("Lobby login success!\n");
+            console.tinyPrintln("Lobby login success!");
         } catch (ConnectionException | LobbyNotFoundException | LobbyFullException | InvalidPasswordException e) {
-            console.err(e.getMessage() + "\n");
+            console.err(e.getClass() + ": " + e.getMessage());
             System.exit(-1);
         }
     }
@@ -134,9 +158,9 @@ public class Client {
     private static void logoutFromLobby() {
         try {
             communicationHandler.logout();
-            console.out("Lobby logout success!\n");
+            console.tinyPrintln("Lobby logout success!");
         } catch (ConnectionException e) {
-            console.err(e.getMessage() + "\n");
+            console.err(e.getClass() + ": " + e.getMessage());
             System.exit(-1);
         }
     }
@@ -145,10 +169,10 @@ public class Client {
     private static int requestAction() {
         int action = 0;
         boolean valid = false;
-        console.out("Choose an action:\n\n");
-        console.out("[0] Logout\n\n");
+        console.tinyPrintln("Choose an action:\n");
+        console.tinyPrintln("[0] Logout\n");
         do {
-            console.out("Action: ");
+            console.tinyPrint("Action: ");
             try {
                 action = Integer.parseInt(in());
                 if (action == 0)
@@ -162,7 +186,7 @@ public class Client {
     private static String requestUsername() {
         String name;
         do {
-            console.out("Username: ");
+            console.tinyPrint("Username: ");
             name = in();
         } while (name == null || name.isBlank());
         return name;
@@ -172,7 +196,7 @@ public class Client {
     private static String requestLobbyName() {
         String name;
         do {
-            console.out("Lobby name: ");
+            console.tinyPrint("Lobby name: ");
             name = in();
         } while (name == null || name.isBlank());
         return name;
@@ -180,7 +204,7 @@ public class Client {
 
     //request a Lobby password
     private static String requestLobbyPassword() {
-        console.out("Password: ");
+        console.tinyPrint("Password: ");
         return in();
     }
 
@@ -189,7 +213,7 @@ public class Client {
         String choice; //the Client choice
         boolean valid = false;
         do {
-            console.out("Choice: ");
+            console.tinyPrint("Choice: ");
             choice = in();
 
             if (choice.equals("n")) {
@@ -210,94 +234,81 @@ public class Client {
     //prints a welcome screen
     private static void printWelcomeScreen() {
         console.clear();
-        console.out("Welcome to Adrenaline !\n");
+        console.tinyPrintln("Welcome to Adrenaline !");
     }
 
     //print the given Lobbies and some other commands
     private static void printAll(Map<String, String> lobbies) {
         console.clear();
 
-        console.out("Welcome to Adrenaline, " + communicationHandler.getUsername() + " !\n");
-        console.out("List of all Lobbies:\n\n");
+        console.tinyPrintln("Welcome to Adrenaline, " + communicationHandler.getUsername() + " !");
+        console.tinyPrintln("List of all Lobbies:\n");
 
         int i = 0;
         for (Map.Entry<String, String> lobby : lobbies.entrySet())
-            console.out("[" + i++ + "] " + lobby.getValue() + " " + lobby.getKey() + "\n");
+            console.tinyPrintln("[" + i++ + "] " + lobby.getValue() + " " + lobby.getKey());
 
-        console.out("[n] to create a new lobby\n\n");
-        console.out("Choice: ");
+        console.tinyPrintln("[n] to create a new lobby\n");
+        console.tinyPrint("Choice: ");
     }
 
-    public static void main(String[] args) {
-        if (args.length != 4) {
-            console.err("correct syntax is: Client [ip address] [port] -conn [s/r]\n");
-            System.exit(-1);
-            return;
-        }
-        hostAddress = args[0];
-
-        try {
-            port = Integer.parseInt(args[3]);
-            if (port <= 0 || port > 65535)
-                console.err("port number not in range [1025-65535]. Type \"help\" to see more.");
-        } catch (NumberFormatException e) {
-            console.err("port argument must be an integer value");
-        }
-
-        if (!args[2].equals("-conn")) {
-            console.err("correct syntax is: Client [ip address] [port] -conn [s/r]\n");
-            System.exit(-1);
-            return;
-        }
-        String interfaceType = args[3];
-
-        CommunicationHandler.Interface communicationInterface;
-        if (interfaceType.equals("s")) {
-            communicationInterface = CommunicationHandler.Interface.SOCKET_INTERFACE;
-        } else if (interfaceType.equals("r")) {
-            communicationInterface = CommunicationHandler.Interface.RMI_INTERFACE;
-        } else {
-            console.err("options for param \"-conn\" must be [s] or [r]\n");
-            System.exit(-1);
-            return;
-        }
+    @Override
+    public void run() {
 
         try {
             communicationHandler = new CommunicationHandler(hostAddress, port, communicationInterface);
         } catch (ConnectionException e) {
-            console.err(e.getClass() + ": " + e.getMessage() + "\n");
+            //console.err(e.getClass() + ": " + e.getMessage());
+            e.printStackTrace();
             System.exit(-1);
             return;
         }
 
-        //prints a welcome screen
-        printWelcomeScreen();
+        if (graphicalInterface.equals("CLI")) {
 
-        //register the Client into the Server
-        register();
+            //prints a welcome screen
+            printWelcomeScreen();
 
-        //requests the updated Lobby list with a delay interval and prints them
-        startUpdateAndPrint();
+            //register the Client into the Server
+            register();
 
-        //get the client response: create a new lobby ('n') or select a valid lobby to login (number)
-        String choice = requestChoice();
+            //requests the updated Lobby list with a delay interval and prints them
+            startUpdateAndPrint();
 
-        //stops the update and print requests once the Client selected a valid choice
-        stopUpdateAndPrint();
+            //get the client response: create a new lobby ('n') or select a valid lobby to login (number)
+            String choice = requestChoice();
 
-        if (choice.equals("n")) //Client wants to create a new Lobby
-            initLobby();
-        else { //Client wants to join an existing Lobby (choice is the lobby name)
-            loginToLobby(choice);
+            //stops the update and print requests once the Client selected a valid choice
+            stopUpdateAndPrint();
+
+            if (choice.equals("n")) //Client wants to create a new Lobby
+                initLobby();
+            else { //Client wants to join an existing Lobby (choice is the lobby name)
+                loginToLobby(choice);
+            }
+            //TODO: note: from here client is registered and need to do something :)
+
+            //request the next action to do
+            int action = requestAction();
+
+            if (action == 0) {
+                logoutFromLobby();
+                unregister();
+            }
+        } else {
+            //GUI
+            launch(args);
         }
-        //TODO: note: from here client is registered and need to do something :)
+    }
 
-        //request the next action to do
-        int action = requestAction();
+    @Override   //needed for JavaFX
+    public void start(Stage primaryStage) {
+        boardArt = new BoardArt(communicationHandler);
+        boardArt.displayLogin(primaryStage);
+    }
 
-        if (action == 0) {
-            logoutFromLobby();
-            unregister();
-        }
+    @Override   //needed for JavaFX
+    public void handle(javafx.event.ActionEvent event) {
+        //blank, as events are handled by using lambda functions
     }
 }

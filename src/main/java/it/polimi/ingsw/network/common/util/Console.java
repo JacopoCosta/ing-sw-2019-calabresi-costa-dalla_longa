@@ -1,7 +1,5 @@
 package it.polimi.ingsw.network.common.util;
 
-import java.io.IOException;
-
 public class Console {
     private final String osName;
     private final ConsoleExecutor executor;
@@ -33,34 +31,47 @@ public class Console {
         return osName;
     }
 
-    public void out(String message) {
+    //prints a single line including escape characters (\n, \t...) and then a new line at the end. Does not support ANSI escape characters
+    public void tinyPrintln(String message) {
+        System.out.println(message);
+    }
+
+    //prints a single line including escape characters (\n, \t...) without a new line at the end. Does not support ANSI escape characters
+    public void tinyPrint(String message) {
         System.out.print(message);
     }
 
-    public void mex(String message) {
-        out("[MESSAGE] " + message + "\n");
+    //prints a single line ignoring escape characters (\n, \t...) without a new line at the end. Support ANSI escape characters
+    public void ANSIPrint(String message) {
+        executor.ANSIPrint(message);
+    }
+
+    //prints a single line ignoring escape characters (\n, \t...) and then a new line at the end. Supports ANSI escape characters
+    public void ANSIPrintln(String message) {
+        executor.ANSIPrintln(message);
+    }
+
+    public void mexS(String message) {
+        ANSIPrintln(Color.ANSI_CYAN + "[MESSAGE] " + message + Color.ANSI_RESET);
+    }
+
+    public void mexC(String message) {
+        ANSIPrintln(Color.ANSI_YELLOW + "[MESSAGE] " + message + Color.ANSI_RESET);
     }
 
     public void log(String message) {
-        out("[LOG] " + message + "\n");
+        ANSIPrintln("[LOG] " + message);
     }
 
     public void stat(String message) {
-        out("[STATUS] " + message + "\n");
+        ANSIPrintln(Color.ANSI_GREEN + "[STATUS] " + message + Color.ANSI_RESET);
     }
 
     public void err(String message) {
-        System.err.println("[ERROR] " + message);
+        ANSIPrintln(Color.ANSI_RED + "[ERROR] " + message + Color.ANSI_RESET);
     }
 
     public void clear() {
-        try {
-            String result = executor.clear();
-
-            if (result != null && !result.isEmpty())
-                err(result);
-        } catch (IOException | InterruptedException e) {
-            err(e.getMessage());
-        }
+        executor.clear();
     }
 }

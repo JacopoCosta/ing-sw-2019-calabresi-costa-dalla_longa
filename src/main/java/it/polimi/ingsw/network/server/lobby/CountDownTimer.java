@@ -34,8 +34,8 @@ class CountDownTimer implements Observable {
 
     private final ScheduledExecutorService executor; //the timer responsible for the actual countdown
     private ScheduledFuture<?> future;
-    //the task to execute every PERIOD
-    private Runnable tick = () -> {
+
+    private Runnable tick = () -> { //the task to execute every PERIOD seconds
         if (currentSeconds.decrementAndGet() < 0)
             stop();
     };

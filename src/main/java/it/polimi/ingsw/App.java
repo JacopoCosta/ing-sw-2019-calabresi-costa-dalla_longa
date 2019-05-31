@@ -1,16 +1,18 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
-import it.polimi.ingsw.network.common.exceptions.ConnectionException;
+import it.polimi.ingsw.network.client.executable.Client;
 import it.polimi.ingsw.network.common.util.Console;
-import it.polimi.ingsw.view.remote.BoardArt;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.stage.Stage;
+import it.polimi.ingsw.network.server.Server;
+import it.polimi.ingsw.view.remote.Dispatcher;
 
-public class App extends Application implements EventHandler<ActionEvent> {
-    private static final Console console = new Console();
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class App {
+    private static Console console;
+    private static ExecutorService executor;
+    private static Runnable task;
 
     private enum Configuration {
         SERVER,
@@ -26,31 +28,38 @@ public class App extends Application implements EventHandler<ActionEvent> {
     private static String ipAddress;
     private static int port;
 
-    private static String connectionType;
-    private static String interfaceType;
+    private static CommunicationHandler.Interface communicationInterface;
+    private static String graphicalInterface;
 
-    private static BoardArt boardArt;
+    private static String helpString = "\nAdrenaline: the game.\n\n" +
+                                       "Usage:\n" +
+                                       "\tAdrenaline -help\n" +
+                                       "\tAdrenaline -mode s <ip address> <port>\n" +
+                                       "\tAdrenaline -mode c <ip address> <port> [-conn (s|r)] [-int (c|g)]\n\n" +
+                                       "Options:\n" +
+                                       "\t-help\t\tShows this screen.\n" +
+                                       "\t-mode [c|s]\tThe application mode: client or server.\n" +
+                                       "\tip address\tThe host IP address.\n" +
+                                       "\tport\t\tThe host port.\n" +
+                                       "\t-conn [s|r]\tThe connection protocol: socket or RMI. [Default: s].\n" +
+                                       "\t-mode [c|g]\tThe display method: CLI or GUI. [Default: g].\n";
 
     private static Configuration init(String[] args) {
-        /* syntax to launch App:
-         *
-         * SERVER > java -jar Adrenaline -mode [s] [ip address] [port]
-         * CLIENT > java -jar Adrenaline -mode [c] [ip address] [port] (-conn [s/r]) (-int[c/g])
-         *
-         * NOTE: -mode must come first, then [ip address], then [port] in this exact order, then none, one or both of
-         * the other parameters in any order, followed by their respective arguments.
-         */
+        if (args.length == 0) {
+            console.tinyPrint(helpString);
+            return Configuration.ERROR;
+        }
 
-        if (args[0].equals("help")) {
-            console.out("Use \"java -jar Adrenaline\" followed by:\n\n" +
-                    "-mode [s/c]\tto choose from client or server functionality\n" +
-                    "[ip address]\tthe ip address used by this game instance\n" +
-                    "[port]\t\tthe port used by this game instance\n" +
-                    "-conn [s/r]\t<OPTIONAL> used only with \"-mode c\". The connection technology used (socket or RMI)\n\t\t<DEFAULT> s\n" +
-                    "-int [c/g]\t<OPTIONAL> used only with \"-mode c\". The interface used to interact with the game (CLI or GUI)\n\t\t<DEFAULT> g");
+        if (args[0].equals("-help")) {
+            console.tinyPrint(helpString);
             return Configuration.ERROR;
         } else if (!args[0].equals("-mode")) {
             console.err("first argument must be: -mode [c/s]. Type \"help\" to see more.");
+            return Configuration.ERROR;
+        }
+
+        if (args.length < 4) {
+            console.err("insufficient arguments, required: [ip address] [port]");
             return Configuration.ERROR;
         }
 
@@ -77,6 +86,7 @@ public class App extends Application implements EventHandler<ActionEvent> {
                 return App.Configuration.CLIENT_SOCKET_GUI;
             } else if (args.length == 6) {
                 String argument = args[4];
+                String connectionType;
 
                 if (argument.equals("-conn")) {
                     connectionType = args[5];
@@ -90,7 +100,7 @@ public class App extends Application implements EventHandler<ActionEvent> {
                         return App.Configuration.ERROR;
                     }
                 } else if (argument.equals("-int")) {
-                    interfaceType = args[5];
+                    String interfaceType = args[5];
 
                     if (interfaceType.equals("c")) {
                         return App.Configuration.CLIENT_SOCKET_CLI;
@@ -106,7 +116,7 @@ public class App extends Application implements EventHandler<ActionEvent> {
                 }
             } else if (args.length == 8) {
                 String firstArgument = args[4];
-
+                String connectionType;
 
                 if (firstArgument.equals("-conn")) {
                     connectionType = args[5];
@@ -122,7 +132,7 @@ public class App extends Application implements EventHandler<ActionEvent> {
                         return App.Configuration.ERROR;
                     }
 
-                    interfaceType = args[7];
+                    String interfaceType = args[7];
                     if (interfaceType.equals("c")) {
                         if (connectionType.equals("s"))
                             return App.Configuration.CLIENT_SOCKET_CLI;
@@ -136,7 +146,7 @@ public class App extends Application implements EventHandler<ActionEvent> {
                         return App.Configuration.ERROR;
                     }
                 } else if (firstArgument.equals("-int")) {
-                    interfaceType = args[5];
+                    String interfaceType = args[5];
 
                     if (!interfaceType.equals("c") && !interfaceType.equals("g")) {
                         console.err("parameter for argument \"-int\" must be [c/g]. Type \"help\" to see more.");
@@ -177,86 +187,35 @@ public class App extends Application implements EventHandler<ActionEvent> {
     }
 
     public static void main(String[] args) {
-        /*switch (init(args)) {
-            case SERVER:
-                //launch server with ipAddress and port
-                System.exit(0);
-                break;
-            case CLIENT_SOCKET_CLI:
-                //launch client with ipAddress, port, socket and CLI
-                System.exit(0);
-                break;
-            case CLIENT_SOCKET_GUI:
-                //launch client with ipAddress, port, socket and GUI
-                System.exit(0);
-                break;
-            case CLIENT_RMI_CLI:
-                //launch client with ipAddress, port, RMI and CLI
-                System.exit(0);
-                break;
-            case CLIENT_RMI_GUI:
-                //launch client with ipAddress, port, RMI and GUI
-                System.exit(0);
-                break;
-            case ERROR:
-                System.exit(-1);
-                break;
-        }*/
+        console = new Console();
+        executor = Executors.newSingleThreadExecutor();
 
-        if (args.length > 4 || args.length == 0)
-            console.err("insert [ip address] [port] as App arguments");
+        Configuration config = init(args);
 
-        ipAddress = args[0];
-
-        try {
-            port = Integer.parseInt(args[1]);
-
-            if (port <= 1024 || port > 65535) {
-                console.err("port argument not in range [1023-65535]");
-                System.exit(-1);
-            }
-        } catch (NumberFormatException e) {
-            console.err("port argument must be an integer value");
-            System.exit(-1);
-        }
-
-        if (!args[2].equals("-conn")) {
-            console.err("third argument must be \"-conn\"");
-            System.exit(-1);
-        }
-
-        interfaceType = args[3];
-        CommunicationHandler.Interface communicationInterface;
-
-        if (interfaceType.equals("s")) {
-            communicationInterface = CommunicationHandler.Interface.SOCKET_INTERFACE;
-        } else if (interfaceType.equals("r")) {
-            communicationInterface = CommunicationHandler.Interface.RMI_INTERFACE;
+        if (config.equals(Configuration.SERVER)) {
+            //launch server with ipAddress and port
+            task = new Server(ipAddress, port);
         } else {
-            console.err("\"-conn\" parameter must be [s/r]");
-            System.exit(-1);
-            return;
+            if (config.equals(Configuration.CLIENT_SOCKET_CLI)) {
+                //launch client with ipAddress, port, socket and CLI
+                communicationInterface = CommunicationHandler.Interface.SOCKET_INTERFACE;
+                graphicalInterface = "CLI";
+            } else if (config.equals(Configuration.CLIENT_SOCKET_GUI)) {
+                //launch client with ipAddress, port, socket and GUI
+                communicationInterface = CommunicationHandler.Interface.SOCKET_INTERFACE;
+                graphicalInterface = "GUI";
+            } else if (config.equals(Configuration.CLIENT_RMI_CLI)) {
+                //launch client with ipAddress, port, RMI and CLI
+                communicationInterface = CommunicationHandler.Interface.RMI_INTERFACE;
+                graphicalInterface = "CLI";
+            } else if (config.equals(Configuration.CLIENT_RMI_GUI)) {
+                //launch client with ipAddress, port, RMI and GUI
+                communicationInterface = CommunicationHandler.Interface.RMI_INTERFACE;
+                graphicalInterface = "GUI";
+            } else// ERROR
+                System.exit(-1);
+            task = new Client(ipAddress, port, communicationInterface, graphicalInterface, args);
         }
-
-        CommunicationHandler communicationHandler;
-        try {
-            communicationHandler = new CommunicationHandler(ipAddress, port, communicationInterface);
-        } catch (ConnectionException e) {
-            e.printStackTrace();
-            return;
-        }
-        boardArt = new BoardArt(communicationHandler);
-
-        launch(args);
-    }
-
-    @Override   //needed for JavaFX
-    public void start(Stage primaryStage) {
-        boardArt.displayLogin(primaryStage);
-    }
-
-    @Override   //needed for JavaFX
-    public void handle(javafx.event.ActionEvent event) {
-        //blank, as events are handled by using lambda functions
+        executor.execute(task);
     }
 }

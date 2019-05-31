@@ -23,7 +23,6 @@ public class SocketServerCommunicationInterface implements ServerCommunicationIn
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
             throw new ConnectionException(e);
         }
     }

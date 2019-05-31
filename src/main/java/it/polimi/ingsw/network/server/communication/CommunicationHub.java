@@ -22,7 +22,7 @@ public class CommunicationHub {
 
     private final ScheduledExecutorService connectionChecker;
     private final Runnable checkConnectionTask;
-    private final int CONNECTION_CHECK_PERIOD = 5;
+    private final int CHECK_PERIOD = 5;
 
     private final Console console = new Console();
 
@@ -37,7 +37,7 @@ public class CommunicationHub {
             for (Player player : players)
                 try {
                     player.sendMessage(ping);
-                    console.mex(("message " + ping.getType().toString() + " sent to Client \"" + player.getName() + "\""));
+                    console.mexS(("message " + ping.getType().toString() + " sent to Client \"" + player.getName() + "\""));
                 } catch (ConnectionException ignored) {
                     console.err("Client \"" + player.getName() + "\" lost connection, logging out from his lobby...");
                     try {
@@ -46,23 +46,20 @@ public class CommunicationHub {
                             lobbyManager.remove(lobbyName, player);
                             console.log("Client \"" + player.getName() + "\" successfully logged out from Lobby \"" + lobbyName + "\"");
                         } catch (LobbyNotFoundException e) {
-                            //e.printStackTrace(); //never thrown before
-                            console.log(e.getMessage() + "");
-                        } catch (PlayerNotFoundException | LobbyEmptyException e) {
-                            //e.printStackTrace(); //never thrown before
+                            console.log(e.getMessage());
+                        } catch (PlayerNotFoundException | LobbyEmptyException e){
                             console.err(e.getMessage());
                         }
                         console.log("unregistering Client \"" + player.getName() + "\"...");
                         unregister(player);
 
                     } catch (ClientNotRegisteredException e) {
-                        //e.printStackTrace(); //never thrown before
                         console.err(e.getMessage());
                     }
                     console.log("Client \"" + player.getName() + "\" successfully unregistered");
                 }
         };
-        connectionChecker.scheduleAtFixedRate(checkConnectionTask, 0, CONNECTION_CHECK_PERIOD, TimeUnit.SECONDS);
+        connectionChecker.scheduleAtFixedRate(checkConnectionTask, 0, CHECK_PERIOD, TimeUnit.SECONDS);
     }
 
     public static CommunicationHub getInstance() {
@@ -98,7 +95,7 @@ public class CommunicationHub {
     }
 
     public synchronized void handleMessage(NetworkMessage message) {
-        console.log("Message " + message.getType().toString() + " received from Client \"" + message.getAuthor() + "\"");
+        console.mexC("Message " + message.getType().toString() + " received from Client \"" + message.getAuthor() + "\"");
 
         switch (message.getType()) {
             case REGISTER_REQUEST:
@@ -141,9 +138,8 @@ public class CommunicationHub {
 
         try {
             player.sendMessage(message);
-            console.mex(("message " + message.getType().toString() + " sent to Client \"" + player.getName() + "\""));
+            console.mexS(("message " + message.getType().toString() + " sent to Client \"" + player.getName() + "\""));
         } catch (ConnectionException e) {
-            //e.printStackTrace(); //never thrown before
             console.err(e.getClass() + ": " + e.getMessage());
         }
     }
@@ -154,7 +150,6 @@ public class CommunicationHub {
         try {
             player = (getPlayerByName(message.getAuthor()));
         } catch (ClientNotRegisteredException e) {
-            //e.printStackTrace(); //never thrown before
             console.err(e.getClass() + ": " + e.getMessage());
             return;
         }
@@ -171,9 +166,8 @@ public class CommunicationHub {
 
         try {
             player.sendMessage(message);
-            console.mex("message " + message.getType().toString() + " sent to Client \"" + player.getName() + "\"");
+            console.mexS("message " + message.getType().toString() + " sent to Client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
-            //e.printStackTrace(); //never thrown before
             console.err(e.getClass() + ": " + e.getMessage());
         }
     }
@@ -184,7 +178,6 @@ public class CommunicationHub {
         try {
             player = getPlayerByName(message.getAuthor());
         } catch (ClientNotRegisteredException e) {
-            //e.printStackTrace(); //never thrown before
             console.err(e.getClass() + ": " + e.getMessage());
             return;
         }
@@ -194,9 +187,8 @@ public class CommunicationHub {
 
         try {
             player.sendMessage(message);
-            console.mex("update sent to Client \"" + player.getName() + "\"");
+            console.log("update sent to Client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
-            //e.printStackTrace(); //never thrown before
             console.err(e.getClass() + ": " + e.getMessage());
         }
     }
@@ -210,7 +202,6 @@ public class CommunicationHub {
         try {
             player = (getPlayerByName(message.getAuthor()));
         } catch (ClientNotRegisteredException e) {
-            //e.printStackTrace(); //never thrown before
             console.err(e.getClass() + ": " + e.getMessage());
             return;
         }
@@ -243,7 +234,7 @@ public class CommunicationHub {
 
         try {
             player.sendMessage(message);
-            console.mex("message " + message.getType() + " sent to client \"" + player.getName() + "\"");
+            console.mexS("message " + message.getType() + " sent to client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
             console.err(e.getClass() + ": " + e.getMessage());
         }
@@ -282,7 +273,7 @@ public class CommunicationHub {
 
         try {
             player.sendMessage(message);
-            console.mex("message " + message.getType() + " sent to client \"" + player.getName() + "\"");
+            console.mexS("message " + message.getType() + " sent to client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
             console.err(e.getClass() + ": " + e.getMessage());
         }
@@ -295,7 +286,6 @@ public class CommunicationHub {
         try {
             player = getPlayerByName(message.getAuthor());
         } catch (ClientNotRegisteredException e) {
-            //e.printStackTrace(); //never thrown before
             console.err(e.getClass() + ": " + e.getMessage());
             return;
         }
@@ -316,9 +306,8 @@ public class CommunicationHub {
 
         try {
             player.sendMessage(message);
-            console.mex("message " + message.getType() + " sent to client \"" + player.getName() + "\"");
+            console.mexS("message " + message.getType() + " sent to client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
-            //e.printStackTrace(); //never thrown before
             console.err(e.getClass() + ": " + e.getMessage());
         }
     }
@@ -329,12 +318,11 @@ public class CommunicationHub {
         try {
             player = getPlayerByName(message.getAuthor());
         } catch (ClientNotRegisteredException e) {
-            //e.printStackTrace(); //never thrown before
             console.err(e.getClass() + ": " + e.getMessage());
             return;
         }
 
         player.onMessageReceived(message);
-        console.mex("notification " + message.getType() + " sent to Player \"" + player.getName() + "\"");
+        console.mexS("notification " + message.getType() + " sent to Player \"" + player.getName() + "\"");
     }
 }

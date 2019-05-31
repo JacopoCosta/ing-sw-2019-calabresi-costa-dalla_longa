@@ -25,7 +25,38 @@ class UnixConsoleExecutor implements ConsoleExecutor {
     }
 
     @Override
-    public String clear() throws IOException, InterruptedException {
-        return execute("clear");
+    public void clear() {
+        try {
+            String result = execute("cls");
+
+            if (!result.isEmpty())
+                System.err.println(result);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void ANSIPrintln(String ansiMessage) {
+        try {
+            String result = execute("echo " + ansiMessage);
+
+            if (!result.isEmpty())
+                System.err.println(result);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void ANSIPrint(String ansiMessage){
+        try {
+            String result = execute("echo -n" + ansiMessage);
+
+            if (!result.isEmpty())
+                System.err.println(result);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

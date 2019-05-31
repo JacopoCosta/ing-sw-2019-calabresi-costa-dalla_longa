@@ -33,6 +33,22 @@ class Lobby implements Observer {
         timer.addObserver(this);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    int getCurrentPlayers() {
+        return currentPlayers;
+    }
+
+    Map.Entry<String, String> getStatus() {
+        return new AbstractMap.SimpleEntry<>(name, "[" + currentPlayers + "/" + MAX_PLAYERS + "]");
+    }
+
+    boolean contains(Player player) {
+        return players.contains(player);
+    }
+
     void add(Player player, String password) throws LobbyFullException, PlayerAlreadyAddedException, InvalidPasswordException {
         if (currentPlayers == MAX_PLAYERS)
             throw new LobbyFullException("Lobby \"" + name + "\" is full");
@@ -67,22 +83,6 @@ class Lobby implements Observer {
         currentPlayers--;
 
         adjustTimer();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    int getCurrentPlayers() {
-        return currentPlayers;
-    }
-
-    boolean contains(Player player) {
-        return players.contains(player);
-    }
-
-    Map.Entry<String, String> getStatus() {
-        return new AbstractMap.SimpleEntry<>(name, "[" + currentPlayers + "/" + MAX_PLAYERS + "]");
     }
 
     //regulate the timer to adjust the countdown, according to the number of players in the Lobby

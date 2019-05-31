@@ -6,12 +6,12 @@ import java.io.InputStreamReader;
 
 class WindowsConsoleExecutor implements ConsoleExecutor {
 
-    private String execute(String command) throws IOException, InterruptedException {
+    private static String execute(String command) throws IOException, InterruptedException {
         ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", command);
         pb.redirectErrorStream(true);
         pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 
-        Process p = pb.start();
+        Process p = pb.inheritIO().start();
         p.waitFor();
 
         BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -23,7 +23,38 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
     }
 
     @Override
-    public String clear() throws IOException, InterruptedException {
-        return execute("cls");
+    public void clear() {
+        try {
+            String result = execute("cls");
+
+            if (!result.isEmpty())
+                System.err.println(result);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void ANSIPrintln(String ansiMessage) {
+        try {
+            String result = execute("echo " + ansiMessage);
+
+            if (!result.isEmpty())
+                System.err.println(result);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void ANSIPrint(String ansiMessage) {
+        try {
+            String result = execute("<nul set /p =\"" + ansiMessage + "\"");
+
+            if (!result.isEmpty())
+                System.err.println(result);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
