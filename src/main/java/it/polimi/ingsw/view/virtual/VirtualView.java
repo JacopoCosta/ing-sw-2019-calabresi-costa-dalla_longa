@@ -73,7 +73,7 @@ public class VirtualView {
             } catch (ConnectionException e) {
                 //TODO skip turn
             }
-            return (Integer) recipient.nextDeliverable().unpack();
+            return recipient.nextDeliverable().unpack();
         }
     }
 
@@ -88,7 +88,7 @@ public class VirtualView {
             } catch (ConnectionException e) {
                 //TODO skip turn
             }
-            return (Integer) recipient.nextDeliverable().unpack();
+            return recipient.nextDeliverable().unpack();
         }
     }
 
@@ -102,7 +102,7 @@ public class VirtualView {
             } catch (ConnectionException e) {
                 //TODO skip turn
             }
-            return (Boolean) recipient.nextDeliverable().unpack();
+            return recipient.nextDeliverable().unpack() != 0;
         }
     }
 
