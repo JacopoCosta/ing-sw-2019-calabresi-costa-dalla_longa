@@ -33,7 +33,7 @@ class UnixConsoleExecutor implements ConsoleExecutor {
     @Override
     public void ANSIPrint(String ansiMessage) {
         try {
-            execute("echo -n" + ansiMessage);
+            execute("echo -n " + ansiMessage);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

@@ -82,7 +82,7 @@ public class App {
                     console.err("invalid IP address");
                     return Configuration.ERROR;
                 }
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException ignored) {
                 console.err("invalid IP address");
                 return Configuration.ERROR;
             }
@@ -94,7 +94,7 @@ public class App {
                 console.err("port not int range [1024-65535]");
                 return Configuration.ERROR;
             }
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
             console.err("provide an integer value for parameter <port>");
             return Configuration.ERROR;
         }
