@@ -23,7 +23,7 @@ public class AttackModule {
 
     private boolean used;
 
-    public AttackModule(int id, String name, String description, AmmoCubes summonCost, List<Target> targets, List<Effect> effects, List<Integer> next) {
+    private AttackModule(int id, String name, String description, AmmoCubes summonCost, List<Target> targets, List<Effect> effects, List<Integer> next) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -89,12 +89,16 @@ public class AttackModule {
         return new AttackModule(id, name, description, summonCost, targets, effects, next);
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
 
-    public String getDescription() {
-        return description;
+    public AmmoCubes getSummonCost() {
+        return summonCost;
     }
 
     public List<Target> getTargets() {
@@ -133,25 +137,6 @@ public class AttackModule {
 
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder("\t" + id + ". " + name);
-        if(context.getFirst().contains(id))
-            s.append(" (first)");
-        s.append("\n\t").append(summonCost.toString()).append(" to summon");
-
-        s.append("\n\tTargets:");
-        int targetId = 0;
-        for(Target target : targets) {
-            s.append("\n\t\t").append(targetId).append(". ").append(target.toString());
-            targetId ++;
-        }
-        s.append("\n\tEffects:");
-        for(Effect effect : effects)
-            s.append("\n\t\t").append(effect.toString());
-
-        s.append("\n\tNext modules:");
-        for(int n : next)
-            s.append(" ").append(n);
-
-        return s + "\n";
+        return name + " [" + summonCost.toString() + "]" + ": " + description;
     }
 }

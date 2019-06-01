@@ -26,6 +26,7 @@ public class Board {
 
     private Game game;
 
+    private List<Player> turnKillers;
     private List<Player> killers;
     private List<Player> doubleKillers;
     private List<Cell> cells;
@@ -42,6 +43,7 @@ public class Board {
         board.game = game;
 
         // initialize starting values
+        board.turnKillers = new ArrayList<>();
         board.killers = new ArrayList<>();
         board.doubleKillers = new ArrayList<>();
 
@@ -212,6 +214,24 @@ public class Board {
         return cells;
     }
 
+    public void promoteDoubleKillers() {
+        game.getParticipants()
+                .stream()
+                .filter(p -> {
+                    if(p == null)
+                        return false;
+                    return turnKillers.indexOf(p) < turnKillers.lastIndexOf(p);
+                })
+                .forEach(doubleKillers::add);
+
+        this.turnKillers.clear();
+    }
+
+    public void addKiller(Player killer) {
+        turnKillers.add(killer);
+        killers.add(killer);
+    }
+
     public List<Player> getKillers() {
         return this.killers;
     }
@@ -234,10 +254,6 @@ public class Board {
 
     public Deck<PowerUp> getPowerUpDeck() {
         return powerUpDeck;
-    }
-
-    public Deck<AmmoTile> getAmmoTileDeck() {
-        return ammoTileDeck;
     }
 
     public Game getGame() {
@@ -276,17 +292,16 @@ public class Board {
         };
         Predicate<Player> atLeastOneKill = p -> killers.indexOf(p) != -1;
 
-        List<Player> killers = game.getParticipants()
+        List<Player> trueKillers = game.getParticipants()
                 .stream()
                 .filter(atLeastOneKill)
                 .sorted(better)
                 .collect(Collectors.toList());
 
-        for(int i = 0; i < killers.size(); i ++)
-            killers.get(i).giveScore(scoreBoard[i]); // give scores in descending order to the players sorted best to worst
+        for(int i = 0; i < trueKillers.size(); i ++)
+            trueKillers.get(i).giveScore(scoreBoard[i]); // give scores in descending order to the players sorted best to worst
 
         doubleKillers.forEach(p -> p.giveScore(1)); // one extra point for each double kill scored
-
      }
 
     private int countKills(Player author) {

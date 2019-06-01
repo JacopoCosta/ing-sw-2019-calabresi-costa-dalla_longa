@@ -23,6 +23,8 @@ public class RoomConstraint extends Constraint {
     }
 
     private boolean verify(Room sourceRoom, Room drainRoom) {
+        if(sourceRoom == null || drainRoom == null)
+            return false;
         return sourceRoom.equals(drainRoom) == truth;
     }
 

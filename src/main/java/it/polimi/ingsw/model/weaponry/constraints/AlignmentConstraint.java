@@ -22,9 +22,9 @@ public class AlignmentConstraint extends Constraint {
     }
 
     private boolean verify(Cell sourceCell, Cell drainCell) {
+        if(sourceCell == null)
+            return false;
         try {
-            if(sourceCell == null)
-                return false;
             return sourceCell.isAligned(drainCell) == truth;
         } catch (NullCellOperationException e) {
             return false;

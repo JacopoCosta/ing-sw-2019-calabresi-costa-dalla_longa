@@ -22,7 +22,7 @@
                     {
                         "id": 0,
                         "name": "Basic Effect",
-                        "description": "",
+                        "description": "Deal 2 damage and 1 mark to a target you can see.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -31,7 +31,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -86,7 +86,7 @@
                     {
                         "id": 1,
                         "name": "Second Lock",
-                        "description": "",
+                        "description": "Deal 1 mark to a different target you can see.",
                         "summonCost": {
                             "red": 1,
                             "yellow": 0,
@@ -95,7 +95,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -163,7 +163,7 @@
                     {
                         "id": 0,
                         "name": "Basic Effect",
-                        "description": "",
+                        "description": "Choose 1 or 2 targets you can see and deal 1 damage to each.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -172,7 +172,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -219,7 +219,7 @@
                     {
                         "id": 1,
                         "name": "Basic Effect - 2nd target",
-                        "description": "",
+                        "description": "Choose a second target you can see and deal 1 damage to them.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -228,7 +228,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -280,7 +280,7 @@
                     {
                         "id": 2,
                         "name": "Focus Shot",
-                        "description": "",
+                        "description": "Deal 1 additional damage to the first of those two targets.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 1,
@@ -317,7 +317,7 @@
                     {
                         "id": 3,
                         "name": "Turret Tripod",
-                        "description": "",
+                        "description": "Deal 1 additional damage to the other of those targets or to a new different target you can see.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -326,7 +326,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -394,7 +394,7 @@
                     {
                         "id": 0,
                         "name": "Basic Effect",
-                        "description": "",
+                        "description": "Deal 2 damage to a target you can see.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -403,7 +403,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -444,7 +444,7 @@
                     {
                         "id": 1,
                         "name": "Chain Reaction",
-                        "description": "",
+                        "description": "Deal 1 damage to a second target that your first target can see.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -453,7 +453,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -502,7 +502,7 @@
                     {
                         "id": 2,
                         "name": "High Voltage",
-                        "description": "",
+                        "description": "Deal 2 damage to a third target that your second target can see.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -511,7 +511,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -590,7 +590,7 @@
                     {
                         "id": 0,
                         "name": "Basic Effect",
-                        "description": "",
+                        "description": "Deal 2 damage to a target you can see.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -599,7 +599,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -643,7 +643,7 @@
                     {
                         "id": 1,
                         "name": "Phase Glide",
-                        "description": "",
+                        "description": "Move up to 2 squares.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -652,7 +652,7 @@
                         "targets": [
                             {
                                 "type": "cell",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -687,7 +687,7 @@
                     {
                         "id": 2,
                         "name": "Charged Shot",
-                        "description": "",
+                        "description": "Deal 2 damage to a target you can see.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -743,7 +743,7 @@
                     {
                         "id": 0,
                         "name": "Effect",
-                        "description": "",
+                        "description": "Deal 3 damage and 1 mark to a target you can see that is at least 2 moves away from you.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -752,7 +752,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -838,7 +838,7 @@
                     {
                         "id": 0,
                         "name": "Basic Mode",
-                        "description": "",
+                        "description": "Deal 1 damage to every other player on your cell.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -873,7 +873,7 @@
                     {
                         "id": 1,
                         "name": "Reaper Mode",
-                        "description": "",
+                        "description": "Deal 2 damage to every other player on your cell.",
                         "summonCost": {
                             "red": 1,
                             "yellow": 0,
@@ -933,7 +933,7 @@
                     {
                         "id": 0,
                         "name": "Basic Mode",
-                        "description": "",
+                        "description": "Move a target to a cell you can see that is up to 2 moves away from them.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -942,14 +942,14 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
 
                                 ]
                             },
                             {
                                 "type": "cell",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -1003,7 +1003,7 @@
                     {
                         "id": 1,
                         "name": "Punisher Mode",
-                        "description": "",
+                        "description": "Move to your cell a target that is up to 2 moves away, then deal 3 damage to them.",
                         "summonCost": {
                             "red": 1,
                             "yellow": 1,
@@ -1012,7 +1012,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -1080,7 +1080,7 @@
                     {
                         "id": 0,
                         "name": "Basic Effect",
-                        "description": "",
+                        "description": "Choose a cell you can see, but not your cell. Call it \"the vortex\". Choose a target up to 1 move away from the vortex, and move them on the vortex, then deal 2 damage to them.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -1089,7 +1089,7 @@
                         "targets": [
                             {
                                 "type": "cell",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -1112,7 +1112,7 @@
                             },
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -1161,7 +1161,7 @@
                     {
                         "id": 1,
                         "name": "Black Hole",
-                        "description": "",
+                        "description": "Choose up to 2 other targets that are up to 1 move away from the vortex. Move them both to the vortex and deal 1 damage to each.",
                         "summonCost": {
                             "red": 1,
                             "yellow": 0,
@@ -1170,7 +1170,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -1227,7 +1227,7 @@
                     {
                         "id": 2,
                         "name": "Black Hole - 2nd target",
-                        "description": "",
+                        "description": "Choose the other target, up to 1 move away from the vortex. Move them onto the vortex and give them 1 damage.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -1236,7 +1236,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -1323,7 +1323,7 @@
                     {
                         "id": 0,
                         "name": "Basic Mode",
-                        "description": "",
+                        "description": "Choose a room you can see, but not the one you are in. Deal 1 damage to everyone in that room.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -1332,7 +1332,7 @@
                         "targets": [
                             {
                                 "type": "room",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "room",
@@ -1378,7 +1378,7 @@
                     {
                         "id": 1,
                         "name": "Cozy Fire Mode",
-                        "description": "",
+                        "description": "Choose a cell exactly 1 move away from you and deal 1 damage and 1 mark to everyone on that cell.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -1387,7 +1387,7 @@
                         "targets": [
                             {
                                 "type": "cell",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -1464,7 +1464,7 @@
                     {
                         "id": 0,
                         "name": "Effect",
-                        "description": "",
+                        "description": "Choose a target you can't see and deal 3 damage to them.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -1473,7 +1473,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -1536,7 +1536,7 @@
                     {
                         "id": 1,
                         "name": "Basic Mode",
-                        "description": "",
+                        "description": "Deal 1 damage to a target you can see, at least 1 move away. Then give 1 mark to your target and everyone else on that cell.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -1545,7 +1545,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -1607,7 +1607,7 @@
                     {
                         "id": 0,
                         "name": "Nano-Tracer Mode",
-                        "description": "",
+                        "description": "Deal 1 damage to a target you can see, at least 1 move away. Then give 2 marks to your target and everyone else on that cell.",
                         "summonCost": {
                             "red": 1,
                             "yellow": 0,
@@ -1616,7 +1616,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -1703,7 +1703,7 @@
                     {
                         "id": 0,
                         "name": "Basic Mode",
-                        "description": "",
+                        "description": "Deal 1 damage to a player exactly 1 move away.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -1712,7 +1712,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -1754,7 +1754,7 @@
                     {
                         "id": 1,
                         "name": "Basic Mode - 2nd Target",
-                        "description": "",
+                        "description": "Deal 1 damage to another target, 2 moves away and in the same direction as the first one.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -1763,7 +1763,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -1811,7 +1811,7 @@
                     {
                         "id": 2,
                         "name": "Barbecue Mode",
-                        "description": "",
+                        "description": "Choose a cell exactly one move away and deal 2 damage to everyone on that cell.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 2,
@@ -1820,7 +1820,7 @@
                         "targets": [
                             {
                                 "type": "cell",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -1863,7 +1863,7 @@
                     {
                         "id": 3,
                         "name": "Barbecue Mode - 2nd Target",
-                        "description": "",
+                        "description": "Choose a cell 2 moves away, in the same direction as the first one, and deal 1 damage to everyone on that cell.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -1872,7 +1872,7 @@
                         "targets": [
                             {
                                 "type": "cell",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -1946,7 +1946,7 @@
                     {
                         "id": 0,
                         "name": "Basic Effect",
-                        "description": "",
+                        "description": "Deal 1 damage to a player. Then you may move that player by up to 1 cell.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -1955,7 +1955,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -1969,7 +1969,7 @@
                             },
                             {
                                 "type": "cell",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -2018,7 +2018,7 @@
                     {
                         "id": 1,
                         "name": "Extra Grenade",
-                        "description": "",
+                        "description": "Deal 1 damage to everyone on a cell you can see.",
                         "summonCost": {
                             "red": 1,
                             "yellow": 0,
@@ -2027,7 +2027,7 @@
                         "targets": [
                             {
                                 "type": "cell",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -2097,7 +2097,7 @@
                     {
                         "id": 0,
                         "name": "Basic Effect",
-                        "description": "",
+                        "description": "Deal 2 damage to a player you can see that is not on your cell. Then move that player by up to 1 cell.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -2106,7 +2106,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -2129,7 +2129,7 @@
                             },
                             {
                                 "type": "cell",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -2178,7 +2178,7 @@
                     {
                         "id": 1,
                         "name": "Rocket Jump",
-                        "description": "",
+                        "description": "Move up to 2 squares.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -2187,7 +2187,7 @@
                         "targets": [
                             {
                                 "type": "cell",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -2225,7 +2225,7 @@
                     {
                         "id": 2,
                         "name": "Fragmenting Warhead",
-                        "description": "",
+                        "description": "Deal 3 damage to a player you can see, that is not on your cell, and 1 damage to everyone else on that cell. Then move that player by up to 1 cell.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 1,
@@ -2234,7 +2234,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -2257,7 +2257,7 @@
                             },
                             {
                                 "type": "cell",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -2346,7 +2346,7 @@
                     {
                         "id": 0,
                         "name": "Basic Mode",
-                        "description": "",
+                        "description": "Deal 3 damage to a player vertically or horizontally aligned with you.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -2355,7 +2355,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "alignment",
@@ -2394,7 +2394,7 @@
                     {
                         "id": 1,
                         "name": "Piercing Mode",
-                        "description": "",
+                        "description": "Deal 2 damage to up to 2 players aligned with you in the same direction.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -2403,7 +2403,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "closest",
+                                "message": "loremIpsumClosest",
                                 "constraints": [
                                     {
                                         "type": "alignment",
@@ -2417,7 +2417,7 @@
                             },
                             {
                                 "type": "player",
-                                "message": "farthest",
+                                "message": "loremIpsumFarthest",
                                 "constraints": [
                                     {
                                         "type": "order",
@@ -2503,7 +2503,7 @@
                     {
                         "id": 0,
                         "name": "Basic Effect",
-                        "description": "",
+                        "description": "Deal 2 damage to a player on your square.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -2512,7 +2512,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -2557,7 +2557,7 @@
                     {
                         "id": 1,
                         "name": "Shadowstep",
-                        "description": "",
+                        "description": "Move by up to 1 cell.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -2566,7 +2566,7 @@
                         "targets": [
                             {
                                 "type": "cell",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -2604,7 +2604,7 @@
                     {
                         "id": 2,
                         "name": "Slice & Dice",
-                        "description": "",
+                        "description": "Deal 2 damage to a different target on your cell.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 1,
@@ -2613,7 +2613,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -2688,7 +2688,7 @@
                     {
                         "id": 0,
                         "name": "Basic Mode",
-                        "description": "",
+                        "description": "Deal 1 damage and 2 marks to a target you can see.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -2697,7 +2697,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -2749,7 +2749,7 @@
                     {
                         "id": 1,
                         "name": "Scanner Mode",
-                        "description": "",
+                        "description": "Deal 1 mark to up to three different targets you can see.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -2758,7 +2758,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -2799,7 +2799,7 @@
                     {
                         "id": 2,
                         "name": "Scanner Mode - 2nd Target",
-                        "description": "",
+                        "description": "Deal 1 mark to a second target you can see.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -2808,7 +2808,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -2857,7 +2857,7 @@
                     {
                         "id": 3,
                         "name": "Scanner Mode - 3rd Target",
-                        "description": "",
+                        "description": "Deal 1 mark to a third target you can see.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -2866,7 +2866,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "visibility",
@@ -2946,7 +2946,7 @@
                     {
                         "id": 0,
                         "name": "Basic Mode",
-                        "description": "",
+                        "description": "Deal 3 damage to a player on you cell. Then move that player by up to 1 cell.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -2955,7 +2955,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -2970,7 +2970,7 @@
                             },
                             {
                                 "type": "cell",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -3016,7 +3016,7 @@
                     {
                         "id": 1,
                         "name": "Long Barrel Mode",
-                        "description": "",
+                        "description": "Deal 2 damage to a player exactly 1 move away from you.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -3025,7 +3025,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -3089,7 +3089,7 @@
                     {
                         "id": 0,
                         "name": "Basic Mode",
-                        "description": "",
+                        "description": "Choose a target exactly 1 move away, move to their cell and deal 1 damage and 2 marks to them.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -3098,7 +3098,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -3158,7 +3158,7 @@
                     {
                         "id": 1,
                         "name": "Rocket Fist Mode",
-                        "description": "",
+                        "description": "Choose a target exactly 1 move away, move to their cell and deal 2 damage to them.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -3167,7 +3167,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -3216,7 +3216,7 @@
                     {
                         "id": 2,
                         "name": "Rocket Fist Mode - 2nd Target",
-                        "description": "",
+                        "description": "Choose another target exactly 1 move away in the same direction, move to their cell and deal 2 damage to them.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -3225,7 +3225,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -3314,7 +3314,7 @@
                     {
                         "id": 0,
                         "name": "Basic Mode",
-                        "description": "",
+                        "description": "Deal 1 damage to a player exactly 1 move away from you.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -3323,7 +3323,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -3366,7 +3366,7 @@
                     {
                         "id": 1,
                         "name": "Basic Effect - 2nd Target",
-                        "description": "",
+                        "description": "Deal 1 damage to a player exactly 1 move away from you, but not on the same cell as your first target.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -3375,7 +3375,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -3426,7 +3426,7 @@
                     {
                         "id": 2,
                         "name": "Basic Effect - 3rd Target",
-                        "description": "",
+                        "description": "Deal 1 damage to a player exactly 1 move away from you, but on on the same cell as any of your first two targets.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -3435,7 +3435,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -3492,7 +3492,7 @@
                     {
                         "id": 3,
                         "name": "Tsunami Mode",
-                        "description": "",
+                        "description": "Deal damage on everyone who is exactly 1 move away from you.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 1,
@@ -3552,7 +3552,7 @@
                     {
                         "id": 0,
                         "name": "Basic Mode",
-                        "description": "",
+                        "description": "Deal 2 damage to a player on your cell.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -3561,7 +3561,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -3600,7 +3600,7 @@
                     {
                         "id": 1,
                         "name": "Pulverize Mode",
-                        "description": "",
+                        "description": "Deal 3 damage to a player on your cell, then move them up to 2 cells away in a fixed direction.",
                         "summonCost": {
                             "red": 1,
                             "yellow": 0,
@@ -3609,7 +3609,7 @@
                         "targets": [
                             {
                                 "type": "player",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",
@@ -3624,7 +3624,7 @@
                             },
                             {
                                 "type": "cell",
-                                "message": "",
+                                "message": "loremIpsum",
                                 "constraints": [
                                     {
                                         "type": "distance",

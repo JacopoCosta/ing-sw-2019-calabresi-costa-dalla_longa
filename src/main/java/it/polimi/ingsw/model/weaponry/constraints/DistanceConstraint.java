@@ -25,10 +25,10 @@ public class DistanceConstraint extends Constraint {
     }
 
     private boolean verify(Cell sourceCell, Cell drainCell) {
+        if(sourceCell == null)
+            return false;
         int distance;
         try {
-            if(sourceCell == null)
-                return false;
             distance = sourceCell.distance(drainCell);
         } catch (NullCellOperationException e) {
             return false;

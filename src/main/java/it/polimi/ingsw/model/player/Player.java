@@ -319,6 +319,10 @@ public class Player extends VirtualClient {
             i ++;
         }
 
+        game.getBoard().addKiller(damage.get(KILL_THRESHOLD));
+        if(damage.get(KILL_THRESHOLD) == damage.get(OVERKILL_THRESHOLD))
+            game.getBoard().addKiller(null); // watch out
+
         // one extra point to the player who drew first blood
         this.damage.get(0).giveScore(1);
     }
@@ -331,5 +335,10 @@ public class Player extends VirtualClient {
     public void spawn(Cell cell) {
         this.damage.clear();
         this.position = cell;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

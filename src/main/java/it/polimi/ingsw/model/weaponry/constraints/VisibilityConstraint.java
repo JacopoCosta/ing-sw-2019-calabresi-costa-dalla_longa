@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.weaponry.constraints;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.InvalidFilterInvocationException;
+import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 
@@ -22,13 +23,25 @@ public class VisibilityConstraint extends Constraint {
     }
 
     private boolean verify(Cell sourceCell, Cell drainCell) {
-        return sourceCell.canSee(drainCell) == truth;
+        if(sourceCell == null)
+            return false;
+        try {
+            return sourceCell.canSee(drainCell) == truth;
+        } catch (NullCellOperationException e) {
+            return false;
+        }
     }
 
     private boolean verify(Cell sourceCell, Room drainRoom) {
         return drainRoom.getCells()
                 .stream()
-                .anyMatch(sourceCell::canSee);
+                .anyMatch(c -> {
+                    try {
+                        return sourceCell.canSee(c);
+                    } catch (NullCellOperationException e) {
+                        return false;
+                    }
+                });
     }
 
     @Override

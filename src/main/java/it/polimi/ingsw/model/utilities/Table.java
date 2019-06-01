@@ -62,7 +62,10 @@ public abstract class Table {
         for(Object o : list) {
             if(useSeparator)
                 s.append(separator);
-            s.append(o.toString());
+            if(o != null)
+                s.append(o.toString());
+            else
+                s.append("null");
             useSeparator = true;
         }
         return s.toString();

@@ -69,6 +69,8 @@ public class Controller {
                 }
             }
         }
+        ammoCell.setAmmoTile(null);
+
         return true;
     }
 
@@ -84,13 +86,7 @@ public class Controller {
             } catch (FullHandException e) {
                 virtualView.discardWeapon(subject);
             }
-            subject.getGame()
-                    .getBoard()
-                    .getWeaponDeck()
-                    .smartDraw(false)
-                    .ifPresent(spawnCell::addToWeaponShop); // refill the shop if there are available cards
-
-        } catch (CannotAffordException ignored) { }
+        } catch (CannotAffordException ignored) { } // this should never happen
     }
 
     public void prepareForShoot(Player subject, AttackPattern pattern) {
@@ -99,10 +95,14 @@ public class Controller {
     }
 
     public void shoot(Player subject, AttackPattern pattern, int moduleId) {
+        if(moduleId == -1) // -1 ends action
+            return;
         AttackModule attackModule = pattern.getModule(moduleId);
-        List<Target> targets = attackModule.getTargets();
+        try {
+            subject.takeAmmoCubes(attackModule.getSummonCost());
+        } catch (CannotAffordException ignored) { } // this should never happen
 
-        VirtualView virtualView = subject.getGame().getVirtualView();
+        List<Target> targets = attackModule.getTargets();
         virtualView.acquireTargets(subject, attackModule, targets);
     }
 
@@ -128,6 +128,7 @@ public class Controller {
             });
 
         attackModule.setUsed(true);
+        virtualView.shootAttackModule(subject, attackModule.getContext(), attackModule.getNext());
     }
 
     public void reload(Player subject, Weapon weapon) {

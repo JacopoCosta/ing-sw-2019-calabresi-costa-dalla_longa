@@ -34,13 +34,14 @@ public class TargetPlayer extends Target {
 
     @Override
     public Cell getCell() {
-        System.out.println("debug$1$" + player);
-        return player.getPosition(); //TODO this line threw npe several times
+        return player.getPosition();
     }
 
     @Override
     public Room getRoom() {
-        return player.getPosition().getRoom(); //TODO npe
+        if(player.getPosition() == null)
+            return null;
+        return player.getPosition().getRoom();
     }
 
     public List<Player> filter() {

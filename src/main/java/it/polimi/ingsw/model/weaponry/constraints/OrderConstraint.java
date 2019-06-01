@@ -25,9 +25,9 @@ public class OrderConstraint extends Constraint {
     }
 
     private boolean verify(Cell sourceCell, Cell gateCell, Cell drainCell) {
+        if(gateCell == null)
+            return false;
         try {
-            if(gateCell == null)
-                return false;
             return gateCell.isBetween(sourceCell, drainCell);
         } catch (NullCellOperationException e) {
             return false;

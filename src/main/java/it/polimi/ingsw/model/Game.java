@@ -18,7 +18,6 @@ import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -68,7 +67,8 @@ public class Game {
         board.spreadAmmo();
         board.spreadWeapons();
 
-        Player subject = participants.get(currentTurnPlayer); // TODO check still connected
+        Player subject = participants.get(currentTurnPlayer);
+        subject.beginTurn();
 
         if (subject.getPosition() == null) {
             List<PowerUp> powerUps = new ArrayList<>();
@@ -77,10 +77,9 @@ public class Game {
             virtualView.spawn(subject, powerUps);
         }
 
-        subject.beginTurn();
         subject.savePosition();
-        virtualView.usePowerUp(subject);
         while (subject.getRemainingExecutions() > 0) { // a turn is made by several executions
+            virtualView.usePowerUp(subject);
             List<Execution> options = Execution.getOptionsForPlayer(subject);
             Execution choice = virtualView.chooseExecution(subject, options);
 
@@ -122,7 +121,6 @@ public class Game {
                 }
             }
             subject.endExecution();
-            virtualView.usePowerUp(subject);
         }
 
         participants.stream() // score all dead players
@@ -132,13 +130,19 @@ public class Game {
                     p.die();
                     if (roundsLeft > 0)
                         roundsLeft--;
-                    else if (finalFrenzy)
+                    if (finalFrenzy && roundsLeft == 0)
                         p.activateFrenzy();
                 });
 
+        board.promoteDoubleKillers();
+
         if (roundsLeft == 0) { // when the last skull has been removed from the killshot track
-            if (finalFrenzy && !subject.causedFrenzy())
-                subject.causeFrenzy();
+            if (finalFrenzy && !subject.causedFrenzy()) {
+                if(participants.stream().noneMatch(Player::causedFrenzy)) {
+                    virtualView.announceFrenzy(subject);
+                    subject.causeFrenzy();
+                }
+            }
             else {
                 gameOver = true;
                 invalidateSaveState();
@@ -155,11 +159,11 @@ public class Game {
         board.scoreUponGameOver();
 
         // now to declare the winner
-        Player winner = participants.stream()
-                .max(Comparator.comparingInt(Player::getScore))
-                .orElse(null); // this should never happen
+        List<Player> ranking = participants.stream()
+                .sorted((p1, p2) -> p2.getScore() - p1.getScore())
+                .collect(Collectors.toList());
 
-        // TODO do something with the winner, like a broadcast or something
+        virtualView.announceWinner(ranking);
     }
 
     public void save() {
