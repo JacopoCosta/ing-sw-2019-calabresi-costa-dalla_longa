@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.utilities;
 
+import it.polimi.ingsw.model.exceptions.JsonException;
+import it.polimi.ingsw.model.exceptions.JullPointerException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -7,31 +9,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DecoratedJsonArray {
-    private JSONArray common;
+    private JSONArray content;
 
     public DecoratedJsonArray(List<DecoratedJsonObject> content, Object uselessObject) {
-        common = new JSONArray();
+        if(uselessObject != null)
+            throw new JsonException("Useless object should always be null");
+        this.content = new JSONArray();
         content.stream()
                 .map(DecoratedJsonObject::unpack)
-                .forEach(o -> common.add(o));
+                .forEach(o -> this.content.add(o));
     }
 
-    public DecoratedJsonArray(JSONArray jsonArray) {
-        common = jsonArray;
+    DecoratedJsonArray(JSONArray jsonArray) {
+        content = jsonArray;
     }
 
-    public JSONArray unpack() {
-        return common;
+    JSONArray unpack() {
+        return content;
     }
 
     public DecoratedJsonObject get(int index) {
-        return new DecoratedJsonObject((JSONObject) this.common.get(index));
+        return new DecoratedJsonObject((JSONObject) this.content.get(index));
     }
 
     public List<DecoratedJsonObject> asList() {
+
         List<DecoratedJsonObject> list = new ArrayList<>();
 
-        for(Object o : common) {
+        for(Object o : content) {
             list.add(new DecoratedJsonObject((JSONObject) o));
         }
 

@@ -1,26 +1,24 @@
 package it.polimi.ingsw.view.virtual;
 
-import java.util.List;
-
 public class Deliverable {
     private DeliverableType type;
     private String message;
-    private List<?> details;
+    private Object content;
 
     public Deliverable(String message) {
         this.type = DeliverableType.GENERIC;
         this.message = message;
-        this.details = null;
+        this.content = null;
     }
 
     public Deliverable(DeliverableType type) {
         this.type = type;
         this.message = type.message;
-        this.details = null;
+        this.content = null;
     }
 
-    public void addDetails(List<?> details) {
-        this.details = details;
+    public void pack(Object content) {
+        this.content = content;
     }
 
     public DeliverableType getType() {
@@ -31,7 +29,7 @@ public class Deliverable {
         return message;
     }
 
-    public List<?> getDetails() {
-        return details;
+    public Object unpack() {
+        return content;
     }
 }

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.ammo;
 
+import it.polimi.ingsw.model.exceptions.JsonException;
+import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 
 // an ammo tile depicts some ammo cubes and may include the ability to draw 1 power-up card
@@ -13,9 +15,19 @@ public class AmmoTile {
     }
 
     public static AmmoTile build(DecoratedJsonObject jAmmoTile) {
-        DecoratedJsonObject jAmmoCube = jAmmoTile.getObject("ammoCubes");
-        AmmoCubes ammoCubes = AmmoCubes.build(jAmmoCube);
-        boolean includesPowerUp = jAmmoTile.getBoolean("includesPowerUp");
+        DecoratedJsonObject jAmmoCubes;
+        try {
+            jAmmoCubes = jAmmoTile.getObject("ammoCubes");
+        } catch (JullPointerException e) {
+            throw new JsonException("AmmoTile ammoCubes not found.");
+        }
+        AmmoCubes ammoCubes = AmmoCubes.build(jAmmoCubes);
+        boolean includesPowerUp;
+        try {
+            includesPowerUp = jAmmoTile.getBoolean("includesPowerUp");
+        } catch (JullPointerException e) {
+            throw new JsonException("AmmoTile includesPowerUp not found.");
+        }
         return new AmmoTile(ammoCubes, includesPowerUp);
     }
 

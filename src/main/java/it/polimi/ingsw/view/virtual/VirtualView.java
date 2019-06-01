@@ -19,6 +19,7 @@ import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.model.weaponry.targets.TargetCell;
 import it.polimi.ingsw.model.weaponry.targets.TargetPlayer;
 import it.polimi.ingsw.model.weaponry.targets.TargetRoom;
+import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.view.remote.Dispatcher;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 // every instance of Deliverable offers, for this purpose, a .toString() method.
 public class VirtualView {
 
+    private static final boolean godMode = true;
     private Game game;
     private Controller controller;
 
@@ -47,23 +49,61 @@ public class VirtualView {
     }
 
     private void sendMessage(Player recipient, Deliverable deliverable) {
-        Dispatcher.sendMessage(game.toString());
-        Dispatcher.sendMessage(deliverable.getMessage()); // TODO try/catch
+        if(godMode) {
+            Dispatcher.sendMessage(game.toString());
+            Dispatcher.sendMessage("<" + recipient.getName() + "> " + deliverable.getMessage());
+        }
+        else {
+            try {
+                recipient.deliver(deliverable);
+            } catch (ConnectionException e) {
+                //TODO skip turn
+            }
+        }
     }
 
     private int sendRequest(Player recipient, Deliverable deliverable, List<?> values, List<Integer> keys) {
-        Dispatcher.sendMessage(game.toString());
-        return Dispatcher.requestNumberedOption(deliverable.getMessage(), values, keys);
+        if(godMode) {
+            Dispatcher.sendMessage(game.toString());
+            return Dispatcher.requestNumberedOption("<" + recipient.getName() + "> " + deliverable.getMessage(), values, keys);
+        }
+        else {
+            try {
+                recipient.deliver(deliverable);
+            } catch (ConnectionException e) {
+                //TODO skip turn
+            }
+            return (Integer) recipient.nextDeliverable().unpack();
+        }
     }
 
     private int sendRequest(Player recipient, Deliverable deliverable, List<?> values) {
-        Dispatcher.sendMessage(game.toString());
-        return Dispatcher.requestIndex(deliverable.getMessage(), values);
+        if(godMode) {
+            Dispatcher.sendMessage(game.toString());
+            return Dispatcher.requestIndex("<" + recipient.getName() + "> " + deliverable.getMessage(), values);
+        }
+        else {
+            try {
+                recipient.deliver(deliverable);
+            } catch (ConnectionException e) {
+                //TODO skip turn
+            }
+            return (Integer) recipient.nextDeliverable().unpack();
+        }
     }
 
     private boolean sendRequest(Player recipient, Deliverable deliverable) {
-        Dispatcher.sendMessage(game.toString());
-        return Dispatcher.requestBoolean(deliverable.getMessage());
+        if(godMode) {
+            Dispatcher.sendMessage(game.toString());
+            return Dispatcher.requestBoolean("<" + recipient.getName() + "> " + deliverable.getMessage());
+        } else {
+            try {
+                recipient.deliver(deliverable);
+            } catch (ConnectionException e) {
+                //TODO skip turn
+            }
+            return (Boolean) recipient.nextDeliverable().unpack();
+        }
     }
 
     private void broadcast(Deliverable deliverable) {
@@ -127,17 +167,20 @@ public class VirtualView {
         boolean doPurchase = sendRequest(subject, new Deliverable(DeliverableType.GRAB_WEAPON_REQUEST_IF));
         if(!doPurchase)
             return;
-        /*int weaponIndex = sendRequest(subject, new Deliverable(Message.GRAB_WEAPON_REQUEST_WHICH), cell.getWeaponShop());
+        /*int weaponIndex = sendRequest(subject, new Deliverable(Message.GRAB_WEAPON_REQUEST_WHICH), cell.getWeaponShop()); TODO why is this code commented out?
         controller.grabWeapon(subject, weaponIndex); */
 
         int purchaseIndex = sendRequest(subject, new Deliverable(DeliverableType.GRAB_WEAPON_REQUEST_WHICH), weapons);
         Weapon weaponToPurchase = weapons.get(purchaseIndex);
         List<PowerUp> powerUps = new ArrayList<>(); // power-ups can be used to cover the costs of buying a weapon
 
-        while(!subject.getAmmoCubes().augment(powerUps).covers(weaponToPurchase.getPurchaseCost())) {
+        while(!subject.getAmmoCubes().augment(powerUps).covers(weaponToPurchase.getPurchaseCost())) { // FIXME 1$ suitableForPayment may be empty -- probably fixed
             List<PowerUp> suitableForPaymentPowerUps = subject.getPowerUps()
                     .stream()
-                    .filter(powerUp -> weaponToPurchase.getPurchaseCost().covers(subject.getAmmoCubes().augment(powerUps).augment(powerUp)))
+                    .peek(p -> System.out.println("1$in:" + p))
+                    .peek(p -> System.out.println("1$covers: " + weaponToPurchase.getPurchaseCost() + ", " + subject.getAmmoCubes().augment(powerUps).augment(p)))
+                    .filter(powerUp -> subject.getAmmoCubes().augment(powerUps).augment(powerUp).covers(weaponToPurchase.getPurchaseCost()))
+                    .peek(p -> System.out.println("1$out:" + p))
                     .collect(Collectors.toList());
 
             int suitableForPaymentPowerUpIndex = sendRequest(subject, new Deliverable(DeliverableType.GRAB_WEAPON_NEEDS_POWERUP), suitableForPaymentPowerUps);

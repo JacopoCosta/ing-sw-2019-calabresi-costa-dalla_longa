@@ -29,43 +29,104 @@ public abstract class Constraint {
     protected AttackPattern context;
 
     public static Constraint build(DecoratedJsonObject jConstraint) throws InvalidConstraintTypeException {
+        int sourceAttackModuleId;
         try {
-            int sourceAttackModuleId = jConstraint.getInt("sourceAttackModuleId");
-            int sourceTargetId = jConstraint.getInt("sourceTargetId");
-            int drainAttackModuleId = jConstraint.getInt("drainAttackModuleId");
-            int drainTargetId = jConstraint.getInt("drainTargetId");
-            String type = jConstraint.getString("type");
+            sourceAttackModuleId = jConstraint.getInt("sourceAttackModuleId");
+        } catch (JullPointerException e) {
+            throw new JsonException("Constraint sourceAttackModuleId not found.");
+        }
+        int sourceTargetId;
+        try {
+            sourceTargetId = jConstraint.getInt("sourceTargetId");
+        } catch (JullPointerException e) {
+            throw new JsonException("Constraint sourceAttackModuleId not found.");
+        }
+        int drainAttackModuleId;
+        try {
+            drainAttackModuleId = jConstraint.getInt("drainAttackModuleId");
+        } catch (JullPointerException e) {
+            throw new JsonException("Constraint sourceAttackModuleId not found.");
+        }
+        int drainTargetId;
+        try {
+            drainTargetId = jConstraint.getInt("drainTargetId");
+        } catch (JullPointerException e) {
+            throw new JsonException("Constraint sourceAttackModuleId not found.");
+        }
+        String type;
+        try {
+            type = jConstraint.getString("type");
+        } catch (JullPointerException e) {
+            throw new JsonException("Constraint type not found.");
+        }
 
-            if (type.equals("alignment")) {
-                boolean truth = jConstraint.getBoolean("truth");
+        if (type.equals("alignment")) {
+                boolean truth;
+                try {
+                    truth = jConstraint.getBoolean("truth");
+                } catch (JullPointerException e) {
+                    throw new JsonException("Distance constraint truth not found.");
+                }
                 return new AlignmentConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
             }
             if (type.equals("distance")) {
-                int lowerBound = jConstraint.getInt("lowerBound");
-                int upperBound = jConstraint.getInt("upperBound");
+                int lowerBound;
+                try {
+                    lowerBound = jConstraint.getInt("lowerBound");
+                } catch (JullPointerException e) {
+                    throw new JsonException("Distance constraint lowerBound is null.");
+                }
+                int upperBound;
+                try {
+                    upperBound = jConstraint.getInt("upperBound");
+                } catch (JullPointerException e) {
+                    throw new JsonException("Distance constraint upperBound is null.");
+                }
                 return new DistanceConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, lowerBound, upperBound);
             }
             if (type.equals("identity")) {
-                boolean truth = jConstraint.getBoolean("truth");
+                boolean truth;
+                try {
+                    truth = jConstraint.getBoolean("truth");
+                } catch (JullPointerException e) {
+                    throw new JsonException("Identity constraint truth not found.");
+                }
                 return new IdentityConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
             }
             if (type.equals("order")) {
-                int gateAttackModuleId = jConstraint.getInt("gateAttackModuleId");
-                int gateTargetId = jConstraint.getInt("gateTargetId");
+                int gateAttackModuleId;
+                try {
+                    gateAttackModuleId = jConstraint.getInt("gateAttackModuleId");
+                } catch (JullPointerException e) {
+                    throw new JsonException("Order constraint gateAttackModuleId not found.");
+                }
+                int gateTargetId;
+                try {
+                    gateTargetId = jConstraint.getInt("gateTargetId");
+                } catch (JullPointerException e) {
+                    throw new JsonException("Order constraint gateTargetId not found.");
+                }
                 return new OrderConstraint(sourceAttackModuleId, sourceTargetId, gateAttackModuleId, gateTargetId, drainAttackModuleId, drainTargetId);
             }
             if (type.equals("room")) {
-                boolean truth = jConstraint.getBoolean("truth");
+                boolean truth;
+                try {
+                    truth = jConstraint.getBoolean("truth");
+                } catch (JullPointerException e) {
+                    throw new JsonException("Room constraint truth not found.");
+                }
                 return new RoomConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
             }
             if (type.equals("visibility")) {
-                boolean truth = jConstraint.getBoolean("truth");
+                boolean truth;
+                try {
+                    truth = jConstraint.getBoolean("truth");
+                } catch (JullPointerException e) {
+                    throw new JsonException("Visibility constraint truth not found");
+                }
                 return new VisibilityConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
             }
             throw new InvalidEffectTypeException(type + " is not a valid name for a Constraint type. Use \"alignment\", \"distance\", \"identity\", \"order\", \"room\", or \"visibility\"");
-        } catch (JullPointerException e) {
-            throw new JsonException("Can't load constraint");
-        }
     }
 
     public static Target getTarget(AttackPattern context, int attackModuleId, int targetId) {

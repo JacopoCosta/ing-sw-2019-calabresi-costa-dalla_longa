@@ -39,25 +39,52 @@ public class AttackModule {
         try {
             id = jAttackModule.getInt("id");
         } catch (JullPointerException e) {
-            throw new JsonException("Can't find attack module id");
+            throw new JsonException("AttackModule id not found.");
         }
-        String name = jAttackModule.getString("name");
-        String description = jAttackModule.getString("description");
-        AmmoCubes summonCost = AmmoCubes.build(jAttackModule.getObject("summonCost"));
+        String name;
+        try {
+            name = jAttackModule.getString("name");
+        } catch (JullPointerException e) {
+            throw new JsonException("AttackModule name not found.");
+        }
+        String description;
+        try {
+            description = jAttackModule.getString("description");
+        } catch (JullPointerException e) {
+            throw new JsonException("AttackModule description not found.");
+        }
+        AmmoCubes summonCost;
+        try {
+            summonCost = AmmoCubes.build(jAttackModule.getObject("summonCost"));
+        } catch (JullPointerException e) {
+            throw new JsonException("AttackModule summonCost not found.");
+        }
         List<Target> targets = new ArrayList<>();
         List<Effect> effects = new ArrayList<>();
         List<Integer> next = new ArrayList<>();
 
-        for(DecoratedJsonObject jTarget : jAttackModule.getArray("targets").asList())
-            targets.add(Target.build(jTarget));
-        for(DecoratedJsonObject jEffect : jAttackModule.getArray("effects").asList())
-            effects.add(Effect.build(jEffect));
-        for(DecoratedJsonObject jNext : jAttackModule.getArray("next").asList())
-            try {
-                next.add(jNext.getInt("id"));
-            } catch (JullPointerException e) {
-                throw new JsonException("Can't find next");
-            }
+        try {
+            for(DecoratedJsonObject jTarget : jAttackModule.getArray("targets").asList())
+                targets.add(Target.build(jTarget));
+        } catch (JullPointerException e) {
+            throw new JsonException("AttackModule targets not found.");
+        }
+        try {
+            for(DecoratedJsonObject jEffect : jAttackModule.getArray("effects").asList())
+                effects.add(Effect.build(jEffect));
+        } catch (JullPointerException e) {
+            throw new JsonException("AttackModule effects not found.");
+        }
+        try {
+            for(DecoratedJsonObject jNext : jAttackModule.getArray("next").asList())
+                try {
+                    next.add(jNext.getInt("id"));
+                } catch (JullPointerException e) {
+                    throw new JsonException("AttackModule next id not found.");
+                }
+        } catch (JullPointerException e) {
+            throw new JsonException("AttackModule next not found.");
+        }
 
         return new AttackModule(id, name, description, summonCost, targets, effects, next);
     }

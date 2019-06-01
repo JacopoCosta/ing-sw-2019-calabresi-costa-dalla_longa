@@ -3,6 +3,8 @@ package it.polimi.ingsw.model.weaponry.targets;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.InvalidTargetTypeException;
+import it.polimi.ingsw.model.exceptions.JsonException;
+import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
@@ -18,11 +20,26 @@ public abstract class Target {
     protected AttackPattern context;
 
     public static Target build(DecoratedJsonObject jTarget) {
-        String type = jTarget.getString("type");
-
+        String type;
+        try {
+            type = jTarget.getString("type");
+        } catch (JullPointerException e) {
+            throw new JsonException("Target type not found.");
+        }
         List<Constraint> constraints = new ArrayList<>();
-        String message = jTarget.getString("string");
-        List<DecoratedJsonObject> jConstraints = jTarget.getArray("constraints").asList();
+
+        String message;
+        try {
+            message = jTarget.getString("message");
+        } catch (JullPointerException e) {
+            throw new JsonException("Target message not found.");
+        }
+        List<DecoratedJsonObject> jConstraints;
+        try {
+            jConstraints = jTarget.getArray("constraints").asList();
+        } catch (JullPointerException e) {
+            throw new JsonException("Target constraints not found.");
+        }
         for(DecoratedJsonObject jConstraint : jConstraints) {
             constraints.add(Constraint.build(jConstraint));
         }

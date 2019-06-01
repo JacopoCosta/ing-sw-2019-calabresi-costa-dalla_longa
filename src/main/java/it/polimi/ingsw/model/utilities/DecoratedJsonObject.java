@@ -12,23 +12,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class DecoratedJsonObject {
-    private JSONObject common;
+    private JSONObject content;
 
     public DecoratedJsonObject(JSONObject jsonObject) {
-        common = jsonObject;
+        content = jsonObject;
     }
 
     public DecoratedJsonObject() {
-        common = new JSONObject();
+        content = new JSONObject();
     }
 
     public DecoratedJsonObject(String key, Object value) {
-        common = new JSONObject();
-        common.put(key, value);
+        content = new JSONObject();
+        content.put(key, value);
     }
 
-    public JSONObject unpack() {
-        return common;
+    JSONObject unpack() {
+        return content;
     }
 
     public static DecoratedJsonObject getFromFile(String path) {
@@ -44,7 +44,7 @@ public class DecoratedJsonObject {
 
     public void writeToFile(String path) {
         try (FileWriter fileWriter = new FileWriter(path)) {
-            fileWriter.write(common.toJSONString());
+            fileWriter.write(content.toJSONString());
         } catch (IOException e) {
             e.printStackTrace();
             throw new JsonException("Could not find file to write.");
@@ -52,36 +52,48 @@ public class DecoratedJsonObject {
     }
 
     public void putArray(String key, DecoratedJsonArray value) {
-        common.put(key, value.unpack());
+        content.put(key, value.unpack());
     }
 
     public void putObject(String key, DecoratedJsonObject value) {
-        common.put(key, value.common);
+        content.put(key, value.content);
     }
 
     public void putValue(String key, Object value) {
-        common.put(key, value);
+        content.put(key, value);
     }
 
-    public DecoratedJsonArray getArray(String key) {
-        return new DecoratedJsonArray((JSONArray) this.common.get(key));
+    public boolean isEmpty() {
+        return content == null;
     }
 
-    public DecoratedJsonObject getObject(String key) {
-        return new DecoratedJsonObject((JSONObject) this.common.get(key));
+    public DecoratedJsonArray getArray(String key) throws JullPointerException{
+        if(content == null)
+            throw new JullPointerException("Array of objects not found.");
+        return new DecoratedJsonArray((JSONArray) this.content.get(key));
     }
 
-    public String getString(String key) {
-        return (String) this.common.get(key);
+    public DecoratedJsonObject getObject(String key) throws JullPointerException {
+        if(content == null)
+            throw new JullPointerException("Object not found.");
+        return new DecoratedJsonObject((JSONObject) this.content.get(key));
+    }
+
+    public String getString(String key) throws JullPointerException{
+        if(content == null)
+            throw new JullPointerException("String not found.");
+        return (String) this.content.get(key);
     }
 
     public int getInt(String key) throws JullPointerException {
-            if(common == null)
-                throw new JullPointerException("");
-            return ((Long) this.common.get(key)).intValue();
+            if(content == null)
+                throw new JullPointerException("Integer not found.");
+            return ((Long) this.content.get(key)).intValue();
     }
 
-    public boolean getBoolean(String key) {
-        return (Boolean) this.common.get(key);
+    public boolean getBoolean(String key) throws JullPointerException {
+        if(content == null)
+            throw new JullPointerException("Boolean not found.");
+        return (Boolean) this.content.get(key);
     }
 }

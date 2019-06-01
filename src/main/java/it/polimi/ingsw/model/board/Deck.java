@@ -2,9 +2,7 @@ package it.polimi.ingsw.model.board;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.ammo.AmmoTile;
-import it.polimi.ingsw.model.exceptions.CannotDiscardFirstCardOfDeckException;
-import it.polimi.ingsw.model.exceptions.CorruptedDeckException;
-import it.polimi.ingsw.model.exceptions.EmptyDeckException;
+import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.powerups.*;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 import it.polimi.ingsw.model.utilities.JsonPathGenerator;
@@ -67,8 +65,12 @@ public class Deck<T> {
         Deck<Weapon> deck = new Deck<>();
 
         DecoratedJsonObject jDeck = DecoratedJsonObject.getFromFile(JsonPathGenerator.getPath("weapons.json"));
-        for(DecoratedJsonObject jWeapon : jDeck.getArray("weapons").asList()) {
-            deck.cards.add(Weapon.build(jWeapon));
+        try {
+            for(DecoratedJsonObject jWeapon : jDeck.getArray("weapons").asList()) {
+                deck.cards.add(Weapon.build(jWeapon));
+            }
+        } catch (JullPointerException e) {
+            throw new JsonException("Weapons JSON does not include \"weapons\" as top-level object.");
         }
         return deck;
     }

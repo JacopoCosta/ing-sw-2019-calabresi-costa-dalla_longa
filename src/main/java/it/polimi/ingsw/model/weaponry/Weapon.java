@@ -1,9 +1,7 @@
 package it.polimi.ingsw.model.weaponry;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
-import it.polimi.ingsw.model.exceptions.CannotAffordException;
-import it.polimi.ingsw.model.exceptions.WeaponAlreadyLoadedException;
-import it.polimi.ingsw.model.exceptions.WeaponAlreadyUnloadedException;
+import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 
 public class Weapon {
@@ -55,10 +53,30 @@ public class Weapon {
     }
 
     public static Weapon build(DecoratedJsonObject jWeapon) {
-        String name = jWeapon.getString("name");
-        AmmoCubes purchaseCost = AmmoCubes.build(jWeapon.getObject("purchaseCost"));
-        AmmoCubes reloadCost = AmmoCubes.build(jWeapon.getObject("reloadCost"));
-        AttackPattern attackPattern = AttackPattern.build(jWeapon.getObject("attackPattern"));
+        String name;
+        try {
+            name = jWeapon.getString("name");
+        } catch (JullPointerException e) {
+            throw new JsonException("Weapon name not found");
+        }
+        AmmoCubes purchaseCost;
+        try {
+            purchaseCost = AmmoCubes.build(jWeapon.getObject("purchaseCost"));
+        } catch (JullPointerException e) {
+            throw new JsonException("Weapon purchaseCost not found.");
+        }
+        AmmoCubes reloadCost;
+        try {
+            reloadCost = AmmoCubes.build(jWeapon.getObject("reloadCost"));
+        } catch (JullPointerException e) {
+            throw new JsonException("Weapon reloadCost not found.");
+        }
+        AttackPattern attackPattern;
+        try {
+            attackPattern = AttackPattern.build(jWeapon.getObject("attackPattern"));
+        } catch (JullPointerException e) {
+            throw new JsonException("Weapon attackPattern not found,");
+        }
 
         return new Weapon(name, purchaseCost, reloadCost, attackPattern);
     }

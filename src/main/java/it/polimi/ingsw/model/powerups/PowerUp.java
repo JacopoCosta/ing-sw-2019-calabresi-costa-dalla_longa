@@ -5,6 +5,8 @@ import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.InvalidPowerUpTypeException;
+import it.polimi.ingsw.model.exceptions.JsonException;
+import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 
 public abstract class PowerUp {
@@ -16,8 +18,18 @@ public abstract class PowerUp {
     }
 
     public static PowerUp build(DecoratedJsonObject jPowerUp) throws InvalidPowerUpTypeException {
-        String type = jPowerUp.getString("type");
-        AmmoCubes ammoCubes = AmmoCubes.build(jPowerUp.getObject("ammoCubes"));
+        String type;
+        try {
+            type = jPowerUp.getString("type");
+        } catch (JullPointerException e) {
+            throw new JsonException("PowerUp type not found.");
+        }
+        AmmoCubes ammoCubes;
+        try {
+            ammoCubes = AmmoCubes.build(jPowerUp.getObject("ammoCubes"));
+        } catch (JullPointerException e) {
+            throw new JsonException("PowerUp ammoCubes not found.");
+        }
 
         if(type.equals("grenade"))
             return new Grenade(ammoCubes);

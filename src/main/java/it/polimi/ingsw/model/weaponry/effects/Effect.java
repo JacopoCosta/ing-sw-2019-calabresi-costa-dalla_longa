@@ -17,38 +17,79 @@ public abstract class Effect {
     protected Player author;
 
     public static Effect build(DecoratedJsonObject jEffect) throws InvalidEffectTypeException {
+        String type;
         try {
-            String type = jEffect.getString("type");
-
-            if (type.equals("damage")) {
-                List<Constraint> constraints = new ArrayList<>();
-                int amount = jEffect.getInt("amount");
-                List<DecoratedJsonObject> jConstraints = jEffect.getArray("constraints").asList();
-                for (DecoratedJsonObject jConstraint : jConstraints) {
-                    constraints.add(Constraint.build(jConstraint));
-                }
-                return new Damage(amount, constraints);
-            }
-            if (type.equals("mark")) {
-                List<Constraint> constraints = new ArrayList<>();
-                int amount = jEffect.getInt("amount");
-                List<DecoratedJsonObject> jConstraints = jEffect.getArray("constraints").asList();
-                for (DecoratedJsonObject jConstraint : jConstraints) {
-                    constraints.add(Constraint.build(jConstraint));
-                }
-                return new Mark(amount, constraints);
-            }
-            if (type.equals("move")) {
-                int sourceAttackModuleId = jEffect.getInt("sourceAttackModuleId");
-                int sourceTargetId = jEffect.getInt("sourceTargetId");
-                int drainAttackModuleId = jEffect.getInt("drainAttackModuleId");
-                int drainTargetId = jEffect.getInt("drainTargetId");
-                return new Move(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId);
-            }
-            throw new InvalidEffectTypeException(type + " is not a valid name for an Effect type. Use \"damage\", \"mark\", or \"move\"");
+            type = jEffect.getString("type");
         } catch (JullPointerException e) {
-            throw new JsonException("Can't load effect");
+            throw new JsonException("Effect type not found.");
         }
+
+        if (type.equals("damage")) {
+            List<Constraint> constraints = new ArrayList<>();
+            int amount;
+            try {
+                amount = jEffect.getInt("amount");
+            } catch (JullPointerException e) {
+                throw new JsonException("Damage amount not found.");
+            }
+            List<DecoratedJsonObject> jConstraints;
+            try {
+                jConstraints = jEffect.getArray("constraints").asList();
+            } catch (JullPointerException e) {
+                throw new JsonException("Damage constraints not found.");
+            }
+            for (DecoratedJsonObject jConstraint : jConstraints) {
+                constraints.add(Constraint.build(jConstraint));
+            }
+            return new Damage(amount, constraints);
+        }
+        if (type.equals("mark")) {
+            List<Constraint> constraints = new ArrayList<>();
+            int amount;
+            try {
+                amount = jEffect.getInt("amount");
+            } catch (JullPointerException e) {
+                throw new JsonException("Mark amount not found.");
+            }
+            List<DecoratedJsonObject> jConstraints;
+            try {
+                jConstraints = jEffect.getArray("constraints").asList();
+            } catch (JullPointerException e) {
+                throw new JsonException("Mark constraints not found.");
+            }
+            for (DecoratedJsonObject jConstraint : jConstraints) {
+                constraints.add(Constraint.build(jConstraint));
+            }
+            return new Mark(amount, constraints);
+        }
+        if (type.equals("move")) {
+            int sourceAttackModuleId;
+            try {
+                sourceAttackModuleId = jEffect.getInt("sourceAttackModuleId");
+            } catch (JullPointerException e) {
+                throw new JsonException("Move sourceAttackModuleId not found.");
+            }
+            int sourceTargetId;
+            try {
+                sourceTargetId = jEffect.getInt("sourceTargetId");
+            } catch (JullPointerException e) {
+                throw new JsonException("Move sourceTargetId not found.");
+            }
+            int drainAttackModuleId;
+            try {
+                drainAttackModuleId = jEffect.getInt("drainAttackModuleId");
+            } catch (JullPointerException e) {
+                throw new JsonException("Move drainAttackModuleId not found.");
+            }
+            int drainTargetId;
+            try {
+                drainTargetId = jEffect.getInt("drainTargetId");
+            } catch (JullPointerException e) {
+                throw new JsonException("Move drainTargetId not found.");
+            }
+            return new Move(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId);
+        }
+        throw new InvalidEffectTypeException(type + " is not a valid name for an Effect type. Use \"damage\", \"mark\", or \"move\"");
     }
 
     public void setAuthor(Player author) {

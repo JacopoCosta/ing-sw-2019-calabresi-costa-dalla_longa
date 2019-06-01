@@ -22,15 +22,23 @@ public class AttackPattern {
         List<Integer> ids = new ArrayList<>();
         List<AttackModule> attackModules = new ArrayList<>();
 
-        for(DecoratedJsonObject jId : jPattern.getArray("first").asList()) {
-            try {
-                ids.add(jId.getInt("id"));
-            } catch (JullPointerException e) {
-                throw new JsonException("Can't build first list in pattern.");
+        try {
+            for(DecoratedJsonObject jId : jPattern.getArray("first").asList()) {
+                try {
+                    ids.add(jId.getInt("id"));
+                } catch (JullPointerException e) {
+                    throw new JsonException("AttackPattern first id not found.");
+                }
             }
+        } catch (JullPointerException e) {
+            throw new JsonException("AttackPattern first not found.");
         }
-        for(DecoratedJsonObject jAttackModule : jPattern.getArray("content").asList()) {
-            attackModules.add(AttackModule.build(jAttackModule));
+        try {
+            for(DecoratedJsonObject jAttackModule : jPattern.getArray("content").asList()) {
+                attackModules.add(AttackModule.build(jAttackModule));
+            }
+        } catch (JullPointerException e) {
+            throw new JsonException("AttackPattern content not found.");
         }
 
         AttackPattern attackPattern = new AttackPattern(ids, attackModules);

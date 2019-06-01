@@ -68,15 +68,25 @@ public class AmmoCubes {
      * @see AmmoCubes#AmmoCubes(int, int, int)
      */
     public static AmmoCubes build(DecoratedJsonObject jAmmoCube) throws IllegalArgumentException {
+        int red;
         try {
-            int red = jAmmoCube.getInt("red");
-            int yellow = jAmmoCube.getInt("yellow");
-            int blue = jAmmoCube.getInt("blue");
-
-            return new AmmoCubes(red, yellow, blue);
+            red = jAmmoCube.getInt("red");
         } catch (JullPointerException e) {
-            throw new JsonException("Can't load ammo cubes.");
+            throw new JsonException("AmmoCubes red not found.");
         }
+        int yellow;
+        try {
+            yellow = jAmmoCube.getInt("yellow");
+        } catch (JullPointerException e) {
+            throw new JsonException("AmmoCubes yellow not found.");
+        }
+        int blue;
+        try {
+            blue = jAmmoCube.getInt("blue");
+        } catch (JullPointerException e) {
+            throw new JsonException("AmmoCubes blue not found.");
+        }
+        return new AmmoCubes(red, yellow, blue);
     }
 
     /**

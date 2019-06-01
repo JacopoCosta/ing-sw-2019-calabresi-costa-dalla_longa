@@ -173,7 +173,7 @@ public class Game {
 
         DecoratedJsonArray jKillers = new DecoratedJsonArray(
                 board.getKillers().stream().map(p -> {
-                    if(p == null)
+                    if (p == null)
                         return new DecoratedJsonObject("id", -1);
                     return new DecoratedJsonObject("id", p.getId());
                 }).collect(Collectors.toList()),
@@ -183,7 +183,7 @@ public class Game {
 
         DecoratedJsonArray jDoubleKillers = new DecoratedJsonArray(
                 board.getDoubleKillers().stream().map(p -> {
-                    if(p == null)
+                    if (p == null)
                         return new DecoratedJsonObject("id", -1);
                     return new DecoratedJsonObject("id", p.getId());
                 }).collect(Collectors.toList()),
@@ -207,7 +207,7 @@ public class Game {
                     } else {
                         AmmoTile ammoTile = ((AmmoCell) c).getAmmoTile();
                         DecoratedJsonObject jAmmoTile = new DecoratedJsonObject();
-                        if(ammoTile != null) {
+                        if (ammoTile != null) {
                             jAmmoTile.putValue("red", ammoTile.getAmmoCubes().getRed());
                             jAmmoTile.putValue("yellow", ammoTile.getAmmoCubes().getYellow());
                             jAmmoTile.putValue("blue", ammoTile.getAmmoCubes().getBlue());
@@ -299,18 +299,39 @@ public class Game {
 
     public static Game load(List<Player> participants) throws InvalidSaveStateException, UnmatchedSavedParticipantsException {
         DecoratedJsonObject tl = DecoratedJsonObject.getFromFile(JsonPathGenerator.getPath("saved.json"));
-        DecoratedJsonObject jSaved = tl.getObject("saved");
+        DecoratedJsonObject jSaved;
+        try {
+            jSaved = tl.getObject("saved");
+        } catch (JullPointerException e) {
+            throw new JsonException("Savestate JSON does not include \"saved\" as top-level object.");
+        }
 
-        boolean valid = jSaved.getBoolean("valid");
+        boolean valid;
+        try {
+            valid = jSaved.getBoolean("valid");
+        } catch (JullPointerException e) {
+            throw new JsonException("Savestate valid flag not found.");
+        }
 
         if (!valid)
             throw new InvalidSaveStateException("Attempted to load a save state marked as invalid.");
 
-        List<String> savedPlayerNames = jSaved.getArray("participants")
-                .asList()
-                .stream()
-                .map(djo -> djo.getString("name"))
-                .collect(Collectors.toList());
+        List<String> savedPlayerNames;
+        try {
+            savedPlayerNames = jSaved.getArray("participants")
+                    .asList()
+                    .stream()
+                    .map(djo -> {
+                        try {
+                            return djo.getString("name");
+                        } catch (JullPointerException e) {
+                            throw new JsonException("DecoratedJsonObject in \"participants\": name not found.");
+                        }
+                    })
+                    .collect(Collectors.toList());
+        } catch (JullPointerException e) {
+            throw new JsonException("Savestate participants not found.");
+        }
 
         List<String> playerNames = participants.stream()
                 .map(Player::getName)
@@ -327,176 +348,327 @@ public class Game {
         if (intrusivePlayer.isPresent())
             throw new UnmatchedSavedParticipantsException("The saved game did not expect a player named \"" + intrusivePlayer + "\".");
 
-        boolean finalFrenzy = jSaved.getBoolean("finalFrenzy");
+        boolean finalFrenzy;
         try {
-            int roundsLeft = jSaved.getInt("roundsLeft");
-            int currentTurnPlayer = jSaved.getInt("currentTurnPlayer");
-            int boardType = jSaved.getInt("boardType");
-
-            Game game = Game.create(finalFrenzy, roundsLeft, boardType, participants);
-            game.currentTurnPlayer = currentTurnPlayer;
-
-            List<DecoratedJsonObject> jKillers = jSaved.getArray("killers").asList();
-            List<Player> killers = jKillers.stream()
-                    .map(djo -> {
-                        try {
-                            return djo.getInt("id") - 1;
-                        } catch (JullPointerException e) {
-                            throw new JsonException("Can't parse killer id.");
-                        }
-                    })
-                    .map(participants::get)
-                    .collect(Collectors.toList());
-            game.getBoard().setKillers(killers);
-
-
-            List<DecoratedJsonObject> jDoubleKillers = jSaved.getArray("doubleKillers").asList();
-            List<Player> doubleKillers = jDoubleKillers.stream()
-                    .map(djo -> {
-                        try {
-                            return djo.getInt("id") - 1;
-                        } catch (JullPointerException e) {
-                            throw new JsonException("Can't parse double-killer id.");
-                        }
-                    })
-                    .map(participants::get)
-                    .collect(Collectors.toList());
-            game.getBoard().setDoubleKillers(doubleKillers);
-
-            List<DecoratedJsonObject> jCells = jSaved.getArray("cells").asList();
-            jCells.forEach(
-                    jc -> {
-                        try {
-                            int id = jc.getInt("id");
-                            Cell cell = game.getBoard().getCells().get(id - 1);
-                            if (cell.isSpawnPoint()) {
-                                jc.getArray("weaponShop")
-                                        .asList()
-                                        .stream()
-                                        .map(djo -> djo.getString("name"))
-                                        .map(s -> game.getBoard().fetchWeapon(s))
-                                        .forEach(
-                                                opt -> opt.ifPresent(((SpawnCell) cell)::addToWeaponShop)
-                                        );
-                            } else {
-                                DecoratedJsonObject jAmmoTile = jc.getObject("ammoTile");
-                                try {
-                                    int red = jAmmoTile.getInt("red");
-                                    int yellow = jAmmoTile.getInt("yellow");
-                                    int blue = jAmmoTile.getInt("blue");
-                                    boolean includesPowerUp = jAmmoTile.getBoolean("includesPowerUp");
-                                    game.getBoard()
-                                            .fetchAmmoTile(red, yellow, blue, includesPowerUp)
-                                            .ifPresent(((AmmoCell) cell)::setAmmoTile);
-                                } catch (JullPointerException e) {
-                                    ((AmmoCell) cell).setAmmoTile(null);
-                                }
-                            }
-                        } catch (JullPointerException e) {
-                            throw new JsonException("Something went wrong");
-                        }
-                    }
-            );
-
-            List<DecoratedJsonObject> jPlayers = jSaved.getArray("participants").asList();
-            jPlayers.forEach(
-                    jp -> {
-                        try {
-                            int id = jp.getInt("id");
-                            Player player = participants.get(id - 1);
-
-                            int score = jp.getInt("score");
-                            player.giveScore(score);
-
-                            int deathCount = jp.getInt("deathCount");
-                            player.setDeathCount(deathCount);
-
-                            boolean onFrenzy = jp.getBoolean("onFrenzy");
-                            if (onFrenzy)
-                                player.activateFrenzy();
-
-                            boolean causedFrenzy = jp.getBoolean("causedFrenzy");
-                            if (causedFrenzy)
-                                player.causeFrenzy();
-
-                            jp.getArray("damage")
-                                    .asList()
-                                    .stream()
-                                    .map(djo -> {
-                                        try {
-                                            return djo.getInt("id");
-                                        } catch (JullPointerException e) {
-                                            throw new JsonException("Jamage from invalid source.");
-                                        }
-                                    })
-                                    .map(pid -> pid - 1)
-                                    .map(participants::get)
-                                    .forEach(player::applyDamage);
-
-                            jp.getArray("markings")
-                                    .asList()
-                                    .stream()
-                                    .map(djo -> {
-                                        try {
-                                            return djo.getInt("id");
-                                        } catch (JullPointerException e) {
-                                            throw new JsonException("Jarking from invalid source");
-                                        }
-                                    })
-                                    .map(pid -> pid - 1)
-                                    .map(participants::get)
-                                    .forEach(player::applyMarking);
-
-                            jp.getArray("weapons")
-                                    .asList()
-                                    .stream()
-                                    .map(djo -> djo.getString("name"))
-                                    .map(game.getBoard()::fetchWeapon)
-                                    .forEach(
-                                            opt -> opt.ifPresent(w -> {
-                                                try {
-                                                    player.giveWeapon(w);
-                                                } catch (FullHandException ignored) {
-                                                }
-                                            })
-                                    );
-
-                            jp.getArray("powerUps")
-                                    .asList()
-                                    .forEach(
-                                            djo -> {
-                                                String type = djo.getString("type");
-                                                String color = djo.getString("color");
-                                                game.getBoard().fetchPowerUp(type, color).ifPresent(
-                                                        pu -> {
-                                                            try {
-                                                                player.givePowerUp(pu);
-                                                            } catch (FullHandException ignored) {
-                                                            }
-                                                        }
-                                                );
-                                            }
-                                    );
-
-                            DecoratedJsonObject jAmmoCubes = jp.getObject("ammoCubes");
-                            int red = jAmmoCubes.getInt("red");
-                            int yellow = jAmmoCubes.getInt("yellow");
-                            int blue = jAmmoCubes.getInt("blue");
-                            AmmoCubes ammoCubes = new AmmoCubes(red, yellow, blue);
-                            player.giveAmmoCubes(ammoCubes);
-
-                            int positionId = jp.getInt("position");
-                            Cell position = positionId == -1 ? null : game.getBoard().getCells().get(positionId - 1);
-                            player.setPosition(position);
-                        } catch (JullPointerException e) {
-                            throw new JsonException("Something else went wrong");
-                        }
-                    }
-            );
-            return game;
+            finalFrenzy = jSaved.getBoolean("finalFrenzy");
         } catch (JullPointerException e) {
-            throw new JsonException("Load failed.");
+            throw new JsonException("Savestate finalFrenzy not found.");
         }
+        int roundsLeft;
+        try {
+            roundsLeft = jSaved.getInt("roundsLeft");
+        } catch (JullPointerException e) {
+            throw new JsonException("Savestate roundsLeft not found.");
+        }
+        int currentTurnPlayer;
+        try {
+            currentTurnPlayer = jSaved.getInt("currentTurnPlayer");
+        } catch (JullPointerException e) {
+            throw new JsonException("Savestate currentTurnPlayer not found.");
+        }
+        int boardType;
+        try {
+            boardType = jSaved.getInt("boardType");
+        } catch (JullPointerException e) {
+            throw new JsonException("Savestate boardType not found.");
+        }
+
+        Game game = Game.create(finalFrenzy, roundsLeft, boardType, participants);
+        game.currentTurnPlayer = currentTurnPlayer;
+
+        List<DecoratedJsonObject> jKillers;
+        try {
+            jKillers = jSaved.getArray("killers").asList();
+        } catch (JullPointerException e) {
+            throw new JsonException("Savestate killers not found.");
+        }
+        List<Player> killers = jKillers.stream()
+                .map(djo -> {
+                    try {
+                        return djo.getInt("id") - 1;
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate killer id not found.");
+                    }
+                })
+                .map(participants::get)
+                .collect(Collectors.toList());
+        game.getBoard().setKillers(killers);
+
+
+        List<DecoratedJsonObject> jDoubleKillers;
+        try {
+            jDoubleKillers = jSaved.getArray("doubleKillers").asList();
+        } catch (JullPointerException e) {
+            throw new JsonException("Savestate doubleKillers not found.");
+        }
+        List<Player> doubleKillers = jDoubleKillers.stream()
+                .map(djo -> {
+                    try {
+                        return djo.getInt("id") - 1;
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate doubleKiller id not found.");
+                    }
+                })
+                .map(participants::get)
+                .collect(Collectors.toList());
+        game.getBoard().setDoubleKillers(doubleKillers);
+
+        List<DecoratedJsonObject> jCells;
+        try {
+            jCells = jSaved.getArray("cells").asList();
+        } catch (JullPointerException e) {
+            throw new JsonException("Savestate cells not found.");
+        }
+        jCells.forEach(
+                jc -> {
+                    int id;
+                    try {
+                        id = jc.getInt("id");
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate cell id not found.");
+                    }
+                    Cell cell = game.getBoard().getCells().get(id - 1);
+                    if (cell.isSpawnPoint()) {
+                        try {
+                            jc.getArray("weaponShop")
+                                    .asList()
+                                    .stream()
+                                    .map(djo -> {
+                                        try {
+                                            return djo.getString("name");
+                                        } catch (JullPointerException e) {
+                                            throw new JsonException("Savestate cell weaponShop weapon name not found.");
+                                        }
+                                    })
+                                    .map(s -> game.getBoard().fetchWeapon(s))
+                                    .forEach(
+                                            opt -> opt.ifPresent(((SpawnCell) cell)::addToWeaponShop)
+                                    );
+                        } catch (JullPointerException e) {
+                            throw new JsonException("Savestate cell weaponShop not found.");
+                        }
+                    } else {
+                        DecoratedJsonObject jAmmoTile;
+                        try {
+                            jAmmoTile = jc.getObject("ammoTile");
+                        } catch (JullPointerException e) {
+                            throw new JsonException("Savestate cell ammoTile not found.");
+                        }
+                        if(!jAmmoTile.isEmpty()) {
+                            int red;
+                            try {
+                                red = jAmmoTile.getInt("red");
+                            } catch (JullPointerException e) {
+                                throw new JsonException("Savestate cell ammoTile red not found.");
+                            }
+                            int yellow;
+                            try {
+                                yellow = jAmmoTile.getInt("yellow");
+                            } catch (JullPointerException e) {
+                                throw new JsonException("Savestate cell ammoTile yellow not found.");
+                            }
+                            int blue;
+                            try {
+                                blue = jAmmoTile.getInt("blue");
+                            } catch (JullPointerException e) {
+                                throw new JsonException("Savestate cell ammoTile blue not found.");
+                            }
+                            boolean includesPowerUp;
+                            try {
+                                includesPowerUp = jAmmoTile.getBoolean("includesPowerUp");
+                            } catch (JullPointerException e) {
+                                throw new JsonException("Savestate cell ammoTile includesPowerUp not found.");
+                            }
+                            game.getBoard()
+                                    .fetchAmmoTile(red, yellow, blue, includesPowerUp)
+                                    .ifPresent(((AmmoCell) cell)::setAmmoTile);
+                        }
+                        else
+                            ((AmmoCell) cell).setAmmoTile(null);
+                    }
+                }
+        );
+
+        List<DecoratedJsonObject> jPlayers;
+        try {
+            jPlayers = jSaved.getArray("participants").asList();
+        } catch (JullPointerException e) {
+            throw new JsonException("Savestate participants not found.");
+        }
+        jPlayers.forEach(
+                jp -> {
+                    int id;
+                    try {
+                        id = jp.getInt("id");
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate participant id not found.");
+                    }
+                    Player player = participants.get(id - 1);
+
+                    int score;
+                    try {
+                        score = jp.getInt("score");
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate participant score not found.");
+                    }
+                    player.giveScore(score);
+
+                    int deathCount;
+                    try {
+                        deathCount = jp.getInt("deathCount");
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate participant deathCount nout found.");
+                    }
+                    player.setDeathCount(deathCount);
+
+                    boolean onFrenzy;
+                    try {
+                        onFrenzy = jp.getBoolean("onFrenzy");
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate participant onFrenzy not found.");
+                    }
+                    if (onFrenzy)
+                        player.activateFrenzy();
+
+                    boolean causedFrenzy;
+                    try {
+                        causedFrenzy = jp.getBoolean("causedFrenzy");
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate participant causedFrenzy not found.");
+                    }
+                    if (causedFrenzy)
+                        player.causeFrenzy();
+
+                    try {
+                        jp.getArray("damage")
+                                .asList()
+                                .stream()
+                                .map(djo -> {
+                                    try {
+                                        return djo.getInt("id");
+                                    } catch (JullPointerException e) {
+                                        throw new JsonException("Savestate participant damage id not found.");
+                                    }
+                                })
+                                .map(pid -> pid - 1)
+                                .map(participants::get)
+                                .forEach(player::applyDamage);
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate participant damage not found.");
+                    }
+
+                    try {
+                        jp.getArray("markings")
+                                .asList()
+                                .stream()
+                                .map(djo -> {
+                                    try {
+                                        return djo.getInt("id");
+                                    } catch (JullPointerException e) {
+                                        throw new JsonException("Savestate participant marking id not found.");
+                                    }
+                                })
+                                .map(pid -> pid - 1)
+                                .map(participants::get)
+                                .forEach(player::applyMarking);
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate participant markings not found.");
+                    }
+
+                    try {
+                        jp.getArray("weapons")
+                                .asList()
+                                .stream()
+                                .map(djo -> {
+                                    try {
+                                        return djo.getString("name");
+                                    } catch (JullPointerException e) {
+                                        throw new JsonException("Savestate participant weapon name not found.");
+                                    }
+                                })
+                                .map(game.getBoard()::fetchWeapon)
+                                .forEach(
+                                        opt -> opt.ifPresent(w -> {
+                                            try {
+                                                player.giveWeapon(w);
+                                            } catch (FullHandException ignored) {
+                                            }
+                                        })
+                                );
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate participant weapons not found.");
+                    }
+
+                    try {
+                        jp.getArray("powerUps")
+                                .asList()
+                                .forEach(
+                                        djo -> {
+                                            String type;
+                                            try {
+                                                type = djo.getString("type");
+                                            } catch (JullPointerException e) {
+                                                throw new JsonException("Savestate participant powerUp type not found.");
+                                            }
+                                            String color;
+                                            try {
+                                                color = djo.getString("color");
+                                            } catch (JullPointerException e) {
+                                                throw new JsonException("Savestate participant powerUp color not found.");
+                                            }
+                                            game.getBoard().fetchPowerUp(type, color).ifPresent(
+                                                    pu -> {
+                                                        try {
+                                                            player.givePowerUp(pu);
+                                                        } catch (FullHandException ignored) {
+                                                        }
+                                                    }
+                                            );
+                                        }
+                                );
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate participant powerUps not found.");
+                    }
+
+                    DecoratedJsonObject jAmmoCubes;
+                    try {
+                        jAmmoCubes = jp.getObject("ammoCubes");
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate participant ammoCubes not found.");
+                    }
+                    int red;
+                    try {
+                        red = jAmmoCubes.getInt("red");
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate participant ammoCubes red not found.");
+                    }
+                    int yellow;
+                    try {
+                        yellow = jAmmoCubes.getInt("yellow");
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate participant ammoCubes yellow not found");
+                    }
+                    int blue;
+                    try {
+                        blue = jAmmoCubes.getInt("blue");
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savetstate participant ammoCubes blue not found.");
+                    }
+                    AmmoCubes ammoCubes = new AmmoCubes(red, yellow, blue);
+                    player.giveAmmoCubes(ammoCubes);
+
+                    int positionId = 0;
+                    try {
+                        positionId = jp.getInt("position");
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Savestate participant position not found.");
+                    }
+                    Cell position = positionId == -1 ? null : game.getBoard().getCells().get(positionId - 1);
+                    player.setPosition(position);
+
+                }
+        );
+        return game;
     }
 
     @Override
@@ -554,6 +726,7 @@ public class Game {
         s.append("\n");
         for (int i = 0; i < edge; i++)
             s.append("~");
+        s.append("\n");
         return s.toString();
     }
 }
