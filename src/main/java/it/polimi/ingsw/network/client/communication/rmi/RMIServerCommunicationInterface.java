@@ -23,23 +23,6 @@ public class RMIServerCommunicationInterface implements ServerCommunicationInter
             serverController = (RMIController) remoteRegistry.lookup("rmi://" + hostAddress + ":" + RMIController.DEFAULT_PORT + "/RMIController");
 
             clientController = new ClientController();
-
-            /*
-             * WARNING:
-             *  this property is not supported, can change at any time, and only exist in certain
-             *  implementations of the Java Remote Method Invocation (Java RMI).
-             *  These properties are not part of the Java RMI public API.
-             *
-             * The value of this property represents the period (in milliseconds) for which socket
-             * connections may reside in an "unused" state, before the Java RMI runtime will allow
-             * those connections to be freed (closed). The default value is 15000 milliseconds (15 seconds).
-             * */
-            try {
-                String responseTimeout = "5000";
-                System.setProperty("sun.rmi.transport.connectionTimeout", responseTimeout);
-            } catch (Exception ignored) {
-            }
-
             RMIController controller = (RMIController) UnicastRemoteObject.exportObject(clientController, 0);
 
             Registry localRegistry = LocateRegistry.createRegistry(port);

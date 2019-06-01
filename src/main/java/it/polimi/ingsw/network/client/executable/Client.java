@@ -54,8 +54,7 @@ public class Client extends Application implements Runnable, EventHandler<Action
     private static String in() {
         try {
             return in.nextLine();
-        } catch (NoSuchElementException e) {
-            console.err(e.getClass() + ": " + e.getMessage());
+        } catch (NoSuchElementException ignored) {
             System.exit(-1);
             return null;
         }
@@ -72,7 +71,7 @@ public class Client extends Application implements Runnable, EventHandler<Action
                 communicationHandler.register(username);
                 valid = true;
             } catch (ConnectionException e) {
-                console.err(e.getClass() + ": " + e.getMessage());
+                console.err("connection to the server is lost, cause: " + e.getMessage());
                 System.exit(-1);
             } catch (ClientAlreadyRegisteredException e) {
                 console.err(e.getMessage());
@@ -85,7 +84,7 @@ public class Client extends Application implements Runnable, EventHandler<Action
         try {
             communicationHandler.unregister();
         } catch (ConnectionException | ClientNotRegisteredException e) {
-            console.err(e.getClass() + ": " + e.getMessage());
+            console.err("connection to the server is lost, cause: " + e.getMessage());
             System.exit(-1);
         }
         System.exit(0);
@@ -100,7 +99,7 @@ public class Client extends Application implements Runnable, EventHandler<Action
             try {
                 lobbyInfo = communicationHandler.requestUpdate();
             } catch (ConnectionException e) {
-                console.err(e.getClass() + ": " + e.getMessage());
+                console.err("connection to the server is lost, cause: " + e.getMessage());
                 System.exit(-1);
                 return;
             }
@@ -134,7 +133,7 @@ public class Client extends Application implements Runnable, EventHandler<Action
                 valid = true;
                 console.tinyPrintln("Lobby creation success!\n");
             } catch (ConnectionException e) {
-                console.err(e.getClass() + ": " + e.getMessage());
+                console.err("connection to the server is lost, cause: " + e.getMessage());
                 System.exit(-1);
             } catch (LobbyAlreadyExistsException e) {
                 console.err(e.getMessage());
@@ -149,8 +148,11 @@ public class Client extends Application implements Runnable, EventHandler<Action
         try {
             communicationHandler.login(lobbyName, lobbyPassword);
             console.tinyPrintln("Lobby login success!");
-        } catch (ConnectionException | LobbyNotFoundException | LobbyFullException | InvalidPasswordException e) {
-            console.err(e.getClass() + ": " + e.getMessage());
+        } catch (ConnectionException e) {
+            console.err("connection to the server is lost, cause: " + e.getMessage());
+            System.exit(-1);
+        } catch (LobbyNotFoundException | LobbyFullException | InvalidPasswordException e) {
+            console.err(e.getMessage());
             System.exit(-1);
         }
     }
@@ -160,7 +162,7 @@ public class Client extends Application implements Runnable, EventHandler<Action
             communicationHandler.logout();
             console.tinyPrintln("Lobby logout success!");
         } catch (ConnectionException e) {
-            console.err(e.getClass() + ": " + e.getMessage());
+            console.err("connection to the server is lost, cause: " + e.getMessage());
             System.exit(-1);
         }
     }
@@ -258,8 +260,7 @@ public class Client extends Application implements Runnable, EventHandler<Action
         try {
             communicationHandler = new CommunicationHandler(hostAddress, port, communicationInterface);
         } catch (ConnectionException e) {
-            //console.err(e.getClass() + ": " + e.getMessage());
-            e.printStackTrace();
+            console.err("connection to the server is lost, cause: " + e.getMessage());
             System.exit(-1);
             return;
         }

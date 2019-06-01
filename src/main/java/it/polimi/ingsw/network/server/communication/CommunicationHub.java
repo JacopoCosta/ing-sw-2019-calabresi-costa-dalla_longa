@@ -36,8 +36,8 @@ public class CommunicationHub {
 
             for (Player player : players)
                 try {
-                    player.sendMessage(ping);
                     console.mexS(("message " + ping.getType().toString() + " sent to Client \"" + player.getName() + "\""));
+                    player.sendMessage(ping);
                 } catch (ConnectionException ignored) {
                     console.err("Client \"" + player.getName() + "\" lost connection, logging out from his lobby...");
                     try {
@@ -47,7 +47,7 @@ public class CommunicationHub {
                             console.log("Client \"" + player.getName() + "\" successfully logged out from Lobby \"" + lobbyName + "\"");
                         } catch (LobbyNotFoundException e) {
                             console.log(e.getMessage());
-                        } catch (PlayerNotFoundException | LobbyEmptyException e){
+                        } catch (PlayerNotFoundException | LobbyEmptyException e) {
                             console.err(e.getMessage());
                         }
                         console.log("unregistering Client \"" + player.getName() + "\"...");

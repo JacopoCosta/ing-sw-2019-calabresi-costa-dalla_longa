@@ -23,7 +23,7 @@ public class SocketServer implements Runnable {
         Console console = new Console();
 
         try (ServerSocket socket = new ServerSocket(port, 0, InetAddress.getByName(ipAddress))) {
-            console.log("socket server configured on " + port + ":" + port);
+            console.log("socket server configured on " + ipAddress + ":" + port);
             console.log("socket server bounded on " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
             console.stat("socket server running...");
             ExecutorService executor = Executors.newCachedThreadPool();
