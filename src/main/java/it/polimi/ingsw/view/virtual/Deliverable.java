@@ -5,16 +5,22 @@ public class Deliverable {
     private String message;
     private int content;
 
-    public Deliverable(String message) {
+    Deliverable(String message) {
         this.type = DeliverableType.GENERIC;
         this.message = message;
         this.content = 0;
     }
 
-    public Deliverable(DeliverableType type) {
+    Deliverable(DeliverableType type) {
         this.type = type;
         this.message = type.message;
         this.content = 0;
+    }
+
+    public Deliverable(int content) {
+        this.type = DeliverableType.GENERIC;
+        this.message = "";
+        this.content = content;
     }
 
     public void pack(int content) {
