@@ -1,14 +1,13 @@
 package it.polimi.ingsw.model.weaponry.effects;
 
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 import it.polimi.ingsw.view.virtual.VirtualView;
 
 import java.util.List;
 
 public class Damage extends OffensiveEffect {
-    public Damage(int amount, List<Constraint> constraints) {
+    Damage(int amount, List<Constraint> constraints) {
         this.amount = amount;
         this.constraints = constraints;
         this.type = EffectType.DAMAGE;

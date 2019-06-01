@@ -12,7 +12,7 @@ import java.util.List;
 public class TargetRoom extends Target {
     private Room room;
 
-    public TargetRoom(String message, List<Constraint> constraints) {
+    TargetRoom(String message, List<Constraint> constraints) {
         this.message = message;
         this.constraints = constraints;
         this.type = TargetType.ROOM;

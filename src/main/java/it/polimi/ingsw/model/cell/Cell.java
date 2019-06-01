@@ -28,7 +28,7 @@ public abstract class Cell {
     /**
      * A list of all the cells considered to be adjacent to the current cell.
      */
-    protected List<Cell> adjacentCells;
+    private List<Cell> adjacentCells;
 
     /**
      * The board this cell belongs to.
@@ -43,19 +43,19 @@ public abstract class Cell {
     /**
      * The horizontal coordinate of the cell on the board.
      */
-    protected int xCoord;
+    private int xCoord;
 
     /**
      * The vertical coordinate of the cell on the board.
      */
-    protected int yCoord;
+    private int yCoord;
 
     /**
      * Indicates if a cell is instance of {@code SpawnCell} (the alternative being {@code AmmoCell}).
      * @see SpawnCell
      * @see AmmoCell
      */
-    protected boolean spawnPoint;
+    boolean spawnPoint;
 
     /**
      * This is the only constructor.

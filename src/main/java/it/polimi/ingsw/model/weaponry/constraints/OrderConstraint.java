@@ -14,7 +14,7 @@ public class OrderConstraint extends Constraint {
     private int gateAttackModuleId;
     private int gateTargetId;
 
-    public OrderConstraint(int sourceAttackModuleId, int sourceTargetId, int gateAttackModuleId, int gateTargetId, int drainAttackModuleId, int drainTargetId) {
+    OrderConstraint(int sourceAttackModuleId, int sourceTargetId, int gateAttackModuleId, int gateTargetId, int drainAttackModuleId, int drainTargetId) {
         this.sourceAttackModuleId = sourceAttackModuleId;
         this.sourceTargetId = sourceTargetId;
         this.gateAttackModuleId = gateAttackModuleId;

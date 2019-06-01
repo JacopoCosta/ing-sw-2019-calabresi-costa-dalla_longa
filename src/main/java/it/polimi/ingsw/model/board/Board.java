@@ -10,9 +10,7 @@ import it.polimi.ingsw.model.exceptions.CannotDiscardFirstCardOfDeckException;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.*;
-import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
-import it.polimi.ingsw.view.remote.CLI;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -69,10 +67,12 @@ public class Board {
                 cells.add(new AmmoCell(0, 0));
                 cells.add(new AmmoCell(1, 0));
                 cells.add(new SpawnCell(2, 0, new AmmoCubes(0, 0, 1)));
+
                 cells.add(new SpawnCell(0, 1, new AmmoCubes(1, 0, 0)));
                 cells.add(new AmmoCell(1, 1));
                 cells.add(new AmmoCell(2, 1));
                 cells.add(new AmmoCell(3, 1));
+
                 cells.add(new AmmoCell(1, 2));
                 cells.add(new AmmoCell(2, 2));
                 cells.add(new SpawnCell(3, 2, new AmmoCubes(0, 1, 0)));
@@ -97,27 +97,29 @@ public class Board {
                 list10.add(cells.get(1));
                 list10.add(cells.get(2));
                 list11.add(cells.get(3));
-                list10.add(cells.get(4));
-                list10.add(cells.get(5));
+                list11.add(cells.get(4));
+                list11.add(cells.get(5));
                 list12.add(cells.get(6));
                 list13.add(cells.get(7));
                 list13.add(cells.get(8));
                 list12.add(cells.get(9));
-                new Room(list10);
-                new Room(list11);
-                new Room(list12);
-                new Room(list13);
-
+                new Room("blue", list10);
+                new Room("red", list11);
+                new Room("yellow", list12);
+                new Room("white", list13);
                 break;
+
             case 2:
                 cells.add(new AmmoCell(0, 0));
                 cells.add(new AmmoCell(1, 0));
                 cells.add(new SpawnCell(2, 0, new AmmoCubes(0, 0, 1)));
                 cells.add(new AmmoCell(3, 0));
+
                 cells.add(new SpawnCell(0, 1, new AmmoCubes(1, 0, 0)));
                 cells.add(new AmmoCell(1, 1));
                 cells.add(new AmmoCell(2, 1));
                 cells.add(new AmmoCell(3, 1));
+
                 cells.add(new AmmoCell(1, 2));
                 cells.add(new AmmoCell(2, 2));
                 cells.add(new SpawnCell(3, 2, new AmmoCubes(0, 1, 0)));
@@ -152,32 +154,126 @@ public class Board {
                 list24.add(cells.get(8));
                 list23.add(cells.get(9));
                 list23.add(cells.get(10));
-                new Room(list20);
-                new Room(list21);
-                new Room(list22);
-                new Room(list23);
-                new Room(list24);
+                new Room("blue", list20);
+                new Room("green", list21);
+                new Room("red", list22);
+                new Room("yellow", list23);
+                new Room("white", list24);
+                break;
 
-                break;
             case 3:
-                break;
-            case 4:
                 cells.add(new AmmoCell(0, 0));
                 cells.add(new AmmoCell(1, 0));
                 cells.add(new SpawnCell(2, 0, new AmmoCubes(0, 0, 1)));
-                cells.add(new AmmoCell(3, 0));
+
                 cells.add(new SpawnCell(0, 1, new AmmoCubes(1, 0, 0)));
                 cells.add(new AmmoCell(1, 1));
                 cells.add(new AmmoCell(2, 1));
                 cells.add(new AmmoCell(3, 1));
+
                 cells.add(new AmmoCell(0, 2));
                 cells.add(new AmmoCell(1, 2));
                 cells.add(new AmmoCell(2, 2));
                 cells.add(new SpawnCell(3, 2, new AmmoCubes(0, 1, 0)));
 
+                cells.get(0).setAdjacent(cells.get(1));
+                cells.get(0).setAdjacent(cells.get(3));
+                cells.get(1).setAdjacent(cells.get(2));
+                cells.get(1).setAdjacent(cells.get(4));
+                cells.get(2).setAdjacent(cells.get(5));
+                cells.get(3).setAdjacent(cells.get(7));
+                cells.get(4).setAdjacent(cells.get(5));
+                cells.get(4).setAdjacent(cells.get(8));
+                cells.get(5).setAdjacent(cells.get(6));
+                cells.get(6).setAdjacent(cells.get(10));
+                cells.get(7).setAdjacent(cells.get(8));
+                cells.get(8).setAdjacent(cells.get(9));
+                cells.get(9).setAdjacent(cells.get(10));
+
+                List<Cell> list30 = new ArrayList<>();
+                List<Cell> list31 = new ArrayList<>();
+                List<Cell> list32 = new ArrayList<>();
+                List<Cell> list33 = new ArrayList<>();
+                List<Cell> list34 = new ArrayList<>();
+                list30.add(cells.get(0));
+                list31.add(cells.get(1));
+                list31.add(cells.get(2));
+                list30.add(cells.get(3));
+                list32.add(cells.get(4));
+                list32.add(cells.get(5));
+                list33.add(cells.get(6));
+                list34.add(cells.get(7));
+                list34.add(cells.get(8));
+                list34.add(cells.get(9));
+                list33.add(cells.get(10));
+                new Room("red", list30);
+                new Room("blue", list31);
+                new Room("purple", list32);
+                new Room("yellow", list33);
+                new Room("white", list34);
                 break;
+
+            case 4:
+                cells.add(new AmmoCell(0, 0));
+                cells.add(new AmmoCell(1, 0));
+                cells.add(new SpawnCell(2, 0, new AmmoCubes(0, 0, 1)));
+                cells.add(new AmmoCell(3, 0));
+
+                cells.add(new SpawnCell(0, 1, new AmmoCubes(1, 0, 0)));
+                cells.add(new AmmoCell(1, 1));
+                cells.add(new AmmoCell(2, 1));
+                cells.add(new AmmoCell(3, 1));
+
+                cells.add(new AmmoCell(0, 2));
+                cells.add(new AmmoCell(1, 2));
+                cells.add(new AmmoCell(2, 2));
+                cells.add(new SpawnCell(3, 2, new AmmoCubes(0, 1, 0)));
+
+
+                cells.get(0).setAdjacent(cells.get(1));
+                cells.get(0).setAdjacent(cells.get(4));
+                cells.get(1).setAdjacent(cells.get(2));
+                cells.get(1).setAdjacent(cells.get(5));
+                cells.get(2).setAdjacent(cells.get(3));
+                cells.get(2).setAdjacent(cells.get(6));
+                cells.get(3).setAdjacent(cells.get(7));
+                cells.get(4).setAdjacent(cells.get(8));
+                cells.get(5).setAdjacent(cells.get(9));
+                cells.get(6).setAdjacent(cells.get(7));
+                cells.get(6).setAdjacent(cells.get(10));
+                cells.get(7).setAdjacent(cells.get(11));
+                cells.get(8).setAdjacent(cells.get(9));
+                cells.get(9).setAdjacent(cells.get(10));
+                cells.get(10).setAdjacent(cells.get(11));
+                
+                List<Cell> list40 = new ArrayList<>();
+                List<Cell> list41 = new ArrayList<>();
+                List<Cell> list42 = new ArrayList<>();
+                List<Cell> list43 = new ArrayList<>();
+                List<Cell> list44 = new ArrayList<>();
+                List<Cell> list45 = new ArrayList<>();
+                list40.add(cells.get(0));
+                list41.add(cells.get(1));
+                list41.add(cells.get(2));
+                list42.add(cells.get(3));
+                list40.add(cells.get(4));
+                list43.add(cells.get(5));
+                list44.add(cells.get(6));
+                list44.add(cells.get(7));
+                list45.add(cells.get(8));
+                list45.add(cells.get(9));
+                list44.add(cells.get(10));
+                list44.add(cells.get(11));
+                new Room("red", list40);
+                new Room("blue", list41);
+                new Room("green", list42);
+                new Room("purple", list43);
+                new Room("yellow", list44);
+                new Room("white", list45);
+                break;
+
             default:
-                break;
+                throw new Error("Board initialization error.");
         }
         return cells;
     }
@@ -310,7 +406,7 @@ public class Board {
         for(Player p : killers) {
             if(p != null)
                 lastKiller = p;
-            if(lastKiller == author);
+            if(lastKiller == author)
                 count ++;
         }
         return count;
@@ -399,36 +495,5 @@ public class Board {
             ammoTileDeck.regenerate();
         }
         return Optional.of(ammoTile);
-    }
-
-    @Override
-    public String toString() {
-        return Table.create(
-                cells.stream().map(c -> "Cell").collect(Collectors.toList()),
-                cells.stream().map(c -> "#" + c.getId() + "  ").collect(Collectors.toList()),
-                cells.stream().map(Cell::getRoom).map(Room::toString).collect(Collectors.toList()),
-                cells.stream().map(c -> "x:" + c.getXCoord()).collect(Collectors.toList()),
-                cells.stream().map(c -> "y:" + c.getYCoord()).collect(Collectors.toList()),
-                cells.stream().map(c -> "| adjacent to: " + Table.list(c.getAdjacentCells().stream()
-                        .map(Cell::getId)
-                        .collect(Collectors.toList())))
-                .collect(Collectors.toList()),
-                cells.stream().map(c -> "contains: " + (c.isSpawnPoint() ?
-                        (
-                                Table.list(((SpawnCell) c).getWeaponShop()
-                                        .stream()
-                                        .map(Weapon::getName)
-                                        .collect(Collectors.toList())
-                                )
-                        ) :
-                        (
-                                ((AmmoCell) c).getAmmoTile() == null ?
-                                    "empty" :
-                                    ((AmmoCell) c).getAmmoTile().toString()
-                        )
-                    )
-                ).collect(Collectors.toList()),
-                cells.stream().map(c -> c.isSpawnPoint() ? ("| this is the " + ((SpawnCell) c).getAmmoCubeColor().toStringAsColor() + " spawnpoint") : "").collect(Collectors.toList())
-        );
     }
 }

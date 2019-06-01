@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.player;
 
-public class Reload extends Activity {
-    public Reload() {
+class Reload extends Activity {
+    Reload() {
         this.type = ActivityType.RELOAD;
     }
 }

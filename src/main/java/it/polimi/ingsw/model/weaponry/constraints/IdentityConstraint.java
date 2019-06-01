@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class IdentityConstraint extends Constraint {
     private boolean truth;
 
-    public IdentityConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
+    IdentityConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
         this.sourceAttackModuleId = sourceAttackModuleId;
         this.sourceTargetId = sourceTargetId;
         this.drainAttackModuleId = drainAttackModuleId;

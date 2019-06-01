@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.player;
 
-public class Shoot extends Activity {
-    public Shoot() {
+class Shoot extends Activity {
+    Shoot() {
         this.type = ActivityType.SHOOT;
     }
 }

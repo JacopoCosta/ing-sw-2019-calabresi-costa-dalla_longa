@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class VisibilityConstraint extends Constraint {
     private boolean truth;
 
-    public VisibilityConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
+    VisibilityConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
         this.sourceAttackModuleId = sourceAttackModuleId;
         this.sourceTargetId = sourceTargetId;
         this.drainAttackModuleId = drainAttackModuleId;

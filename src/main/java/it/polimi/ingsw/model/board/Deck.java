@@ -33,11 +33,11 @@ public class Deck<T> {
         discarded.add(card);
     }
 
-    public void shuffle() {
+    void shuffle() {
         Collections.shuffle(this.cards);
     }
 
-    public void regenerate() {
+    void regenerate() {
         this.cards.addAll(this.discarded);
         this.discarded.clear();
     }
@@ -61,7 +61,7 @@ public class Deck<T> {
         return Optional.of(card);
     }
 
-    public static Deck<Weapon> generateWeapons() {
+    static Deck<Weapon> generateWeapons() {
         Deck<Weapon> deck = new Deck<>();
 
         DecoratedJsonObject jDeck = DecoratedJsonObject.getFromFile(JsonPathGenerator.getPath("weapons.json"));
@@ -75,7 +75,7 @@ public class Deck<T> {
         return deck;
     }
 
-    public static Deck<PowerUp> generatePowerUps() {
+    static Deck<PowerUp> generatePowerUps() {
         Deck<PowerUp> deck = new Deck<>();
 
         List<AmmoCubes> unitCubes = new ArrayList<>();
@@ -100,7 +100,7 @@ public class Deck<T> {
         return deck;
     }
 
-    public static Deck<AmmoTile> generateAmmoTiles() {
+    static Deck<AmmoTile> generateAmmoTiles() {
         Deck<AmmoTile> deck = new Deck<>();
 
         List<AmmoCubes> unitCubes = new ArrayList<>();

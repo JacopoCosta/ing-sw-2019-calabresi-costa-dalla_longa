@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.utilities;
 
 import it.polimi.ingsw.model.exceptions.JsonException;
-import it.polimi.ingsw.model.exceptions.JullPointerException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

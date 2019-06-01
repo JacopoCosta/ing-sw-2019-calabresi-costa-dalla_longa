@@ -66,30 +66,14 @@ public abstract class Dispatcher {
         return requestMappedOption(message, list, list.stream().map(list::indexOf).map(x -> x + 1).collect(Collectors.toList()));
     }
 
-    // keeps requesting an integer within an interval until such request is fulfilled
-    public static int requestInteger(String message, int lowerBound, int upperBound) {
-        int value = lowerBound - 1;
-        do {
-            value = Dispatcher.safeIntegerConversion(Dispatcher.requestRoutine(message + " [" + lowerBound + "~" + upperBound + "]"), value);
-        } while(value < lowerBound || value > upperBound);
-        return value;
-    }
-
     // keeps requesting a "y" or "n" answer until such request is fulfilled
     public static boolean requestBoolean(String message) {
         String s;
         do {
             s = Dispatcher.requestRoutine(message + " [y|n]");
+            if(s == null)
+                return false;
         } while(!s.equals("y") && !s.equals("n"));
         return s.equals("y");
-    }
-
-    // keeps requesting a non-empty string until such request is fulfilled
-    public static String requestString(String message) {
-        String s;
-        do {
-            s = Dispatcher.requestRoutine(message);
-        } while(s.length() < 1);
-        return s;
     }
 }

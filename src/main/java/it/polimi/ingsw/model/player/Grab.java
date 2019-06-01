@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.player;
 
-public class Grab extends Activity {
-    public Grab() {
+class Grab extends Activity {
+    Grab() {
         this.type = ActivityType.GRAB;
     }
 }

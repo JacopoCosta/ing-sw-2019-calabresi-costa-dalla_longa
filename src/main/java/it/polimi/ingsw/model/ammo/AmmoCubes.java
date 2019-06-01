@@ -7,7 +7,6 @@ import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 /**

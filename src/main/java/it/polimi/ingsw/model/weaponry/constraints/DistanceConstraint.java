@@ -14,7 +14,7 @@ public class DistanceConstraint extends Constraint {
     private int lowerBound;
     private int upperBound;
 
-    public DistanceConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, int lowerBound, int upperBound) {
+    DistanceConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, int lowerBound, int upperBound) {
         this.sourceAttackModuleId = sourceAttackModuleId;
         this.sourceTargetId = sourceTargetId;
         this.drainAttackModuleId = drainAttackModuleId;

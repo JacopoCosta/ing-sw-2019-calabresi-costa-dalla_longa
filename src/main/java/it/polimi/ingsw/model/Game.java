@@ -153,7 +153,7 @@ public class Game {
         save(); // save the game state at the end of each turn
     }
 
-    public void play() {
+    void play() {
         while (!gameOver)
             this.playTurn();
         board.scoreUponGameOver();
@@ -302,6 +302,8 @@ public class Game {
     }
 
     public static Game load(List<Player> participants) throws InvalidSaveStateException, UnmatchedSavedParticipantsException {
+        if(participants == null)
+            throw new NullPointerException("Tried to load a game with participants set to null.");
         DecoratedJsonObject tl = DecoratedJsonObject.getFromFile(JsonPathGenerator.getPath("saved.json"));
         DecoratedJsonObject jSaved;
         try {
@@ -521,7 +523,7 @@ public class Game {
                     try {
                         deathCount = jp.getInt("deathCount");
                     } catch (JullPointerException e) {
-                        throw new JsonException("Savestate participant deathCount nout found.");
+                        throw new JsonException("Savestate participant deathCount not found.");
                     }
                     player.setDeathCount(deathCount);
 
@@ -656,12 +658,12 @@ public class Game {
                     try {
                         blue = jAmmoCubes.getInt("blue");
                     } catch (JullPointerException e) {
-                        throw new JsonException("Savetstate participant ammoCubes blue not found.");
+                        throw new JsonException("Savestate participant ammoCubes blue not found.");
                     }
                     AmmoCubes ammoCubes = new AmmoCubes(red, yellow, blue);
                     player.giveAmmoCubes(ammoCubes);
 
-                    int positionId = 0;
+                    int positionId;
                     try {
                         positionId = jp.getInt("position");
                     } catch (JullPointerException e) {

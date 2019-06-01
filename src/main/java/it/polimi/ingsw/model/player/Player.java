@@ -93,8 +93,8 @@ public class Player extends VirtualClient {
         return this.damage.size() > KILL_THRESHOLD;
     }
 
-    public boolean isOverkilled() {
-        return this.damage.size() > OVERKILL_THRESHOLD;
+    private boolean isNotOverkilled() {
+        return this.damage.size() <= OVERKILL_THRESHOLD;
     }
 
     // returns the total amount of damage points the player has taken
@@ -136,7 +136,7 @@ public class Player extends VirtualClient {
         return this.causedFrenzy;
     }
 
-    public boolean isOnFrenzyBeforeStartingPlayer() {
+    boolean isOnFrenzyBeforeStartingPlayer() {
         return this.getId() > game.getParticipants()
                 .stream()
                 .filter(Player::causedFrenzy)
@@ -252,7 +252,7 @@ public class Player extends VirtualClient {
 
     // inflicts the player with a damage point
     public void applyDamage(Player author) {
-        if(!this.isOverkilled()) // no more than the max amount of tokens can be stored, any excess tokens are ignored
+        if(this.isNotOverkilled()) // no more than the max amount of tokens can be stored, any excess tokens are ignored
             this.damage.add(author);
 
         // if the damage's author has markings on the targeted player ...
@@ -261,7 +261,7 @@ public class Player extends VirtualClient {
 
         for(int i = 0; i < awaitingMarkings; i ++) {
             // ... each marking is turned into a damage point
-            if(!this.isOverkilled()) {
+            if(this.isNotOverkilled()) {
                 this.markings.remove(author);
                 this.damage.add(author);
             }
