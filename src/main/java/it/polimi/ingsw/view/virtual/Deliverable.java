@@ -1,41 +1,94 @@
 package it.polimi.ingsw.view.virtual;
 
-public class Deliverable {
-    private DeliverableType type;
-    private String message;
-    private int content;
+import java.util.List;
 
-    Deliverable(String message) {
-        this.type = DeliverableType.GENERIC;
-        this.message = message;
-        this.content = 0;
+public class Deliverable {
+    private static final int DEFAULT = -1;
+
+    private DeliverableType type;
+    private DeliverableEvent event;
+    private String message;
+    private List<String> options;
+    private List<Integer> keys;
+    private int number;
+
+    static Deliverable info(DeliverableEvent event) {
+        Deliverable deliverable = new Deliverable(DEFAULT);
+
+        deliverable.type = DeliverableType.INFO;
+        deliverable.event = event;
+        deliverable.message = event.message;
+        deliverable.options = null;
+        deliverable.keys = null;
+
+        return deliverable;
     }
 
-    Deliverable(DeliverableType type) {
-        this.type = type;
-        this.message = type.message;
-        this.content = 0;
+    static Deliverable dual(DeliverableEvent event) {
+        Deliverable deliverable = new Deliverable(DEFAULT);
+
+        deliverable.type = DeliverableType.DUAL;
+        deliverable.event = event;
+        deliverable.message = event.message;
+        deliverable.options = null;
+        deliverable.keys = null;
+
+        return deliverable;
+    }
+
+    static Deliverable listed(DeliverableEvent event, List<String> options) {
+        Deliverable deliverable = new Deliverable(DEFAULT);
+
+        deliverable.type = DeliverableType.LISTED;
+        deliverable.event = event;
+        deliverable.message = event.message;
+        deliverable.options = options;
+        deliverable.keys = null;
+
+        return deliverable;
+    }
+
+    static Deliverable mapped(DeliverableEvent event, List<String> options, List<Integer> keys) {
+        Deliverable deliverable = new Deliverable(DEFAULT);
+
+        deliverable.type = DeliverableType.MAPPED;
+        deliverable.event = event;
+        deliverable.message = event.message;
+        deliverable.options = options;
+        deliverable.keys = keys;
+
+        return deliverable;
     }
 
     public Deliverable(int content) {
-        this.type = DeliverableType.GENERIC;
-        this.message = "";
-        this.content = content;
+        this.number = content;
     }
 
-    public void pack(int content) {
-        this.content = content;
+    public void overwriteMessage(String message) {
+        this.message = message;
     }
 
     public DeliverableType getType() {
-        return this.type;
+        return type;
+    }
+
+    public DeliverableEvent getEvent() {
+        return event;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public int unpack() {
-        return content;
+    public List<String> getOptions() {
+        return options;
+    }
+
+    public List<Integer> getKeys() {
+        return keys;
+    }
+
+    int unpack() {
+        return number;
     }
 }

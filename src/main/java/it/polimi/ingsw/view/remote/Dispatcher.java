@@ -44,7 +44,7 @@ public abstract class Dispatcher {
         return n;
     }
 
-    public static int requestNumberedOption(String message, List<?> options, List<Integer> numbers) {
+    public static int requestMappedOption(String message, List<?> options, List<Integer> numbers) {
         int length = options.size();
 
         StringBuilder messageBuilder = new StringBuilder(message);
@@ -62,8 +62,8 @@ public abstract class Dispatcher {
         return numbers.indexOf(value);
     }
 
-    public static int requestIndex(String message, List<?> list) {
-        return requestNumberedOption(message, list, list.stream().map(list::indexOf).map(x -> x + 1).collect(Collectors.toList()));
+    public static int requestListedOption(String message, List<?> list) {
+        return requestMappedOption(message, list, list.stream().map(list::indexOf).map(x -> x + 1).collect(Collectors.toList()));
     }
 
     // keeps requesting an integer within an interval until such request is fulfilled

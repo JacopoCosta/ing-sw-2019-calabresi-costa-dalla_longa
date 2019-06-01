@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
+import it.polimi.ingsw.model.exceptions.DeliverableException;
 import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.model.player.Execution;
 import it.polimi.ingsw.model.player.Player;
@@ -48,7 +49,10 @@ public class VirtualView {
         return controller;
     }
 
-    private void sendMessage(Player recipient, Deliverable deliverable) {
+    private void sendInfo(Player recipient, Deliverable deliverable) {
+        if(!deliverable.getType().equals(DeliverableType.INFO))
+            throw new DeliverableException("Wrong call to sendInfo in VirtualView.");
+
         if(godMode) {
             Dispatcher.sendMessage(game.toString());
             Dispatcher.sendMessage("<" + recipient.getName() + "> " + deliverable.getMessage());
@@ -57,42 +61,15 @@ public class VirtualView {
             try {
                 recipient.deliver(deliverable);
             } catch (ConnectionException e) {
-                //TODO skip turn
+                disconnect(recipient);
             }
         }
     }
 
-    private int sendRequest(Player recipient, Deliverable deliverable, List<?> values, List<Integer> keys) {
-        if(godMode) {
-            Dispatcher.sendMessage(game.toString());
-            return Dispatcher.requestNumberedOption("<" + recipient.getName() + "> " + deliverable.getMessage(), values, keys);
-        }
-        else {
-            try {
-                recipient.deliver(deliverable);
-            } catch (ConnectionException e) {
-                //TODO skip turn
-            }
-            return recipient.nextDeliverable().unpack();
-        }
-    }
+    private boolean sendDual(Player recipient, Deliverable deliverable) {
+        if(!deliverable.getType().equals(DeliverableType.DUAL))
+            throw new DeliverableException("Wrong call to sendDual in VirtualView.");
 
-    private int sendRequest(Player recipient, Deliverable deliverable, List<?> values) {
-        if(godMode) {
-            Dispatcher.sendMessage(game.toString());
-            return Dispatcher.requestIndex("<" + recipient.getName() + "> " + deliverable.getMessage(), values);
-        }
-        else {
-            try {
-                recipient.deliver(deliverable);
-            } catch (ConnectionException e) {
-                //TODO skip turn
-            }
-            return recipient.nextDeliverable().unpack();
-        }
-    }
-
-    private boolean sendRequest(Player recipient, Deliverable deliverable) {
         if(godMode) {
             Dispatcher.sendMessage(game.toString());
             return Dispatcher.requestBoolean("<" + recipient.getName() + "> " + deliverable.getMessage());
@@ -100,58 +77,123 @@ public class VirtualView {
             try {
                 recipient.deliver(deliverable);
             } catch (ConnectionException e) {
-                //TODO skip turn
+                disconnect(recipient);
             }
             return recipient.nextDeliverable().unpack() != 0;
         }
     }
 
-    private void broadcast(Deliverable deliverable) {
-        game.getParticipants().forEach(recipient -> sendMessage(recipient, deliverable));
+    private int sendListed(Player recipient, Deliverable deliverable) {
+        if(!deliverable.getType().equals(DeliverableType.LISTED))
+            throw new DeliverableException("Wrong call to sendListed in VirtualView.");
+
+        if(godMode) {
+            Dispatcher.sendMessage(game.toString());
+            return Dispatcher.requestListedOption("<" + recipient.getName() + "> " + deliverable.getMessage(), deliverable.getOptions());
+        }
+        else {
+            try {
+                recipient.deliver(deliverable);
+            } catch (ConnectionException e) {
+                disconnect(recipient);
+            }
+            return recipient.nextDeliverable().unpack();
+        }
     }
 
-    public void spawn(Player subject, List<PowerUp> options) {
-        int keepIndex = sendRequest(subject, new Deliverable(DeliverableType.SPAWN_REQUEST), options);
-        PowerUp powerUpToKeep = options.get(keepIndex);
-        PowerUp powerUpToRespawn = options.get(1 - keepIndex);
+
+    private int sendMapped(Player recipient, Deliverable deliverable) {
+        if(!deliverable.getType().equals(DeliverableType.MAPPED))
+            throw new DeliverableException("Wrong call to sendMapped in VirtualView.");
+
+        if(godMode) {
+            Dispatcher.sendMessage(game.toString());
+            return Dispatcher.requestMappedOption("<" + recipient.getName() + "> " + deliverable.getMessage(), deliverable.getOptions(), deliverable.getKeys());
+        }
+        else {
+            try {
+                recipient.deliver(deliverable);
+            } catch (ConnectionException e) {
+                disconnect(recipient);
+            }
+            return recipient.nextDeliverable().unpack();
+        }
+    }
+
+    private void broadcast(Deliverable deliverable) {
+        game.getParticipants().forEach(recipient -> sendInfo(recipient, deliverable));
+    }
+
+    private void disconnect(Player player) {
+        // TODO abort turn and move on to the next player
+    }
+
+    public void spawn(Player subject, List<PowerUp> powerUps) {
+        List<String> options = powerUps.stream()
+                .map(PowerUp::toString)
+                .collect(Collectors.toList());
+
+        int keepIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.SPAWN_REQUEST, options));
+        PowerUp powerUpToKeep = powerUps.get(keepIndex);
+        PowerUp powerUpToRespawn = powerUps.get(1 - keepIndex);
         controller.spawn(subject, powerUpToKeep, powerUpToRespawn);
-        sendMessage(subject, new Deliverable(DeliverableType.SPAWN_SUCCESS));
+        sendInfo(subject, Deliverable.info(DeliverableEvent.SPAWN_SUCCESS));
     }
 
     public void discardPowerUp(Player subject) {
         List<PowerUp> powerUps = subject.getPowerUps();
-        int discardIndex = sendRequest(subject, new Deliverable(DeliverableType.DISCARD_POWERUP_REQUEST), powerUps);
+
+        List<String> options = powerUps.stream()
+                .map(PowerUp::toString)
+                .collect(Collectors.toList());
+
+        int discardIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.DISCARD_POWERUP_REQUEST, options));
         PowerUp toDiscard = powerUps.get(discardIndex);
         controller.discardPowerUp(subject, toDiscard);
     }
 
     public void discardWeapon(Player subject) {
         List<Weapon> weapons = subject.getWeapons();
-        int discardIndex = sendRequest(subject, new Deliverable(DeliverableType.DISCARD_WEAPON_REQUEST), weapons);
+
+        List<String> options = weapons.stream()
+                .map(Weapon::toString)
+                .collect(Collectors.toList());
+
+        int discardIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.DISCARD_WEAPON_REQUEST, options));
         Weapon toDiscard = weapons.get(discardIndex);
         controller.discardWeapon(subject, toDiscard);
     }
 
-    public Execution chooseExecution(Player subject, List<Execution> options) {
-        int choiceIndex = sendRequest(subject, new Deliverable(DeliverableType.CHOOSE_EXECUTION_REQUEST), options);
-        return options.get(choiceIndex);
+    public Execution chooseExecution(Player subject, List<Execution> executions) {
+
+        List<String> options = executions.stream()
+                .map(Execution::toString)
+                .collect(Collectors.toList());
+
+        int choiceIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.CHOOSE_EXECUTION_REQUEST, options));
+        return executions.get(choiceIndex);
     }
 
-    public void move(Player subject, List<Cell> options) {
-        List<Integer> cellIds = options.stream()
+    public void move(Player subject, List<Cell> cells) {
+        List<String> options = cells.stream()
+                .map(Cell::toString)
+                .collect(Collectors.toList());
+
+        List<Integer> cellIds = cells.stream()
                 .map(Cell::getId)
                 .collect(Collectors.toList());
-        int destinationIndex = sendRequest(subject, new Deliverable(DeliverableType.MOVE_REQUEST), options, cellIds);
-        Cell destination = options.get(destinationIndex);
+
+        int destinationIndex = sendMapped(subject, Deliverable.mapped(DeliverableEvent.MOVE_REQUEST, options, cellIds));
+        Cell destination = cells.get(destinationIndex);
         controller.move(subject, destination);
     }
 
     public void grabAmmo(Player subject) {
         boolean success = controller.grabAmmo(subject);
         if(success)
-            sendMessage(subject, new Deliverable(DeliverableType.GRAB_AMMO_SUCCESS));
+            sendInfo(subject, Deliverable.info(DeliverableEvent.GRAB_AMMO_SUCCESS));
         else
-            sendMessage(subject, new Deliverable(DeliverableType.GRAB_AMMO_FAILURE));
+            sendInfo(subject, Deliverable.info(DeliverableEvent.GRAB_AMMO_FAILURE));
     }
 
     public void grabWeapon(Player subject) {
@@ -164,31 +206,34 @@ public class VirtualView {
         if(weapons.size() == 0)
             return;
 
-        boolean doPurchase = sendRequest(subject, new Deliverable(DeliverableType.GRAB_WEAPON_REQUEST_IF));
+        List<String> options = weapons.stream()
+                .map(Weapon::toString)
+                .collect(Collectors.toList());
+
+        boolean doPurchase = sendDual(subject, Deliverable.dual(DeliverableEvent.GRAB_WEAPON_REQUEST_IF));
         if(!doPurchase)
             return;
         /*int weaponIndex = sendRequest(subject, new Deliverable(Message.GRAB_WEAPON_REQUEST_WHICH), cell.getWeaponShop()); TODO why is this code commented out?
         controller.grabWeapon(subject, weaponIndex); */
 
-        int purchaseIndex = sendRequest(subject, new Deliverable(DeliverableType.GRAB_WEAPON_REQUEST_WHICH), weapons);
+        int purchaseIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.GRAB_WEAPON_REQUEST_WHICH, options));
         Weapon weaponToPurchase = weapons.get(purchaseIndex);
         List<PowerUp> powerUps = new ArrayList<>(); // power-ups can be used to cover the costs of buying a weapon
 
-        while(!subject.getAmmoCubes().augment(powerUps).covers(weaponToPurchase.getPurchaseCost())) { // FIXME 1$ suitableForPayment may be empty -- probably fixed
+        while(!subject.getAmmoCubes().augment(powerUps).covers(weaponToPurchase.getPurchaseCost())) {
             List<PowerUp> suitableForPaymentPowerUps = subject.getPowerUps()
                     .stream()
-                    .peek(p -> System.out.println("1$in:" + p))
-                    .peek(p -> System.out.println("1$covers: " + weaponToPurchase.getPurchaseCost() + ", " + subject.getAmmoCubes().augment(powerUps).augment(p)))
                     .filter(powerUp -> subject.getAmmoCubes().augment(powerUps).augment(powerUp).covers(weaponToPurchase.getPurchaseCost()))
-                    .peek(p -> System.out.println("1$out:" + p))
                     .collect(Collectors.toList());
 
-            int suitableForPaymentPowerUpIndex = sendRequest(subject, new Deliverable(DeliverableType.GRAB_WEAPON_NEEDS_POWERUP), suitableForPaymentPowerUps);
+            List<String> options1 = suitableForPaymentPowerUps.stream().map(PowerUp::toString).collect(Collectors.toList());
+
+            int suitableForPaymentPowerUpIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.GRAB_WEAPON_NEEDS_POWERUP, options1));
             PowerUp payablePowerUp = suitableForPaymentPowerUps.get(suitableForPaymentPowerUpIndex);
             powerUps.add(payablePowerUp);
         }
 
-        sendMessage(subject, new Deliverable(DeliverableType.GRAB_WEAPON_SUCCESS));
+        sendInfo(subject, Deliverable.info(DeliverableEvent.GRAB_WEAPON_SUCCESS));
         int weaponShopIndex = ((SpawnCell) subject.getPosition()).getWeaponShop().indexOf(weaponToPurchase);
         controller.grabWeapon(subject, weaponShopIndex);
         powerUps.forEach(subject::discardPowerUp);
@@ -201,7 +246,9 @@ public class VirtualView {
                 .collect(Collectors.toList()); // gather all of the player's loaded weapons
                 // at the time this method is called and entered, it is assumed that the player is actually able to shoot with at least one weapon
 
-        int weaponIndex = sendRequest(subject, new Deliverable(DeliverableType.SHOOT_WEAPON_REQUEST), availableWeapons);
+        List<String> options = availableWeapons.stream().map(Weapon::toString).collect(Collectors.toList());
+
+        int weaponIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.SHOOT_WEAPON_REQUEST, options));
         Weapon weapon = availableWeapons.get(weaponIndex);
 
         AttackPattern pattern = weapon.getPattern();
@@ -212,7 +259,7 @@ public class VirtualView {
     }
 
     public void shootAttackModule(Player subject, AttackPattern pattern, List<Integer> next) {
-        List<String> nextNames = next.stream()
+        List<String> options = next.stream()
                 .filter(i -> {
                     try {
                         return !pattern.getModule(i).isUsed();
@@ -228,7 +275,7 @@ public class VirtualView {
                     }
                 })
                 .collect(Collectors.toList());
-        int moduleIndex = sendRequest(subject, new Deliverable(DeliverableType.SHOOT_MODULE_REQUEST), nextNames);
+        int moduleIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.SHOOT_MODULE_REQUEST, options));
         int moduleId = next.get(moduleIndex);
         controller.shoot(subject, pattern, moduleId);
     }
@@ -261,45 +308,57 @@ public class VirtualView {
     private Player shootPlayer(Player subject, TargetPlayer target) {
         List<Player> players = target.filter();
         if(players.size() == 0) {
-            sendMessage(subject, new Deliverable(DeliverableType.SHOOT_PLAYER_FAILURE));
+            sendInfo(subject, Deliverable.info(DeliverableEvent.SHOOT_PLAYER_FAILURE));
             return null;
         }
 
         List<String> playerNames = players.stream()
                 .map(Player::getName)
                 .collect(Collectors.toList());
-        int playerIndex = sendRequest(subject, new Deliverable(target.getMessage()), playerNames);
+
+        Deliverable deliverable = Deliverable.listed(DeliverableEvent.TARGET_REQUEST, playerNames);
+        deliverable.overwriteMessage(target.getMessage());
+        int playerIndex = sendListed(subject, deliverable);
         return players.get(playerIndex);
     }
 
     private Cell shootCell(Player subject, TargetCell target) {
         List<Cell> cells = target.filter();
         if(cells.size() == 0) {
-            sendMessage(subject, new Deliverable(DeliverableType.SHOOT_CELL_FAILURE));
+            sendInfo(subject, Deliverable.info(DeliverableEvent.SHOOT_CELL_FAILURE));
             return null;
         }
 
         List<String> cellNames = cells.stream()
                 .map(Cell::toString)
                 .collect(Collectors.toList());
+
         List<Integer> cellIds = cells.stream()
                 .map(Cell::getId)
                 .collect(Collectors.toList());
-        int cellIndex = sendRequest(subject, new Deliverable(target.getMessage()), cellNames, cellIds);
+
+        Deliverable deliverable = Deliverable.mapped(DeliverableEvent.TARGET_REQUEST, cellNames, cellIds);
+        deliverable.overwriteMessage(target.getMessage());
+
+        int cellIndex = sendMapped(subject, deliverable);
         return cells.get(cellIndex);
     }
 
     private Room shootRoom(Player subject, TargetRoom target) {
         List<Room> rooms = target.filter();
         if (rooms.size() == 0) {
-            sendMessage(subject, new Deliverable(DeliverableType.SHOOT_ROOM_FAILURE));
+            sendInfo(subject, Deliverable.info(DeliverableEvent.SHOOT_ROOM_FAILURE));
             return null;
         }
 
         List<String> roomNames = rooms.stream()
                 .map(Room::toString)
                 .collect(Collectors.toList());
-        int roomIndex = sendRequest(subject, new Deliverable(target.getMessage()), roomNames);
+
+        Deliverable deliverable = Deliverable.listed(DeliverableEvent.TARGET_REQUEST, roomNames);
+        deliverable.overwriteMessage(target.getMessage());
+
+        int roomIndex = sendListed(subject, deliverable);
         return rooms.get(roomIndex);
     }
 
@@ -308,13 +367,16 @@ public class VirtualView {
                 .filter(w -> !w.isLoaded())
                 .filter(w -> subject.canAffordWithPowerUps(w.getReloadCost()))
                 .collect(Collectors.toList());
+
         boolean keepReloading = true;
 
         while(weapons.size() > 0 && keepReloading) {
-            keepReloading = sendRequest(subject, new Deliverable(DeliverableType.RELOAD_REQUEST_IF));
+            keepReloading = sendDual(subject, Deliverable.dual(DeliverableEvent.RELOAD_REQUEST_IF));
+
+            List<String> options = weapons.stream().map(Weapon::toString).collect(Collectors.toList());
 
             if(keepReloading) {
-                int reloadIndex = sendRequest(subject, new Deliverable(DeliverableType.RELOAD_REQUEST_WHICH), weapons);
+                int reloadIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.RELOAD_REQUEST_WHICH, options));
                 Weapon weaponToReload = weapons.get(reloadIndex);
                 List<PowerUp> powerUps = new ArrayList<>(); // power-ups can be used to cover the costs of reloading a weapon
 
@@ -324,12 +386,16 @@ public class VirtualView {
                             .filter(powerUp -> weaponToReload.getReloadCost().covers(subject.getAmmoCubes().augment(powerUps).augment(powerUp)))
                             .collect(Collectors.toList());
 
-                    int suitableForPaymentPowerUpIndex = sendRequest(subject, new Deliverable(DeliverableType.RELOAD_NEEDS_POWERUP), suitableForPaymentPowerUps);
+                    List<String> options1 = suitableForPaymentPowerUps.stream()
+                            .map(PowerUp::toString)
+                            .collect(Collectors.toList());
+
+                    int suitableForPaymentPowerUpIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.RELOAD_NEEDS_POWERUP, options1));
                     PowerUp payablePowerUp = suitableForPaymentPowerUps.get(suitableForPaymentPowerUpIndex);
                     powerUps.add(payablePowerUp);
                 }
 
-                sendMessage(subject, new Deliverable(DeliverableType.RELOAD_SUCCESS));
+                sendInfo(subject, Deliverable.info(DeliverableEvent.RELOAD_SUCCESS));
                 controller.reload(subject, weaponToReload);
                 powerUps.forEach(subject::discardPowerUp);
             }
@@ -352,11 +418,13 @@ public class VirtualView {
         if(powerUps.size() == 0)
             return;
 
-        boolean usePowerUp = sendRequest(subject, new Deliverable(DeliverableType.POWERUP_REQUEST_IF));
+        List<String> options = powerUps.stream().map(PowerUp::toString).collect(Collectors.toList());
+
+        boolean usePowerUp = sendDual(subject, Deliverable.dual(DeliverableEvent.POWERUP_REQUEST_IF));
         if(!usePowerUp)
             return;
 
-        int powerUpIndex = sendRequest(subject, new Deliverable(DeliverableType.POWERUP_REQUEST_WHICH), powerUps);
+        int powerUpIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.POWERUP_REQUEST_WHICH, options));
         PowerUp powerUp = powerUps.get(powerUpIndex);
         subject.discardPowerUp(powerUp);
         controller.usePowerUp(subject, powerUp);
@@ -367,13 +435,21 @@ public class VirtualView {
         List<Player> scopedPlayers = new ArrayList<>();
         boolean useScope = true;
         while(scopes.size() > 0 && useScope) {
-            useScope = sendRequest(subject, new Deliverable(DeliverableType.SCOPE_REQUEST_IF));
+            useScope = sendDual(subject, Deliverable.dual(DeliverableEvent.SCOPE_REQUEST_IF));
             if(useScope) {
-                int scopeId = sendRequest(subject, new Deliverable(DeliverableType.SCOPE_REQUEST_WHICH), scopes);
+                List<String> options = scopes.stream()
+                        .map(PowerUp::toString)
+                        .collect(Collectors.toList());
+
+                int scopeId = sendListed(subject, Deliverable.listed(DeliverableEvent.SCOPE_REQUEST_WHICH, options));
                 PowerUp scope = scopes.get(scopeId);
                 subject.discardPowerUp(scope);
 
-                int targetId = sendRequest(subject, new Deliverable(DeliverableType.SCOPE_REQUEST_TARGET), targets);
+                List<String> options1 = targets.stream()
+                        .map(Player::toString)
+                        .collect(Collectors.toList());
+
+                int targetId = sendListed(subject, Deliverable.listed(DeliverableEvent.SCOPE_REQUEST_TARGET, options1));
                 scopedPlayers.add(targets.get(targetId));
             }
         }
@@ -381,11 +457,15 @@ public class VirtualView {
     }
 
     public void grenade(Player subject, List<PowerUp> grenades, Player originalAttacker) {
-        boolean useGrenade = sendRequest(subject, new Deliverable(DeliverableType.GRENADE_REQUEST_IF));
+        boolean useGrenade = sendDual(subject, Deliverable.dual(DeliverableEvent.GRENADE_REQUEST_IF));
         if(!useGrenade)
             return;
 
-        int grenadeIndex = sendRequest(subject, new Deliverable(DeliverableType.GRENADE_REQUEST_WHICH), grenades);
+        List<String> options = grenades.stream()
+                .map(PowerUp::toString)
+                .collect(Collectors.toList());
+
+        int grenadeIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.GRENADE_REQUEST_WHICH, options));
         PowerUp grenade = grenades.get(grenadeIndex);
         subject.discardPowerUp(grenade);
         controller.grenade(subject, originalAttacker);
@@ -397,6 +477,7 @@ public class VirtualView {
                 .filter(p -> !p.equals(subject))
                 .filter(p -> p.getPosition() != null)
                 .collect(Collectors.toList());
+
         if(targetPlayers.size() == 0)
             return;
 
@@ -404,7 +485,7 @@ public class VirtualView {
                 .map(Player::getName)
                 .collect(Collectors.toList());
 
-        int targetPlayerId = sendRequest(subject, new Deliverable(DeliverableType.NEWTON_REQUEST_PLAYER), playerNames);
+        int targetPlayerId = sendListed(subject, Deliverable.listed(DeliverableEvent.NEWTON_REQUEST_PLAYER, playerNames));
         Player targetPlayer = targetPlayers.get(targetPlayerId);
 
         List<Cell> targetCells = game.getBoard()
@@ -421,40 +502,56 @@ public class VirtualView {
                 .collect(Collectors.toList());
 
         if(targetCells.size() == 0) {
-            sendMessage(subject, new Deliverable(DeliverableType.NEWTON_FAILURE));
+            sendInfo(subject, Deliverable.info(DeliverableEvent.NEWTON_FAILURE));
             return;
         }
+
+        List<String> cellNames = targetCells.stream()
+                .map(Cell::toString)
+                .collect(Collectors.toList());
 
         List<Integer> cellIds = targetCells.stream()
                 .map(Cell::getId)
                 .collect(Collectors.toList());
 
-        int targetCellId = sendRequest(subject, new Deliverable(DeliverableType.NEWTON_REQUEST_CELL), targetCells, cellIds);
+        int targetCellId = sendMapped(subject, Deliverable.mapped(DeliverableEvent.NEWTON_REQUEST_CELL, cellNames, cellIds));
         Cell targetCell = targetCells.get(targetCellId);
 
         controller.newton(targetPlayer, targetCell);
     }
 
     public void teleport(Player subject) {
-        List<Cell> options = game.getBoard().getCells();
-        List<Integer> cellIds = options.stream()
+        List<Cell> targetCells = game.getBoard().getCells();
+
+        List<String> cellNames = targetCells.stream()
+                .map(Cell::toString)
+                .collect(Collectors.toList());
+
+        List<Integer> cellIds = targetCells.stream()
                 .map(Cell::getId)
                 .collect(Collectors.toList());
-        int cellIndex = sendRequest(subject, new Deliverable(DeliverableType.TELEPORT_REQUEST_CELL), options, cellIds);
-        Cell destination = options.get(cellIndex);
+
+        int cellIndex = sendMapped(subject, Deliverable.mapped(DeliverableEvent.TELEPORT_REQUEST_CELL, cellNames, cellIds));
+        Cell destination = targetCells.get(cellIndex);
         controller.teleport(subject, destination);
     }
 
     public void announceDamage(Player author, Player target, int amount) {
-        broadcast(new Deliverable(author.getName() + " dealt " + amount + " damage to " + target.getName() + "."));
+        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE);
+        deliverable.overwriteMessage(author.getName() + " dealt " + amount + " damage to " + target.getName() + ".");
+        broadcast(deliverable);
     }
 
     public void announceMarking(Player author, Player target, int amount) {
         String lexeme = amount > 1 ? "marks" : "mark";
-        broadcast(new Deliverable(author.getName() + " dealt " + amount + " " + lexeme + " to " + target.getName() + "."));
+        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE);
+        deliverable.overwriteMessage(author.getName() + " dealt " + amount + " " + lexeme + " to " + target.getName() + ".");
+        broadcast(deliverable);
     }
 
     public void announceMove(Player author, Player target, Cell destination) {
-        broadcast(new Deliverable(author.getName() + " moved " + target.getName() + " to " + destination.toString() + "."));
+        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE);
+        deliverable.overwriteMessage(author.getName() + " moved " + target.getName() + " to " + destination.toString() + ".");
+        broadcast(deliverable);
     }
 }
