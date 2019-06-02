@@ -6,8 +6,8 @@ import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class represents the game's currency. Ammo cubes come in three colours (red, yellow, blue). Players
@@ -181,10 +181,21 @@ public class AmmoCubes {
                 .reduce(this, AmmoCubes::sum);
     }
 
-    public AmmoCubes augment(PowerUp powerUp) {
-        List<PowerUp> singlePowerUp = new ArrayList<>();
-        singlePowerUp.add(powerUp);
-        return augment(singlePowerUp);
+    private AmmoCubes differenceFromCovering(AmmoCubes cost) {
+        return new AmmoCubes(
+                Math.max(0, cost.red - this.red),
+                Math.max(0, cost.yellow - this.yellow),
+                Math.max(0, cost.blue - this.blue)
+        );
+    }
+
+    public List<PowerUp> filterValidAugmenters(List<PowerUp> powerUps, AmmoCubes cost) {
+        // this == the player's base balance to cover the cost
+        // only power-ups that "make the difference" should pass the filter
+
+        return powerUps.stream()
+                .filter(powerUp -> this.differenceFromCovering(cost).covers(powerUp.getAmmoCubes()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -239,6 +250,6 @@ public class AmmoCubes {
                 return "yellow";
             return "blue";
         }
-        return "";
+        return super.toString();
     }
 }

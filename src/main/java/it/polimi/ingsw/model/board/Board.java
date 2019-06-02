@@ -352,6 +352,10 @@ public class Board {
         return powerUpDeck;
     }
 
+    public Deck<AmmoTile> getAmmoTileDeck() {
+        return ammoTileDeck;
+    }
+
     public Game getGame() {
         return this.game;
     }

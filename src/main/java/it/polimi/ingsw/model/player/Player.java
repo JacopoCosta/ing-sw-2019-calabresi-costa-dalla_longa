@@ -93,10 +93,6 @@ public class Player extends VirtualClient {
         return this.damage.size() > KILL_THRESHOLD;
     }
 
-    private boolean isNotOverkilled() {
-        return this.damage.size() <= OVERKILL_THRESHOLD;
-    }
-
     // returns the total amount of damage points the player has taken
     public int getDamage() {
         return this.damage.size();
@@ -252,7 +248,7 @@ public class Player extends VirtualClient {
 
     // inflicts the player with a damage point
     public void applyDamage(Player author) {
-        if(this.isNotOverkilled()) // no more than the max amount of tokens can be stored, any excess tokens are ignored
+        if(damage.size() <= OVERKILL_THRESHOLD) // no more than the max amount of tokens can be stored, any excess tokens are ignored
             this.damage.add(author);
 
         // if the damage's author has markings on the targeted player ...
@@ -261,7 +257,7 @@ public class Player extends VirtualClient {
 
         for(int i = 0; i < awaitingMarkings; i ++) {
             // ... each marking is turned into a damage point
-            if(this.isNotOverkilled()) {
+            if(damage.size() <= OVERKILL_THRESHOLD) {
                 this.markings.remove(author);
                 this.damage.add(author);
             }
@@ -320,8 +316,10 @@ public class Player extends VirtualClient {
         }
 
         game.getBoard().addKiller(damage.get(KILL_THRESHOLD));
-        if(damage.get(KILL_THRESHOLD) == damage.get(OVERKILL_THRESHOLD))
-            game.getBoard().addKiller(null); // watch out
+        if(damage.size() > OVERKILL_THRESHOLD) {
+            if (damage.get(KILL_THRESHOLD) == damage.get(OVERKILL_THRESHOLD))
+                game.getBoard().addKiller(null); // watch out
+        }
 
         // one extra point to the player who drew first blood
         this.damage.get(0).giveScore(1);

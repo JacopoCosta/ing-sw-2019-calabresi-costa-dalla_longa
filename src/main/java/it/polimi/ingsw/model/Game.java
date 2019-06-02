@@ -23,6 +23,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Game {
+    public static final boolean godMode = true;
+    public static final boolean autoPilot = true;
+    public static final List<String> sequence = new ArrayList<>();
+
     private boolean finalFrenzy;
     private int roundsLeft;
     private boolean gameOver;
@@ -70,7 +74,7 @@ public class Game {
         Player subject = participants.get(currentTurnPlayer);
         subject.beginTurn();
 
-        if (subject.getPosition() == null) {
+        if (subject.getPosition() == null) { // FIXME spawns should also occur after death
             List<PowerUp> powerUps = new ArrayList<>();
             for (int i = 0; i <= 1; i++)
                 board.getPowerUpDeck().smartDraw(true).ifPresent(powerUps::add);
@@ -690,6 +694,10 @@ public class Game {
         s.append(", boardType: ").append(boardType);
         s.append("\nKillers: ").append(Table.list(board.getKillers()));
         s.append("\nDoubleKillers: ").append(Table.list(board.getDoubleKillers()));
+        s.append("\n\nDecks:");
+        s.append("\nWeapons > ").append(board.getWeaponDeck().toString());
+        s.append("\nPowerUps > ").append(board.getPowerUpDeck().toString());
+        s.append("\nAmmoTIles > ").append(board.getAmmoTileDeck().toString());
         s.append("\n\nCells:\n");
         s.append(Table.create(
                 board.getCells().stream().map(Cell::toString).collect(Collectors.toList()),

@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
+import it.polimi.ingsw.model.exceptions.CannotDiscardFirstCardOfDeckException;
 import it.polimi.ingsw.model.exceptions.FullHandException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
@@ -18,6 +19,7 @@ import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.view.virtual.VirtualView;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Controller {
 
@@ -70,6 +72,9 @@ public class Controller {
             }
         }
         ammoCell.setAmmoTile(null);
+        try {
+            subject.getGame().getBoard().getAmmoTileDeck().discard(ammoTile);
+        } catch (CannotDiscardFirstCardOfDeckException ignored) { }
 
         return true;
     }
@@ -128,7 +133,18 @@ public class Controller {
             });
 
         attackModule.setUsed(true);
-        virtualView.shootAttackModule(subject, attackModule.getContext(), attackModule.getNext());
+
+        AttackPattern pattern = attackModule.getContext();
+
+        List<Integer> next = attackModule.getNext()
+                .stream()
+                .filter(i -> {
+                    if(i == -1) // -1 needs to pass
+                        return true;
+                    return !pattern.getModule(i).isUsed() && subject.canAfford(pattern.getModule(i).getSummonCost());
+                }).collect(Collectors.toList());
+
+        virtualView.shootAttackModule(subject, pattern, next);
     }
 
     public void reload(Player subject, Weapon weapon) {

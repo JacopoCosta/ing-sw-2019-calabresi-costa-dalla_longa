@@ -27,7 +27,7 @@ public class TargetPlayer extends Target {
 
     @Override
     public Cell getCell() {
-        return player.getPosition();
+        return player.getPosition(); // FIXME NullPointerException, from DistanceConstraint:54:83, from VisibilityConstraint:62
     }
 
     @Override

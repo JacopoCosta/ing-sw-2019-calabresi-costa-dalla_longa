@@ -12,6 +12,8 @@ import it.polimi.ingsw.model.weaponry.Weapon;
 import java.util.*;
 import java.util.function.Function;
 
+import static it.polimi.ingsw.model.Game.autoPilot;
+
 public class Deck<T> {
     private List<T> cards;
     private List<T> discarded;
@@ -34,6 +36,8 @@ public class Deck<T> {
     }
 
     void shuffle() {
+        if(autoPilot)
+            return;
         Collections.shuffle(this.cards);
     }
 

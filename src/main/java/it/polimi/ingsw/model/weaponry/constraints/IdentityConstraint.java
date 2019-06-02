@@ -22,7 +22,7 @@ public class IdentityConstraint extends Constraint {
     }
 
     private boolean verify(Player sourcePlayer, Player drainPlayer) {
-        return sourcePlayer.equals(drainPlayer) == truth;
+        return sourcePlayer.equals(drainPlayer) == truth; // FIXME NullPointerException from IdentityConstraint:50
     }
 
     @Override

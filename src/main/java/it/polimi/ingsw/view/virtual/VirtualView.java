@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.Newton;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.powerups.PowerUpType;
+import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.Weapon;
@@ -27,9 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VirtualView {
+import static it.polimi.ingsw.model.Game.godMode;
 
-    private static final boolean godMode = true; // this should be false in the final release
+public class VirtualView {
     private Game game;
     private Controller controller;
 
@@ -212,10 +213,9 @@ public class VirtualView {
         List<PowerUp> powerUps = new ArrayList<>(); // power-ups can be used to cover the costs of buying a weapon
 
         while(!subject.getAmmoCubes().augment(powerUps).covers(weaponToPurchase.getPurchaseCost())) {
-            List<PowerUp> suitableForPaymentPowerUps = subject.getPowerUps()
-                    .stream()
-                    .filter(powerUp -> subject.getAmmoCubes().augment(powerUps).augment(powerUp).covers(weaponToPurchase.getPurchaseCost()))
-                    .collect(Collectors.toList());
+
+            List<PowerUp> suitableForPaymentPowerUps = subject.getAmmoCubes()
+                    .filterValidAugmenters(subject.getPowerUps(), weaponToPurchase.getPurchaseCost());
 
             List<String> options1 = suitableForPaymentPowerUps.stream().map(PowerUp::toString).collect(Collectors.toList());
 
@@ -251,17 +251,15 @@ public class VirtualView {
 
     public void shootAttackModule(Player subject, AttackPattern pattern, List<Integer> next) {
         List<String> options = next.stream()
-                .filter(i -> {
-                    if(i == -1) // -1 needs to pass
-                        return true;
-                    return !pattern.getModule(i).isUsed() && subject.canAfford(pattern.getModule(i).getSummonCost());
-                })
                 .map(i -> {
                     if(i == -1) // -1 ends action
                         return "End action";
                     return pattern.getModule(i).toString();
                 })
                 .collect(Collectors.toList());
+
+
+
         int moduleIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.SHOOT_MODULE_REQUEST, options));
         int moduleId = next.get(moduleIndex);
         controller.shoot(subject, pattern, moduleId);
@@ -360,18 +358,16 @@ public class VirtualView {
         while(weapons.size() > 0 && keepReloading) {
             keepReloading = sendDual(subject, Deliverable.dual(DeliverableEvent.RELOAD_REQUEST_IF));
 
-            List<String> options = weapons.stream().map(Weapon::toString).collect(Collectors.toList());
-
             if(keepReloading) {
+                List<String> options = weapons.stream().map(Weapon::toString).collect(Collectors.toList());
                 int reloadIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.RELOAD_REQUEST_WHICH, options));
                 Weapon weaponToReload = weapons.get(reloadIndex);
                 List<PowerUp> powerUps = new ArrayList<>(); // power-ups can be used to cover the costs of reloading a weapon
 
                 while(!subject.getAmmoCubes().augment(powerUps).covers(weaponToReload.getReloadCost())) {
-                    List<PowerUp> suitableForPaymentPowerUps = subject.getPowerUps()
-                            .stream()
-                            .filter(powerUp -> subject.getAmmoCubes().augment(powerUps).augment(powerUp).covers(weaponToReload.getReloadCost()))
-                            .collect(Collectors.toList());
+
+                    List<PowerUp> suitableForPaymentPowerUps = subject.getAmmoCubes()
+                            .filterValidAugmenters(subject.getPowerUps(), weaponToReload.getReloadCost());
 
                     List<String> options1 = suitableForPaymentPowerUps.stream()
                             .map(PowerUp::toString)
@@ -556,11 +552,21 @@ public class VirtualView {
 
     public void announceWinner(List<Player> ranking) {
         Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE);
-        StringBuilder message = new StringBuilder(ranking.get(0).toString() + " won the game!\n\nRanking:");
-        for(Player p : ranking) {
-            message.append("\n#").append(ranking.indexOf(p) + 1).append(". ").append(p.toString());
-        }
-        deliverable.overwriteMessage(message.toString());
+        String message = ranking.get(0).toString() + " won the game!\n\nRanking:\n" + Table.create(
+                ranking.stream()
+                        .map(ranking::indexOf)
+                        .map(i -> i + 1)
+                        .map(s -> "#" + s)
+                        .collect(Collectors.toList()),
+                ranking.stream()
+                        .map(Player::toString)
+                        .collect(Collectors.toList()),
+                ranking.stream()
+                        .map(Player::getScore)
+                        .map(s -> s + " points")
+                        .collect(Collectors.toList())
+        );
+        deliverable.overwriteMessage(message);
         broadcast(deliverable);
     }
 }
