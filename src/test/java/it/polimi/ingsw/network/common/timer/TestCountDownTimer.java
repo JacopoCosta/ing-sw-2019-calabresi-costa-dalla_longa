@@ -1,11 +1,10 @@
-package it.polimi.ingsw.network.server.lobby;
+package it.polimi.ingsw.network.common.timer;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class TestCountDownTimer {
-
     @Test
     public void start() throws InterruptedException {
         int startingSeconds = 1;
@@ -18,7 +17,8 @@ public class TestCountDownTimer {
         assertEquals(timer.getState(), CountDownTimer.TimerState.STARTED);
 
         Thread.sleep(500 + 5); //in the 1000th millisecond the timer may not have been stopped yet
-        assertEquals(timer.getState(), CountDownTimer.TimerState.STOPPED);
+        assertEquals(timer.getState(), CountDownTimer.TimerState.EXPIRED);
+        assertNotEquals(timer.getState(), CountDownTimer.TimerState.STOPPED);
     }
 
     @Test
@@ -33,6 +33,7 @@ public class TestCountDownTimer {
 
         timer.stop();
         assertEquals(timer.getState(), CountDownTimer.TimerState.STOPPED);
+        assertNotEquals(timer.getState(), CountDownTimer.TimerState.EXPIRED);
     }
 
     @Test
@@ -52,6 +53,8 @@ public class TestCountDownTimer {
         assertEquals(timer.getState(), CountDownTimer.TimerState.STARTED);
 
         Thread.sleep(1000 + 5); //in the 1000th millisecond the timer may not have been stopped yet
-        assertEquals(timer.getState(), CountDownTimer.TimerState.STOPPED);
+        assertEquals(timer.getState(), CountDownTimer.TimerState.EXPIRED);
+        assertNotEquals(timer.getState(), CountDownTimer.TimerState.STOPPED);
     }
+
 }

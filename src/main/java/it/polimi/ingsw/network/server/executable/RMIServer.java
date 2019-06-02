@@ -18,7 +18,7 @@ public class RMIServer implements Runnable {
 
     @Override
     public void run() {
-        Console console = new Console();
+        Console console = Console.getInstance();
 
         console.log("creating RMI protocol implementation...");
         ServerController serverController;

@@ -36,7 +36,7 @@ public class Client extends Application implements Runnable, EventHandler<Action
 
     private String[] args;
 
-    private static final Console console = new Console();
+    private static final Console console = Console.getInstance();
 
     public Client() {
         //without this the GUI app won't start :(
@@ -72,6 +72,11 @@ public class Client extends Application implements Runnable, EventHandler<Action
                 valid = true;
             } catch (ConnectionException e) {
                 console.err("connection to the server is lost, cause: " + e.getMessage());
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
                 System.exit(-1);
             } catch (ClientAlreadyRegisteredException e) {
                 console.err(e.getMessage());

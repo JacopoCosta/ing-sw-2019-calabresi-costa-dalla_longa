@@ -19,7 +19,7 @@ public class Server implements Runnable {
         this.ipAddress = ipAddress;
         this.port = port;
 
-        console = new Console();
+        console = Console.getInstance();
         executor = Executors.newFixedThreadPool(2);
     }
 

@@ -1,7 +1,7 @@
-package it.polimi.ingsw.network.server.lobby;
+package it.polimi.ingsw.network.common.timer;
 
-import it.polimi.ingsw.network.server.observer.Observable;
-import it.polimi.ingsw.network.server.observer.Observer;
+import it.polimi.ingsw.network.common.observer.Observable;
+import it.polimi.ingsw.network.common.observer.Observer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,17 +11,22 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-class CountDownTimer implements Observable {
-    protected enum TimerState {
+public class CountDownTimer implements Observable {
+    public enum TimerState {
         //the timer has been created successfully, but is not started yet
         NOT_STARTED,
 
         //the timer is started and is currently performing the countdown
         STARTED,
 
-        //the timer has completed the countdown or has been stopped during the execution.
-        //In both cases the timer is not performing the countdown anymore
-        STOPPED
+        //the timer has been stopped during the execution before expiring,
+        //the timer is not performing the countdown anymore,
+        //if stop() is called at the same time the timer expires, the timer state will be set to EXPIRED instead
+        STOPPED,
+
+        //the timer has finished his execution without being interrupted,
+        //the timer is not performing the countdown anymore
+        EXPIRED
     }
 
     private TimerState timerState; //the current state of the timer
@@ -32,22 +37,23 @@ class CountDownTimer implements Observable {
     private final int statingSeconds; //time to start counting from in seconds
     private AtomicInteger currentSeconds; //the time left in seconds before countdown expires
 
-    private final ScheduledExecutorService executor; //the timer responsible for the actual countdown
+    private ScheduledExecutorService executor; //the timer responsible for the actual countdown
     private ScheduledFuture<?> future;
 
     private Runnable tick = () -> { //the task to execute every PERIOD seconds
-        if (currentSeconds.decrementAndGet() < 0)
+        if (currentSeconds.decrementAndGet() < 0) {
+            timerState = TimerState.EXPIRED;
             stop();
+            notifyObservers();
+        }
     };
 
     private final List<Observer> observers;
 
-    CountDownTimer(int statingSeconds) {
+    public CountDownTimer(int statingSeconds) {
         this.statingSeconds = statingSeconds;
         currentSeconds = new AtomicInteger();
         timerState = TimerState.NOT_STARTED;
-
-        executor = Executors.newSingleThreadScheduledExecutor();
 
         observers = new ArrayList<>();
     }
@@ -56,10 +62,11 @@ class CountDownTimer implements Observable {
      * starts the countdown from this.startingSeconds to 0
      * throws IllegalStateException if timer was already started
      * */
-    void start() {
+    public void start() {
         //prepare the timer to start the countdown from the beginning
         currentSeconds.set(statingSeconds);
 
+        executor = Executors.newSingleThreadScheduledExecutor();
         future = executor.scheduleAtFixedRate(tick, INITIAL_DELAY, PERIOD, TimeUnit.SECONDS);
         timerState = TimerState.STARTED;
     }
@@ -68,26 +75,25 @@ class CountDownTimer implements Observable {
      * stops the current timer
      * If called called repeatedly the second and subsequent calls have no effect
      * */
-    void stop() {
-        timerState = TimerState.STOPPED;
-
+    public synchronized void stop() {
         future.cancel(true);
         executor.shutdown();
 
-        notifyObservers();
+        if (!timerState.equals(TimerState.EXPIRED))
+            timerState = TimerState.STOPPED;
     }
 
     /*
      * delays the timer expiration by a certain amount of time in seconds
      * */
-    void delay(int secondsAmount) {
+    public void delay(int secondsAmount) {
         currentSeconds.addAndGet(secondsAmount);
     }
 
     /*
      * get the current state of the timer
      * */
-    TimerState getState() {
+    public TimerState getState() {
         return timerState;
     }
 

@@ -4,7 +4,9 @@ public class Console {
     private final String osName;
     private final ConsoleExecutor executor;
 
-    public Console() {
+    private static Console instance = null;
+
+    private Console() {
         osName = System.getProperty("os.name").toLowerCase();
 
         if (isWindowsOS())
@@ -13,6 +15,12 @@ public class Console {
             executor = new UnixConsoleExecutor();
         else
             throw new RuntimeException("invalid OS: unable to execute console commands");
+    }
+
+    public static Console getInstance() {
+        if (instance == null)
+            return new Console();
+        return instance;
     }
 
     private boolean isWindowsOS() {
@@ -32,46 +40,46 @@ public class Console {
     }
 
     //prints a single line including escape characters (\n, \t...) and then a new line at the end. Does not support ANSI escape characters
-    public void tinyPrintln(String message) {
+    public synchronized void tinyPrintln(String message) {
         System.out.println(message);
     }
 
     //prints a single line including escape characters (\n, \t...) without a new line at the end. Does not support ANSI escape characters
-    public void tinyPrint(String message) {
+    public synchronized void tinyPrint(String message) {
         System.out.print(message);
     }
 
     //prints a single line ignoring escape characters (\n, \t...) without a new line at the end. Support ANSI escape characters
-    public void ANSIPrint(String message) {
+    public synchronized void ANSIPrint(String message) {
         executor.ANSIPrint(message);
     }
 
     //prints a single line ignoring escape characters (\n, \t...) and then a new line at the end. Supports ANSI escape characters
-    public void ANSIPrintln(String message) {
+    public synchronized void ANSIPrintln(String message) {
         executor.ANSIPrintln(message);
     }
 
-    public void mexS(String message) {
+    public synchronized void mexS(String message) {
         ANSIPrintln(Color.ANSI_CYAN + "[MESSAGE] " + message + Color.ANSI_RESET);
     }
 
-    public void mexC(String message) {
+    public synchronized void mexC(String message) {
         ANSIPrintln(Color.ANSI_YELLOW + "[MESSAGE] " + message + Color.ANSI_RESET);
     }
 
-    public void log(String message) {
+    public synchronized void log(String message) {
         ANSIPrintln("[LOG] " + message);
     }
 
-    public void stat(String message) {
+    public synchronized void stat(String message) {
         ANSIPrintln(Color.ANSI_GREEN + "[STATUS] " + message + Color.ANSI_RESET);
     }
 
-    public void err(String message) {
+    public synchronized void err(String message) {
         ANSIPrintln(Color.ANSI_RED + "[ERROR] " + message + Color.ANSI_RESET);
     }
 
-    public void clear() {
+    public synchronized void clear() {
         executor.clear();
     }
 }

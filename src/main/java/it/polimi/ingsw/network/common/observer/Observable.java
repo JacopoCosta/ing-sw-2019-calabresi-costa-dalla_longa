@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.server.observer;
+package it.polimi.ingsw.network.common.observer;
 
 public interface Observable {
     void addObserver(Observer observer);

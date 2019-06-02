@@ -23,7 +23,7 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
     @Override
     public void ANSIPrintln(String ansiMessage) {
         try {
-            execute("echo " + ansiMessage);
+            execute("echo. & <nul set /p =\"" + ansiMessage + "\"");
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

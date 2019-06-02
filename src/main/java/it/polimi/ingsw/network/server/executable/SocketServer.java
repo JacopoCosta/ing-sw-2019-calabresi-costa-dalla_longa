@@ -20,7 +20,7 @@ public class SocketServer implements Runnable {
 
     @Override
     public void run() {
-        Console console = new Console();
+        Console console = Console.getInstance();
 
         try (ServerSocket socket = new ServerSocket(port, 0, InetAddress.getByName(ipAddress))) {
             console.log("socket server configured on " + ipAddress + ":" + port);

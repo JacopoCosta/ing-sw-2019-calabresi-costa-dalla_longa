@@ -55,7 +55,7 @@ public class App {
             console.tinyPrint(helpString);
             return Configuration.ERROR;
         } else if (!args[0].equals("-mode")) {
-            console.err("first argument must be: -mode [c/s]. Type \"-help\" to see more.");
+            console.err("first argument must be: -mode [c|s]. Type \"-help\" to see more.");
             return Configuration.ERROR;
         }
 
@@ -121,7 +121,7 @@ public class App {
                     } else if (connectionType.equals("r")) {
                         return App.Configuration.CLIENT_RMI_GUI;
                     } else {
-                        console.err("parameter for argument \"-conn\" must be [s/r]. Type \"-help\" to see more.");
+                        console.err("parameter for argument \"-conn\" must be [s|r]. Type \"-help\" to see more.");
                         return App.Configuration.ERROR;
                     }
                 } else if (argument.equals("-int")) {
@@ -132,7 +132,7 @@ public class App {
                     } else if (interfaceType.equals("g")) {
                         return App.Configuration.CLIENT_SOCKET_GUI;
                     } else {
-                        console.err("parameter for argument \"-int\" must be [c/g]. Type \"-help\" to see more.");
+                        console.err("parameter for argument \"-int\" must be [c|g]. Type \"-help\" to see more.");
                         return App.Configuration.ERROR;
                     }
                 } else {
@@ -147,7 +147,7 @@ public class App {
                     connectionType = args[5];
 
                     if (!connectionType.equals("s") && !connectionType.equals("r")) {
-                        console.err("parameter for argument \"-conn\" must be [s/r]. Type \"-help\" to see more.");
+                        console.err("parameter for argument \"-conn\" must be [s|r]. Type \"-help\" to see more.");
                         return App.Configuration.ERROR;
                     }
 
@@ -167,14 +167,14 @@ public class App {
                             return App.Configuration.CLIENT_SOCKET_GUI;
                         return App.Configuration.CLIENT_RMI_GUI;
                     } else {
-                        console.err("parameter for argument \"-int\" must be [c/g]. Type \"-help\" to see more.");
+                        console.err("parameter for argument \"-int\" must be [c|g]. Type \"-help\" to see more.");
                         return App.Configuration.ERROR;
                     }
                 } else if (firstArgument.equals("-int")) {
                     String interfaceType = args[5];
 
                     if (!interfaceType.equals("c") && !interfaceType.equals("g")) {
-                        console.err("parameter for argument \"-int\" must be [c/g]. Type \"-help\" to see more.");
+                        console.err("parameter for argument \"-int\" must be [c|g]. Type \"-help\" to see more.");
                         return App.Configuration.ERROR;
                     }
 
@@ -194,7 +194,7 @@ public class App {
                             return App.Configuration.CLIENT_RMI_CLI;
                         return App.Configuration.CLIENT_RMI_GUI;
                     } else {
-                        console.err("parameter for argument \"-conn\" must be [s/r]. Type \"-help\" to see more.");
+                        console.err("parameter for argument \"-conn\" must be [s|r]. Type \"-help\" to see more.");
                         return App.Configuration.ERROR;
                     }
                 } else {
@@ -206,13 +206,13 @@ public class App {
                 return App.Configuration.ERROR;
             }
         } else {
-            console.err("parameter for argument \"-mode\" must be [c/s]. Type \"-help\" to see more.");
+            console.err("parameter for argument \"-mode\" must be [c|s]. Type \"-help\" to see more.");
             return Configuration.ERROR;
         }
     }
 
     public static void main(String[] args) {
-        console = new Console();
+        console = Console.getInstance();
         executor = Executors.newSingleThreadExecutor();
 
         Configuration config = init(args);

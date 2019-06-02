@@ -2,7 +2,8 @@ package it.polimi.ingsw.network.server.lobby;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.*;
-import it.polimi.ingsw.network.server.observer.Observer;
+import it.polimi.ingsw.network.common.timer.CountDownTimer;
+import it.polimi.ingsw.network.common.observer.Observer;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -104,11 +105,12 @@ class Lobby implements Observer {
          *  to restart the countdown from the beginning.
          *  To check the timer status at any time, call
          *  timer.getState()
-         *  which returns one of the three possible states (an explanation of the states meaning can be found
+         *  which returns one of the four possible states (an explanation of the states meaning can be found
          *  in the CountdownTimer class):
-         *  CountdownTimer.NOT_STARTED
-         *  CountdownTimer.STARTED
-         *  CountdownTimer.STOPPED
+         *  CountdownTimer.TimerState.NOT_STARTED
+         *  CountdownTimer.TimerState.STARTED
+         *  CountdownTimer.TimerState.STOPPED
+         *  CountdownTimer.TimerState.EXPIRED
          * */
     }
 

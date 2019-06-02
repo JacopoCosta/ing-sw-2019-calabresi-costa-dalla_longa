@@ -7,6 +7,7 @@ import it.polimi.ingsw.network.common.util.Console;
 import it.polimi.ingsw.network.server.communication.ClientCommunicationInterface;
 import it.polimi.ingsw.network.server.communication.CommunicationHub;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -27,7 +28,7 @@ public class ClientHandler implements Runnable {
         communicationHub = CommunicationHub.getInstance();
         this.socket = socket;
 
-        console = new Console();
+        console = Console.getInstance();
 
         try {
             out = new ObjectOutputStream(socket.getOutputStream());
@@ -83,7 +84,7 @@ public class ClientHandler implements Runnable {
 
                 communicationHub.handleMessage(message);
             } while (!message.getType().equals(MessageType.UNREGISTER_REQUEST));
-        } catch (SocketException ignored) {
+        } catch (SocketException | EOFException e) {
             //Client unexpectedly quit: the ClientHandler.connectionChecker will unregister it
         } catch (IOException | ClassNotFoundException e) {
             console.err(e.getClass() + ": " + e.getMessage());
