@@ -28,7 +28,7 @@ public abstract class Cell {
     /**
      * A list of all the cells considered to be adjacent to the current cell.
      */
-    protected List<Cell> adjacentCells;
+    private List<Cell> adjacentCells;
 
     /**
      * The board this cell belongs to.
@@ -43,19 +43,19 @@ public abstract class Cell {
     /**
      * The horizontal coordinate of the cell on the board.
      */
-    protected int xCoord;
+    private int xCoord;
 
     /**
      * The vertical coordinate of the cell on the board.
      */
-    protected int yCoord;
+    private int yCoord;
 
     /**
      * Indicates if a cell is instance of {@code SpawnCell} (the alternative being {@code AmmoCell}).
      * @see SpawnCell
      * @see AmmoCell
      */
-    protected boolean spawnPoint;
+    boolean spawnPoint;
 
     /**
      * This is the only constructor.
@@ -163,7 +163,7 @@ public abstract class Cell {
      */
     public int distance(Cell cell) throws NullCellOperationException {
         if(cell == null)
-            throw new NullCellOperationException("Attempted to measure distance from null.");
+            throw new NullCellOperationException("Attempted to measure distance from a null cell.");
 
         List<Cell> visited = new ArrayList<>();
         // consider the starting cell already visited
@@ -195,7 +195,9 @@ public abstract class Cell {
      * @return whether or not the cell this method is called upon is adjacent to the cell passed as argument.
      * @see Cell#distance(Cell)
      */
-    public boolean isAdjacent(Cell cell) {
+    public boolean isAdjacent(Cell cell) throws NullCellOperationException {
+        if(cell == null)
+            throw new NullCellOperationException("Attempted to measure adjacency with a null cell.");
         return this.adjacentCells.contains(cell);
     }
 
@@ -208,7 +210,9 @@ public abstract class Cell {
      * @param cell te comparison cell
      * @return whether or not the cell is ghostlyAdjacent to the given cell
      */
-    public boolean isGhostlyAdjacent(Cell cell) {
+    public boolean isGhostlyAdjacent(Cell cell) throws NullCellOperationException {
+        if(cell == null)
+            throw new NullCellOperationException("Attempted to measure ghostly adjacency with a null cell.");
         return ((xCoord - cell.getXCoord() == 1) != (yCoord - cell.getYCoord() == 1));
     }
 
@@ -219,7 +223,10 @@ public abstract class Cell {
      * @param cell the target cell.
      * @return whether or not the cell this method is called upon is able to see the cell passed as argument.
      */
-    public boolean canSee(Cell cell) {
+    public boolean canSee(Cell cell) throws NullCellOperationException {
+        if(cell == null)
+            throw new NullCellOperationException("Attempted to measure visibility with a null cell.");
+
         List<Room> adjacentRooms = new ArrayList<>();
         // for each adjacent cell, get the room containing it
         for(Cell c : this.adjacentCells) {

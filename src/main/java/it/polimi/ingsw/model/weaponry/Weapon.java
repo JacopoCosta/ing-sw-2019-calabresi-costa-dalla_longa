@@ -85,7 +85,10 @@ public class Weapon {
     public String toString() {
         try {
             AmmoCubes difference = reloadCost.take(purchaseCost);
-            return name + " [" + purchaseCost + "(" + difference + ")]";
+            String string = name + " [" + purchaseCost + "(" + difference + ")]";
+            if(!loaded)
+                string += "*";
+            return string;
         } catch (CannotAffordException ignored) {
             return toString();
         }

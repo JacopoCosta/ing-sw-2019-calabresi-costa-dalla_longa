@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
+import it.polimi.ingsw.model.exceptions.CannotDiscardFirstCardOfDeckException;
 import it.polimi.ingsw.model.exceptions.FullHandException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
@@ -18,6 +19,7 @@ import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.view.virtual.VirtualView;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Controller {
 
@@ -69,6 +71,11 @@ public class Controller {
                 }
             }
         }
+        ammoCell.setAmmoTile(null);
+        try {
+            subject.getGame().getBoard().getAmmoTileDeck().discard(ammoTile);
+        } catch (CannotDiscardFirstCardOfDeckException ignored) { }
+
         return true;
     }
 
@@ -84,13 +91,7 @@ public class Controller {
             } catch (FullHandException e) {
                 virtualView.discardWeapon(subject);
             }
-            subject.getGame()
-                    .getBoard()
-                    .getWeaponDeck()
-                    .smartDraw(false)
-                    .ifPresent(spawnCell::addToWeaponShop); // refill the shop if there are available cards
-
-        } catch (CannotAffordException ignored) { }
+        } catch (CannotAffordException ignored) { } // this should never happen
     }
 
     public void prepareForShoot(Player subject, AttackPattern pattern) {
@@ -99,10 +100,14 @@ public class Controller {
     }
 
     public void shoot(Player subject, AttackPattern pattern, int moduleId) {
+        if(moduleId == -1) // -1 ends action
+            return;
         AttackModule attackModule = pattern.getModule(moduleId);
-        List<Target> targets = attackModule.getTargets();
+        try {
+            subject.takeAmmoCubes(attackModule.getSummonCost());
+        } catch (CannotAffordException ignored) { } // this should never happen
 
-        VirtualView virtualView = subject.getGame().getVirtualView();
+        List<Target> targets = attackModule.getTargets();
         virtualView.acquireTargets(subject, attackModule, targets);
     }
 
@@ -128,6 +133,18 @@ public class Controller {
             });
 
         attackModule.setUsed(true);
+
+        AttackPattern pattern = attackModule.getContext();
+
+        List<Integer> next = attackModule.getNext()
+                .stream()
+                .filter(i -> {
+                    if(i == -1) // -1 needs to pass
+                        return true;
+                    return !pattern.getModule(i).isUsed() && subject.canAfford(pattern.getModule(i).getSummonCost());
+                }).collect(Collectors.toList());
+
+        virtualView.shootAttackModule(subject, pattern, next);
     }
 
     public void reload(Player subject, Weapon weapon) {

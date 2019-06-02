@@ -18,12 +18,15 @@ import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Game {
+    public static final boolean godMode = true;
+    public static final boolean autoPilot = true;
+    public static final List<String> sequence = new ArrayList<>();
+
     private boolean finalFrenzy;
     private int roundsLeft;
     private boolean gameOver;
@@ -68,19 +71,19 @@ public class Game {
         board.spreadAmmo();
         board.spreadWeapons();
 
-        Player subject = participants.get(currentTurnPlayer); // TODO check still connected
+        Player subject = participants.get(currentTurnPlayer);
+        subject.beginTurn();
 
-        if (subject.getPosition() == null) {
+        if (subject.getPosition() == null) { // FIXME spawns should also occur after death
             List<PowerUp> powerUps = new ArrayList<>();
             for (int i = 0; i <= 1; i++)
                 board.getPowerUpDeck().smartDraw(true).ifPresent(powerUps::add);
             virtualView.spawn(subject, powerUps);
         }
 
-        subject.beginTurn();
         subject.savePosition();
-        virtualView.usePowerUp(subject);
         while (subject.getRemainingExecutions() > 0) { // a turn is made by several executions
+            virtualView.usePowerUp(subject);
             List<Execution> options = Execution.getOptionsForPlayer(subject);
             Execution choice = virtualView.chooseExecution(subject, options);
 
@@ -122,7 +125,6 @@ public class Game {
                 }
             }
             subject.endExecution();
-            virtualView.usePowerUp(subject);
         }
 
         participants.stream() // score all dead players
@@ -132,13 +134,19 @@ public class Game {
                     p.die();
                     if (roundsLeft > 0)
                         roundsLeft--;
-                    else if (finalFrenzy)
+                    if (finalFrenzy && roundsLeft == 0)
                         p.activateFrenzy();
                 });
 
+        board.promoteDoubleKillers();
+
         if (roundsLeft == 0) { // when the last skull has been removed from the killshot track
-            if (finalFrenzy && !subject.causedFrenzy())
-                subject.causeFrenzy();
+            if (finalFrenzy && !subject.causedFrenzy()) {
+                if(participants.stream().noneMatch(Player::causedFrenzy)) {
+                    virtualView.announceFrenzy(subject);
+                    subject.causeFrenzy();
+                }
+            }
             else {
                 gameOver = true;
                 invalidateSaveState();
@@ -149,17 +157,17 @@ public class Game {
         save(); // save the game state at the end of each turn
     }
 
-    public void play() {
+    void play() {
         while (!gameOver)
             this.playTurn();
         board.scoreUponGameOver();
 
         // now to declare the winner
-        Player winner = participants.stream()
-                .max(Comparator.comparingInt(Player::getScore))
-                .orElse(null); // this should never happen
+        List<Player> ranking = participants.stream()
+                .sorted((p1, p2) -> p2.getScore() - p1.getScore())
+                .collect(Collectors.toList());
 
-        // TODO do something with the winner, like a broadcast or something
+        virtualView.announceWinner(ranking);
     }
 
     public void save() {
@@ -298,6 +306,8 @@ public class Game {
     }
 
     public static Game load(List<Player> participants) throws InvalidSaveStateException, UnmatchedSavedParticipantsException {
+        if(participants == null)
+            throw new NullPointerException("Tried to load a game with participants set to null.");
         DecoratedJsonObject tl = DecoratedJsonObject.getFromFile(JsonPathGenerator.getPath("saved.json"));
         DecoratedJsonObject jSaved;
         try {
@@ -517,7 +527,7 @@ public class Game {
                     try {
                         deathCount = jp.getInt("deathCount");
                     } catch (JullPointerException e) {
-                        throw new JsonException("Savestate participant deathCount nout found.");
+                        throw new JsonException("Savestate participant deathCount not found.");
                     }
                     player.setDeathCount(deathCount);
 
@@ -652,12 +662,12 @@ public class Game {
                     try {
                         blue = jAmmoCubes.getInt("blue");
                     } catch (JullPointerException e) {
-                        throw new JsonException("Savetstate participant ammoCubes blue not found.");
+                        throw new JsonException("Savestate participant ammoCubes blue not found.");
                     }
                     AmmoCubes ammoCubes = new AmmoCubes(red, yellow, blue);
                     player.giveAmmoCubes(ammoCubes);
 
-                    int positionId = 0;
+                    int positionId;
                     try {
                         positionId = jp.getInt("position");
                     } catch (JullPointerException e) {
@@ -684,6 +694,10 @@ public class Game {
         s.append(", boardType: ").append(boardType);
         s.append("\nKillers: ").append(Table.list(board.getKillers()));
         s.append("\nDoubleKillers: ").append(Table.list(board.getDoubleKillers()));
+        s.append("\n\nDecks:");
+        s.append("\nWeapons > ").append(board.getWeaponDeck().toString());
+        s.append("\nPowerUps > ").append(board.getPowerUpDeck().toString());
+        s.append("\nAmmoTIles > ").append(board.getAmmoTileDeck().toString());
         s.append("\n\nCells:\n");
         s.append(Table.create(
                 board.getCells().stream().map(Cell::toString).collect(Collectors.toList()),

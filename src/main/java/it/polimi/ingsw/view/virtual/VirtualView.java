@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.Newton;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.powerups.PowerUpType;
+import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.Weapon;
@@ -27,16 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// Important note: this class invokes the Dispatcher several times in its "send..." methods.
-// This will no longer be in the final version of the game, as the Dispatcher, unlike this class,
-// will be running on the client side, making it unreachable without a network protocol bridging the two.
-// For this reason, all of the calls to the Dispatcher will have to be replaced with equivalent network protocol messages.
-// In addition to this, the "Deliverable" enum will be used by the client to determine what to display,
-// deciding autonomously whether to display it using a CLI or a GUI. Should the preferred output method be a CLI,
-// every instance of Deliverable offers, for this purpose, a .toString() method.
-public class VirtualView {
+import static it.polimi.ingsw.model.Game.godMode;
 
-    private static final boolean godMode = true;
+public class VirtualView {
     private Game game;
     private Controller controller;
 
@@ -213,18 +207,15 @@ public class VirtualView {
         boolean doPurchase = sendDual(subject, Deliverable.dual(DeliverableEvent.GRAB_WEAPON_REQUEST_IF));
         if(!doPurchase)
             return;
-        /*int weaponIndex = sendRequest(subject, new Deliverable(Message.GRAB_WEAPON_REQUEST_WHICH), cell.getWeaponShop()); TODO why is this code commented out?
-        controller.grabWeapon(subject, weaponIndex); */
 
         int purchaseIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.GRAB_WEAPON_REQUEST_WHICH, options));
         Weapon weaponToPurchase = weapons.get(purchaseIndex);
         List<PowerUp> powerUps = new ArrayList<>(); // power-ups can be used to cover the costs of buying a weapon
 
         while(!subject.getAmmoCubes().augment(powerUps).covers(weaponToPurchase.getPurchaseCost())) {
-            List<PowerUp> suitableForPaymentPowerUps = subject.getPowerUps()
-                    .stream()
-                    .filter(powerUp -> subject.getAmmoCubes().augment(powerUps).augment(powerUp).covers(weaponToPurchase.getPurchaseCost()))
-                    .collect(Collectors.toList());
+
+            List<PowerUp> suitableForPaymentPowerUps = subject.getAmmoCubes()
+                    .filterValidAugmenters(subject.getPowerUps(), weaponToPurchase.getPurchaseCost());
 
             List<String> options1 = suitableForPaymentPowerUps.stream().map(PowerUp::toString).collect(Collectors.toList());
 
@@ -260,21 +251,15 @@ public class VirtualView {
 
     public void shootAttackModule(Player subject, AttackPattern pattern, List<Integer> next) {
         List<String> options = next.stream()
-                .filter(i -> {
-                    try {
-                        return !pattern.getModule(i).isUsed();
-                    } catch (IndexOutOfBoundsException e) { // -1 needs to pass
-                        return true;
-                    }
-                })
                 .map(i -> {
-                    try {
-                        return pattern.getModule(i).getName() + ": " + pattern.getModule(i).getDescription();
-                    } catch (IndexOutOfBoundsException e) { // -1 ends action
-                        return "End action.";
-                    }
+                    if(i == -1) // -1 ends action
+                        return "End action";
+                    return pattern.getModule(i).toString();
                 })
                 .collect(Collectors.toList());
+
+
+
         int moduleIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.SHOOT_MODULE_REQUEST, options));
         int moduleId = next.get(moduleIndex);
         controller.shoot(subject, pattern, moduleId);
@@ -373,18 +358,16 @@ public class VirtualView {
         while(weapons.size() > 0 && keepReloading) {
             keepReloading = sendDual(subject, Deliverable.dual(DeliverableEvent.RELOAD_REQUEST_IF));
 
-            List<String> options = weapons.stream().map(Weapon::toString).collect(Collectors.toList());
-
             if(keepReloading) {
+                List<String> options = weapons.stream().map(Weapon::toString).collect(Collectors.toList());
                 int reloadIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.RELOAD_REQUEST_WHICH, options));
                 Weapon weaponToReload = weapons.get(reloadIndex);
                 List<PowerUp> powerUps = new ArrayList<>(); // power-ups can be used to cover the costs of reloading a weapon
 
                 while(!subject.getAmmoCubes().augment(powerUps).covers(weaponToReload.getReloadCost())) {
-                    List<PowerUp> suitableForPaymentPowerUps = subject.getPowerUps()
-                            .stream()
-                            .filter(powerUp -> weaponToReload.getReloadCost().covers(subject.getAmmoCubes().augment(powerUps).augment(powerUp)))
-                            .collect(Collectors.toList());
+
+                    List<PowerUp> suitableForPaymentPowerUps = subject.getAmmoCubes()
+                            .filterValidAugmenters(subject.getPowerUps(), weaponToReload.getReloadCost());
 
                     List<String> options1 = suitableForPaymentPowerUps.stream()
                             .map(PowerUp::toString)
@@ -430,8 +413,9 @@ public class VirtualView {
         controller.usePowerUp(subject, powerUp);
     }
 
-    public void scope(Damage damage, List<PowerUp> scopes, List<Player> targets) {
+    public void scope(Damage damage, List<Player> targets) {
         Player subject = damage.getAuthor();
+        List<PowerUp> scopes = subject.getScopes();
         List<Player> scopedPlayers = new ArrayList<>();
         boolean useScope = true;
         while(scopes.size() > 0 && useScope) {
@@ -451,12 +435,14 @@ public class VirtualView {
 
                 int targetId = sendListed(subject, Deliverable.listed(DeliverableEvent.SCOPE_REQUEST_TARGET, options1));
                 scopedPlayers.add(targets.get(targetId));
+                scopes = subject.getScopes();
             }
         }
         controller.scope(damage, targets, scopedPlayers);
     }
 
-    public void grenade(Player subject, List<PowerUp> grenades, Player originalAttacker) {
+    public void grenade(Player subject, Player originalAttacker) {
+        List<PowerUp> grenades = subject.getGrenades();
         boolean useGrenade = sendDual(subject, Deliverable.dual(DeliverableEvent.GRENADE_REQUEST_IF));
         if(!useGrenade)
             return;
@@ -551,7 +537,36 @@ public class VirtualView {
 
     public void announceMove(Player author, Player target, Cell destination) {
         Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE);
-        deliverable.overwriteMessage(author.getName() + " moved " + target.getName() + " to " + destination.toString() + ".");
+        String message = author.getName() + " moved";
+        if(!target.equals(author))
+            message += " " + target.getName();
+        deliverable.overwriteMessage(message + " to " + destination.toString() + ".");
+        broadcast(deliverable);
+    }
+
+    public void announceFrenzy(Player cause) {
+        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE);
+        deliverable.overwriteMessage(cause.toString() + " activated the Final Frenzy!");
+        broadcast(deliverable);
+    }
+
+    public void announceWinner(List<Player> ranking) {
+        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE);
+        String message = ranking.get(0).toString() + " won the game!\n\nRanking:\n" + Table.create(
+                ranking.stream()
+                        .map(ranking::indexOf)
+                        .map(i -> i + 1)
+                        .map(s -> "#" + s)
+                        .collect(Collectors.toList()),
+                ranking.stream()
+                        .map(Player::toString)
+                        .collect(Collectors.toList()),
+                ranking.stream()
+                        .map(Player::getScore)
+                        .map(s -> s + " points")
+                        .collect(Collectors.toList())
+        );
+        deliverable.overwriteMessage(message);
         broadcast(deliverable);
     }
 }

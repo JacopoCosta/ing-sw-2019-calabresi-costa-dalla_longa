@@ -2,14 +2,15 @@ package it.polimi.ingsw.model.board;
 
 import it.polimi.ingsw.model.cell.Cell;
 
-import java.rmi.server.ObjID;
 import java.util.List;
 
 // a room is a collection of cells -- used when determining visibility
 public class Room {
+    private String color;
     private List<Cell> cells;
 
-    public Room(List<Cell> cells) {
+    public Room(String color, List<Cell> cells) {
+        this.color = color;
         this.cells = cells;
 
         for(Cell c : cells)
@@ -26,10 +27,6 @@ public class Room {
 
     @Override
     public String toString() {
-        return "room #" + cells.stream()
-                .map(Cell::getId)
-                .sorted(Integer::compareTo)
-                .map(i -> Integer.toString(i))
-                .reduce("", (a, b) -> a + b);
+        return color + " room";
     }
 }

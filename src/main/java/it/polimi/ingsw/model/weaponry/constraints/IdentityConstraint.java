@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class IdentityConstraint extends Constraint {
     private boolean truth;
 
-    public IdentityConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
+    IdentityConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
         this.sourceAttackModuleId = sourceAttackModuleId;
         this.sourceTargetId = sourceTargetId;
         this.drainAttackModuleId = drainAttackModuleId;
@@ -22,7 +22,7 @@ public class IdentityConstraint extends Constraint {
     }
 
     private boolean verify(Player sourcePlayer, Player drainPlayer) {
-        return sourcePlayer.equals(drainPlayer) == truth;
+        return sourcePlayer.equals(drainPlayer) == truth; // FIXME NullPointerException from IdentityConstraint:50
     }
 
     @Override

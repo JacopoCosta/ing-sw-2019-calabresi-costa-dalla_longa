@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static it.polimi.ingsw.model.Game.autoPilot;
+import static it.polimi.ingsw.model.Game.sequence;
+
 // offers the final delivery of a string to the client
 // if the string is a request, it awaits for a valid response that will be returned to the caller
 // used to request values for setup, settings, game choices, and updates about the game status
@@ -55,6 +58,14 @@ public abstract class Dispatcher {
         }
         message = messageBuilder.toString();
 
+        if(autoPilot) {
+            sendMessage("\n" + message);
+            int auto = numbers.get((int) Math.floor(Math.random() * options.size()));
+            sendMessage("\nauto >>> " + auto);
+            sequence.add(Integer.toString(auto));
+            return numbers.indexOf(auto);
+        }
+
         int value = numbers.stream().reduce(0, Math::min) - 1;
         do {
             value = Dispatcher.safeIntegerConversion(Dispatcher.requestRoutine(message), value);
@@ -66,30 +77,22 @@ public abstract class Dispatcher {
         return requestMappedOption(message, list, list.stream().map(list::indexOf).map(x -> x + 1).collect(Collectors.toList()));
     }
 
-    // keeps requesting an integer within an interval until such request is fulfilled
-    public static int requestInteger(String message, int lowerBound, int upperBound) {
-        int value = lowerBound - 1;
-        do {
-            value = Dispatcher.safeIntegerConversion(Dispatcher.requestRoutine(message + " [" + lowerBound + "~" + upperBound + "]"), value);
-        } while(value < lowerBound || value > upperBound);
-        return value;
-    }
-
     // keeps requesting a "y" or "n" answer until such request is fulfilled
     public static boolean requestBoolean(String message) {
+        if(autoPilot) {
+            sendMessage("\n" + message);
+            boolean auto = Math.random() < 0.5;
+            sendMessage("\nauto >>> " + auto);
+            sequence.add(Boolean.toString(auto));
+            return auto;
+        }
+
         String s;
         do {
             s = Dispatcher.requestRoutine(message + " [y|n]");
+            if(s == null)
+                return false;
         } while(!s.equals("y") && !s.equals("n"));
         return s.equals("y");
-    }
-
-    // keeps requesting a non-empty string until such request is fulfilled
-    public static String requestString(String message) {
-        String s;
-        do {
-            s = Dispatcher.requestRoutine(message);
-        } while(s.length() < 1);
-        return s;
     }
 }

@@ -14,7 +14,7 @@ public class DistanceConstraint extends Constraint {
     private int lowerBound;
     private int upperBound;
 
-    public DistanceConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, int lowerBound, int upperBound) {
+    DistanceConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, int lowerBound, int upperBound) {
         this.sourceAttackModuleId = sourceAttackModuleId;
         this.sourceTargetId = sourceTargetId;
         this.drainAttackModuleId = drainAttackModuleId;
@@ -25,10 +25,10 @@ public class DistanceConstraint extends Constraint {
     }
 
     private boolean verify(Cell sourceCell, Cell drainCell) {
+        if(sourceCell == null)
+            return false;
         int distance;
         try {
-            if(sourceCell == null)
-                return false;
             distance = sourceCell.distance(drainCell);
         } catch (NullCellOperationException e) {
             return false;

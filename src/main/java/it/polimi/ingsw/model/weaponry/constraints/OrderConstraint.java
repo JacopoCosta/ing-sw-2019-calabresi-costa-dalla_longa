@@ -14,7 +14,7 @@ public class OrderConstraint extends Constraint {
     private int gateAttackModuleId;
     private int gateTargetId;
 
-    public OrderConstraint(int sourceAttackModuleId, int sourceTargetId, int gateAttackModuleId, int gateTargetId, int drainAttackModuleId, int drainTargetId) {
+    OrderConstraint(int sourceAttackModuleId, int sourceTargetId, int gateAttackModuleId, int gateTargetId, int drainAttackModuleId, int drainTargetId) {
         this.sourceAttackModuleId = sourceAttackModuleId;
         this.sourceTargetId = sourceTargetId;
         this.gateAttackModuleId = gateAttackModuleId;
@@ -25,9 +25,9 @@ public class OrderConstraint extends Constraint {
     }
 
     private boolean verify(Cell sourceCell, Cell gateCell, Cell drainCell) {
+        if(gateCell == null)
+            return false;
         try {
-            if(gateCell == null)
-                return false;
             return gateCell.isBetween(sourceCell, drainCell);
         } catch (NullCellOperationException e) {
             return false;

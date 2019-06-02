@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class AlignmentConstraint extends Constraint {
     private boolean truth;
 
-    public AlignmentConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
+    AlignmentConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
         this.sourceAttackModuleId = sourceAttackModuleId;
         this.sourceTargetId = sourceTargetId;
         this.drainAttackModuleId = drainAttackModuleId;
@@ -22,9 +22,9 @@ public class AlignmentConstraint extends Constraint {
     }
 
     private boolean verify(Cell sourceCell, Cell drainCell) {
+        if(sourceCell == null)
+            return false;
         try {
-            if(sourceCell == null)
-                return false;
             return sourceCell.isAligned(drainCell) == truth;
         } catch (NullCellOperationException e) {
             return false;

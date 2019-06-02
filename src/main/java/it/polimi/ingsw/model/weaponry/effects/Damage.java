@@ -1,14 +1,13 @@
 package it.polimi.ingsw.model.weaponry.effects;
 
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 import it.polimi.ingsw.view.virtual.VirtualView;
 
 import java.util.List;
 
 public class Damage extends OffensiveEffect {
-    public Damage(int amount, List<Constraint> constraints) {
+    Damage(int amount, List<Constraint> constraints) {
         this.amount = amount;
         this.constraints = constraints;
         this.type = EffectType.DAMAGE;
@@ -19,10 +18,11 @@ public class Damage extends OffensiveEffect {
         List<Player> targets = Constraint.filterPlayers(context, constraints);
         // as long as the author has (and wants to use) targeting scopes, they may do so;
         // this will increase the amount of damage dealt to any of its current targets
-        List<PowerUp> scopes = author.getScopes();
 
-        VirtualView virtualView = author.getGame().getVirtualView();
-        virtualView.scope(this, scopes, targets);
+        if(targets.size() > 0) {
+            VirtualView virtualView = author.getGame().getVirtualView();
+            virtualView.scope(this, targets);
+        }
     }
 
     public void applyAfterScopes(List<Player> targets, List<Player> scopedPlayers) {
@@ -40,7 +40,7 @@ public class Damage extends OffensiveEffect {
         VirtualView virtualView = author.getGame().getVirtualView();
         targets.stream()
                 .filter(p -> p.getGrenades().size() > 0)
-                .forEach(p -> virtualView.grenade(p, p.getGrenades(), author));
+                .forEach(p -> virtualView.grenade(p, author));
     }
 
     @Override

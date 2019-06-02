@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view.virtual;
 
+import it.polimi.ingsw.model.exceptions.DeliverableException;
+
 import java.util.List;
 
 public class Deliverable {
@@ -37,6 +39,9 @@ public class Deliverable {
     }
 
     static Deliverable listed(DeliverableEvent event, List<String> options) {
+        if(options.size() == 0)
+            throw new DeliverableException("Can't create a listed deliverable with an empty options list.");
+
         Deliverable deliverable = new Deliverable(DEFAULT);
 
         deliverable.type = DeliverableType.LISTED;
@@ -49,6 +54,11 @@ public class Deliverable {
     }
 
     static Deliverable mapped(DeliverableEvent event, List<String> options, List<Integer> keys) {
+        if(options.size() == 0)
+            throw new DeliverableException("Can't create a mapped deliverable with an empty options list.");
+        if(options.size() != keys.size())
+            throw new DeliverableException("Can't create a mapped deliverable having options list and keys list of different lengths.");
+
         Deliverable deliverable = new Deliverable(DEFAULT);
 
         deliverable.type = DeliverableType.MAPPED;

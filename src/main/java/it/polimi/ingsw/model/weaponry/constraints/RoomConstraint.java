@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class RoomConstraint extends Constraint {
     private boolean truth;
 
-    public RoomConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
+    RoomConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
         this.sourceAttackModuleId = sourceAttackModuleId;
         this.sourceTargetId = sourceTargetId;
         this.drainAttackModuleId = drainAttackModuleId;
@@ -23,6 +23,8 @@ public class RoomConstraint extends Constraint {
     }
 
     private boolean verify(Room sourceRoom, Room drainRoom) {
+        if(sourceRoom == null || drainRoom == null)
+            return false;
         return sourceRoom.equals(drainRoom) == truth;
     }
 
