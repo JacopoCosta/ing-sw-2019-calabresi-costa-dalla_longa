@@ -35,6 +35,8 @@ public class Damage extends OffensiveEffect {
                 target.applyDamage(author);
             VirtualView virtualView = author.getGame().getVirtualView();
             virtualView.announceDamage(author, target, trueDamage);
+            if(target.isKilled())
+                virtualView.announceKill(author, target);
         });
 
         VirtualView virtualView = author.getGame().getVirtualView();

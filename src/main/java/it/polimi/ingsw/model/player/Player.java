@@ -93,6 +93,10 @@ public class Player extends VirtualClient {
         return this.damage.size() > KILL_THRESHOLD;
     }
 
+    public boolean isOverKilled() {
+        return this.damage.size() > OVERKILL_THRESHOLD;
+    }
+
     // returns the total amount of damage points the player has taken
     public int getDamage() {
         return this.damage.size();
@@ -317,8 +321,12 @@ public class Player extends VirtualClient {
 
         game.getBoard().addKiller(damage.get(KILL_THRESHOLD));
         if(damage.size() > OVERKILL_THRESHOLD) {
-            if (damage.get(KILL_THRESHOLD) == damage.get(OVERKILL_THRESHOLD))
+            if (damage.get(KILL_THRESHOLD) == damage.get(OVERKILL_THRESHOLD)) { // the opposite should never happen
                 game.getBoard().addKiller(null); // watch out
+                damage.get(OVERKILL_THRESHOLD).applyMarking(this);
+            }
+            else
+                throw new RuntimeException("This 'else' branch should never be taken.");
         }
 
         // one extra point to the player who drew first blood

@@ -18,6 +18,8 @@ public class TargetCell extends Target {
     }
 
     public void setCell(Cell cell) {
+        if(cell == null)
+            throw new NullPointerException("Attempted to set target cell to null.");
         this.cell = cell;
     }
 

@@ -49,15 +49,15 @@ public class Deck<T> {
     public Optional<T> smartDraw(boolean autoRegenerate) {
         T card;
         try {
-            card = draw();
-        } catch (EmptyDeckException e) {
+            card = draw(); // try to draw a card
+        } catch (EmptyDeckException e) { // if the deck is empty
             if(autoRegenerate) {
                 regenerate();
-                shuffle();
+                shuffle(); // create a new shuffled deck from the discarded pile
                 try {
-                    card = draw();
-                } catch (EmptyDeckException fatal) {
-                    throw new CorruptedDeckException("Can't regenerate deck.");
+                    card = draw(); // retry as above
+                } catch (EmptyDeckException fatal) { // there is no deck
+                    return Optional.empty();
                 }
             }
             else return Optional.empty();

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.model.Game.autoPilot;
-import static it.polimi.ingsw.model.Game.sequence;
 
 // offers the final delivery of a string to the client
 // if the string is a request, it awaits for a valid response that will be returned to the caller
@@ -62,7 +61,6 @@ public abstract class Dispatcher {
             sendMessage("\n" + message);
             int auto = numbers.get((int) Math.floor(Math.random() * options.size()));
             sendMessage("\nauto >>> " + auto);
-            sequence.add(Integer.toString(auto));
             return numbers.indexOf(auto);
         }
 
@@ -83,7 +81,6 @@ public abstract class Dispatcher {
             sendMessage("\n" + message);
             boolean auto = Math.random() < 0.5;
             sendMessage("\nauto >>> " + auto);
-            sequence.add(Boolean.toString(auto));
             return auto;
         }
 

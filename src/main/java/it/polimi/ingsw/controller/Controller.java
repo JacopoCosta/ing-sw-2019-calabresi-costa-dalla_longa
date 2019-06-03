@@ -29,13 +29,9 @@ public class Controller {
         this.virtualView = virtualView;
     }
 
-    public void spawn(Player subject, PowerUp powerUpToKeep, PowerUp powerUpToRespawn) {
-        subject.spawn(powerUpToRespawn.getSpawnPoint(subject.getGame().getBoard()));
-        try {
-            subject.givePowerUp(powerUpToKeep);
-        } catch (FullHandException e) {
-            virtualView.discardPowerUp(subject);
-        }
+    public void spawn(Player subject, PowerUp powerUpToDiscard) {
+        subject.spawn(powerUpToDiscard.getSpawnPoint(subject.getGame().getBoard()));
+        subject.discardPowerUp(powerUpToDiscard);
     }
 
     public void discardPowerUp(Player subject, PowerUp toDiscard) {
@@ -58,18 +54,17 @@ public class Controller {
 
         subject.giveAmmoCubes(ammoTile.getAmmoCubes());
         if(ammoTile.includesPowerUp()) {
-            PowerUp card = subject.getGame()
+            subject.getGame()
                     .getBoard()
                     .getPowerUpDeck()
                     .smartDraw(true)
-                    .orElse(null); // null should never happen
-            if(card != null) {
-                try {
-                    subject.givePowerUp(card);
-                } catch (FullHandException e) {
-                    virtualView.discardPowerUp(subject);
-                }
-            }
+                    .ifPresent(card -> {
+                        try {
+                            subject.givePowerUp(card);
+                        } catch (FullHandException e) {
+                            virtualView.discardPowerUp(subject);
+                        }
+                    });
         }
         ammoCell.setAmmoTile(null);
         try {

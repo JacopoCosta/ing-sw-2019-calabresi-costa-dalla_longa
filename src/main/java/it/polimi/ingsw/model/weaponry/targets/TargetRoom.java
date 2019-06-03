@@ -18,6 +18,8 @@ public class TargetRoom extends Target {
     }
 
     public void setRoom(Room room) {
+        if(room == null)
+            throw new NullPointerException("Attempted to set target room to null.");
         this.room = room;
     }
 

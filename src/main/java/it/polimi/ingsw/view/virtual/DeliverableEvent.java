@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view.virtual;
 
 public enum DeliverableEvent {
-    SPAWN_REQUEST("Which power-up would you like to keep? You will spawn where indicated by the one you discard."),
+    SPAWN_REQUEST("Which power-up would you like to discard? You will spawn where indicated by its colour."),
     SPAWN_SUCCESS("You spawned."),
     DISCARD_POWERUP_REQUEST("Looks like your hand is full of power-ups, please discard one:"),
     DISCARD_WEAPON_REQUEST("Looks like your hand is full of weapons, please discard one:"),

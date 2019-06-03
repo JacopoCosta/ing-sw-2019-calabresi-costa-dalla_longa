@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.DeliverableException;
+import it.polimi.ingsw.model.exceptions.NoValidTargetsException;
 import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.model.player.Execution;
 import it.polimi.ingsw.model.player.Player;
@@ -122,15 +123,15 @@ public class VirtualView {
         // TODO abort turn and move on to the next player
     }
 
-    public void spawn(Player subject, List<PowerUp> powerUps) {
-        List<String> options = powerUps.stream()
+    public void spawn(Player subject) {
+        List<String> options = subject.getPowerUps()
+                .stream()
                 .map(PowerUp::toString)
                 .collect(Collectors.toList());
 
-        int keepIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.SPAWN_REQUEST, options));
-        PowerUp powerUpToKeep = powerUps.get(keepIndex);
-        PowerUp powerUpToRespawn = powerUps.get(1 - keepIndex);
-        controller.spawn(subject, powerUpToKeep, powerUpToRespawn);
+        int discardIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.SPAWN_REQUEST, options));
+        PowerUp powerUpToDiscard = subject.getPowerUps().get(discardIndex);
+        controller.spawn(subject, powerUpToDiscard);
         sendInfo(subject, Deliverable.info(DeliverableEvent.SPAWN_SUCCESS));
     }
 
@@ -142,8 +143,8 @@ public class VirtualView {
                 .collect(Collectors.toList());
 
         int discardIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.DISCARD_POWERUP_REQUEST, options));
-        PowerUp toDiscard = powerUps.get(discardIndex);
-        controller.discardPowerUp(subject, toDiscard);
+        PowerUp powerUpToDiscard = powerUps.get(discardIndex);
+        controller.discardPowerUp(subject, powerUpToDiscard);
     }
 
     public void discardWeapon(Player subject) {
@@ -154,8 +155,8 @@ public class VirtualView {
                 .collect(Collectors.toList());
 
         int discardIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.DISCARD_WEAPON_REQUEST, options));
-        Weapon toDiscard = weapons.get(discardIndex);
-        controller.discardWeapon(subject, toDiscard);
+        Weapon weaponToDiscard = weapons.get(discardIndex);
+        controller.discardWeapon(subject, weaponToDiscard);
     }
 
     public Execution chooseExecution(Player subject, List<Execution> executions) {
@@ -269,18 +270,33 @@ public class VirtualView {
         for(Target target : targets) {
             switch(target.getType()) {
                 case PLAYER:
-                    Player acquiredPlayer = shootPlayer(subject, (TargetPlayer) target);
-                        ((TargetPlayer) target).setPlayer(acquiredPlayer);
+                    Player acquiredPlayer;
+                    try {
+                        acquiredPlayer = shootPlayer(subject, (TargetPlayer) target);
+                    } catch (NoValidTargetsException e) {
+                        return;
+                    }
+                    ((TargetPlayer) target).setPlayer(acquiredPlayer);
                     break;
 
                 case CELL:
-                    Cell acquiredCell = shootCell(subject, (TargetCell) target);
-                        ((TargetCell) target).setCell(acquiredCell);
+                    Cell acquiredCell;
+                    try {
+                        acquiredCell = shootCell(subject, (TargetCell) target);
+                    } catch (NoValidTargetsException e) {
+                        return;
+                    }
+                    ((TargetCell) target).setCell(acquiredCell);
                     break;
 
                 case ROOM:
-                    Room acquiredRoom = shootRoom(subject, (TargetRoom) target);
-                        ((TargetRoom) target).setRoom(acquiredRoom);
+                    Room acquiredRoom;
+                    try {
+                        acquiredRoom = shootRoom(subject, (TargetRoom) target);
+                    } catch (NoValidTargetsException e) {
+                        return;
+                    }
+                    ((TargetRoom) target).setRoom(acquiredRoom);
                     break;
 
                 default:
@@ -290,11 +306,11 @@ public class VirtualView {
         controller.shootTargets(subject, attackModule, targets);
     }
 
-    private Player shootPlayer(Player subject, TargetPlayer target) {
+    private Player shootPlayer(Player subject, TargetPlayer target) throws NoValidTargetsException {
         List<Player> players = target.filter();
         if(players.size() == 0) {
             sendInfo(subject, Deliverable.info(DeliverableEvent.SHOOT_PLAYER_FAILURE));
-            return null;
+            throw new NoValidTargetsException("No rooms available to target");
         }
 
         List<String> playerNames = players.stream()
@@ -307,11 +323,11 @@ public class VirtualView {
         return players.get(playerIndex);
     }
 
-    private Cell shootCell(Player subject, TargetCell target) {
+    private Cell shootCell(Player subject, TargetCell target) throws NoValidTargetsException {
         List<Cell> cells = target.filter();
         if(cells.size() == 0) {
             sendInfo(subject, Deliverable.info(DeliverableEvent.SHOOT_CELL_FAILURE));
-            return null;
+            throw new NoValidTargetsException("No rooms available to target");
         }
 
         List<String> cellNames = cells.stream()
@@ -329,11 +345,11 @@ public class VirtualView {
         return cells.get(cellIndex);
     }
 
-    private Room shootRoom(Player subject, TargetRoom target) {
+    private Room shootRoom(Player subject, TargetRoom target) throws NoValidTargetsException {
         List<Room> rooms = target.filter();
         if (rooms.size() == 0) {
             sendInfo(subject, Deliverable.info(DeliverableEvent.SHOOT_ROOM_FAILURE));
-            return null;
+            throw new NoValidTargetsException("No rooms available to target");
         }
 
         List<String> roomNames = rooms.stream()
@@ -541,6 +557,16 @@ public class VirtualView {
         if(!target.equals(author))
             message += " " + target.getName();
         deliverable.overwriteMessage(message + " to " + destination.toString() + ".");
+        broadcast(deliverable);
+    }
+
+    public void announceKill(Player author, Player target) {
+        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE);
+        String message = author.getName() +  " ";
+        if(target.isOverKilled())
+            message += "over";
+        message += "killed " + target.getName() + "!";
+        deliverable.overwriteMessage(message);
         broadcast(deliverable);
     }
 

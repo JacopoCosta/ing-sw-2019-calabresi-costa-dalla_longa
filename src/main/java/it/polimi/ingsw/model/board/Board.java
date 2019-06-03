@@ -398,7 +398,7 @@ public class Board {
                 .sorted(better)
                 .collect(Collectors.toList());
 
-        for(int i = 0; i < trueKillers.size(); i ++)
+        for(int i = 0; i < trueKillers.size() && i < scoreBoard.length; i ++)
             trueKillers.get(i).giveScore(scoreBoard[i]); // give scores in descending order to the players sorted best to worst
 
         doubleKillers.forEach(p -> p.giveScore(1)); // one extra point for each double kill scored

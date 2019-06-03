@@ -17,15 +17,13 @@ import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Game {
     public static final boolean godMode = true;
-    public static final boolean autoPilot = true;
-    public static final List<String> sequence = new ArrayList<>();
+    public static final boolean autoPilot = false;
 
     private boolean finalFrenzy;
     private int roundsLeft;
@@ -74,11 +72,21 @@ public class Game {
         Player subject = participants.get(currentTurnPlayer);
         subject.beginTurn();
 
-        if (subject.getPosition() == null) { // FIXME spawns should also occur after death
-            List<PowerUp> powerUps = new ArrayList<>();
-            for (int i = 0; i <= 1; i++)
-                board.getPowerUpDeck().smartDraw(true).ifPresent(powerUps::add);
-            virtualView.spawn(subject, powerUps);
+        if (subject.getPosition() == null) { // player is dead, start respawn routine
+            board.getPowerUpDeck().smartDraw(true).ifPresent(c -> {
+                try {
+                    subject.givePowerUp(c);
+                } catch (FullHandException ignored) { } // discarding will be part of the respawn mechanic
+            });
+
+            if(participants.stream().map(Player::getDeathCount).reduce(Math::max).orElse(0) == 0) // if nobody has died yet -- it's the entry spawn, draw twice
+                board.getPowerUpDeck().smartDraw(true).ifPresent(c -> {
+                    try {
+                        subject.givePowerUp(c);
+                    } catch (FullHandException ignored) { } // discarding will be part of the respawn mechanic
+                });
+
+            virtualView.spawn(subject);
         }
 
         subject.savePosition();
@@ -136,6 +144,12 @@ public class Game {
                         roundsLeft--;
                     if (finalFrenzy && roundsLeft == 0)
                         p.activateFrenzy();
+                    board.getPowerUpDeck().smartDraw(true).ifPresent(c -> {
+                        try {
+                            p.givePowerUp(c);
+                        } catch (FullHandException ignored) { } // discarding will be part of the respawn process
+                    });
+                    virtualView.spawn(p);
                 });
 
         board.promoteDoubleKillers();
@@ -697,7 +711,7 @@ public class Game {
         s.append("\n\nDecks:");
         s.append("\nWeapons > ").append(board.getWeaponDeck().toString());
         s.append("\nPowerUps > ").append(board.getPowerUpDeck().toString());
-        s.append("\nAmmoTIles > ").append(board.getAmmoTileDeck().toString());
+        s.append("\nAmmoTiles > ").append(board.getAmmoTileDeck().toString());
         s.append("\n\nCells:\n");
         s.append(Table.create(
                 board.getCells().stream().map(Cell::toString).collect(Collectors.toList()),

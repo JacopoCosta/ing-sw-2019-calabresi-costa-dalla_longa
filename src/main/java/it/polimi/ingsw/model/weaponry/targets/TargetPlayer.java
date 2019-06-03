@@ -17,6 +17,8 @@ public class TargetPlayer extends Target {
     }
 
     public void setPlayer(Player player) {
+        if(player == null)
+            throw new NullPointerException("Attempted to set target player to null.");
         this.player = player;
     }
 
@@ -27,7 +29,7 @@ public class TargetPlayer extends Target {
 
     @Override
     public Cell getCell() {
-        return player.getPosition(); // FIXME NullPointerException, from DistanceConstraint:54:83, from VisibilityConstraint:62
+        return player.getPosition();
     }
 
     @Override

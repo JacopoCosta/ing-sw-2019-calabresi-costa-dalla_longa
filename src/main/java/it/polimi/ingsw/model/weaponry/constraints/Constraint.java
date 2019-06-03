@@ -2,10 +2,7 @@ package it.polimi.ingsw.model.weaponry.constraints;
 
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
-import it.polimi.ingsw.model.exceptions.InvalidConstraintTypeException;
-import it.polimi.ingsw.model.exceptions.InvalidEffectTypeException;
-import it.polimi.ingsw.model.exceptions.JsonException;
-import it.polimi.ingsw.model.exceptions.JullPointerException;
+import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
@@ -130,6 +127,9 @@ public abstract class Constraint {
     }
 
     public static Target getTarget(AttackPattern context, int attackModuleId, int targetId) {
+        if(context.getAuthor() == null)
+            throw new UnauthoredAttackPatternException("Cannot evaluate target for an attack pattern without a valid author.");
+
         if(attackModuleId == -2 && targetId == -2) {
             TargetCell target = new TargetCell(null, null);
             target.setCell(context.getAuthor().getSavedPosition());

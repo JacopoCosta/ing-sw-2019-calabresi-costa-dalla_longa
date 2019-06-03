@@ -57,6 +57,8 @@ public class AttackPattern {
     }
 
     public void setAuthor(Player author) {
+        if(author == null)
+            throw new NullPointerException("An attack pattern cannot be authored by null");
         this.author = author;
     }
 
