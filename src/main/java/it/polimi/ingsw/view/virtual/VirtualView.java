@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
+import it.polimi.ingsw.model.exceptions.AbortedTurnException;
 import it.polimi.ingsw.model.exceptions.DeliverableException;
 import it.polimi.ingsw.model.exceptions.NoValidTargetsException;
 import it.polimi.ingsw.model.exceptions.NullCellOperationException;
@@ -44,7 +45,7 @@ public class VirtualView {
         return controller;
     }
 
-    private void sendInfo(Player recipient, Deliverable deliverable) {
+    private void sendInfo(Player recipient, Deliverable deliverable) throws AbortedTurnException {
         if(!deliverable.getType().equals(DeliverableType.INFO))
             throw new DeliverableException("Wrong call to sendInfo in VirtualView.");
 
@@ -56,12 +57,12 @@ public class VirtualView {
             try {
                 recipient.deliver(deliverable);
             } catch (ConnectionException e) {
-                disconnect(recipient);
+                throw new AbortedTurnException("");
             }
         }
     }
 
-    private boolean sendDual(Player recipient, Deliverable deliverable) {
+    private boolean sendDual(Player recipient, Deliverable deliverable) throws AbortedTurnException {
         if(!deliverable.getType().equals(DeliverableType.DUAL))
             throw new DeliverableException("Wrong call to sendDual in VirtualView.");
 
@@ -72,13 +73,13 @@ public class VirtualView {
             try {
                 recipient.deliver(deliverable);
             } catch (ConnectionException e) {
-                disconnect(recipient);
+                throw new AbortedTurnException("");
             }
             return recipient.nextDeliverable().unpack() != 0;
         }
     }
 
-    private int sendListed(Player recipient, Deliverable deliverable) {
+    private int sendListed(Player recipient, Deliverable deliverable) throws AbortedTurnException {
         if(!deliverable.getType().equals(DeliverableType.LISTED))
             throw new DeliverableException("Wrong call to sendListed in VirtualView.");
 
@@ -90,14 +91,14 @@ public class VirtualView {
             try {
                 recipient.deliver(deliverable);
             } catch (ConnectionException e) {
-                disconnect(recipient);
+                throw new AbortedTurnException("");
             }
             return recipient.nextDeliverable().unpack();
         }
     }
 
 
-    private int sendMapped(Player recipient, Deliverable deliverable) {
+    private int sendMapped(Player recipient, Deliverable deliverable) throws AbortedTurnException {
         if(!deliverable.getType().equals(DeliverableType.MAPPED))
             throw new DeliverableException("Wrong call to sendMapped in VirtualView.");
 
@@ -109,21 +110,21 @@ public class VirtualView {
             try {
                 recipient.deliver(deliverable);
             } catch (ConnectionException e) {
-                disconnect(recipient);
+                throw new AbortedTurnException("");
             }
             return recipient.nextDeliverable().unpack();
         }
     }
 
     private void broadcast(Deliverable deliverable) {
-        game.getParticipants().forEach(recipient -> sendInfo(recipient, deliverable));
+        game.getParticipants().forEach(recipient -> {
+            try {
+                sendInfo(recipient, deliverable);
+            } catch (AbortedTurnException ignored) { } // just don't send
+        });
     }
 
-    private void disconnect(Player player) {
-        // TODO abort turn and move on to the next player
-    }
-
-    public void spawn(Player subject) {
+    public void spawn(Player subject) throws AbortedTurnException {
         List<String> options = subject.getPowerUps()
                 .stream()
                 .map(PowerUp::toString)
@@ -135,7 +136,7 @@ public class VirtualView {
         sendInfo(subject, Deliverable.info(DeliverableEvent.SPAWN_SUCCESS));
     }
 
-    public void discardPowerUp(Player subject) {
+    public void discardPowerUp(Player subject) throws AbortedTurnException {
         List<PowerUp> powerUps = subject.getPowerUps();
 
         List<String> options = powerUps.stream()
@@ -147,7 +148,7 @@ public class VirtualView {
         controller.discardPowerUp(subject, powerUpToDiscard);
     }
 
-    public void discardWeapon(Player subject) {
+    public void discardWeapon(Player subject) throws AbortedTurnException {
         List<Weapon> weapons = subject.getWeapons();
 
         List<String> options = weapons.stream()
@@ -159,7 +160,7 @@ public class VirtualView {
         controller.discardWeapon(subject, weaponToDiscard);
     }
 
-    public Execution chooseExecution(Player subject, List<Execution> executions) {
+    public Execution chooseExecution(Player subject, List<Execution> executions) throws AbortedTurnException {
 
         List<String> options = executions.stream()
                 .map(Execution::toString)
@@ -169,7 +170,7 @@ public class VirtualView {
         return executions.get(choiceIndex);
     }
 
-    public void move(Player subject, List<Cell> cells) {
+    public void move(Player subject, List<Cell> cells) throws AbortedTurnException {
         List<String> options = cells.stream()
                 .map(Cell::toString)
                 .collect(Collectors.toList());
@@ -183,7 +184,7 @@ public class VirtualView {
         controller.move(subject, destination);
     }
 
-    public void grabAmmo(Player subject) {
+    public void grabAmmo(Player subject) throws AbortedTurnException {
         boolean success = controller.grabAmmo(subject);
         if(success)
             sendInfo(subject, Deliverable.info(DeliverableEvent.GRAB_AMMO_SUCCESS));
@@ -191,7 +192,7 @@ public class VirtualView {
             sendInfo(subject, Deliverable.info(DeliverableEvent.GRAB_AMMO_FAILURE));
     }
 
-    public void grabWeapon(Player subject) {
+    public void grabWeapon(Player subject) throws AbortedTurnException {
 
         List<Weapon> weapons = ((SpawnCell) subject.getPosition()).getWeaponShop()
                 .stream()
@@ -231,7 +232,7 @@ public class VirtualView {
         powerUps.forEach(subject::discardPowerUp);
     }
 
-    public void shoot(Player subject) {
+    public void shoot(Player subject) throws AbortedTurnException {
         List<Weapon> availableWeapons = subject.getWeapons()
                 .stream()
                 .filter(Weapon::isLoaded)
@@ -250,7 +251,7 @@ public class VirtualView {
         weapon.unload();
     }
 
-    public void shootAttackModule(Player subject, AttackPattern pattern, List<Integer> next) {
+    public void shootAttackModule(Player subject, AttackPattern pattern, List<Integer> next) throws AbortedTurnException {
         List<String> options = next.stream()
                 .map(i -> {
                     if(i == -1) // -1 ends action
@@ -266,7 +267,7 @@ public class VirtualView {
         controller.shoot(subject, pattern, moduleId);
     }
 
-    public void acquireTargets(Player subject, AttackModule attackModule, List<Target> targets) {
+    public void acquireTargets(Player subject, AttackModule attackModule, List<Target> targets) throws AbortedTurnException {
         for(Target target : targets) {
             switch(target.getType()) {
                 case PLAYER:
@@ -306,7 +307,7 @@ public class VirtualView {
         controller.shootTargets(subject, attackModule, targets);
     }
 
-    private Player shootPlayer(Player subject, TargetPlayer target) throws NoValidTargetsException {
+    private Player shootPlayer(Player subject, TargetPlayer target) throws NoValidTargetsException, AbortedTurnException {
         List<Player> players = target.filter();
         if(players.size() == 0) {
             sendInfo(subject, Deliverable.info(DeliverableEvent.SHOOT_PLAYER_FAILURE));
@@ -323,7 +324,7 @@ public class VirtualView {
         return players.get(playerIndex);
     }
 
-    private Cell shootCell(Player subject, TargetCell target) throws NoValidTargetsException {
+    private Cell shootCell(Player subject, TargetCell target) throws NoValidTargetsException, AbortedTurnException {
         List<Cell> cells = target.filter();
         if(cells.size() == 0) {
             sendInfo(subject, Deliverable.info(DeliverableEvent.SHOOT_CELL_FAILURE));
@@ -345,7 +346,7 @@ public class VirtualView {
         return cells.get(cellIndex);
     }
 
-    private Room shootRoom(Player subject, TargetRoom target) throws NoValidTargetsException {
+    private Room shootRoom(Player subject, TargetRoom target) throws NoValidTargetsException, AbortedTurnException {
         List<Room> rooms = target.filter();
         if (rooms.size() == 0) {
             sendInfo(subject, Deliverable.info(DeliverableEvent.SHOOT_ROOM_FAILURE));
@@ -363,7 +364,7 @@ public class VirtualView {
         return rooms.get(roomIndex);
     }
 
-    public void reload(Player subject) {
+    public void reload(Player subject) throws AbortedTurnException {
         List<Weapon> weapons = subject.getWeapons().stream()
                 .filter(w -> !w.isLoaded())
                 .filter(w -> subject.canAffordWithPowerUps(w.getReloadCost()))
@@ -407,7 +408,7 @@ public class VirtualView {
         }
     }
 
-    public void usePowerUp(Player subject) {
+    public void usePowerUp(Player subject) throws AbortedTurnException {
         List<PowerUp> powerUps = subject.getPowerUps()
                 .stream()
                 .filter(p -> p.getType() != PowerUpType.GRENADE) // can't use grenade arbitrarily
@@ -429,7 +430,7 @@ public class VirtualView {
         controller.usePowerUp(subject, powerUp);
     }
 
-    public void scope(Damage damage, List<Player> targets) {
+    public void scope(Damage damage, List<Player> targets) throws AbortedTurnException {
         Player subject = damage.getAuthor();
         List<PowerUp> scopes = subject.getScopes();
         List<Player> scopedPlayers = new ArrayList<>();
@@ -457,7 +458,7 @@ public class VirtualView {
         controller.scope(damage, targets, scopedPlayers);
     }
 
-    public void grenade(Player subject, Player originalAttacker) {
+    public void grenade(Player subject, Player originalAttacker) throws AbortedTurnException {
         List<PowerUp> grenades = subject.getGrenades();
         boolean useGrenade = sendDual(subject, Deliverable.dual(DeliverableEvent.GRENADE_REQUEST_IF));
         if(!useGrenade)
@@ -473,7 +474,7 @@ public class VirtualView {
         controller.grenade(subject, originalAttacker);
     }
 
-    public void newton(Player subject) {
+    public void newton(Player subject) throws AbortedTurnException {
         List<Player> targetPlayers = game.getParticipants()
                 .stream()
                 .filter(p -> !p.equals(subject))
@@ -522,7 +523,7 @@ public class VirtualView {
         controller.newton(targetPlayer, targetCell);
     }
 
-    public void teleport(Player subject) {
+    public void teleport(Player subject) throws AbortedTurnException {
         List<Cell> targetCells = game.getBoard().getCells();
 
         List<String> cellNames = targetCells.stream()
@@ -592,6 +593,13 @@ public class VirtualView {
                         .map(s -> s + " points")
                         .collect(Collectors.toList())
         );
+        deliverable.overwriteMessage(message);
+        broadcast(deliverable);
+    }
+
+    public void announceDisconnect(Player disconnectedPlayer) {
+        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE);
+        String message = disconnectedPlayer + " has lost connection. Skipping to the next turn.";
         deliverable.overwriteMessage(message);
         broadcast(deliverable);
     }

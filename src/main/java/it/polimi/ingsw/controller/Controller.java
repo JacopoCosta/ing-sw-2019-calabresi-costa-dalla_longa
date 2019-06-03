@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
+import it.polimi.ingsw.model.exceptions.AbortedTurnException;
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.exceptions.CannotDiscardFirstCardOfDeckException;
 import it.polimi.ingsw.model.exceptions.FullHandException;
@@ -19,6 +20,7 @@ import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.view.virtual.VirtualView;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Controller {
@@ -46,7 +48,7 @@ public class Controller {
         subject.setPosition(destination);
     }
 
-    public boolean grabAmmo(Player subject) {
+    public boolean grabAmmo(Player subject) throws AbortedTurnException {
         AmmoCell ammoCell = (AmmoCell) subject.getPosition();
         AmmoTile ammoTile = ammoCell.getAmmoTile();
         if(ammoTile == null)
@@ -54,17 +56,19 @@ public class Controller {
 
         subject.giveAmmoCubes(ammoTile.getAmmoCubes());
         if(ammoTile.includesPowerUp()) {
-            subject.getGame()
+            Optional<PowerUp> powerUpOptional = subject.getGame()
                     .getBoard()
                     .getPowerUpDeck()
-                    .smartDraw(true)
-                    .ifPresent(card -> {
-                        try {
-                            subject.givePowerUp(card);
-                        } catch (FullHandException e) {
-                            virtualView.discardPowerUp(subject);
-                        }
-                    });
+                    .smartDraw(true);
+
+            if(powerUpOptional.isPresent()) {
+                PowerUp powerUp = powerUpOptional.get();
+                try {
+                    subject.givePowerUp(powerUp);
+                } catch (FullHandException e) {
+                    virtualView.discardPowerUp(subject);
+                }
+            }
         }
         ammoCell.setAmmoTile(null);
         try {
@@ -74,7 +78,7 @@ public class Controller {
         return true;
     }
 
-    public void grabWeapon(Player subject, int weaponIndex) {
+    public void grabWeapon(Player subject, int weaponIndex) throws AbortedTurnException {
         SpawnCell spawnCell = (SpawnCell) subject.getPosition();
         List<Weapon> weapons = spawnCell.getWeaponShop();
 
@@ -94,7 +98,7 @@ public class Controller {
         pattern.resetAllModules();
     }
 
-    public void shoot(Player subject, AttackPattern pattern, int moduleId) {
+    public void shoot(Player subject, AttackPattern pattern, int moduleId) throws AbortedTurnException {
         if(moduleId == -1) // -1 ends action
             return;
         AttackModule attackModule = pattern.getModule(moduleId);
@@ -106,7 +110,7 @@ public class Controller {
         virtualView.acquireTargets(subject, attackModule, targets);
     }
 
-    public void shootTargets(Player subject, AttackModule attackModule, List<Target> targets) {
+    public void shootTargets(Player subject, AttackModule attackModule, List<Target> targets) throws AbortedTurnException {
         boolean invalid = targets.stream().map( t -> {
             switch (t.getType()) {
                 case PLAYER:
@@ -150,7 +154,7 @@ public class Controller {
         catch (CannotAffordException ignored) { }
     }
 
-    public void usePowerUp(Player subject, PowerUp powerUp) {
+    public void usePowerUp(Player subject, PowerUp powerUp) throws AbortedTurnException {
         if(powerUp.getType() == PowerUpType.NEWTON)
             virtualView.newton(subject);
         else if(powerUp.getType() == PowerUpType.TELEPORT)

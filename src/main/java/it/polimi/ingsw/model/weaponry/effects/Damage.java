@@ -1,9 +1,11 @@
 package it.polimi.ingsw.model.weaponry.effects;
 
+import it.polimi.ingsw.model.exceptions.AbortedTurnException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 import it.polimi.ingsw.view.virtual.VirtualView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Damage extends OffensiveEffect {
@@ -21,7 +23,11 @@ public class Damage extends OffensiveEffect {
 
         if(targets.size() > 0) {
             VirtualView virtualView = author.getGame().getVirtualView();
-            virtualView.scope(this, targets);
+            try {
+                virtualView.scope(this, targets);
+            } catch (AbortedTurnException ignored) {
+                applyAfterScopes(targets, new ArrayList<>());// can't ask for scopes if they disconnected
+            }
         }
     }
 
@@ -42,7 +48,11 @@ public class Damage extends OffensiveEffect {
         VirtualView virtualView = author.getGame().getVirtualView();
         targets.stream()
                 .filter(p -> p.getGrenades().size() > 0)
-                .forEach(p -> virtualView.grenade(p, author));
+                .forEach(p -> {
+                    try {
+                        virtualView.grenade(p, author);
+                    } catch (AbortedTurnException ignored) { } // can't ask for grenades if they disconnected
+                });
     }
 
     @Override

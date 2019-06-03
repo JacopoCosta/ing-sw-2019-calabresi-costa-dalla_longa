@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class Game {
     public static final boolean godMode = true;
-    public static final boolean autoPilot = false;
+    public static final boolean autoPilot = true;
 
     private boolean finalFrenzy;
     private int roundsLeft;
@@ -86,14 +86,30 @@ public class Game {
                     } catch (FullHandException ignored) { } // discarding will be part of the respawn mechanic
                 });
 
-            virtualView.spawn(subject);
+            try {
+                virtualView.spawn(subject);
+            } catch (AbortedTurnException ignored) { // in case of aborted turn, return to the caller
+                virtualView.announceDisconnect(subject);
+                return;
+            }
         }
 
         subject.savePosition();
         while (subject.getRemainingExecutions() > 0) { // a turn is made by several executions
-            virtualView.usePowerUp(subject);
+            try {
+                virtualView.usePowerUp(subject);
+            } catch (AbortedTurnException e) {
+                virtualView.announceDisconnect(subject);
+                return;
+            }
             List<Execution> options = Execution.getOptionsForPlayer(subject);
-            Execution choice = virtualView.chooseExecution(subject, options);
+            Execution choice;
+            try {
+                choice = virtualView.chooseExecution(subject, options);
+            } catch (AbortedTurnException e) {
+                virtualView.announceDisconnect(subject);
+                return;
+            }
 
             for (Activity activity : choice.getActivities()) { // each execution consists of some activities
                 switch (activity.getType()) {
@@ -109,23 +125,49 @@ public class Game {
                                     }
                                 })
                                 .collect(Collectors.toList());
-                        virtualView.move(subject, validDestinations);
+                        try {
+                            virtualView.move(subject, validDestinations);
+                        } catch (AbortedTurnException e) {
+                            virtualView.announceDisconnect(subject);
+                            return;
+                        }
                         break;
 
                     case GRAB:
                         Cell position = subject.getPosition();
                         if (position.isSpawnPoint()) {
-                            virtualView.grabWeapon(subject);
-                        } else
-                            virtualView.grabAmmo(subject);
+                            try {
+                                virtualView.grabWeapon(subject);
+                            } catch (AbortedTurnException e) {
+                                virtualView.announceDisconnect(subject);
+                                return;
+                            }
+                        } else {
+                            try {
+                                virtualView.grabAmmo(subject);
+                            } catch (AbortedTurnException e) {
+                                virtualView.announceDisconnect(subject);
+                                return;
+                            }
+                        }
                         break;
 
                     case SHOOT:
-                        virtualView.shoot(subject);
+                        try {
+                            virtualView.shoot(subject);
+                        } catch (AbortedTurnException e) {
+                            virtualView.announceDisconnect(subject);
+                            return;
+                        }
                         break;
 
                     case RELOAD:
-                        virtualView.reload(subject);
+                        try {
+                            virtualView.reload(subject);
+                        } catch (AbortedTurnException e) {
+                            virtualView.announceDisconnect(subject);
+                            return;
+                        }
                         break;
 
                     default:
@@ -149,7 +191,9 @@ public class Game {
                             p.givePowerUp(c);
                         } catch (FullHandException ignored) { } // discarding will be part of the respawn process
                     });
-                    virtualView.spawn(p);
+                    try {
+                        virtualView.spawn(p);
+                    } catch (AbortedTurnException ignored) { } // in case of lost connection, don't spawn
                 });
 
         board.promoteDoubleKillers();
