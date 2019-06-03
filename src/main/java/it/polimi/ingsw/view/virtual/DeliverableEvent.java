@@ -34,7 +34,15 @@ public enum DeliverableEvent {
     NEWTON_FAILURE("Looks like you can't move this player to a cell you can see."),
     TELEPORT_REQUEST_CELL("Where would you like to teleport?"),
     TARGET_REQUEST(""),
-    ANNOUNCE(""),
+    GAME_STATUS(""),
+    ANNOUNCE_DAMAGE(""),
+    ANNOUNCE_MARKING(""),
+    ANNOUNCE_MOVE(""),
+    ANNOUNCE_KILL(""),
+    ANNOUNCE_SCORE(""),
+    ANNOUNCE_FRENZY(""),
+    ANNOUNCE_WINNER(""),
+    ANNOUNCE_DISCONNECT(""),
     RESPONSE(""),
     FATAL_ERROR("You should never see this string. If you do, run for your life!");
 

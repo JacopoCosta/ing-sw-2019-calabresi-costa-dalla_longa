@@ -27,9 +27,6 @@ public class Player extends VirtualClient {
 
     private static final int MAX_CARDS_IN_HAND = 3;
 
-    public static final int[] SCOREBOARD_DEFAULT = {8, 6, 4, 2, 1, 1};
-    private static final int[] SCOREBOARD_FRENZY = {2, 1, 1, 1};
-
     private Game game;
 
     private int score;
@@ -170,6 +167,8 @@ public class Player extends VirtualClient {
 
     public void discardWeapon(Weapon weapon) {
         weapons.remove(weapon);
+        if(!weapon.isLoaded())
+            weapon.reload();
         try {
             game.getBoard().getWeaponDeck().discard(weapon);
         } catch (CannotDiscardFirstCardOfDeckException ignored) { }
@@ -282,10 +281,7 @@ public class Player extends VirtualClient {
     // the player hands out points to its damagers, ranked by total damage inflicted
     // ties are broken in favor of chronological earliness (lowest minimum index)
     // first blood dealer is awarded 1 extra point
-    public void scoreUponDeath() {
-        final int[] scoreboard = this.onFrenzy ? SCOREBOARD_FRENZY : SCOREBOARD_DEFAULT;
-        final int scoreboardSize = scoreboard.length;
-
+    public void scoreDamageTrack() {
         // this comparator sorts players from the MOST to the LEAST damaging
         // if p1 is better than p2, a negative number should be returned
         Comparator<Player> better = (p1, p2) -> {
@@ -314,23 +310,28 @@ public class Player extends VirtualClient {
 
         // points of the scoreboard are given to the players in ranking order
         for(Player p : ranking) {
-            if(i < scoreboardSize)
-                p.giveScore(scoreboard[i]);
+            int points = ScoreList.get(i, onFrenzy);
+            p.giveScore(points);
+            game.getVirtualView().announceScore(this, p, points, false);
             i ++;
         }
 
-        game.getBoard().addKiller(damage.get(KILL_THRESHOLD));
-        if(damage.size() > OVERKILL_THRESHOLD) {
-            if (damage.get(KILL_THRESHOLD) == damage.get(OVERKILL_THRESHOLD)) { // the opposite should never happen
-                game.getBoard().addKiller(null); // watch out
-                damage.get(OVERKILL_THRESHOLD).applyMarking(this);
+        if(this.isKilled()) { // only when scoring upon death
+            game.getBoard().addKiller(damage.get(KILL_THRESHOLD));
+            if (this.isOverKilled()) {
+                if (damage.get(KILL_THRESHOLD) == damage.get(OVERKILL_THRESHOLD)) { // the opposite should never happen
+                    game.getBoard().addKiller(null); // watch out -- this will be read as an overkill from the previous entry
+                    damage.get(OVERKILL_THRESHOLD).applyMarking(this);
+                } else
+                    throw new RuntimeException("This 'else' branch should never be taken.");
             }
-            else
-                throw new RuntimeException("This 'else' branch should never be taken.");
         }
 
-        // one extra point to the player who drew first blood
-        this.damage.get(0).giveScore(1);
+        // one extra point to the player who drew first blood (if the victim is not on frenzy)
+        if(!onFrenzy) {
+            this.damage.get(0).giveScore(1);
+            game.getVirtualView().announceScore(this, damage.get(0), 1, true);
+        }
     }
 
     public void die() {

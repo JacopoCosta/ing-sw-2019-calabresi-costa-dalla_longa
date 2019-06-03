@@ -180,7 +180,7 @@ public class Game {
         participants.stream() // score all dead players
                 .filter(Player::isKilled)
                 .forEach(p -> {
-                    p.scoreUponDeath();
+                    p.scoreDamageTrack();
                     p.die();
                     if (roundsLeft > 0)
                         roundsLeft--;

@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.CannotDiscardFirstCardOfDeckException;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.ScoreList;
 import it.polimi.ingsw.model.powerups.*;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
@@ -381,8 +382,6 @@ public class Board {
     }
 
     public void scoreUponGameOver() {
-        int[] scoreBoard = Player.SCOREBOARD_DEFAULT;
-
         Comparator<Player> better = (p1, p2) -> {
             int kills1 = countKills(p1);
             int kills2 = countKills(p2);
@@ -398,10 +397,16 @@ public class Board {
                 .sorted(better)
                 .collect(Collectors.toList());
 
-        for(int i = 0; i < trueKillers.size() && i < scoreBoard.length; i ++)
-            trueKillers.get(i).giveScore(scoreBoard[i]); // give scores in descending order to the players sorted best to worst
+        for(int i = 0; i < trueKillers.size(); i ++) {
+            int points = ScoreList.get(i, false);
+            trueKillers.get(i).giveScore(points); // give scores in descending order to the players sorted best to worst
+            game.getVirtualView().announceScore(null, trueKillers.get(i), points, false);
+        }
 
-        doubleKillers.forEach(p -> p.giveScore(1)); // one extra point for each double kill scored
+        doubleKillers.forEach(p -> {
+            p.giveScore(1);
+            game.getVirtualView().announceScore(null, p, 1, true);
+        }); // one extra point for each double kill scored
      }
 
     private int countKills(Player author) {
