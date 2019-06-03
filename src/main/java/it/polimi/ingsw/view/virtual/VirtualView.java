@@ -570,7 +570,7 @@ public class VirtualView {
     }
 
     public void announceMove(Player author, Player target, Cell destination) {
-        Deliverable deliverable = Deliverable.info(DeliverableEvent.MOVE_REQUEST);
+        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE_MOVE);
         String message = author.getName() + " moved";
         if(!target.equals(author))
             message += " " + target.getName();
