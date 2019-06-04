@@ -114,12 +114,6 @@ public class CLI extends View {
         }
     } //end printBoard
 
-    public static void printDamageBoard(Player player) {
-        /*TODO:
-            (this is not a priority for basic CLI behaviour)
-         */
-    }
-
     //prints killers (being normal or overkill) and doublekillers
     public static void printBoardStatus(Board board) {
 
@@ -151,9 +145,10 @@ public class CLI extends View {
     }
 
     public static void printWeaponInfo(Weapon weapon) {
-        /*TODO:
-            (this is not a priority for basic CLI behaviour)
-         */
+        CLI.println("Info for weapon: " + weapon.getName());
+        CLI.println(weapon.getPattern().toString());
+        CLI.println("\tPurchase cost: " + weapon.getPurchaseCost().toString());
+        CLI.println("\tReload cost: " + weapon.getReloadCost().toString());
     }
 
     public static void printPlayerStatus(Player player) {
@@ -166,6 +161,7 @@ public class CLI extends View {
         }
         else {
             int index=1;
+            CLI.println("Owned weapons:");
             for(Weapon w: player.getWeapons()) {
                 CLI.print(((char) index) + ". " + w.getName());
 
@@ -185,6 +181,15 @@ public class CLI extends View {
         CLI.println(Table.list(player.getMarkingsAsList().stream().map(Player::getId).collect(Collectors.toList())));
 
         CLI.println("Dead " + player.getDeathCount() + " times");
+
+        CLI.printDamageBoard(player);
+    }
+
+    private static void printDamageBoard(Player player) {
+
+        int index = player.getDamage();
+        //TODO: finish this
+
     }
 
 
