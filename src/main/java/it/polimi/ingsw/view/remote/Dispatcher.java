@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.model.Game.autoPilot;
 
@@ -69,10 +68,6 @@ public abstract class Dispatcher {
             value = Dispatcher.safeIntegerConversion(Dispatcher.requestRoutine(message), value);
         } while(!numbers.contains(value));
         return numbers.indexOf(value);
-    }
-
-    public static int requestListedOption(String message, List<?> list) {
-        return requestMappedOption(message, list, list.stream().map(list::indexOf).map(x -> x + 1).collect(Collectors.toList()));
     }
 
     // keeps requesting a "y" or "n" answer until such request is fulfilled
