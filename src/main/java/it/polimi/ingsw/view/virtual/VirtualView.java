@@ -30,25 +30,59 @@ import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.model.Game.godMode;
 
+/**
+ * This class is responsible of bridging the network and model packages converting game-related request into deliverables.
+ * On this end, deliverables are sent to (and received from) the virtual client, whose {@code .deliver()} method is invoked.
+ */
 public class VirtualView {
+    /**
+     * The game that instantiated the virtual view.
+     */
     private Game game;
+
+    /**
+     * The controller that the virtual view will forward its responses to, triggering changes in the game status.
+     */
     private Controller controller;
 
+    /**
+     * This is the only constructor.
+     * @param game The relevant game.
+     */
     public VirtualView(Game game) {
         this.game = game;
         this.controller = new Controller(this);
     }
 
+    /**
+     * Getter method for the controller attribute.
+     * @return The controller.
+     */
     public Controller getController() {
         return controller;
     }
 
-    private void sendInfo(Player recipient, Deliverable deliverable) throws AbortedTurnException {
-        if(!deliverable.getType().equals(DeliverableType.INFO))
-            throw new DeliverableException("Wrong call to sendInfo in VirtualView.");
-
+    /**
+     * Sends a deliverable to a player's client.
+     * @param recipient The recipient of the deliverable.
+     * @param deliverable The deliverable of interest.
+     * @throws AbortedTurnException When the request routine catches a {@code ConnectionException} and the current turn needs to be ended prematurely.
+     */
+    private int send(Player recipient, Deliverable deliverable) throws AbortedTurnException {
         if(godMode) {
-            Dispatcher.sendMessage("\n<" + recipient.getName() + "> " + deliverable.getMessage());
+            switch (deliverable.getType()) {
+                case INFO:
+                    Dispatcher.sendMessage("\n<" + recipient.getName() + "> " + deliverable.getMessage());
+                    return 0;
+                case DUAL:
+                    return Dispatcher.requestBoolean("\n<" + recipient.getName() + "> " + deliverable.getMessage()) ? 1 : 0;
+                case MAPPED:
+                    return Dispatcher.requestMappedOption("\n<" + recipient.getName() + "> " + deliverable.getMessage(), ((Mapped) deliverable).getOptions(), ((Mapped) deliverable).getKeys());
+                case BULK:
+                    Dispatcher.sendMessage(((Bulk) deliverable).unpack().toString());
+                default:
+                    return 0;
+            }
         }
         else {
             try {
@@ -56,63 +90,15 @@ public class VirtualView {
             } catch (ConnectionException e) {
                 throw new AbortedTurnException("");
             }
-        }
-    }
-
-    private boolean sendDual(Player recipient, Deliverable deliverable) throws AbortedTurnException {
-        if(!deliverable.getType().equals(DeliverableType.DUAL))
-            throw new DeliverableException("Wrong call to sendDual in VirtualView.");
-
-        if(godMode) {
-            return Dispatcher.requestBoolean("\n<" + recipient.getName() + "> " + deliverable.getMessage());
-        } else {
-            try {
-                recipient.deliver(deliverable);
-            } catch (ConnectionException e) {
-                throw new AbortedTurnException("");
-            }
-            return recipient.nextDeliverable().unpack() != 0;
-        }
-    }
-
-    private int sendListed(Player recipient, Deliverable deliverable) throws AbortedTurnException {
-        if(!deliverable.getType().equals(DeliverableType.LISTED))
-            throw new DeliverableException("Wrong call to sendListed in VirtualView.");
-
-        if(godMode) {
-            return Dispatcher.requestListedOption("\n<" + recipient.getName() + "> " + deliverable.getMessage(), deliverable.getOptions());
-        }
-        else {
-            try {
-                recipient.deliver(deliverable);
-            } catch (ConnectionException e) {
-                throw new AbortedTurnException("");
-            }
-            return recipient.nextDeliverable().unpack();
-        }
-    }
-
-
-    private int sendMapped(Player recipient, Deliverable deliverable) throws AbortedTurnException {
-        if(!deliverable.getType().equals(DeliverableType.MAPPED))
-            throw new DeliverableException("Wrong call to sendMapped in VirtualView.");
-
-        if(godMode) {
-            return Dispatcher.requestMappedOption("\n<" + recipient.getName() + "> " + deliverable.getMessage(), deliverable.getOptions(), deliverable.getKeys());
-        }
-        else {
-            try {
-                recipient.deliver(deliverable);
-            } catch (ConnectionException e) {
-                throw new AbortedTurnException("");
-            }
-            return recipient.nextDeliverable().unpack();
+            if(deliverable.getType() != DeliverableType.INFO)
+                return ((Response) recipient.nextDeliverable()).getNumber();
+            return 0;
         }
     }
 
     private void broadcast(Deliverable deliverable) {
         if(!deliverable.getType().equals(DeliverableType.INFO))
-            throw new DeliverableException("Wrong call to sendInfo in VirtualView.");
+            throw new DeliverableException("Wrong call to send in VirtualView.");
 
         if(godMode) {
             Dispatcher.sendMessage("\n<#ALL> " + deliverable.getMessage());
@@ -120,7 +106,7 @@ public class VirtualView {
         else {
             game.getParticipants().forEach(recipient -> {
                 try {
-                    sendInfo(recipient, deliverable);
+                    send(recipient, deliverable);
                 } catch (AbortedTurnException ignored) { } // just don't send
             });
         }
@@ -128,11 +114,12 @@ public class VirtualView {
 
     private void sendGameStatus(Player subject) throws AbortedTurnException {
         if(godMode) {
-            Deliverable deliverable = Deliverable.info(DeliverableEvent.GAME_STATUS);
+            Deliverable deliverable = new Bulk(DeliverableEvent.BOARD, game.getBoard());
             deliverable.overwriteMessage(game.toString());
-            sendInfo(subject, deliverable);
+            send(subject, deliverable);
         }
     }
+
 
     public void spawn(Player subject) throws AbortedTurnException {
         sendGameStatus(subject);
@@ -142,10 +129,10 @@ public class VirtualView {
                 .map(PowerUp::toString)
                 .collect(Collectors.toList());
 
-        int discardIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.SPAWN_REQUEST, options));
+        int discardIndex = send(subject, new Mapped(DeliverableEvent.SPAWN_REQUEST, options));
         PowerUp powerUpToDiscard = subject.getPowerUps().get(discardIndex);
         controller.spawn(subject, powerUpToDiscard);
-        sendInfo(subject, Deliverable.info(DeliverableEvent.SPAWN_SUCCESS));
+        send(subject, new Info(DeliverableEvent.SPAWN_SUCCESS));
     }
 
     public void discardPowerUp(Player subject) throws AbortedTurnException {
@@ -155,7 +142,7 @@ public class VirtualView {
                 .map(PowerUp::toString)
                 .collect(Collectors.toList());
 
-        int discardIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.DISCARD_POWERUP_REQUEST, options));
+        int discardIndex = send(subject, new Mapped(DeliverableEvent.DISCARD_POWERUP_REQUEST, options));
         PowerUp powerUpToDiscard = powerUps.get(discardIndex);
         controller.discardPowerUp(subject, powerUpToDiscard);
     }
@@ -167,7 +154,7 @@ public class VirtualView {
                 .map(Weapon::toString)
                 .collect(Collectors.toList());
 
-        int discardIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.DISCARD_WEAPON_REQUEST, options));
+        int discardIndex = send(subject, new Mapped(DeliverableEvent.DISCARD_WEAPON_REQUEST, options));
         Weapon weaponToDiscard = weapons.get(discardIndex);
         controller.discardWeapon(subject, weaponToDiscard);
     }
@@ -179,7 +166,7 @@ public class VirtualView {
                 .map(Execution::toString)
                 .collect(Collectors.toList());
 
-        int choiceIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.CHOOSE_EXECUTION_REQUEST, options));
+        int choiceIndex = send(subject, new Mapped(DeliverableEvent.CHOOSE_EXECUTION_REQUEST, options));
         return executions.get(choiceIndex);
     }
 
@@ -192,7 +179,7 @@ public class VirtualView {
                 .map(Cell::getId)
                 .collect(Collectors.toList());
 
-        int destinationIndex = sendMapped(subject, Deliverable.mapped(DeliverableEvent.MOVE_REQUEST, options, cellIds));
+        int destinationIndex = send(subject, new Mapped(DeliverableEvent.MOVE_REQUEST, options, cellIds));
         Cell destination = cells.get(destinationIndex);
         controller.move(subject, destination);
     }
@@ -200,9 +187,9 @@ public class VirtualView {
     public void grabAmmo(Player subject) throws AbortedTurnException {
         boolean success = controller.grabAmmo(subject);
         if(success)
-            sendInfo(subject, Deliverable.info(DeliverableEvent.GRAB_AMMO_SUCCESS));
+            send(subject, new Info(DeliverableEvent.GRAB_AMMO_SUCCESS));
         else
-            sendInfo(subject, Deliverable.info(DeliverableEvent.GRAB_AMMO_FAILURE));
+            send(subject, new Info(DeliverableEvent.GRAB_AMMO_FAILURE));
     }
 
     public void grabWeapon(Player subject) throws AbortedTurnException {
@@ -219,11 +206,11 @@ public class VirtualView {
                 .map(Weapon::toString)
                 .collect(Collectors.toList());
 
-        boolean doPurchase = sendDual(subject, Deliverable.dual(DeliverableEvent.GRAB_WEAPON_REQUEST_IF));
+        boolean doPurchase = send(subject, new Dual(DeliverableEvent.GRAB_WEAPON_REQUEST_IF)) != 0;
         if(!doPurchase)
             return;
 
-        int purchaseIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.GRAB_WEAPON_REQUEST_WHICH, options));
+        int purchaseIndex = send(subject, new Mapped(DeliverableEvent.GRAB_WEAPON_REQUEST_WHICH, options));
         Weapon weaponToPurchase = weapons.get(purchaseIndex);
         List<PowerUp> powerUps = new ArrayList<>(); // power-ups can be used to cover the costs of buying a weapon
 
@@ -234,12 +221,12 @@ public class VirtualView {
 
             List<String> options1 = suitableForPaymentPowerUps.stream().map(PowerUp::toString).collect(Collectors.toList());
 
-            int suitableForPaymentPowerUpIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.GRAB_WEAPON_NEEDS_POWERUP, options1));
+            int suitableForPaymentPowerUpIndex = send(subject, new Mapped(DeliverableEvent.GRAB_WEAPON_NEEDS_POWERUP, options1));
             PowerUp payablePowerUp = suitableForPaymentPowerUps.get(suitableForPaymentPowerUpIndex);
             powerUps.add(payablePowerUp);
         }
 
-        sendInfo(subject, Deliverable.info(DeliverableEvent.GRAB_WEAPON_SUCCESS));
+        send(subject, new Info(DeliverableEvent.GRAB_WEAPON_SUCCESS));
         int weaponShopIndex = ((SpawnCell) subject.getPosition()).getWeaponShop().indexOf(weaponToPurchase);
         controller.grabWeapon(subject, weaponShopIndex);
         powerUps.forEach(subject::discardPowerUp);
@@ -254,7 +241,7 @@ public class VirtualView {
 
         List<String> options = availableWeapons.stream().map(Weapon::toString).collect(Collectors.toList());
 
-        int weaponIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.SHOOT_WEAPON_REQUEST, options));
+        int weaponIndex = send(subject, new Mapped(DeliverableEvent.SHOOT_WEAPON_REQUEST, options));
         Weapon weapon = availableWeapons.get(weaponIndex);
 
         AttackPattern pattern = weapon.getPattern();
@@ -277,7 +264,7 @@ public class VirtualView {
 
 
 
-        int moduleIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.SHOOT_MODULE_REQUEST, options));
+        int moduleIndex = send(subject, new Mapped(DeliverableEvent.SHOOT_MODULE_REQUEST, options));
         int moduleId = next.get(moduleIndex);
         controller.shoot(subject, pattern, moduleId);
     }
@@ -325,7 +312,7 @@ public class VirtualView {
     private Player shootPlayer(Player subject, TargetPlayer target) throws NoValidTargetsException, AbortedTurnException {
         List<Player> players = target.filter();
         if(players.size() == 0) {
-            sendInfo(subject, Deliverable.info(DeliverableEvent.SHOOT_PLAYER_FAILURE));
+            send(subject, new Info(DeliverableEvent.SHOOT_PLAYER_FAILURE));
             throw new NoValidTargetsException("No rooms available to target");
         }
 
@@ -333,16 +320,16 @@ public class VirtualView {
                 .map(Player::getName)
                 .collect(Collectors.toList());
 
-        Deliverable deliverable = Deliverable.listed(DeliverableEvent.TARGET_REQUEST, playerNames);
+        Deliverable deliverable = new Mapped(DeliverableEvent.TARGET_REQUEST, playerNames);
         deliverable.overwriteMessage(target.getMessage());
-        int playerIndex = sendListed(subject, deliverable);
+        int playerIndex = send(subject, deliverable);
         return players.get(playerIndex);
     }
 
     private Cell shootCell(Player subject, TargetCell target) throws NoValidTargetsException, AbortedTurnException {
         List<Cell> cells = target.filter();
         if(cells.size() == 0) {
-            sendInfo(subject, Deliverable.info(DeliverableEvent.SHOOT_CELL_FAILURE));
+            send(subject, new Info(DeliverableEvent.SHOOT_CELL_FAILURE));
             throw new NoValidTargetsException("No rooms available to target");
         }
 
@@ -354,17 +341,17 @@ public class VirtualView {
                 .map(Cell::getId)
                 .collect(Collectors.toList());
 
-        Deliverable deliverable = Deliverable.mapped(DeliverableEvent.TARGET_REQUEST, cellNames, cellIds);
+        Deliverable deliverable = new Mapped(DeliverableEvent.TARGET_REQUEST, cellNames, cellIds);
         deliverable.overwriteMessage(target.getMessage());
 
-        int cellIndex = sendMapped(subject, deliverable);
+        int cellIndex = send(subject, deliverable);
         return cells.get(cellIndex);
     }
 
     private Room shootRoom(Player subject, TargetRoom target) throws NoValidTargetsException, AbortedTurnException {
         List<Room> rooms = target.filter();
         if (rooms.size() == 0) {
-            sendInfo(subject, Deliverable.info(DeliverableEvent.SHOOT_ROOM_FAILURE));
+            send(subject, new Info(DeliverableEvent.SHOOT_ROOM_FAILURE));
             throw new NoValidTargetsException("No rooms available to target");
         }
 
@@ -372,10 +359,10 @@ public class VirtualView {
                 .map(Room::toString)
                 .collect(Collectors.toList());
 
-        Deliverable deliverable = Deliverable.listed(DeliverableEvent.TARGET_REQUEST, roomNames);
+        Deliverable deliverable = new Mapped(DeliverableEvent.TARGET_REQUEST, roomNames);
         deliverable.overwriteMessage(target.getMessage());
 
-        int roomIndex = sendListed(subject, deliverable);
+        int roomIndex = send(subject, deliverable);
         return rooms.get(roomIndex);
     }
 
@@ -388,11 +375,11 @@ public class VirtualView {
         boolean keepReloading = true;
 
         while(weapons.size() > 0 && keepReloading) {
-            keepReloading = sendDual(subject, Deliverable.dual(DeliverableEvent.RELOAD_REQUEST_IF));
+            keepReloading = send(subject, new Dual(DeliverableEvent.RELOAD_REQUEST_IF)) != 0;
 
             if(keepReloading) {
                 List<String> options = weapons.stream().map(Weapon::toString).collect(Collectors.toList());
-                int reloadIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.RELOAD_REQUEST_WHICH, options));
+                int reloadIndex = send(subject, new Mapped(DeliverableEvent.RELOAD_REQUEST_WHICH, options));
                 Weapon weaponToReload = weapons.get(reloadIndex);
                 List<PowerUp> powerUps = new ArrayList<>(); // power-ups can be used to cover the costs of reloading a weapon
 
@@ -405,12 +392,12 @@ public class VirtualView {
                             .map(PowerUp::toString)
                             .collect(Collectors.toList());
 
-                    int suitableForPaymentPowerUpIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.RELOAD_NEEDS_POWERUP, options1));
+                    int suitableForPaymentPowerUpIndex = send(subject, new Mapped(DeliverableEvent.RELOAD_NEEDS_POWERUP, options1));
                     PowerUp payablePowerUp = suitableForPaymentPowerUps.get(suitableForPaymentPowerUpIndex);
                     powerUps.add(payablePowerUp);
                 }
 
-                sendInfo(subject, Deliverable.info(DeliverableEvent.RELOAD_SUCCESS));
+                send(subject, new Info(DeliverableEvent.RELOAD_SUCCESS));
                 controller.reload(subject, weaponToReload);
                 powerUps.forEach(subject::discardPowerUp);
             }
@@ -435,11 +422,11 @@ public class VirtualView {
 
         List<String> options = powerUps.stream().map(PowerUp::toString).collect(Collectors.toList());
 
-        boolean usePowerUp = sendDual(subject, Deliverable.dual(DeliverableEvent.POWERUP_REQUEST_IF));
+        boolean usePowerUp = send(subject, new Dual(DeliverableEvent.POWERUP_REQUEST_IF)) != 0;
         if(!usePowerUp)
             return;
 
-        int powerUpIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.POWERUP_REQUEST_WHICH, options));
+        int powerUpIndex = send(subject, new Mapped(DeliverableEvent.POWERUP_REQUEST_WHICH, options));
         PowerUp powerUp = powerUps.get(powerUpIndex);
         subject.discardPowerUp(powerUp);
         controller.usePowerUp(subject, powerUp);
@@ -454,13 +441,13 @@ public class VirtualView {
         boolean hasBlue = subject.canAfford(AmmoCubes.blue());
         boolean useScope = true;
         while(scopes.size() > 0 && useScope && (hasRed || hasYellow || hasBlue)) {
-            useScope = sendDual(subject, Deliverable.dual(DeliverableEvent.SCOPE_REQUEST_IF));
+            useScope = send(subject, new Dual(DeliverableEvent.SCOPE_REQUEST_IF)) != 0;
             if(useScope) {
                 List<String> options = scopes.stream()
                         .map(PowerUp::toString)
                         .collect(Collectors.toList());
 
-                int scopeId = sendListed(subject, Deliverable.listed(DeliverableEvent.SCOPE_REQUEST_WHICH, options));
+                int scopeId = send(subject, new Mapped(DeliverableEvent.SCOPE_REQUEST_WHICH, options));
                 PowerUp scope = scopes.get(scopeId);
                 subject.discardPowerUp(scope);
 
@@ -476,7 +463,7 @@ public class VirtualView {
                         .map(AmmoCubes::toStringAsColor)
                         .collect(Collectors.toList());
 
-                int unitCubeIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.SCOPE_REQUEST_AMMO, options1));
+                int unitCubeIndex = send(subject, new Mapped(DeliverableEvent.SCOPE_REQUEST_AMMO, options1));
                 AmmoCubes fee = unitCubes.get(unitCubeIndex);
                 try {
                     subject.takeAmmoCubes(fee);
@@ -486,7 +473,7 @@ public class VirtualView {
                         .map(Player::toString)
                         .collect(Collectors.toList());
 
-                int targetId = sendListed(subject, Deliverable.listed(DeliverableEvent.SCOPE_REQUEST_TARGET, options2));
+                int targetId = send(subject, new Mapped(DeliverableEvent.SCOPE_REQUEST_TARGET, options2));
                 scopedPlayers.add(targets.get(targetId));
                 scopes = subject.getScopes();
             }
@@ -496,7 +483,7 @@ public class VirtualView {
 
     public void grenade(Player subject, Player originalAttacker) throws AbortedTurnException {
         List<PowerUp> grenades = subject.getGrenades();
-        boolean useGrenade = sendDual(subject, Deliverable.dual(DeliverableEvent.GRENADE_REQUEST_IF));
+        boolean useGrenade = send(subject, new Dual(DeliverableEvent.GRENADE_REQUEST_IF)) != 0;
         if(!useGrenade)
             return;
 
@@ -504,7 +491,7 @@ public class VirtualView {
                 .map(PowerUp::toString)
                 .collect(Collectors.toList());
 
-        int grenadeIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.GRENADE_REQUEST_WHICH, options));
+        int grenadeIndex = send(subject, new Mapped(DeliverableEvent.GRENADE_REQUEST_WHICH, options));
         PowerUp grenade = grenades.get(grenadeIndex);
         subject.discardPowerUp(grenade);
         controller.grenade(subject, originalAttacker);
@@ -524,7 +511,7 @@ public class VirtualView {
                 .map(Player::getName)
                 .collect(Collectors.toList());
 
-        int targetPlayerId = sendListed(subject, Deliverable.listed(DeliverableEvent.NEWTON_REQUEST_PLAYER, playerNames));
+        int targetPlayerId = send(subject, new Mapped(DeliverableEvent.NEWTON_REQUEST_PLAYER, playerNames));
         Player targetPlayer = targetPlayers.get(targetPlayerId);
 
         List<Cell> targetCells = game.getBoard()
@@ -541,7 +528,7 @@ public class VirtualView {
                 .collect(Collectors.toList());
 
         if(targetCells.size() == 0) {
-            sendInfo(subject, Deliverable.info(DeliverableEvent.NEWTON_FAILURE));
+            send(subject, new Info(DeliverableEvent.NEWTON_FAILURE));
             return;
         }
 
@@ -553,7 +540,7 @@ public class VirtualView {
                 .map(Cell::getId)
                 .collect(Collectors.toList());
 
-        int targetCellId = sendMapped(subject, Deliverable.mapped(DeliverableEvent.NEWTON_REQUEST_CELL, cellNames, cellIds));
+        int targetCellId = send(subject, new Mapped(DeliverableEvent.NEWTON_REQUEST_CELL, cellNames, cellIds));
         Cell targetCell = targetCells.get(targetCellId);
 
         controller.newton(targetPlayer, targetCell);
@@ -570,26 +557,26 @@ public class VirtualView {
                 .map(Cell::getId)
                 .collect(Collectors.toList());
 
-        int cellIndex = sendMapped(subject, Deliverable.mapped(DeliverableEvent.TELEPORT_REQUEST_CELL, cellNames, cellIds));
+        int cellIndex = send(subject, new Mapped(DeliverableEvent.TELEPORT_REQUEST_CELL, cellNames, cellIds));
         Cell destination = targetCells.get(cellIndex);
         controller.teleport(subject, destination);
     }
 
     public void announceDamage(Player author, Player target, int amount) {
-        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE_DAMAGE);
+        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_DAMAGE);
         deliverable.overwriteMessage(author.getName() + " dealt " + amount + " damage to " + target.getName() + ".");
         broadcast(deliverable);
     }
 
     public void announceMarking(Player author, Player target, int amount) {
         String lexeme = amount > 1 ? "marks" : "mark";
-        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE_MARKING);
+        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_MARKING);
         deliverable.overwriteMessage(author.getName() + " dealt " + amount + " " + lexeme + " to " + target.getName() + ".");
         broadcast(deliverable);
     }
 
     public void announceMove(Player author, Player target, Cell destination) {
-        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE_MOVE);
+        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_MOVE);
         String message = author.getName() + " moved";
         if(!target.equals(author))
             message += " " + target.getName();
@@ -598,7 +585,7 @@ public class VirtualView {
     }
 
     public void announceKill(Player author, Player target) {
-        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE_KILL);
+        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_KILL);
         String message = author.getName() +  " ";
         if(target.isOverKilled())
             message += "over";
@@ -608,7 +595,7 @@ public class VirtualView {
     }
 
     public void announceScore(Player source, Player creditor, int amount, boolean firstBloodOrDoubleKill) {
-        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE_SCORE);
+        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_SCORE);
         String lexeme = amount == 1 ? "point" : "points";
         String message = creditor + " earned " + amount + " " + lexeme;
         if(source == null) {
@@ -626,13 +613,13 @@ public class VirtualView {
     }
 
     public void announceFrenzy(Player cause) {
-        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE_FRENZY);
+        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_FRENZY);
         deliverable.overwriteMessage(cause.toString() + " activated the Final Frenzy!");
         broadcast(deliverable);
     }
 
     public void announceWinner(List<Player> ranking) {
-        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE_WINNER);
+        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_WINNER);
         String message = "\n\nGAME OVER!\n" + ranking.get(0).toString() + " won the game!\n\nRanking:\n" + Table.create(
                 ranking.stream()
                         .map(ranking::indexOf)
@@ -652,7 +639,7 @@ public class VirtualView {
     }
 
     public void announceDisconnect(Player disconnectedPlayer) {
-        Deliverable deliverable = Deliverable.info(DeliverableEvent.ANNOUNCE_DISCONNECT);
+        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_DISCONNECT);
         String message = disconnectedPlayer + " has lost connection. Skipping to the next turn...";
         deliverable.overwriteMessage(message);
         broadcast(deliverable);
