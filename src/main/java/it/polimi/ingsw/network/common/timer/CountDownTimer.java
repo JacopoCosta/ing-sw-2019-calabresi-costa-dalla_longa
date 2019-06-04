@@ -21,7 +21,7 @@ public class CountDownTimer implements Observable {
 
         //the timer has been stopped during the execution before expiring,
         //the timer is not performing the countdown anymore,
-        //if stop() is called at the same time the timer expires, the timer state will be set to EXPIRED instead
+        //if stop() is called at the same time the timer expires, the timer state will be set to STOPPED.
         STOPPED,
 
         //the timer has finished his execution without being interrupted,
@@ -43,6 +43,12 @@ public class CountDownTimer implements Observable {
     private Runnable tick = () -> { //the task to execute every PERIOD seconds
         if (currentSeconds.decrementAndGet() < 0) {
             timerState = TimerState.EXPIRED;
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return;
+            }
             stop();
             notifyObservers();
         }

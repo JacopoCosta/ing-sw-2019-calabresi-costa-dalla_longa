@@ -10,30 +10,52 @@ public class TestCountDownTimer {
         int startingSeconds = 1;
         CountDownTimer timer = new CountDownTimer(startingSeconds);
 
-        assertEquals(timer.getState(), CountDownTimer.TimerState.NOT_STARTED);
+        assertEquals(CountDownTimer.TimerState.NOT_STARTED, timer.getState());
         timer.start();
 
         Thread.sleep(500);
-        assertEquals(timer.getState(), CountDownTimer.TimerState.STARTED);
+        assertEquals(CountDownTimer.TimerState.STARTED, timer.getState());
 
-        Thread.sleep(500 + 5); //in the 1000th millisecond the timer may not have been stopped yet
-        assertEquals(timer.getState(), CountDownTimer.TimerState.EXPIRED);
-        assertNotEquals(timer.getState(), CountDownTimer.TimerState.STOPPED);
+        Thread.sleep(501);
+        assertEquals(CountDownTimer.TimerState.EXPIRED,timer.getState());
     }
 
     @Test
-    public void stop() throws InterruptedException {
+    public void stopBeforeZero() throws InterruptedException {
         int startingSeconds = 1;
         CountDownTimer timer = new CountDownTimer(startingSeconds);
 
         timer.start();
 
         Thread.sleep(500);
-        assertEquals(timer.getState(), CountDownTimer.TimerState.STARTED);
+        assertEquals(CountDownTimer.TimerState.STARTED, timer.getState());
 
         timer.stop();
-        assertEquals(timer.getState(), CountDownTimer.TimerState.STOPPED);
-        assertNotEquals(timer.getState(), CountDownTimer.TimerState.EXPIRED);
+        assertEquals(CountDownTimer.TimerState.STOPPED, timer.getState());
+    }
+
+    @Test
+    public void stopAtZero() throws InterruptedException {
+        int startingSeconds = 1;
+        CountDownTimer timer = new CountDownTimer(startingSeconds);
+
+        timer.start();
+
+        Thread.sleep(1000);
+        timer.stop();
+
+        assertEquals(CountDownTimer.TimerState.STOPPED, timer.getState());
+    }
+
+    @Test
+    public void expire() throws InterruptedException {
+        int startingSeconds = 1;
+        CountDownTimer timer = new CountDownTimer(startingSeconds);
+
+        timer.start();
+
+        Thread.sleep(1000 + 1);
+        assertEquals(CountDownTimer.TimerState.EXPIRED, timer.getState());
     }
 
     @Test
@@ -44,17 +66,17 @@ public class TestCountDownTimer {
 
         timer.start();
         Thread.sleep(500);
-        assertEquals(timer.getState(), CountDownTimer.TimerState.STARTED);
+        assertEquals(CountDownTimer.TimerState.STARTED, timer.getState());
 
         timer.delay(secondsDelay);
-        assertEquals(timer.getState(), CountDownTimer.TimerState.STARTED);
+        assertEquals(CountDownTimer.TimerState.STARTED, timer.getState());
 
         Thread.sleep(500);
-        assertEquals(timer.getState(), CountDownTimer.TimerState.STARTED);
+        assertEquals(CountDownTimer.TimerState.STARTED, timer.getState());
 
-        Thread.sleep(1000 + 5); //in the 1000th millisecond the timer may not have been stopped yet
-        assertEquals(timer.getState(), CountDownTimer.TimerState.EXPIRED);
-        assertNotEquals(timer.getState(), CountDownTimer.TimerState.STOPPED);
+        Thread.sleep(1000);
+        assertEquals(CountDownTimer.TimerState.EXPIRED, timer.getState());
+        assertNotEquals(CountDownTimer.TimerState.STOPPED, timer.getState());
     }
 
 }
