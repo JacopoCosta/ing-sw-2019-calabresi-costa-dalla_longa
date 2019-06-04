@@ -36,9 +36,11 @@ public abstract class VirtualClient extends MessageController {
         sendMessage(NetworkMessage.completeServerMessage(MessageType.CLIENT_MESSAGE, deliverable));
     }
 
-    public Deliverable nextDeliverable() {
-        NetworkMessage message = getNextMessage();
-        return (Deliverable) message.getContent();
+    public Deliverable nextDeliverable() throws ConnectionException {
+        if (getMessage() == null)
+            throw new ConnectionException("Connection to the client is lost");
+
+        return (Deliverable) getNextMessage().getContent();
     }
 
     @Override
