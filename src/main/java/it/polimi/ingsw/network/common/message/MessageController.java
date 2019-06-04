@@ -21,13 +21,17 @@ public abstract class MessageController {
         return received;
     }
 
-    private synchronized NetworkMessage getMessage() {
+    private synchronized NetworkMessage readMessage() {
         received = false;
+        return message;
+    }
+
+    protected NetworkMessage getMessage(){
         return message;
     }
 
     protected NetworkMessage getNextMessage() {
         while (!newMessageReceived()) ;
-        return getMessage();
+        return readMessage();
     }
 }

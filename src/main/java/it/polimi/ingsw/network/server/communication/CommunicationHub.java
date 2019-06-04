@@ -21,7 +21,8 @@ public class CommunicationHub {
     private final LobbyManager lobbyManager;
 
     private final ScheduledExecutorService checkConnectionExecutor;
-    private final ConnectionChecker checkConnectionTask;
+    //private final ConnectionChecker checkConnectionTask;
+    private final Runnable connectionCheckTask;
     private final int CHECK_PERIOD = 5;
 
     private final Console console = Console.getInstance();
@@ -30,10 +31,37 @@ public class CommunicationHub {
         players = new ConcurrentLinkedQueue<>();
         lobbyManager = new LobbyManager();
 
-        checkConnectionTask = new ConnectionChecker(players, lobbyManager, instance);
+        //checkConnectionTask = new ConnectionChecker(players, lobbyManager, instance);
+        connectionCheckTask = () -> {
+            NetworkMessage ping = NetworkMessage.simpleServerMessage(MessageType.PING_MESSAGE);
+            for (Player player : players)
+                try {
+                    console.mexS(("message " + ping.getType().toString() + " sent to Client \"" + player.getName() + "\""));
+                    player.sendMessage(ping);
+                } catch (ConnectionException ignored) {
+                    console.err("Client \"" + player.getName() + "\" lost connection, logging out from his lobby...");
+                    try {
+                        try {
+                            String lobbyName = lobbyManager.getLobbyNameByPlayer(player);
+                            lobbyManager.remove(lobbyName, player);
+                            console.log("Client \"" + player.getName() + "\" successfully logged out from Lobby \"" + lobbyName + "\"");
+                        } catch (LobbyNotFoundException e) {
+                            console.log(e.getMessage());
+                        } catch (PlayerNotFoundException | LobbyEmptyException e) {
+                            console.err(e.getMessage());
+                        }
+                        console.log("unregistering Client \"" + player.getName() + "\"...");
+                        unregister(player);
+
+                    } catch (ClientNotRegisteredException e) {
+                        console.err(e.getMessage());
+                    }
+                    console.log("Client \"" + player.getName() + "\" successfully unregistered");
+                }
+        };
 
         checkConnectionExecutor = Executors.newSingleThreadScheduledExecutor();
-        checkConnectionExecutor.scheduleAtFixedRate(checkConnectionTask, 0, CHECK_PERIOD, TimeUnit.SECONDS);
+        checkConnectionExecutor.scheduleAtFixedRate(connectionCheckTask, 0, CHECK_PERIOD, TimeUnit.SECONDS);
     }
 
     public static CommunicationHub getInstance() {
@@ -66,6 +94,7 @@ public class CommunicationHub {
         if (!players.contains(player))
             throw new ClientNotRegisteredException("Client \"" + player.getName() + "\" not registered");
         players.remove(player);
+        player.onMessageReceived(null); //to stop the Player from waiting a message while nextMessage() is called.
     }
 
     public synchronized void handleMessage(NetworkMessage message) {

@@ -90,8 +90,14 @@ public class VirtualView {
             } catch (ConnectionException e) {
                 throw new AbortedTurnException("");
             }
-            if(deliverable.getType() != DeliverableType.INFO)
-                return ((Response) recipient.nextDeliverable()).getNumber();
+            if(deliverable.getType() != DeliverableType.INFO) {
+                try {
+                    return ((Response) recipient.nextDeliverable()).getNumber();
+                } catch (ConnectionException e) {
+                    e.printStackTrace();
+                    return -1; //TODO: handle NetworkException
+                }
+            }
             return 0;
         }
     }
