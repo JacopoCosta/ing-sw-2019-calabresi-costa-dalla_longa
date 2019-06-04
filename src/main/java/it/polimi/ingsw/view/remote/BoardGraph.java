@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
+import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
@@ -43,26 +44,28 @@ public class BoardGraph {
     public static WallType getWallBetweenCells(Board board, int x1, int y1, int x2, int y2) {
         if (board.getCellByCoordinates(x1, y1) != null && board.getCellByCoordinates(x2, y2) != null) { //they both exist
 
-            if (board.getCellByCoordinates(x1, y1).isGhostlyAdjacent(board.getCellByCoordinates(x2, y2))) { //the cells may be separated by a wall, a door or nothing
-                if (!board.getCellByCoordinates(x1, y1).isAdjacent(board.getCellByCoordinates(x2, y2))) { //the cells are separated by a wall
-                    if (x1 == x2)
-                        return HOR_FULL;
-                    else if (y1 == y2)
-                        return VER_FULL;
+            try {
+                if (board.getCellByCoordinates(x1, y1).isGhostlyAdjacent(board.getCellByCoordinates(x2, y2))) { //the cells may be separated by a wall, a door or nothing
+                    if (!board.getCellByCoordinates(x1, y1).isAdjacent(board.getCellByCoordinates(x2, y2))) { //the cells are separated by a wall
+                        if (x1 == x2)
+                            return HOR_FULL;
+                        else if (y1 == y2)
+                            return VER_FULL;
+                    }
+                    else if (board.getCellByCoordinates(x1, y1).getRoom() == board.getCellByCoordinates(x2, y2).getRoom()) { //they're part of the same room
+                        if (x1 == x2)
+                            return HOR_VOID;
+                        else if (y1 == y2)
+                            return VER_VOID;
+                    }
+                    else { //they are separated by a door
+                        if(x1 == x2)
+                            return HOR_DOOR;
+                        else if (y1 == y2)
+                            return VER_DOOR;
+                    }
                 }
-                else if (board.getCellByCoordinates(x1, y1).getRoom() == board.getCellByCoordinates(x2, y2).getRoom()) { //they're part of the same room
-                    if (x1 == x2)
-                        return HOR_VOID;
-                    else if (y1 == y2)
-                        return VER_VOID;
-                }
-                else { //they are separated by a door
-                    if(x1 == x2)
-                        return HOR_DOOR;
-                    else if (y1 == y2)
-                        return VER_DOOR;
-                }
-            }
+            } catch (NullCellOperationException ignored) { }
             /*else //the cells aren't even ghostlyAdjacent, so there isn't any separator between them
                 return NONE;
 
