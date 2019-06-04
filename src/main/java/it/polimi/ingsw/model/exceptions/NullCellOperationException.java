@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.exceptions;
 
-public class NullCellOperationException extends RuntimeException { // TODO this will no longer be Runtime
+public class NullCellOperationException extends Exception {
     public NullCellOperationException(String message) {
         super(message);
     }

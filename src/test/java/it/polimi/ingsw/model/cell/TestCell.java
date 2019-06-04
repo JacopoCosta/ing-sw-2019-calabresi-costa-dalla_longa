@@ -42,35 +42,45 @@ public class TestCell {
 
 
     @Test
-    public void distance() throws NullCellOperationException {
-        assertEquals(0, cell8.distance(cell8));
-        assertEquals(1, cell8.distance(cell7));
-        assertEquals(1, cell4.distance(cell8));
-        assertEquals(2, cell8.distance(cell10));
-        assertEquals(2, cell9.distance(cell5));
-        assertEquals(2, cell1.distance(cell3));
-        assertEquals(2, cell3.distance(cell10));
-        assertEquals(3, cell1.distance(cell4));
-        assertEquals(3, cell5.distance(cell10));
-        assertEquals(3, cell11.distance(cell3));
-        assertEquals(5, cell11.distance(cell1));
+    public void distance() {
+        try {
+            assertEquals(0, cell8.distance(cell8));
+            assertEquals(1, cell8.distance(cell7));
+            assertEquals(1, cell4.distance(cell8));
+            assertEquals(2, cell8.distance(cell10));
+            assertEquals(2, cell9.distance(cell5));
+            assertEquals(2, cell1.distance(cell3));
+            assertEquals(2, cell3.distance(cell10));
+            assertEquals(3, cell1.distance(cell4));
+            assertEquals(3, cell5.distance(cell10));
+            assertEquals(3, cell11.distance(cell3));
+            assertEquals(5, cell11.distance(cell1));
+        }
+        catch (NullCellOperationException e) {
+            fail();
+        }
     }
 
     @Test
     public void canSee() {
-        assertTrue(cell7.canSee(cell7));
-        assertTrue(cell7.canSee(cell3));
-        assertTrue(cell7.canSee(cell11));
-        assertTrue(cell8.canSee(cell4));
-        assertTrue(cell4.canSee(cell1));
-        assertTrue(cell1.canSee(cell6));
-        assertTrue(cell9.canSee(cell8));
-        assertFalse(cell8.canSee(cell9));
-        assertFalse(cell8.canSee(cell3));
-        assertFalse(cell8.canSee(cell6));
-        assertFalse(cell1.canSee(cell4));
-        assertFalse(cell1.canSee(cell7));
-        assertFalse(cell1.canSee(cell9));
+        try {
+            assertTrue(cell7.canSee(cell7));
+            assertTrue(cell7.canSee(cell3));
+            assertTrue(cell7.canSee(cell11));
+            assertTrue(cell8.canSee(cell4));
+            assertTrue(cell4.canSee(cell1));
+            assertTrue(cell1.canSee(cell6));
+            assertTrue(cell9.canSee(cell8));
+            assertFalse(cell8.canSee(cell9));
+            assertFalse(cell8.canSee(cell3));
+            assertFalse(cell8.canSee(cell6));
+            assertFalse(cell1.canSee(cell4));
+            assertFalse(cell1.canSee(cell7));
+            assertFalse(cell1.canSee(cell9));
+        }
+        catch (NullCellOperationException e) {
+            fail();
+        }
     }
 
     @Test

@@ -79,7 +79,7 @@ public class VirtualView {
                 case MAPPED:
                     return Dispatcher.requestMappedOption("\n<" + recipient.getName() + "> " + deliverable.getMessage(), ((Mapped) deliverable).getOptions(), ((Mapped) deliverable).getKeys());
                 case BULK:
-                    Dispatcher.sendMessage(((Bulk) deliverable).unpack().toString());
+                    Dispatcher.sendMessage(game.toString());
                 default:
                     return 0;
             }
@@ -94,8 +94,7 @@ public class VirtualView {
                 try {
                     return ((Response) recipient.nextDeliverable()).getNumber();
                 } catch (ConnectionException e) {
-                    e.printStackTrace();
-                    return -1; //TODO: handle NetworkException
+                    throw new AbortedTurnException("");
                 }
             }
             return 0;
@@ -523,7 +522,13 @@ public class VirtualView {
         List<Cell> targetCells = game.getBoard()
                 .getCells()
                 .stream()
-                .filter(c -> subject.getPosition().canSee(c))
+                .filter(c -> {
+                    try {
+                        return subject.getPosition().canSee(c);
+                    } catch (NullCellOperationException e) {
+                        return false;
+                    }
+                })
                 .filter(c -> {
                     try {
                         return targetPlayer.getPosition().distance(c) <= Newton.getMaxDistance();
