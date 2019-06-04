@@ -298,13 +298,13 @@ public class Board {
     public int getWidth() {
         return cells.stream()
                 .map(Cell::getXCoord)
-                .reduce(0, Integer::max);
+                .reduce(0, Integer::max) + 1;
     }
 
     public int getHeight() {
         return cells.stream()
                 .map(Cell::getYCoord)
-                .reduce(0, Integer::max);
+                .reduce(0, Integer::max) + 1;
     }
 
     public List<Cell> getCells() {
