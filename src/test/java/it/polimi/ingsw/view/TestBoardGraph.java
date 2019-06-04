@@ -14,24 +14,34 @@ public class TestBoardGraph {
     private Game game = Game.create(false, 6, 1, new ArrayList<>());
     private Board board = game.getBoard();
 
-    private int x0 = board.getCells().get(0).getXCoord();
-    private int x1 = board.getCells().get(1).getXCoord();
-    private int x2 = board.getCells().get(2).getXCoord();
-    private int x3 = board.getCells().get(3).getXCoord();
-    private int x4 = board.getCells().get(4).getXCoord();
-    private int x5 = board.getCells().get(5).getXCoord();
-
-    private int y0 = board.getCells().get(0).getYCoord();
-    private int y1 = board.getCells().get(1).getYCoord();
-    private int y2 = board.getCells().get(2).getYCoord();
-    private int y3 = board.getCells().get(3).getYCoord();
-    private int y4 = board.getCells().get(4).getYCoord();
-    private int y5 = board.getCells().get(5).getYCoord();
-
     @Test
     public void simpleSeparatorTest() {
-        assertEquals(WallType.VER_VOID, BoardGraph.getWallBetweenCells(board, x1, y1, x2, y2));
-        assertEquals(WallType.HOR_FULL, BoardGraph.getWallBetweenCells(board, x1, y1, x4, y4));
-        assertEquals(WallType.HOR_DOOR, BoardGraph.getWallBetweenCells(board, x0, y0, x3, y3));
+        assertEquals(WallType.VER_VOID, BoardGraph.getWallBetweenCells(board, 1, 0, 2, 0));
+        assertEquals(WallType.HOR_FULL, BoardGraph.getWallBetweenCells(board, 1, 0, 1, 1));
+        assertEquals(WallType.HOR_DOOR, BoardGraph.getWallBetweenCells(board, 0, 0, 0, 1));
     }
+
+    @Test
+    public void withVoidCells() {
+        assertEquals(WallType.HOR_FULL, BoardGraph.getWallBetweenCells(board, 3, 0, 3, 1));
+        assertEquals(WallType.HOR_FULL, BoardGraph.getWallBetweenCells(board, 3, 1, 3, 0));
+        assertEquals(WallType.VER_FULL, BoardGraph.getWallBetweenCells(board, 3, 0, 2, 0));
+        assertEquals(WallType.VER_FULL, BoardGraph.getWallBetweenCells(board, 2, 0, 3, 0));
+
+        assertEquals(WallType.HOR_FULL, BoardGraph.getWallBetweenCells(board, 0, 2, 0, 1));
+        assertEquals(WallType.HOR_FULL, BoardGraph.getWallBetweenCells(board, 0, 1, 0, 2));
+        assertEquals(WallType.VER_FULL, BoardGraph.getWallBetweenCells(board, 0, 2, 1, 2));
+        assertEquals(WallType.VER_FULL, BoardGraph.getWallBetweenCells(board, 1, 2, 0, 2));
+    }
+
+    @Test
+    public void noneWallType() {
+        assertEquals(WallType.NONE, BoardGraph.getWallBetweenCells(board, 1, 0, 2, 1));
+        assertEquals(WallType.NONE, BoardGraph.getWallBetweenCells(board, 2, 1, 1, 0));
+        assertEquals(WallType.NONE, BoardGraph.getWallBetweenCells(board, 3, 0, 1, 2));
+        assertEquals(WallType.NONE, BoardGraph.getWallBetweenCells(board, 1, 2, 3, 0));
+        assertEquals(WallType.NONE, BoardGraph.getWallBetweenCells(board, 0, 0, 0, 2));
+        assertEquals(WallType.NONE, BoardGraph.getWallBetweenCells(board, 0, 2, 0, 0));
+    }
+
 }

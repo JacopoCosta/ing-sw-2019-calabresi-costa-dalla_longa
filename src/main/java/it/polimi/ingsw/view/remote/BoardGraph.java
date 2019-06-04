@@ -97,7 +97,10 @@ public class BoardGraph {
 
     public void printCellCoordinate(Cell cell) {
         if(cell != null)
-            CLI.print(" <" + (cell.getXCoord() + 1) + "," + ((cell.getYCoord() + 1) + ">                  "));
+            if(cell.getId() < 10)
+                CLI.print(" <" + cell.getId() + ">                    ");   //single digit
+            else
+                CLI.print(" <" + cell.getId() + ">                   ");    //double digit
         else
             CLI.print("                        ");
     }

@@ -213,7 +213,7 @@ public abstract class Cell {
     public boolean isGhostlyAdjacent(Cell cell) throws NullCellOperationException {
         if(cell == null)
             throw new NullCellOperationException("Attempted to measure ghostly adjacency with a null cell.");
-        return ((xCoord - cell.getXCoord() == 1) != (yCoord - cell.getYCoord() == 1));
+        return (Math.abs(xCoord - cell.getXCoord()) == 1) != (Math.abs(yCoord - cell.getYCoord()) == 1);
     }
 
     /**

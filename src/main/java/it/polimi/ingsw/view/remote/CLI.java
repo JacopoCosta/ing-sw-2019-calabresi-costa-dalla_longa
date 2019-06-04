@@ -1,12 +1,15 @@
 package it.polimi.ingsw.view.remote;
 
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.model.utilities.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
+
+import java.util.stream.Collectors;
 
 public class CLI extends View {
 
@@ -20,7 +23,7 @@ public class CLI extends View {
     }
 
     //CLI display method, may be improved
-    public void printBoard(Board board) {
+    public static void printBoard(Board board) {
 
         BoardGraph graph = new BoardGraph();
 
@@ -34,7 +37,7 @@ public class CLI extends View {
             //printing upper wall of every cell
             for(int w=0; w < boardWidth; w++) {
 
-                graph.printWall(graph.getWallBetweenCells(board, w, h, w, h-1));
+                graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w, h-1));
                 graph.printWall(WallType.ANGLE);
 
                 if(w == boardWidth-1)
@@ -44,11 +47,11 @@ public class CLI extends View {
             //drawing cell coordinates of every cell
             for(int w=0; w < boardWidth; w++) {
 
-                graph.printWall(graph.getWallBetweenCells(board, w, h, w-1, h));
+                graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
                 graph.printCellCoordinate(board.getCellByCoordinates(w, h));
 
                 if(w == boardWidth-1) { //I need to print an extra vertical wall, for this is the last cell of the row
-                    graph.printWall(graph.getWallBetweenCells(board, w, h, w+1, h));
+                    graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
                     print("\n");
                 }
             }
@@ -56,11 +59,11 @@ public class CLI extends View {
             //drawing first line of every cell
             for(int w=0; w < boardWidth; w++) {
 
-                graph.printWall(graph.getWallBetweenCells(board, w, h, w-1, h));
+                graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
                 graph.printFirstLine(board.getCellByCoordinates(w, h));
 
                 if(w == boardWidth-1) {
-                    graph.printWall(graph.getWallBetweenCells(board, w, h, w+1, h));
+                    graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
                     print("\n");
                 }
             }
@@ -68,11 +71,11 @@ public class CLI extends View {
             //drawing second line of every cell
             for(int w=0; w < boardWidth; w++) {
 
-                graph.printWall(graph.getWallBetweenCells(board, w, h, w-1, h));
+                graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
                 graph.printSecondLine(board.getCellByCoordinates(w, h));
 
                 if(w == boardWidth-1) {
-                    graph.printWall(graph.getWallBetweenCells(board, w, h, w+1, h));
+                    graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
                     print("\n");
                 }
             }
@@ -80,11 +83,11 @@ public class CLI extends View {
             //drawing third line of every cell
             for(int w=0; w < boardWidth; w++) {
 
-                graph.printWall(graph.getWallBetweenCells(board, w, h, w-1, h));
+                graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
                 graph.printThirdLine(board.getCellByCoordinates(w, h));
 
                 if(w == boardWidth-1) {
-                    graph.printWall(graph.getWallBetweenCells(board, w, h, w+1, h));
+                    graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
                     print("\n");
                 }
             }
@@ -92,11 +95,11 @@ public class CLI extends View {
             //drawing fourth line of every cell
             for(int w=0; w < boardWidth; w++) {
 
-                graph.printWall(graph.getWallBetweenCells(board, w, h, w-1, h));
+                graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
                 graph.printFourthLine(board.getCellByCoordinates(w, h));
 
                 if(w == boardWidth-1) {
-                    graph.printWall(graph.getWallBetweenCells(board, w, h, w+1, h));
+                    graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
                     print("\n");
                 }
             }
@@ -106,19 +109,19 @@ public class CLI extends View {
         //drawing bottom horizontal walls
         graph.printWall(WallType.ANGLE);
         for(int w=0; w < boardWidth; w++) {
-            graph.printWall(graph.getWallBetweenCells(board, w, boardHeight, w, boardHeight - 1));
+            graph.printWall(BoardGraph.getWallBetweenCells(board, w, boardHeight, w, boardHeight - 1));
             graph.printWall(WallType.ANGLE);
         }
     } //end printBoard
 
-    public void printDamageBoard(Board board, Player player) {
+    public static void printDamageBoard(Player player) {
         /*TODO:
             (this is not a priority for basic CLI behaviour)
          */
     }
 
     //prints killers (being normal or overkill) and doublekillers
-    public void printBoardStatus(Board board) {
+    public static void printBoardStatus(Board board) {
 
         //print Kills list
         boolean emptyList = true;
@@ -147,13 +150,13 @@ public class CLI extends View {
             CLI.print("\t<No doublekills yet>");
     }
 
-    public void printWeaponInfo(Weapon weapon) {
+    public static void printWeaponInfo(Weapon weapon) {
         /*TODO:
             (this is not a priority for basic CLI behaviour)
          */
     }
 
-    public void printPlayerStatus(Board board, Player player) {
+    public static void printPlayerStatus(Player player) {
 
         //given a player, it displays damageboard, list of weapon, owned ammocubes and so on.
         CLI.println("Player number " + player.getId() + ", codename: " + player.getName());
@@ -174,26 +177,18 @@ public class CLI extends View {
             } //end for
         } //end else
 
-        //printing damageboard
+        //printing damageboard:
         CLI.print("Damage taken:\t");
-        for(Player p: player.getDamageAsList()) {
-            CLI.print(Integer.toString(p.getId()));
-        } //end for
+        CLI.println(Table.list(player.getDamageAsList().stream().map(Player::getId).collect(Collectors.toList())));
 
         CLI.println("\nMarkers taken:");
-        for(Player author: board.getGame().getParticipants()) {
+        CLI.println(Table.list(player.getMarkingsAsList().stream().map(Player::getId).collect(Collectors.toList())));
 
-            int m = player.getMarkingsByAuthor(author);
-            if(m > 0)
-                CLI.println(m + " by player number " + author.getId() + " [codename: " + author.getName() + "]");
-        } //end for
         CLI.println("Dead " + player.getDeathCount() + " times");
-
-        printDamageBoard(board, player);
     }
 
 
-    public void printShop(Board board, AmmoCubes ammoCubeColor) {   //prints every weapon in a selected shop
+    public static void printShop(Board board, AmmoCubes ammoCubeColor) {   //prints every weapon in a selected shop
 
         Cell cell = board.findSpawnPoint(ammoCubeColor);
 
@@ -201,6 +196,16 @@ public class CLI extends View {
             CLI.println((i + 1) + ". " + ((SpawnCell) cell).getWeaponShop().get(i).getName());
             CLI.println("\tSelling for: " + ((SpawnCell) cell).getWeaponShop().get(i).getPurchaseCost().toString());
         }
+    }
+
+    public static void printPowerUps(Player player) {
+        int index = 0;
+        for(PowerUp pwup: player.getPowerUps()) {
+            CLI.print((index + 1) + ". " + player.getPowerUps().get(index) + "\n");
+            index++;
+        }
+        if(index == 0)
+            CLI.println("No power-up!");
     }
 
 }
