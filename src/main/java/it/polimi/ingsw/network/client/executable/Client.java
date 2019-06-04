@@ -4,6 +4,7 @@ import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.util.Console;
 import it.polimi.ingsw.view.remote.BoardArt;
+import it.polimi.ingsw.view.remote.GraphicsManager;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -266,6 +267,8 @@ public class Client extends Application implements Runnable, EventHandler<Action
         }
 
         if (graphicalInterface.equals("CLI")) {
+            //calls the constructor for GraphicsManager using the CLI
+            GraphicsManager graphicsManager = new GraphicsManager(false, communicationHandler);
 
             //prints a welcome screen
             printWelcomeScreen();
@@ -297,7 +300,9 @@ public class Client extends Application implements Runnable, EventHandler<Action
                 unregister();
             }
         } else {
-            //GUI
+            //calls the constructor for GraphicsManager using the GUI
+            GraphicsManager graphicsManager = new GraphicsManager(true, communicationHandler);
+
             launch(args);
         }
     }
