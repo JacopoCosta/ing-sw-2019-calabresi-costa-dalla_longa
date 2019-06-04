@@ -2,13 +2,11 @@ package it.polimi.ingsw.view.virtual;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
-import it.polimi.ingsw.model.exceptions.AbortedTurnException;
-import it.polimi.ingsw.model.exceptions.DeliverableException;
-import it.polimi.ingsw.model.exceptions.NoValidTargetsException;
-import it.polimi.ingsw.model.exceptions.NullCellOperationException;
+import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Execution;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.Newton;
@@ -451,8 +449,11 @@ public class VirtualView {
         Player subject = damage.getAuthor();
         List<PowerUp> scopes = subject.getScopes();
         List<Player> scopedPlayers = new ArrayList<>();
+        boolean hasRed = subject.canAfford(AmmoCubes.red());
+        boolean hasYellow = subject.canAfford(AmmoCubes.yellow());
+        boolean hasBlue = subject.canAfford(AmmoCubes.blue());
         boolean useScope = true;
-        while(scopes.size() > 0 && useScope) {
+        while(scopes.size() > 0 && useScope && (hasRed || hasYellow || hasBlue)) {
             useScope = sendDual(subject, Deliverable.dual(DeliverableEvent.SCOPE_REQUEST_IF));
             if(useScope) {
                 List<String> options = scopes.stream()
@@ -463,11 +464,29 @@ public class VirtualView {
                 PowerUp scope = scopes.get(scopeId);
                 subject.discardPowerUp(scope);
 
-                List<String> options1 = targets.stream()
+                List<AmmoCubes> unitCubes = new ArrayList<>();
+                if(hasRed)
+                    unitCubes.add(AmmoCubes.red());
+                if(hasYellow)
+                    unitCubes.add(AmmoCubes.yellow());
+                if(hasBlue)
+                    unitCubes.add(AmmoCubes.blue());
+
+                List<String> options1 = unitCubes.stream()
+                        .map(AmmoCubes::toStringAsColor)
+                        .collect(Collectors.toList());
+
+                int unitCubeIndex = sendListed(subject, Deliverable.listed(DeliverableEvent.SCOPE_REQUEST_AMMO, options1));
+                AmmoCubes fee = unitCubes.get(unitCubeIndex);
+                try {
+                    subject.takeAmmoCubes(fee);
+                } catch (CannotAffordException ignored) { } // this theoretically isn't possible
+
+                List<String> options2 = targets.stream()
                         .map(Player::toString)
                         .collect(Collectors.toList());
 
-                int targetId = sendListed(subject, Deliverable.listed(DeliverableEvent.SCOPE_REQUEST_TARGET, options1));
+                int targetId = sendListed(subject, Deliverable.listed(DeliverableEvent.SCOPE_REQUEST_TARGET, options2));
                 scopedPlayers.add(targets.get(targetId));
                 scopes = subject.getScopes();
             }

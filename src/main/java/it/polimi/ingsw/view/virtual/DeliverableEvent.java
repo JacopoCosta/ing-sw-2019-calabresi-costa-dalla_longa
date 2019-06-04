@@ -26,6 +26,7 @@ public enum DeliverableEvent {
     POWERUP_REQUEST_WHICH("Choose one:"),
     SCOPE_REQUEST_IF("Would you like to use a scope and deal additional damage to one of your targets?"),
     SCOPE_REQUEST_WHICH("Choose a Scope power-up to discard:"),
+    SCOPE_REQUEST_AMMO("Which ammo cube would you like to spend to use this power up?"),
     SCOPE_REQUEST_TARGET("Who do you want to deal additional damage to?"),
     GRENADE_REQUEST_IF("Would you like to respond to the fire with a tagback grenade?"),
     GRENADE_REQUEST_WHICH("Choose a Grenade power-up to discard:"),
