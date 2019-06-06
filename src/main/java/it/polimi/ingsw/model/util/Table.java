@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.utilities;
+package it.polimi.ingsw.model.util;
 
 import java.util.Arrays;
 import java.util.List;

@@ -12,7 +12,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.Newton;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.powerups.PowerUpType;
-import it.polimi.ingsw.model.utilities.Table;
+import it.polimi.ingsw.model.util.Table;
 import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.Weapon;

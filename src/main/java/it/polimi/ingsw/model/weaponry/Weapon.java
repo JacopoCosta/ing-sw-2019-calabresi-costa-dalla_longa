@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.weaponry;
 
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.exceptions.*;
-import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
+import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
 
 public class Weapon {
     private String name;

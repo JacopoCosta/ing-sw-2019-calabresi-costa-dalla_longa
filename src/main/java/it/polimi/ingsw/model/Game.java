@@ -7,14 +7,14 @@ import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.*;
-import it.polimi.ingsw.model.utilities.DecoratedJsonArray;
-import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
-import it.polimi.ingsw.model.utilities.JsonPathGenerator;
+import it.polimi.ingsw.model.util.json.DecoratedJsonArray;
+import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
+import it.polimi.ingsw.model.util.json.JsonPathGenerator;
 import it.polimi.ingsw.view.virtual.VirtualView;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.model.utilities.Table;
+import it.polimi.ingsw.model.util.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.List;

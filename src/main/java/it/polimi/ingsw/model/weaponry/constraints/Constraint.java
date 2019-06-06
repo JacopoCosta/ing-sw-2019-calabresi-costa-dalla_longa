@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
+import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.model.weaponry.targets.TargetCell;

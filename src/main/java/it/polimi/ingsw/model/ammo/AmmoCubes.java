@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
+import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -8,9 +8,13 @@ import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.CannotDiscardFirstCardOfDeckException;
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
+import it.polimi.ingsw.model.exceptions.JsonException;
+import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ScoreList;
 import it.polimi.ingsw.model.powerups.*;
+import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
+import it.polimi.ingsw.model.util.json.JsonObjectGenerator;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.ArrayList;
@@ -46,7 +50,7 @@ public class Board {
         board.killers = new ArrayList<>();
         board.doubleKillers = new ArrayList<>();
 
-        board.weaponDeck = Deck.generateWeapons();
+        board.weaponDeck = Deck.generateWeapons(JsonObjectGenerator.getWeaponDeckBuilder());
         board.powerUpDeck = Deck.generatePowerUps();
         board.ammoTileDeck = Deck.generateAmmoTiles();
 
@@ -55,227 +59,158 @@ public class Board {
         board.powerUpDeck.shuffle();
 
         // type is used to choose one predefined cell configuration
-        board.cells = Board.configureCells(type);
+        board.cells = buildBoard(JsonObjectGenerator.getBoardBuilder(), type);
         board.cells.forEach(c -> c.setBoard(board));
 
         return board;
     }
 
-    private static List<Cell> configureCells(int boardType) {
-        List<Cell> cells = new ArrayList<>();
-        switch(boardType) {
-            case 1:
-                cells.add(new AmmoCell(0, 0));
-                cells.add(new AmmoCell(1, 0));
-                cells.add(new SpawnCell(2, 0, new AmmoCubes(0, 0, 1)));
-
-                cells.add(new SpawnCell(0, 1, new AmmoCubes(1, 0, 0)));
-                cells.add(new AmmoCell(1, 1));
-                cells.add(new AmmoCell(2, 1));
-                cells.add(new AmmoCell(3, 1));
-
-                cells.add(new AmmoCell(1, 2));
-                cells.add(new AmmoCell(2, 2));
-                cells.add(new SpawnCell(3, 2, new AmmoCubes(0, 1, 0)));
-
-                cells.get(0).setAdjacent(cells.get(1));
-                cells.get(0).setAdjacent(cells.get(3));
-                cells.get(1).setAdjacent(cells.get(2));
-                cells.get(2).setAdjacent(cells.get(5));
-                cells.get(3).setAdjacent(cells.get(4));
-                cells.get(4).setAdjacent(cells.get(5));
-                cells.get(4).setAdjacent(cells.get(7));
-                cells.get(5).setAdjacent(cells.get(6));
-                cells.get(6).setAdjacent(cells.get(9));
-                cells.get(7).setAdjacent(cells.get(8));
-                cells.get(8).setAdjacent(cells.get(9));
-
-                List<Cell> list10 = new ArrayList<>();
-                List<Cell> list11 = new ArrayList<>();
-                List<Cell> list12 = new ArrayList<>();
-                List<Cell> list13 = new ArrayList<>();
-                list10.add(cells.get(0));
-                list10.add(cells.get(1));
-                list10.add(cells.get(2));
-                list11.add(cells.get(3));
-                list11.add(cells.get(4));
-                list11.add(cells.get(5));
-                list12.add(cells.get(6));
-                list13.add(cells.get(7));
-                list13.add(cells.get(8));
-                list12.add(cells.get(9));
-                new Room("blue", list10);
-                new Room("red", list11);
-                new Room("yellow", list12);
-                new Room("white", list13);
-                break;
-
-            case 2:
-                cells.add(new AmmoCell(0, 0));
-                cells.add(new AmmoCell(1, 0));
-                cells.add(new SpawnCell(2, 0, new AmmoCubes(0, 0, 1)));
-                cells.add(new AmmoCell(3, 0));
-
-                cells.add(new SpawnCell(0, 1, new AmmoCubes(1, 0, 0)));
-                cells.add(new AmmoCell(1, 1));
-                cells.add(new AmmoCell(2, 1));
-                cells.add(new AmmoCell(3, 1));
-
-                cells.add(new AmmoCell(1, 2));
-                cells.add(new AmmoCell(2, 2));
-                cells.add(new SpawnCell(3, 2, new AmmoCubes(0, 1, 0)));
-
-                cells.get(0).setAdjacent(cells.get(1));
-                cells.get(0).setAdjacent(cells.get(4));
-                cells.get(1).setAdjacent(cells.get(2));
-                cells.get(2).setAdjacent(cells.get(3));
-                cells.get(2).setAdjacent(cells.get(6));
-                cells.get(3).setAdjacent(cells.get(7));
-                cells.get(4).setAdjacent(cells.get(5));
-                cells.get(5).setAdjacent(cells.get(8));
-                cells.get(6).setAdjacent(cells.get(7));
-                cells.get(6).setAdjacent(cells.get(9));
-                cells.get(7).setAdjacent(cells.get(10));
-                cells.get(8).setAdjacent(cells.get(9));
-                cells.get(9).setAdjacent(cells.get(10));
-
-                List<Cell> list20 = new ArrayList<>();
-                List<Cell> list21 = new ArrayList<>();
-                List<Cell> list22 = new ArrayList<>();
-                List<Cell> list23 = new ArrayList<>();
-                List<Cell> list24 = new ArrayList<>();
-                list20.add(cells.get(0));
-                list20.add(cells.get(1));
-                list20.add(cells.get(2));
-                list21.add(cells.get(3));
-                list22.add(cells.get(4));
-                list22.add(cells.get(5));
-                list23.add(cells.get(6));
-                list23.add(cells.get(7));
-                list24.add(cells.get(8));
-                list23.add(cells.get(9));
-                list23.add(cells.get(10));
-                new Room("blue", list20);
-                new Room("green", list21);
-                new Room("red", list22);
-                new Room("yellow", list23);
-                new Room("white", list24);
-                break;
-
-            case 3:
-                cells.add(new AmmoCell(0, 0));
-                cells.add(new AmmoCell(1, 0));
-                cells.add(new SpawnCell(2, 0, new AmmoCubes(0, 0, 1)));
-
-                cells.add(new SpawnCell(0, 1, new AmmoCubes(1, 0, 0)));
-                cells.add(new AmmoCell(1, 1));
-                cells.add(new AmmoCell(2, 1));
-                cells.add(new AmmoCell(3, 1));
-
-                cells.add(new AmmoCell(0, 2));
-                cells.add(new AmmoCell(1, 2));
-                cells.add(new AmmoCell(2, 2));
-                cells.add(new SpawnCell(3, 2, new AmmoCubes(0, 1, 0)));
-
-                cells.get(0).setAdjacent(cells.get(1));
-                cells.get(0).setAdjacent(cells.get(3));
-                cells.get(1).setAdjacent(cells.get(2));
-                cells.get(1).setAdjacent(cells.get(4));
-                cells.get(2).setAdjacent(cells.get(5));
-                cells.get(3).setAdjacent(cells.get(7));
-                cells.get(4).setAdjacent(cells.get(5));
-                cells.get(4).setAdjacent(cells.get(8));
-                cells.get(5).setAdjacent(cells.get(6));
-                cells.get(6).setAdjacent(cells.get(10));
-                cells.get(7).setAdjacent(cells.get(8));
-                cells.get(8).setAdjacent(cells.get(9));
-                cells.get(9).setAdjacent(cells.get(10));
-
-                List<Cell> list30 = new ArrayList<>();
-                List<Cell> list31 = new ArrayList<>();
-                List<Cell> list32 = new ArrayList<>();
-                List<Cell> list33 = new ArrayList<>();
-                List<Cell> list34 = new ArrayList<>();
-                list30.add(cells.get(0));
-                list31.add(cells.get(1));
-                list31.add(cells.get(2));
-                list30.add(cells.get(3));
-                list32.add(cells.get(4));
-                list32.add(cells.get(5));
-                list33.add(cells.get(6));
-                list34.add(cells.get(7));
-                list34.add(cells.get(8));
-                list34.add(cells.get(9));
-                list33.add(cells.get(10));
-                new Room("red", list30);
-                new Room("blue", list31);
-                new Room("purple", list32);
-                new Room("yellow", list33);
-                new Room("white", list34);
-                break;
-
-            case 4:
-                cells.add(new AmmoCell(0, 0));
-                cells.add(new AmmoCell(1, 0));
-                cells.add(new SpawnCell(2, 0, new AmmoCubes(0, 0, 1)));
-                cells.add(new AmmoCell(3, 0));
-
-                cells.add(new SpawnCell(0, 1, new AmmoCubes(1, 0, 0)));
-                cells.add(new AmmoCell(1, 1));
-                cells.add(new AmmoCell(2, 1));
-                cells.add(new AmmoCell(3, 1));
-
-                cells.add(new AmmoCell(0, 2));
-                cells.add(new AmmoCell(1, 2));
-                cells.add(new AmmoCell(2, 2));
-                cells.add(new SpawnCell(3, 2, new AmmoCubes(0, 1, 0)));
-
-
-                cells.get(0).setAdjacent(cells.get(1));
-                cells.get(0).setAdjacent(cells.get(4));
-                cells.get(1).setAdjacent(cells.get(2));
-                cells.get(1).setAdjacent(cells.get(5));
-                cells.get(2).setAdjacent(cells.get(3));
-                cells.get(2).setAdjacent(cells.get(6));
-                cells.get(3).setAdjacent(cells.get(7));
-                cells.get(4).setAdjacent(cells.get(8));
-                cells.get(5).setAdjacent(cells.get(9));
-                cells.get(6).setAdjacent(cells.get(7));
-                cells.get(6).setAdjacent(cells.get(10));
-                cells.get(7).setAdjacent(cells.get(11));
-                cells.get(8).setAdjacent(cells.get(9));
-                cells.get(9).setAdjacent(cells.get(10));
-                cells.get(10).setAdjacent(cells.get(11));
-                
-                List<Cell> list40 = new ArrayList<>();
-                List<Cell> list41 = new ArrayList<>();
-                List<Cell> list42 = new ArrayList<>();
-                List<Cell> list43 = new ArrayList<>();
-                List<Cell> list44 = new ArrayList<>();
-                List<Cell> list45 = new ArrayList<>();
-                list40.add(cells.get(0));
-                list41.add(cells.get(1));
-                list41.add(cells.get(2));
-                list42.add(cells.get(3));
-                list40.add(cells.get(4));
-                list43.add(cells.get(5));
-                list44.add(cells.get(6));
-                list44.add(cells.get(7));
-                list45.add(cells.get(8));
-                list45.add(cells.get(9));
-                list44.add(cells.get(10));
-                list44.add(cells.get(11));
-                new Room("red", list40);
-                new Room("blue", list41);
-                new Room("green", list42);
-                new Room("purple", list43);
-                new Room("yellow", list44);
-                new Room("white", list45);
-                break;
-
-            default:
-                throw new Error("Board initialization error.");
+    private static List<Cell> buildBoard(DecoratedJsonObject jBoardSet, int boardType) {
+        DecoratedJsonObject jBoards;
+        try {
+            jBoards = jBoardSet.getObject("boards");
+        } catch (JullPointerException e) {
+            throw new JsonException("Boards not found.");
         }
+
+        List<DecoratedJsonObject> jConfigurations;
+        try {
+            jConfigurations = jBoards.getArray("configurations").asList();
+        } catch (JullPointerException e) {
+            throw new JsonException("Configurations not found.");
+        }
+
+        Optional<DecoratedJsonObject> jConfigurationOptional = jConfigurations.stream()
+                .filter(djo -> {
+                    try {
+                        return djo.getInt("id") == boardType;
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Configuration id not found.");
+                    }
+                })
+                .findFirst();
+
+        if(jConfigurationOptional.isEmpty())
+            throw new JsonException("Board configuration with id " + boardType + " was not found.");
+
+        DecoratedJsonObject jConfiguration = jConfigurationOptional.get();
+
+        List<DecoratedJsonObject> jCells;
+        try {
+            jCells = jConfiguration.getArray("cells").asList();
+        } catch (JullPointerException e) {
+            throw new JsonException("Configuration cells not found.");
+        }
+
+        List<Cell> cells = jCells.stream()
+                .map(jc -> {
+                    int x;
+                    try {
+                        x = jc.getInt("x");
+                    } catch (JullPointerException e) {
+                        throw new JsonException("X coordinate not found.");
+                    }
+                    int y;
+                    try {
+                        y = jc.getInt("y");
+                    } catch (JullPointerException e) {
+                        throw new JsonException("Y coordinate not found.");
+                    }
+
+                    boolean spawnPoint;
+                    try {
+                        spawnPoint = jc.getBoolean("spawnPoint");
+                    } catch (JullPointerException e) {
+                        throw new JsonException("SpawnPoint flag not found.");
+                    }
+
+                    if(spawnPoint) {
+                        String color;
+                        try {
+                            color = jc.getString("color");
+                        } catch (JullPointerException e) {
+                            throw new JsonException("SpawnPoint color not found.");
+                        }
+
+                        AmmoCubes ammoCubeColor;
+
+                            switch (color) {
+                                case "red":
+                                    ammoCubeColor = AmmoCubes.red();
+                                    break;
+                                case "yellow":
+                                    ammoCubeColor = AmmoCubes.yellow();
+                                    break;
+                                case "blue":
+                                    ammoCubeColor = AmmoCubes.blue();
+                                    break;
+                                default:
+                                    throw new JsonException(color + "is not a valid color for a spawnpoint.");
+                            }
+
+                            return new SpawnCell(x, y, ammoCubeColor);
+                        } else {
+                            return new AmmoCell(x, y);
+                        }
+                })
+                .collect(Collectors.toList());
+
+        List<DecoratedJsonObject> jAdjacencyList;
+        try {
+            jAdjacencyList = jConfiguration.getArray("adjacencies").asList();
+        } catch (JullPointerException e) {
+            throw new JsonException("Adjacency list not found.");
+        }
+        jAdjacencyList.forEach(djo -> {
+            int sourceCellId;
+            try {
+                sourceCellId = djo.getInt("sourceCellId");
+            } catch (JullPointerException e) {
+                throw new JsonException("Source cell id not found.");
+            }
+            int drainCellId;
+            try {
+                drainCellId = djo.getInt("drainCellId");
+            } catch (JullPointerException e) {
+                throw new JsonException("Drain cell id not found.");
+            }
+            cells.get(sourceCellId).setAdjacent(cells.get(drainCellId));
+        });
+
+        List<DecoratedJsonObject> jRooms;
+        try {
+            jRooms = jConfiguration.getArray("rooms").asList();
+        } catch (JullPointerException e) {
+            throw new JsonException("Room list not found.");
+        }
+
+        jRooms.forEach(jr -> {
+            String color;
+            try {
+                color = jr.getString("color");
+            } catch (JullPointerException e) {
+                throw new JsonException("Room colour not found");
+            }
+            List<DecoratedJsonObject> jRoomCells;
+            try {
+                jRoomCells = jr.getArray("cells").asList();
+            } catch (JullPointerException e) {
+                throw new JsonException("Room cell list not found");
+            }
+            List<Cell> roomCells = jRoomCells.stream()
+                    .map(jrc -> {
+                        int roomCellId;
+                        try {
+                            roomCellId = jrc.getInt("id");
+                        } catch (JullPointerException e) {
+                            throw new JsonException("Room cell id not found.");
+                        }
+                        return cells.get(roomCellId);
+                    })
+                    .collect(Collectors.toList());
+            new Room(color, roomCells);
+        });
+
         return cells;
     }
 

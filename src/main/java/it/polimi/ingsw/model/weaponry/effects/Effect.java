@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.exceptions.InvalidEffectTypeException;
 import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
+import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 

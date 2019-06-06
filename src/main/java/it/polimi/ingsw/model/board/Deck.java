@@ -4,9 +4,9 @@ import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.powerups.*;
-import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
-import it.polimi.ingsw.model.utilities.JsonPathGenerator;
-import it.polimi.ingsw.model.utilities.Table;
+import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
+import it.polimi.ingsw.model.util.json.JsonPathGenerator;
+import it.polimi.ingsw.model.util.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.*;
@@ -65,10 +65,9 @@ public class Deck<T> {
         return Optional.of(card);
     }
 
-    static Deck<Weapon> generateWeapons() {
+    static Deck<Weapon> generateWeapons(DecoratedJsonObject jDeck) {
         Deck<Weapon> deck = new Deck<>();
 
-        DecoratedJsonObject jDeck = DecoratedJsonObject.getFromFile(JsonPathGenerator.getPath("weapons.json"));
         try {
             for(DecoratedJsonObject jWeapon : jDeck.getArray("weapons").asList()) {
                 deck.cards.add(Weapon.build(jWeapon));

@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.weaponry;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
-import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
+import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
 import it.polimi.ingsw.model.weaponry.effects.Effect;
 import it.polimi.ingsw.model.weaponry.targets.Target;
 

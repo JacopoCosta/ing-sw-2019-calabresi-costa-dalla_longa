@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.InvalidPowerUpTypeException;
 import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
-import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
+import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
 
 public abstract class PowerUp {
     protected PowerUpType type;

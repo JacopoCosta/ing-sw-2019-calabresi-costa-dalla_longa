@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.ammo;
 
 import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
-import it.polimi.ingsw.model.utilities.DecoratedJsonObject;
+import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
 
 // an ammo tile depicts some ammo cubes and may include the ability to draw 1 power-up card
 public class AmmoTile {
