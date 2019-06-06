@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 public class CLI extends View {
 
-
     public static void print(String message) {
         System.out.print(message); // this is the only system out print call in the entire program
     }
@@ -104,6 +103,18 @@ public class CLI extends View {
                 }
             }
 
+            //drawing fifth line of every cell
+            for(int w=0; w < boardWidth; w++) {
+
+                graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
+                graph.printFifthLine(board.getCellByCoordinates(w, h));
+
+                if(w == boardWidth-1) {
+                    graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
+                    print("\n");
+                }
+            }
+
         } //end for(Height)
 
         //drawing bottom horizontal walls
@@ -145,10 +156,7 @@ public class CLI extends View {
     }
 
     public static void printWeaponInfo(Weapon weapon) {
-        CLI.println("Info for weapon: " + weapon.getName());
-        CLI.println(weapon.getPattern().toString());
-        CLI.println("\tPurchase cost: " + weapon.getPurchaseCost().toString());
-        CLI.println("\tReload cost: " + weapon.getReloadCost().toString());
+        //TODO: improve it with the right method
     }
 
     public static void printPlayerStatus(Player player) {
@@ -188,7 +196,7 @@ public class CLI extends View {
     private static void printDamageBoard(Player player) {
 
         int index = player.getDamage();
-        //TODO: finish this
+        //TODO: finish this. Use abstract class scorelist
 
     }
 

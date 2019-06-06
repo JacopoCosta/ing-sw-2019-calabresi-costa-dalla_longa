@@ -13,7 +13,7 @@ public class GraphicsManager {
     private boolean usesGUI;
     private CommunicationHandler communicationHandler;
 
-    private Board localBoard;
+    private Board remoteBoard;
     private List<Player> participants;
 
     public GraphicsManager(boolean usesGUI, CommunicationHandler communicationHandler) {
@@ -134,33 +134,33 @@ public class GraphicsManager {
         else {  //the client is using CLI
             switch(deliverable.getType()) {
                 case INFO:
-                    infoHandler(deliverable);
+                    CLIInfoHandler(deliverable);
                     break;
                 case DUAL:
-                    dualHandler(deliverable);
+                    CLIDualHandler(deliverable);
                     break;
                 case MAPPED:
-                    mappedHandler(deliverable);
+                    CLIMappedHandler(deliverable);
                     break;
                 case BULK:
-                    bulkHandler(deliverable);
+                    CLIBulkHandler(deliverable);
                     break;
             }
         }
     }
 
-    private void infoHandler(Deliverable deliverable) {
+    private void CLIInfoHandler(Deliverable deliverable) {
         CLI.println(deliverable.getMessage());
     }
 
-    private void dualHandler(Deliverable deliverable) throws ConnectionException {
+    private void CLIDualHandler(Deliverable deliverable) throws ConnectionException {
         boolean choice = Dispatcher.requestBoolean(deliverable.getMessage());
 
         Deliverable response = new Response(choice ? 1: 0);  //sending 1 if true, 0 if false
         communicationHandler.deliver(response);
     }
 
-    private void mappedHandler(Deliverable deliverable) throws ConnectionException {
+    private void CLIMappedHandler(Deliverable deliverable) throws ConnectionException {
 
         int choice = Dispatcher.requestMappedOption(deliverable.getMessage(), ((Mapped) deliverable).getOptions(), ((Mapped) deliverable).getKeys());
 
@@ -168,7 +168,7 @@ public class GraphicsManager {
         communicationHandler.deliver(response);
     }
 
-    private void bulkHandler(Deliverable deliverable) {
+    private void CLIBulkHandler(Deliverable deliverable) {
         Object info = ((Bulk) deliverable).unpack();
 
     /*    switch (deliverable.getEvent()) {

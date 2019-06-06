@@ -11,7 +11,7 @@ import static it.polimi.ingsw.view.remote.WallType.*;
 
 public class BoardGraph {
 
-    private static final int internalWidth = 24;
+    private static final int internalWidth = 28;
 
     public void printWall(WallType wall) {
         switch (wall) {
@@ -19,19 +19,19 @@ public class BoardGraph {
                 CLI.print("┃");
                 break;
             case HOR_FULL:
-                CLI.print("━━━━━━━━━━━━━━━━━━━━━━━━");
+                CLI.print(fillWith(internalWidth, "━"));
                 break;
             case VER_DOOR:
                 CLI.print("┆");
                 break;
             case HOR_DOOR:
-                CLI.print("╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌");
+                CLI.print(fillWith(internalWidth, "╌"));
                 break;
             case VER_VOID:
                 CLI.print(" ");
                 break;
             case HOR_VOID:
-                CLI.print("                        ");  //same as  CLI.print(fillWithSpaces(internalWidth - 4));
+                CLI.print(fillWith(internalWidth, " "));
                 break;
             case ANGLE:
                 CLI.print("╋");
@@ -104,111 +104,148 @@ public class BoardGraph {
     public void printCellCoordinate(Cell cell) {
         if(cell != null)
             if(cell.getId() < 10)
-                CLI.print(" <" + cell.getId() + ">" + fillWithSpaces(internalWidth - 4));   //single digit cell ID
+                CLI.print(" <" + cell.getId() + ">" + fillWith(internalWidth - 4, " "));   //single digit cell ID
             else
-                CLI.print(" <" + cell.getId() + ">" + fillWithSpaces(internalWidth - 5));    //double digit cell ID
+                CLI.print(" <" + cell.getId() + ">" + fillWith(internalWidth - 5, " "));    //double digit cell ID
         else
-            CLI.print(fillWithSpaces(internalWidth));   //just spaces
+            CLI.print(fillWith(internalWidth, " "));   //just spaces
     }
 
     public void printFirstLine(Cell cell) {
         if(cell == null){
-            CLI.print(fillWithSpaces(internalWidth));   //just spaces
-            return;
-        }
-
-        if(cell.isSpawnPoint()) {
-            CLI.print(fillWithSpaces(internalWidth));   //just spaces
-        }
-        else {
-            if(((AmmoCell) cell).getAmmoTile() == null)     //it happens when the cell doesn't contain any ammo, for example
-                CLI.print(fillWithSpaces(internalWidth));      //right after a player has grabbed its AmmoTile
-            else {
-                if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() > 0)
-                    CLI.print(" RED: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() + fillWithSpaces(internalWidth - 7));
-
-                else if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() > 0)
-                    CLI.print(" YELLOW: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() + fillWithSpaces(internalWidth - 10));
-
-                else
-                    CLI.print(" BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + fillWithSpaces(internalWidth - 8));
-            }
-        }
-    }
-
-    public void printSecondLine(Cell cell) {
-        if(cell == null){
-            CLI.print(fillWithSpaces(internalWidth));
+            CLI.print(fillWith(internalWidth, " "));   //just spaces
             return;
         }
 
         if(cell.isSpawnPoint()) {
             switch(((SpawnCell) cell).getAmmoCubeColor().toStringAsColor()) {
                 case("red"):
-                    CLI.print(" < RED >" + fillWithSpaces(internalWidth - 8));
+                    CLI.print(" ~RED SHOP~" + fillWith(internalWidth - 11, " "));
                     break;
                 case("yellow"):
-                    CLI.print(" < YELLOW >" + fillWithSpaces(internalWidth - 11));
+                    CLI.print(" ~YELLOW SHOP~" + fillWith(internalWidth - 14, " "));
                     break;
                 case("blue"):
-                    CLI.print(" < BLUE >" + fillWithSpaces(internalWidth - 9));
+                    CLI.print(" ~BLUE SHOP~" + fillWith(internalWidth - 12, " "));
                 default:
                     break;
             }
         }
+        else {
+            if(((AmmoCell) cell).getAmmoTile() == null)     //it happens when the cell doesn't contain any ammo, for example
+                CLI.print(fillWith(internalWidth, " "));      //right after a player has grabbed its AmmoTile
+            else {
+                if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() > 0)
+                    CLI.print(" RED: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() + fillWith(internalWidth - 7, " "));
+
+                else if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() > 0)
+                    CLI.print(" YELLOW: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() + fillWith(internalWidth - 10, " "));
+
+                else
+                    CLI.print(" BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + fillWith(internalWidth - 8, " "));
+            }
+        }
+    }
+
+    public void printSecondLine(Cell cell) {
+        if(cell == null){
+            CLI.print(fillWith(internalWidth, " "));
+            return;
+        }
+
+        if(cell.isSpawnPoint()) {   //prints the first weapon in the relative shop
+            try {
+                CLI.print(truncate(((SpawnCell) cell).getWeaponShop().get(0).getName() + fillWith(internalWidth, " "), internalWidth));
+            }
+            catch(IndexOutOfBoundsException e) {
+                CLI.print(fillWith(internalWidth, " "));
+            }
+        }
+
         else {  //cell is AmmoCell
             if(((AmmoCell) cell).getAmmoTile() == null)     //it happens when the cell doesn't contain any ammo, for example
-                CLI.print(fillWithSpaces(internalWidth));      //right after a player has grabbed its AmmoTile
+                CLI.print(fillWith(internalWidth, " "));      //right after a player has grabbed its AmmoTile
             else {
                 if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() > 0) {
                     //red cubes have been printed by printFirstLine method, so this has to print yellow or blue cubes
                     if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() > 0)
-                        CLI.print(" YELLOW: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() + fillWithSpaces(internalWidth - 10));
+                        CLI.print(" YELLOW: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() + fillWith(internalWidth - 10, " "));
 
                     else if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() > 0)
-                        CLI.print(" BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + fillWithSpaces(internalWidth - 8));
+                        CLI.print(" BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + fillWith(internalWidth - 8, " "));
 
-                    else    //if you are here, that means the cell contained only red cubes, so there aren't any more to print
-                        CLI.print(fillWithSpaces(internalWidth));   //just spaces
+                    else    //if you are here, that means the cell contained only red cubes, so there aren't any more to print. However, it might be a powerup
+                        try {
+                            //only power-ups may be displayed
+                            if (((AmmoCell) cell).getAmmoTile().includesPowerUp())
+                                CLI.print(" *POWER UP*" + fillWith(internalWidth - 11, " "));
+                            else
+                                CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        }
+                        catch(NullPointerException e) {
+                            CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        }
                 } //end if(there were red ammocubes)
 
                 else {
                     //yellow cubes has already been printed by printFirstLine, so this must print blue cubes, if any
                     if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() > 0)
-                        CLI.print(" BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + fillWithSpaces(internalWidth - 8));
+                        CLI.print(" BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + fillWith(internalWidth - 8, " "));
                     else
-                        CLI.print(fillWithSpaces(internalWidth));   //just spaces
+                        try {
+                            //only power-ups may be displayed
+                            if (((AmmoCell) cell).getAmmoTile().includesPowerUp())
+                                CLI.print(" *POWER UP*" + fillWith(internalWidth - 11, " "));
+                            else
+                                CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        }
+                        catch(NullPointerException e) {
+                            CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        }
                 }
             } //end else (there were some ammocubes on the cell)
         } //end else (cell is AmmoCell)
     }
 
     public void printThirdLine(Cell cell) {
-        if(cell == null){
-            CLI.print(fillWithSpaces(internalWidth));   //just spaces
+        if(cell == null) {
+            CLI.print(fillWith(internalWidth, " "));   //just spaces
             return;
         }
-
-        if(cell.isSpawnPoint())
-            CLI.print(" SPAWN/SHOP" + fillWithSpaces(internalWidth - 11));
-        else {
+        if(cell.isSpawnPoint()) {   //prints the second weapon in the relative shop
             try {
-                //only power-ups may be displayed
-                if (((AmmoCell) cell).getAmmoTile().includesPowerUp())
-                    CLI.print(" *POWER UP*" + fillWithSpaces(internalWidth - 11));
-                else
-                    CLI.print(fillWithSpaces(internalWidth));   //just spaces
+                CLI.print(truncate(((SpawnCell) cell).getWeaponShop().get(1).getName() + fillWith(internalWidth, " "), internalWidth));
             }
-            catch(NullPointerException e) {
-                CLI.print(fillWithSpaces(internalWidth));   //just spaces
+            catch(IndexOutOfBoundsException e) {
+                CLI.print(fillWith(internalWidth, " "));
             }
         }
+        else
+            CLI.print(fillWith(internalWidth, " "));
     }
 
     public void printFourthLine(Cell cell) {
+        if(cell == null) {
+            CLI.print(fillWith(internalWidth, " "));   //just spaces
+            return;
+        }
+        if(cell.isSpawnPoint()) {   //prints the third weapon in the relative shop
+            try {
+                CLI.print(truncate(((SpawnCell) cell).getWeaponShop().get(2).getName() + fillWith(internalWidth, " "), internalWidth));
+            }
+            catch(IndexOutOfBoundsException e) {
+                CLI.print(fillWith(internalWidth, " "));
+            }
+        }
+        else
+            CLI.print(fillWith(internalWidth, " "));
+    }
+
+    public void printFifthLine(Cell cell) {
+
         int charCounter = 0;
         if(cell == null){
-            CLI.print(fillWithSpaces(internalWidth));   //just spaces
+            CLI.print(fillWith(internalWidth, " "));   //just spaces
             return;
         }
         //this time, it doesn't matter whether the cell is a SpawnCell or not
@@ -219,13 +256,23 @@ public class BoardGraph {
             }
         }
         //completes the row with the right number of spaces
-        CLI.print(fillWithSpaces(internalWidth - charCounter));
+        CLI.print(fillWith(internalWidth - charCounter, " "));
     }
 
-    private String fillWithSpaces(int amount) {
-        if(amount == 1)
-            return " ";
+    private String fillWith(int amount, String pattern) {
+        if(amount <= 0)
+            return "";
         else
-            return (" " + fillWithSpaces(amount - 1));
+            return (pattern + fillWith(amount - 1, pattern));
     }
+
+
+
+    private String truncate (String s, int size) {
+        return s.substring(0, s.length() < size ? s.length() : size);
+
+        //TODO: find an elegant way to incorporate this method in CLI.print for code readability
+    }
+
+    //TODO: rewrite some methods so that players names are shown when in a cell, instead of just their number
 }
