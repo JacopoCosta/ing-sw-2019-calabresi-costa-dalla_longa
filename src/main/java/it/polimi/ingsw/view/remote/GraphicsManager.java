@@ -112,21 +112,21 @@ public class GraphicsManager {
                     break;
                 case TARGET_REQUEST:
                     break;
-                case ANNOUNCE_DAMAGE:
+                case UPDATE_DAMAGE:
                     break;
-                case ANNOUNCE_MARKING:
+                case UPDATE_MARKING:
                     break;
-                case ANNOUNCE_MOVE:
+                case UPDATE_MOVE:
                     break;
-                case ANNOUNCE_KILL:
+                case UPDATE_KILL:
                     break;
-                case ANNOUNCE_SCORE:
+                case UPDATE_SCORE:
                     break;
-                case ANNOUNCE_FRENZY:
+                case UPDATE_FRENZY:
                     break;
-                case ANNOUNCE_WINNER:
+                case UPDATE_WINNER:
                     break;
-                case ANNOUNCE_DISCONNECT:
+                case UPDATE_DISCONNECT:
                     break;
             }
         }//end if(usesGUI)
@@ -171,11 +171,11 @@ public class GraphicsManager {
     private void bulkHandler(Deliverable deliverable) {
         Object info = ((Bulk) deliverable).unpack();
 
-        switch (deliverable.getEvent()) {
+    /*    switch (deliverable.getEvent()) {
             case BOARD:
                 CLI.printBoard((Board) info);
                 break;
-        }
+        } */
 
     }
 

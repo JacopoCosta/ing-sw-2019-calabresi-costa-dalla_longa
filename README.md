@@ -7,8 +7,8 @@
 
 | Functionality | State |
 |:-----------------------|:------------------------------------:|
-| Basic rules | [![YELLOW](https://placehold.it/15/ffdd00/ffdd00)](#) |
-| Complete rules | [![YELLOW](https://placehold.it/15/ffdd00/ffdd00)](#) |
+| Basic rules | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
+| Complete rules | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
 | Socket | [![YELLOW](https://placehold.it/15/ffdd00/ffdd00)](#) |
 | RMI | [![YELLOW](https://placehold.it/15/ffdd00/ffdd00)](#) |
 | GUI | [![YELLOW](https://placehold.it/15/ffdd00/ffdd00)](#) |

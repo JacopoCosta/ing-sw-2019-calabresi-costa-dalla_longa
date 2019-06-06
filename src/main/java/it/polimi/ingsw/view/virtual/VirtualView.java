@@ -117,17 +117,31 @@ public class VirtualView {
         }
     }
 
-    private void sendGameStatus(Player subject) throws AbortedTurnException {
+    private void sendStatusInit(Player subject) throws AbortedTurnException {
+        /*
+            send:
+            board morphology,
+            # of players,
+            # of turns,
+
+         */
         if(godMode) {
-            Deliverable deliverable = new Bulk(DeliverableEvent.BOARD, game.getBoard());
+            Deliverable deliverable = new Bulk(DeliverableEvent.STATUS_INIT, null);
             deliverable.overwriteMessage(game.toString());
             send(subject, deliverable);
         }
     }
 
+    private void sendStatusUpdate(Player subject) throws AbortedTurnException {
+        if(godMode) {
+            Deliverable deliverable = new Bulk(DeliverableEvent.STATUS_UPDATE, game.getBoard());
+            deliverable.overwriteMessage(game.toString());
+            send(subject, deliverable);
+        }
+    }
 
     public void spawn(Player subject) throws AbortedTurnException {
-        sendGameStatus(subject);
+        sendStatusUpdate(subject);
 
         List<String> options = subject.getPowerUps()
                 .stream()
@@ -165,7 +179,7 @@ public class VirtualView {
     }
 
     public Execution chooseExecution(Player subject, List<Execution> executions) throws AbortedTurnException {
-        sendGameStatus(subject);
+        sendStatusUpdate(subject);
 
         List<String> options = executions.stream()
                 .map(Execution::toString)
@@ -257,7 +271,7 @@ public class VirtualView {
     }
 
     public void shootAttackModule(Player subject, AttackPattern pattern, List<Integer> next) throws AbortedTurnException {
-        sendGameStatus(subject);
+        sendStatusUpdate(subject);
 
         List<String> options = next.stream()
                 .map(i -> {
@@ -574,20 +588,20 @@ public class VirtualView {
     }
 
     public void announceDamage(Player author, Player target, int amount) {
-        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_DAMAGE);
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_DAMAGE);
         deliverable.overwriteMessage(author.getName() + " dealt " + amount + " damage to " + target.getName() + ".");
         broadcast(deliverable);
     }
 
     public void announceMarking(Player author, Player target, int amount) {
         String lexeme = amount > 1 ? "marks" : "mark";
-        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_MARKING);
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_MARKING);
         deliverable.overwriteMessage(author.getName() + " dealt " + amount + " " + lexeme + " to " + target.getName() + ".");
         broadcast(deliverable);
     }
 
     public void announceMove(Player author, Player target, Cell destination) {
-        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_MOVE);
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_MOVE);
         String message = author.getName() + " moved";
         if(!target.equals(author))
             message += " " + target.getName();
@@ -596,7 +610,7 @@ public class VirtualView {
     }
 
     public void announceKill(Player author, Player target) {
-        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_KILL);
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_KILL);
         String message = author.getName() +  " ";
         if(target.isOverKilled())
             message += "over";
@@ -606,7 +620,7 @@ public class VirtualView {
     }
 
     public void announceScore(Player source, Player creditor, int amount, boolean firstBloodOrDoubleKill) {
-        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_SCORE);
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_SCORE);
         String lexeme = amount == 1 ? "point" : "points";
         String message = creditor + " earned " + amount + " " + lexeme;
         if(source == null) {
@@ -624,13 +638,13 @@ public class VirtualView {
     }
 
     public void announceFrenzy(Player cause) {
-        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_FRENZY);
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_FRENZY);
         deliverable.overwriteMessage(cause.toString() + " activated the Final Frenzy!");
         broadcast(deliverable);
     }
 
     public void announceWinner(List<Player> ranking) {
-        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_WINNER);
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_WINNER);
         String message = "\n\nGAME OVER!\n" + ranking.get(0).toString() + " won the game!\n\nRanking:\n" + Table.create(
                 ranking.stream()
                         .map(ranking::indexOf)
@@ -650,7 +664,7 @@ public class VirtualView {
     }
 
     public void announceDisconnect(Player disconnectedPlayer) {
-        Deliverable deliverable = new Info(DeliverableEvent.ANNOUNCE_DISCONNECT);
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_DISCONNECT);
         String message = disconnectedPlayer + " has lost connection. Skipping to the next turn...";
         deliverable.overwriteMessage(message);
         broadcast(deliverable);

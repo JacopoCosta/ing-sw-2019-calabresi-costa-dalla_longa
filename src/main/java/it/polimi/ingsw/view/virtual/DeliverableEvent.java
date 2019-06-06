@@ -35,16 +35,17 @@ public enum DeliverableEvent {
     NEWTON_FAILURE("Looks like you can't move this player to a cell you can see."),
     TELEPORT_REQUEST_CELL("Where would you like to teleport?"),
     TARGET_REQUEST(""),
-    ANNOUNCE_DAMAGE(""),
-    ANNOUNCE_MARKING(""),
-    ANNOUNCE_MOVE(""),
-    ANNOUNCE_KILL(""),
-    ANNOUNCE_SCORE(""),
-    ANNOUNCE_FRENZY(""),
-    ANNOUNCE_WINNER(""),
-    ANNOUNCE_DISCONNECT(""),
+    UPDATE_DAMAGE(""),
+    UPDATE_MARKING(""),
+    UPDATE_MOVE(""),
+    UPDATE_KILL(""),
+    UPDATE_SCORE(""),
+    UPDATE_FRENZY(""),
+    UPDATE_WINNER(""),
+    UPDATE_DISCONNECT(""),
     RESPONSE(""),
-    BOARD("");
+    STATUS_INIT(""),
+    STATUS_UPDATE("");
 
     public final String message;
     DeliverableEvent(String message) {

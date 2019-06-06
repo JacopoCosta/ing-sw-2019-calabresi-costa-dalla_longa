@@ -1,5 +1,9 @@
 package it.polimi.ingsw.model.player;
 
+/**
+ * Activities are performed by players during their own turn
+ *
+ */
 public abstract class Activity {
     protected ActivityType type;
 
