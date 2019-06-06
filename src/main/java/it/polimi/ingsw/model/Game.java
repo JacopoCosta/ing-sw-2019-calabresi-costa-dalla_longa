@@ -363,13 +363,12 @@ public class Game {
         tl.writeToFile(JsonPathGenerator.getPath("saved.json"));
     }
 
-    public static Game load(List<Player> participants) throws InvalidSaveStateException, UnmatchedSavedParticipantsException {
+    public static Game load(DecoratedJsonObject jSaveState, List<Player> participants) throws InvalidSaveStateException, UnmatchedSavedParticipantsException {
         if(participants == null)
             throw new NullPointerException("Tried to load a game with participants set to null.");
-        DecoratedJsonObject tl = DecoratedJsonObject.getFromFile(JsonPathGenerator.getPath("saved.json"));
         DecoratedJsonObject jSaved;
         try {
-            jSaved = tl.getObject("saved");
+            jSaved = jSaveState.getObject("saved");
         } catch (JullPointerException e) {
             throw new JsonException("Savestate JSON does not include \"saved\" as top-level object.");
         }

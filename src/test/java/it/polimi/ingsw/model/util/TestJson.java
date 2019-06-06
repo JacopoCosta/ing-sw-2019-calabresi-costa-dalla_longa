@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.exceptions.FullHandException;
 import it.polimi.ingsw.model.exceptions.InvalidSaveStateException;
 import it.polimi.ingsw.model.exceptions.UnmatchedSavedParticipantsException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.util.json.JsonObjectGenerator;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public class TestJson {
         try {
             Game game = Game.create(false, 1, 2, participants);
             game.save();
-            Game.load(participants);
+            Game loadedGame = Game.load(JsonObjectGenerator.getSavedGameBuilder(), participants);
         } catch (InvalidSaveStateException | UnmatchedSavedParticipantsException e) {
             fail();
         }
