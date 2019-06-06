@@ -1,9 +1,10 @@
 package it.polimi.ingsw.network.server.lobby;
 
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.*;
-import it.polimi.ingsw.network.common.timer.CountDownTimer;
 import it.polimi.ingsw.network.common.observer.Observer;
+import it.polimi.ingsw.network.common.timer.CountDownTimer;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -11,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A collection of {@link Player}s
+ * A collection of {@link Player}s logged together, waiting for a {@link Game} to start. {@link Player}s should be
+ * identified through a unique value and the {@code Lobby} should contain only one instance of the same {@link Player}.
  */
-
 
 class Lobby implements Observer {
     /**
@@ -44,8 +45,9 @@ class Lobby implements Observer {
     private final String password;
 
     /**
-     * The initial waiting time before the {@code Lobby} launches a new {@link it.polimi.ingsw.model.Game}. This is
+     * The initial waiting time before the {@code Lobby} launches a new {@link Game}. This is
      * modified through {@link #adjustTimer()}.
+     *
      * @see it.polimi.ingsw.model.Game
      * @see #adjustTimer()
      */
@@ -57,6 +59,7 @@ class Lobby implements Observer {
     /**
      * The timer responsible for the countdown before the game starts.
      * Calling {@link CountDownTimer} should be performed only in {@link #adjustTimer()}.
+     *
      * @see CountDownTimer
      * @see #adjustTimer()
      */
@@ -64,7 +67,8 @@ class Lobby implements Observer {
 
     /**
      * This is the only constructor. It create a {@code Lobby} from a given {@code name} and {@code password}.
-     * @param name the new {@code Lobby} name.
+     *
+     * @param name     the new {@code Lobby} name.
      * @param password the new {@code Lobby} password.
      */
     Lobby(String name, String password) {
@@ -80,13 +84,16 @@ class Lobby implements Observer {
 
     /**
      * Returns the name given to this {@code Lobby}.
+     *
      * @return the name of this {@code Lobby}.
      */
     public String getName() {
         return name;
     }
 
-    /**the number of {@code Player}s currently logged into this {@code Lobby}.
+    /**
+     * the number of {@code Player}s currently logged into this {@code Lobby}.
+     *
      * @return the number of {@code Player}s currently logged into this {@code Lobby}.
      */
     int getCurrentPlayers() {
@@ -100,6 +107,7 @@ class Lobby implements Observer {
      * Example:
      * Suppose a {@code Lobby} is called "foo" and contains 3 {@link Player}s out of 5. The return value will be:
      * ("foo", "[3/5]").
+     *
      * @return the {@link Map.Entry} representing the lobby current status.
      */
     Map.Entry<String, String> getStatus() {
@@ -108,6 +116,7 @@ class Lobby implements Observer {
 
     /**
      * Returns {@code true} if, and only if, this {@code Lobby} contains the given {@link Player}.
+     *
      * @param player the {@link Player} whose presence in this list is to be tested.
      * @return {@code true} if this {@code Lobby} contains the given {@link Player}, {@code false} otherwise.
      */
@@ -119,20 +128,21 @@ class Lobby implements Observer {
      * Insert the given {@code player} into this {@code Lobby} if some criteria are satisfied. Then call {@link #adjustTimer()}
      * to adjust the timer countdown.
      * 1 - there must be a space left in the {@code Lobby}. This is true if {@link #currentPlayers} is less than
-     *      {@link #MAX_PLAYERS}.
+     * {@link #MAX_PLAYERS}.
      * 2 - the {@code player} can't be {@code null}.
-     * 3 - the {@code Lobby} can't contain another {@link Player} {@code p}, so that {@code player.equals(p)}.
+     * 3 - the {@code Lobby} can't contain another instance of {@link Player} {@code p}, so that {@code player.equals(p)}.
      * 4- ether only one of the following conditions must be satisfied:
      *      a - the given {@code password} must be the same a {@code this.password}, so that
      *          {@code password.equals(this.password)}.
      *      b - both the given {@code password} and {@code this.password} must be null simultaneously.
-     *      c - either {@code password} or {@code this.password} must be {@code null} or {@code isEmpty()} and the other
-     *          must be either {@code null} or {@code isBlank()}.
-     * @param player the {@link Player} to insert into this {@code Lobby}.
+     *      c - {@code this.password} must be either {@code null} or such that {@code this.password.isEmpty()} and
+     *          {@code password } must be either {@code null} or such that {@code password.isBlank()}.
+     *
+     * @param player   the {@link Player} to insert into this {@code Lobby}.
      * @param password the authentication password to allow {@code player} to be inserted into this {@code Lobby}.
-     * @throws LobbyFullException if this {@code Lobby} has no space left.
-     * @throws PlayerAlreadyAddedException if this {@code Lobby} already contains another instance of {@code player}
-     * @throws InvalidPasswordException if {@code password} does not satisfy one of the previous conditions.
+     * @throws LobbyFullException          if this {@code Lobby} has no space left.
+     * @throws PlayerAlreadyAddedException if this {@code Lobby} already contains another instance of the same {@code player}.
+     * @throws InvalidPasswordException    if {@code password} does not satisfy one of the validity conditions.
      * @see #adjustTimer()
      */
     void add(Player player, String password) throws LobbyFullException, PlayerAlreadyAddedException, InvalidPasswordException {
@@ -160,10 +170,11 @@ class Lobby implements Observer {
      * 1 - the {@code Lobby} can't be empty.
      * 2 - the {@code player} argument can't be null.
      * 3 - the {@code Lobby} must contain an instance of the given {@code player} {@code p}, so that {@code p.equals(player)}.
+     *
      * @param player the {@link Player} to be removed.
-     * @throws LobbyEmptyException if the {@code Lobby} does not contain any {@link Player}
+     * @throws LobbyEmptyException     if the {@code Lobby} does not contain any {@link Player}
      * @throws PlayerNotFoundException if the {@link Player} passed as parameter is not contained into the {@code Lobby}.
-     * */
+     */
     void remove(Player player) throws LobbyEmptyException, PlayerNotFoundException {
         if (this.currentPlayers == 0)
             throw new LobbyEmptyException("Lobby \"" + name + "\" is empty");
@@ -185,17 +196,18 @@ class Lobby implements Observer {
      * This function adjusts the {@link CountDownTimer} countdown based on the number of
      * {@link Player} logged into the {@code Lobby}, represented by {@link #currentPlayers}.
      * Every time the number of {@link Player} changes, a delay value can be evaluate to adjust the countdown.
+     *
      * @see CountDownTimer
      */
     private void adjustTimer() {
         /* TODO:
-         *  This function is called every time a User is added or removed from this Lobby.
-         *  This function adjusts the timer countdown based on the number of Users connected (currUsers).
-         *  The timer should start when the minimum number of Users is reached:
-         *  users.size() == MINIMUM_USERS_THRESHOLD
+         *  This function is called every time a Player is added or removed from this Lobby.
+         *  This function adjusts the timer countdown based on the number of Players connected (currentPlayers).
+         *  The timer should start when the minimum number of Players is reached:
+         *  players.size() == PLAYERS_THRESHOLD
          *  using
          *  timer.start()
-         *  Every time the number of Users changes, a delay value can be evaluate to adjust the countdown.
+         *  Every time the number of Players changes, a delay value can be evaluate to adjust the countdown.
          *  Once the value has been determined, use
          *  timer.delay(amountInSeconds)
          *  to delay the timer countdown by the chosen amount of time, and
@@ -206,7 +218,7 @@ class Lobby implements Observer {
          *  To check the timer status at any time, call
          *  timer.getState()
          *  which returns one of the four possible states (an explanation of the states meaning can be found
-         *  in the CountdownTimer class):
+         *  in the CountDownTimer class):
          *  CountdownTimer.TimerState.NOT_STARTED
          *  CountdownTimer.TimerState.STARTED
          *  CountdownTimer.TimerState.STOPPED
@@ -214,6 +226,12 @@ class Lobby implements Observer {
          * */
     }
 
+    /**
+     * This function is called when the {@link #timer} expires and notifies that a new {@link Game}
+     * should start between the {@link Player}s currently logged into this {@code Lobby}.
+     *
+     * @see Observer
+     */
     @Override
     public void onEvent() {
         //TODO: start a new Game in a separate thread
