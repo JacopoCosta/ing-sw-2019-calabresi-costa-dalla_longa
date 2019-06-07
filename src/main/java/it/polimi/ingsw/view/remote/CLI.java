@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.util.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
+import it.polimi.ingsw.view.remote.status.RemoteBoard;
 
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class CLI extends View {
     }
 
     //CLI display method, may be improved
-    public static void printBoard(Board board) {
+    public static void printBoard(RemoteBoard board) {
 
         BoardGraph graph = new BoardGraph();
 

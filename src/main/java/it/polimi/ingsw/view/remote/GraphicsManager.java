@@ -1,9 +1,9 @@
 package it.polimi.ingsw.view.remote;
 
-import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
+import it.polimi.ingsw.view.remote.status.RemoteBoard;
+import it.polimi.ingsw.view.remote.status.RemotePlayer;
 import it.polimi.ingsw.view.virtual.*;
 
 import java.util.List;
@@ -13,8 +13,8 @@ public class GraphicsManager {
     private boolean usesGUI;
     private CommunicationHandler communicationHandler;
 
-    private Board remoteBoard;
-    private List<Player> participants;
+    private RemoteBoard remoteBoard;
+    private List<RemotePlayer> participants;
 
     public GraphicsManager(boolean usesGUI, CommunicationHandler communicationHandler) {
         this.usesGUI = usesGUI;
@@ -171,11 +171,10 @@ public class GraphicsManager {
     private void CLIBulkHandler(Deliverable deliverable) {
         Object info = ((Bulk) deliverable).unpack();
 
-    /*    switch (deliverable.getEvent()) {
-            case BOARD:
-                CLI.printBoard((Board) info);
+        switch (deliverable.getEvent()) {
+            case STATUS_INIT:
                 break;
-        } */
+        }
 
     }
 

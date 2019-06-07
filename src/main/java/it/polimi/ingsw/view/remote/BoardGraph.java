@@ -6,6 +6,9 @@ import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.view.remote.status.RemoteBoard;
+import it.polimi.ingsw.view.remote.status.RemoteCell;
+import it.polimi.ingsw.view.remote.status.RemotePlayer;
 
 import static it.polimi.ingsw.view.remote.WallType.*;
 
@@ -41,6 +44,11 @@ public class BoardGraph {
         }
     }
 
+    public static WallType getWallBetweenCells(RemoteBoard board, int x1, int y1, int x2, int y2) {
+        return null;
+        //TODO
+    }
+
     public static WallType getWallBetweenCells(Board board, int x1, int y1, int x2, int y2) {
         if (board.getCellByCoordinates(x1, y1) != null && board.getCellByCoordinates(x2, y2) != null) { //they both exist
 
@@ -68,11 +76,11 @@ public class BoardGraph {
             } catch (NullCellOperationException ignored) {
                 //it never happens, as this method is invoked only after the whole board has been initialised
             }
-            /*else //the cells aren't even ghostlyAdjacent, so there isn't any separator between them
-                return NONE;
+            //the cells aren't even ghostlyAdjacent, so there isn't any separator between them
+                //return NONE;
 
-                This case is covered by "return NONE" at the end of the method
-             */
+                //This case is covered by "return NONE" at the end of the method
+
         }
         else if(board.getCellByCoordinates(x1, y1) == null && board.getCellByCoordinates(x2, y2) == null) {
             //none of them exist; however, they may be printed if they refers to blank spaces
@@ -99,19 +107,24 @@ public class BoardGraph {
         }//end else (exactly one cell exists)
         return NONE;
         //NONE is returned only if the two cells weren't even touching, its purpose is for robustness of code
+        //TODO: this method should be on virtual view or in model
     }
 
-    public void printCellCoordinate(Cell cell) {
-        if(cell != null)
+    public void printCellCoordinate(RemoteCell cell) {
+        /*if(cell != null)
             if(cell.getId() < 10)
                 CLI.print(" <" + cell.getId() + ">" + fillWith(internalWidth - 4, " "));   //single digit cell ID
             else
                 CLI.print(" <" + cell.getId() + ">" + fillWith(internalWidth - 5, " "));    //double digit cell ID
         else
             CLI.print(fillWith(internalWidth, " "));   //just spaces
+
+            TODO
+            */
     }
 
-    public void printFirstLine(Cell cell) {
+    public void printFirstLine(RemoteCell cell) {
+        /*
         if(cell == null){
             CLI.print(fillWith(internalWidth, " "));   //just spaces
             return;
@@ -145,9 +158,12 @@ public class BoardGraph {
                     CLI.print(" BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + fillWith(internalWidth - 8, " "));
             }
         }
+        TODO
+         */
     }
 
-    public void printSecondLine(Cell cell) {
+    public void printSecondLine(RemoteCell cell) {
+        /*
         if(cell == null){
             CLI.print(fillWith(internalWidth, " "));
             return;
@@ -205,9 +221,12 @@ public class BoardGraph {
                 }
             } //end else (there were some ammocubes on the cell)
         } //end else (cell is AmmoCell)
+        TODO
+         */
     }
 
-    public void printThirdLine(Cell cell) {
+    public void printThirdLine(RemoteCell cell) {
+        /*
         if(cell == null) {
             CLI.print(fillWith(internalWidth, " "));   //just spaces
             return;
@@ -222,9 +241,13 @@ public class BoardGraph {
         }
         else
             CLI.print(fillWith(internalWidth, " "));
+
+            TODO
+            */
     }
 
-    public void printFourthLine(Cell cell) {
+    public void printFourthLine(RemoteCell cell) {
+        /*
         if(cell == null) {
             CLI.print(fillWith(internalWidth, " "));   //just spaces
             return;
@@ -239,9 +262,11 @@ public class BoardGraph {
         }
         else
             CLI.print(fillWith(internalWidth, " "));
+            TODO
+         */
     }
 
-    public void printFifthLine(Cell cell) {
+    public void printFifthLine(RemoteCell cell) {
 
         int charCounter = 0;
         if(cell == null){
@@ -249,11 +274,12 @@ public class BoardGraph {
             return;
         }
         //this time, it doesn't matter whether the cell is a SpawnCell or not
-        for(Player p: cell.getBoard().getGame().getParticipants()) {
-            if (p.getPosition() == cell) {
+        for(RemotePlayer p: cell.getRemoteBoard().getParticipants()) {
+            /*if (p.getPosition() == cell) {
                 CLI.print(" " + p.getId());
                 charCounter += 2;
-            }
+                TODO
+            }*/
         }
         //completes the row with the right number of spaces
         CLI.print(fillWith(internalWidth - charCounter, " "));

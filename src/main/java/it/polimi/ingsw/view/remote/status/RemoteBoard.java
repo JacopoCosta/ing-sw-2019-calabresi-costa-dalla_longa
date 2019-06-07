@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view.remote.status;
 
+import it.polimi.ingsw.view.remote.WallType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,4 +59,10 @@ public class RemoteBoard {
     public void setHeight(int height) {
         Height = height;
     }
+
+    public RemoteCell getCellByCoordinates(int x, int y) {
+        return null;
+        //TODO
+    }
+
 }

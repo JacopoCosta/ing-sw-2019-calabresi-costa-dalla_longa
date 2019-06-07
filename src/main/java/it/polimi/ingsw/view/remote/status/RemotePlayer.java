@@ -89,4 +89,5 @@ public class RemotePlayer {
     public void setScoreBoard(int[] scoreBoard) {
         this.scoreBoard = scoreBoard;
     }
+
 }

@@ -11,8 +11,11 @@ public class RemoteCell {
     private ColorCube colorCube;
     private boolean includesPowerUp;
 
-    public RemoteCell (boolean isAmmoCell) {
+    private RemoteBoard remoteBoard;
+
+    public RemoteCell (RemoteBoard remoteBoard, boolean isAmmoCell) {
         this.isAmmoCell = isAmmoCell;
+        this.remoteBoard = remoteBoard;
     }
 
     public List<RemoteWeapon> getShop() {
@@ -42,5 +45,9 @@ public class RemoteCell {
 
     public void refresh(List <RemoteWeapon> shop) {
         this.shop = shop;
+    }
+
+    public RemoteBoard getRemoteBoard() {
+        return remoteBoard;
     }
 }
