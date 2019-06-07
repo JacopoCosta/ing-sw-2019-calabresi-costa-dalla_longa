@@ -12,7 +12,7 @@ public class DecoratedJsonArray {
 
     public DecoratedJsonArray(List<DecoratedJsonObject> content, Object uselessObject) {
         if(uselessObject != null)
-            throw new JsonException("Useless object should always be null");
+            throw new JsonException("Useless object should always be null.");
         this.content = new JSONArray();
         content.stream()
                 .map(DecoratedJsonObject::unpack)

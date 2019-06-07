@@ -15,10 +15,9 @@ import java.util.stream.Collectors;
  * The cell is the unit of space on the board. Cells are organized in a 2-dimensional
  * lattice space, forming a grid of 10 ~ 12 units that fits in a bounding box spanning
  * 4 units horizontally and 3 units vertically. The coordinate system used to identify cells
- * is a clockwise pair of axes with the `x` coordinate increasing to the right and the `y`
+ * is a clockwise pair of axes with the {@code x} coordinate increasing to the right and the {@code y}
  * coordinate increasing downwards.
  * Cells are grouped into rooms, this is important when evaluating visibility between two cells.
- *
  * @see Room
  * @see it.polimi.ingsw.model.board.Board
  */
@@ -59,8 +58,8 @@ public abstract class Cell {
 
     /**
      * This is the only constructor.
-     * @param xCoord the `x` (horizontal) coordinate in the 2-dimensional discrete space this cell will be put at
-     * @param yCoord the `y` (vertical) coordinate in the 2-dimensional discrete space this cell will be put at
+     * @param xCoord the x (horizontal) coordinate in the 2-dimensional discrete space this cell will be put at.
+     * @param yCoord the y (vertical) coordinate in the 2-dimensional discrete space this cell will be put at.
      */
     public Cell(int xCoord, int yCoord) {
         this.adjacentCells = new ArrayList<>();
@@ -69,7 +68,7 @@ public abstract class Cell {
     }
 
     /**
-     *
+     * Returns a number that uniquely identifies the cell on the board.
      */
     public int getId() {
         return board.getCells().indexOf(this) + 1;
@@ -85,6 +84,10 @@ public abstract class Cell {
         return spawnPoint;
     }
 
+    /**
+     * Binds the cell to a board.
+     * @param board the board to bind the cell to.
+     */
     public void setBoard(Board board) {
         this.board = board;
     }

@@ -24,22 +24,70 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * T
+ */
 public class Board {
+
+    /**
+     * The maximum number of weapons each weapon shop can hold at any given time.
+     */
     private static final int MAX_WEAPONS_PER_SPAWNPOINT = 3;
 
+    /**
+     * The game the board is pertaining to.
+     */
     private Game game;
 
+    /**
+     * The list of players who committed murder since the beginning of the current turn.
+     * Each player appears as many times as kills they were able to score.
+     */
     private List<Player> turnKillers;
+
+    /**
+     * The list of players who committed murder since the beginning of the game.
+     * Each player appears as many times as kills they were able to score.
+     */
     private List<Player> killers;
+
+    /**
+     * The list of players who killed two opponents in the same turn since the beginning of the game.
+     * Each player appears as many times as double kills they were able to score.
+     */
     private List<Player> doubleKillers;
+
+    /**
+     * The list of cells that make up the board.
+     */
     private List<Cell> cells;
 
+    /**
+     * The deck of weapons.
+     */
     private Deck<Weapon> weaponDeck;
+
+    /**
+     * The deck of power ups.
+     */
     private Deck<PowerUp> powerUpDeck;
+
+    /**
+     * The deck of ammo tiles.
+     */
     private Deck<AmmoTile> ammoTileDeck;
 
+    /**
+     * This is the only constructor. It does nothing (thus creates an empty board) and is inaccessible from outside this class.
+     */
     private Board() {}
 
+    /**
+     * This factory method creates a board, based on the board type. It then binds the board to a game.
+     * @param game The game the board belongs to.
+     * @param type The id of the board configuration (1~4).
+     * @return a newly generated board.
+     */
     public static Board generate(Game game, int type) {
         Board board = new Board();
 
@@ -65,6 +113,12 @@ public class Board {
         return board;
     }
 
+    /**
+     * This factory method constructs an object with the properties found inside the JSON object passed as argument.
+     * @param jBoardSet the JSON object containing the list of boards, each with the desired properties.
+     * @param boardType The id of the board configuration (1~4).
+     * @return an instance of this class in accordance with the specified properties.
+     */
     private static List<Cell> buildBoard(DecoratedJsonObject jBoardSet, int boardType) {
         DecoratedJsonObject jBoards;
         try {
@@ -214,6 +268,12 @@ public class Board {
         return cells;
     }
 
+    /**
+     * Finds the spawn cell whose colour corresponds with the colour of the ammo cube passed in as argument.
+     * @param ammoCubeColor the ammo cube used to identify the cell.
+     * @return the cell whose colour corresponds with the colour of the ammo cube passed in as argument,
+     * or null if no cell meets the described criteria.
+     */
     public Cell findSpawnPoint(AmmoCubes ammoCubeColor) {
         for(Cell cell : cells) {
             if(cell.isSpawnPoint() && ((SpawnCell)cell).getAmmoCubeColor().equals(ammoCubeColor))
@@ -222,6 +282,12 @@ public class Board {
         return null;
     }
 
+    /**
+     * Finds the cell whose coordinates are equal to those passed in as arguments.
+     * @param xCoord The horizontal coordinate of the cell.
+     * @param yCoord The vertical coordinate of the cell.
+     * @return the cell at the given coordinates, or null if no cell is at the given coordinates.
+     */
     public Cell getCellByCoordinates(int xCoord, int yCoord) {
         for(Cell cell: cells) {
             if(cell.getXCoord() == xCoord && cell.getYCoord() == yCoord)
@@ -230,22 +296,40 @@ public class Board {
         return null;
     }
 
+    /**
+     * Returns the width of the board expressed as number of cells.
+     * @return the board width.
+     */
     public int getWidth() {
         return cells.stream()
                 .map(Cell::getXCoord)
                 .reduce(0, Integer::max) + 1;
     }
 
+    /**
+     * Returns the height of the board expressed as number of cells.
+     * @return the board height.
+     */
     public int getHeight() {
         return cells.stream()
                 .map(Cell::getYCoord)
                 .reduce(0, Integer::max) + 1;
     }
 
+    /**
+     * Returns the list of cells composing the board.
+     * @return the list of cells composing the board.
+     */
     public List<Cell> getCells() {
         return cells;
     }
 
+    /**
+     * Adds all players appearing more than once in the {@code turnKillers} list
+     * to the {@code doubleKilllers} list.
+     * @see Board#turnKillers
+     * @see Board#doubleKillers
+     */
     public void promoteDoubleKillers() {
         game.getParticipants()
                 .stream()
@@ -259,43 +343,85 @@ public class Board {
         this.turnKillers.clear();
     }
 
+    /**
+     * Adds a player to the killers list.
+     * @param killer the player to add.
+     */
     public void addKiller(Player killer) {
         turnKillers.add(killer);
         killers.add(killer);
     }
 
+    /**
+     * Returns the list of killers.
+     * @return the list of killers.
+     */
     public List<Player> getKillers() {
         return this.killers;
     }
 
+    /**
+     * Sets the killers list to a list passed in as argument.
+     * @param killers the new list of killers.
+     */
     public void setKillers(List<Player> killers) {
         this.killers = killers;
     }
 
+    /**
+     * Returns the list of double killers.
+     * @return the list of double killers.
+     */
     public List<Player> getDoubleKillers() {
         return this.doubleKillers;
     }
 
+    /**
+     * Sets the double killers list to a list passed in as argument.
+     * @param doubleKillers the new list of double killers.
+     */
     public void setDoubleKillers(List<Player> doubleKillers) {
         this.doubleKillers = doubleKillers;
     }
 
+    /**
+     * Returns the weapon deck.
+     * @return the weapon deck.
+     */
     public Deck<Weapon> getWeaponDeck() {
         return weaponDeck;
     }
 
+    /**
+     * Returns the power up deck.
+     * @return the power up deck.
+     */
     public Deck<PowerUp> getPowerUpDeck() {
         return powerUpDeck;
     }
 
+    /**
+     * Returns the ammo tile deck.
+     * @return the ammo tile deck.
+     */
     public Deck<AmmoTile> getAmmoTileDeck() {
         return ammoTileDeck;
     }
 
+    /**
+     * Returns the game that is being played on the board.
+     * @return the game that is being played on the board.
+     */
     public Game getGame() {
         return this.game;
     }
 
+    /**
+     * Spreads ammo on every ammo cell of the board.
+     * More specifically, for each ammo cell that does not contain any ammo tile, a new ammo tile is drawn from
+     * the ammo tile deck and placed onto that cell.
+     * @see Board#ammoTileDeck
+     */
     public void spreadAmmo() {
         cells.stream()
                 .filter(c -> !c.isSpawnPoint())
@@ -304,6 +430,14 @@ public class Board {
                 .forEach(ac -> ammoTileDeck.smartDraw(true).ifPresent(ac::setAmmoTile));
     }
 
+    /**
+     * Spreads weapons on every spawn point's weapon shop.
+     * More specifically, for each spawn cell that contains fewer weapons than the maximum allowed amount,
+     * a new weapon card is drawn from the weapon deck for each free slot in the shop, to which the weapon is added.
+     * This method stops having an effect once the weapon deck has been depleted.
+     * @see Board#weaponDeck
+     * @see Board#MAX_WEAPONS_PER_SPAWNPOINT
+     */
     public void spreadWeapons() {
         cells.stream()
                 .filter(Cell::isSpawnPoint)
@@ -316,6 +450,14 @@ public class Board {
                 );
     }
 
+    /**
+     * Awards players with points from the {@code ScoreList}, with the players ranked best to last according
+     * to amount of kills (overkills are worth two kills), with ties broken in favour of the player who made the first
+     * kill the earliest. One additional point is awarded to each player for each double kill they were able to
+     * perform during the game.
+     * @see ScoreList
+     * @see Board#countKills(Player)
+     */
     public void scoreUponGameOver() {
         Comparator<Player> better = (p1, p2) -> {
             int kills1 = countKills(p1);
@@ -342,8 +484,14 @@ public class Board {
             p.giveScore(1);
             game.getVirtualView().announceScore(null, p, 1, true);
         }); // one extra point for each double kill scored
-     }
+    }
 
+    /**
+     * Counts the equivalent number of kills a player scored during the game.
+     * Overkills are counted as two kills.
+     * @param author the player on whom to count the kills.
+     * @return the number of equivalent kills.
+     */
     private int countKills(Player author) {
         int count = 0;
         Player lastKiller = null;
@@ -356,6 +504,11 @@ public class Board {
         return count;
     }
 
+    /**
+     * Searches through the weapon deck until it finds a weapon with the given name.
+     * @param name the name of the weapon.
+     * @return An optional containing that weapon, if found, otherwise an empty optional.
+     */
     public Optional<Weapon> fetchWeapon(String name) {
         Weapon weapon = null;
         try {
@@ -373,6 +526,12 @@ public class Board {
         return Optional.of(weapon);
     }
 
+    /**
+     * Searches through the power up deck until it finds a power up with the given type and colour.
+     * @param type the type of the power up.
+     * @param color the colour of the power up.
+     * @return An optional containing that power up, if found, otherwise an empty optional.
+     */
     public Optional<PowerUp> fetchPowerUp(String type, String color) {
         AmmoCubes ammoCubeColor;
         switch (color) {
@@ -422,6 +581,14 @@ public class Board {
         return Optional.of(powerUp);
     }
 
+    /**
+     * Searches through the ammo tile deck until it finds an ammo tile with the given properties.
+     * @param red the amount of red cubes on the ammo tile.
+     * @param yellow the amount of yellow cubes on the ammo tile.
+     * @param blue the amount of blue cubes on the ammo tile.
+     * @param includesPowerUp whether or not the ammo tile includes a power up.
+     * @return An optional containing that power up, if found, otherwise an empty optional.
+     */
     public Optional<AmmoTile> fetchAmmoTile(int red, int yellow, int blue, boolean includesPowerUp) {
         AmmoCubes comparisonAmmoCubes = new AmmoCubes(red, yellow, blue);
 

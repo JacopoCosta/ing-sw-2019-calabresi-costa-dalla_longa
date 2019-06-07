@@ -147,27 +147,10 @@ public class AmmoCubes {
     }
 
     /**
-     * This method tells if two sets of ammo cubes are worth the same.
-     * For this purpose, equal amounts of different colours are not comparable, implying that,
-     * in order for two instances of this class to be considered equivalent, they must have equal amounts
-     * of cubes for every colour.
-     * @param object the set of ammo cubes to compare with.
-     * @return whether or not the object this method was called upon is equivalent to the one passed as argument.
-     */
-    @Override
-    public boolean equals(Object object) {
-        if(object == null)
-            return false;
-        if(!(object instanceof AmmoCubes))
-            return false;
-        AmmoCubes ammoCubes = ((AmmoCubes) object);
-        return  this.getRed() == ammoCubes.getRed() &&
-                this.getYellow() == ammoCubes.getYellow() &&
-                this.getBlue() == ammoCubes.getBlue();
-    }
-
-    /**
-     * no
+     * Tells if a set of ammo cubes covers a cost expressed in ammo cubes.
+     * The condition for coverage is having, for each colour, at least as many cubes of that colour as the cost.
+     * @param cost the cost to cover.
+     * @return whether or not the coverage condition is fulfilled.
      */
     public boolean covers(AmmoCubes cost) {
         return  this.getRed() >= cost.getRed() &&
@@ -175,12 +158,25 @@ public class AmmoCubes {
                 this.getBlue() >= cost.getBlue();
     }
 
+    /**
+     * Combines the purchasing power of a set of ammo cubes with that of a list of power ups.
+     * This is because each power up translates into a single ammo cube of a specific colour.
+     * @param powerUps the power ups to add to the set of ammo cubes.
+     * @return A new set of ammo cubes equivalent to the combination of the current set with the list of power ups.
+     */
     public AmmoCubes augment(List<PowerUp> powerUps) {
         return powerUps.stream()
                 .map(PowerUp::getAmmoCubes)
                 .reduce(this, AmmoCubes::sum);
     }
 
+    /**
+     * Tells how far a set of ammo cubes is from being able to cover a cost, passed in as argument.
+     * @param cost the cost to cover.
+     * @return A set of ammo cubes containing, for each colour, the minimum amount of ammo cubes of that colour that
+     * would need to be added to the current set, in order to allow it to cover that cost.
+     * @see AmmoCubes#covers(AmmoCubes)
+     */
     private AmmoCubes differenceFromCovering(AmmoCubes cost) {
         return new AmmoCubes(
                 Math.max(0, cost.red - this.red),
@@ -189,6 +185,15 @@ public class AmmoCubes {
         );
     }
 
+    /**
+     * Filters a list of power ups, allowing through only those power ups that, should the current
+     * set of ammo cubes be augmented with, would reduce the difference from covering the cost passed as argument.
+     * @param powerUps the list of power ups from which to filter.
+     * @param cost the cost to cover.
+     * @return the filtered list of power ups.
+     * @see AmmoCubes#augment(List)
+     * @see AmmoCubes#differenceFromCovering(AmmoCubes)
+     */
     public List<PowerUp> filterValidAugmenters(List<PowerUp> powerUps, AmmoCubes cost) {
         // this == the player's base balance to cover the cost
         // only power-ups that "make the difference" should pass the filter
@@ -220,6 +225,26 @@ public class AmmoCubes {
      */
     public static AmmoCubes blue() {
         return new AmmoCubes(0, 0, 1);
+    }
+
+    /**
+     * This method tells if two sets of ammo cubes are worth the same.
+     * For this purpose, equal amounts of different colours are not comparable, implying that,
+     * in order for two instances of this class to be considered equivalent, they must have equal amounts
+     * of cubes for every colour.
+     * @param object the set of ammo cubes to compare with.
+     * @return whether or not the object this method was called upon is equivalent to the one passed as argument.
+     */
+    @Override
+    public boolean equals(Object object) {
+        if(object == null)
+            return false;
+        if(!(object instanceof AmmoCubes))
+            return false;
+        AmmoCubes ammoCubes = ((AmmoCubes) object);
+        return  this.getRed() == ammoCubes.getRed() &&
+                this.getYellow() == ammoCubes.getYellow() &&
+                this.getBlue() == ammoCubes.getBlue();
     }
 
     /**
