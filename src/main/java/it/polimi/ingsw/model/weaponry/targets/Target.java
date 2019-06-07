@@ -36,7 +36,7 @@ public abstract class Target {
         }
         List<DecoratedJsonObject> jConstraints;
         try {
-            jConstraints = jTarget.getArray("constraints").asList();
+            jConstraints = jTarget.getArray("constraints").toList();
         } catch (JullPointerException e) {
             throw new JsonException("Target constraints not found.");
         }

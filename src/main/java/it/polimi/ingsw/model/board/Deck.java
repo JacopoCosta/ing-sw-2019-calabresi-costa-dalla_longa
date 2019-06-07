@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.powerups.*;
 import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
-import it.polimi.ingsw.model.util.json.JsonPathGenerator;
 import it.polimi.ingsw.model.util.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
@@ -69,7 +68,7 @@ public class Deck<T> {
         Deck<Weapon> deck = new Deck<>();
 
         try {
-            for(DecoratedJsonObject jWeapon : jDeck.getArray("weapons").asList()) {
+            for(DecoratedJsonObject jWeapon : jDeck.getArray("weapons").toList()) {
                 deck.cards.add(Weapon.build(jWeapon));
             }
         } catch (JullPointerException e) {

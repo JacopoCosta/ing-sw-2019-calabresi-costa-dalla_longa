@@ -31,7 +31,7 @@ public class DecoratedJsonArray {
         return new DecoratedJsonObject((JSONObject) this.content.get(index));
     }
 
-    public List<DecoratedJsonObject> asList() {
+    public List<DecoratedJsonObject> toList() {
 
         List<DecoratedJsonObject> list = new ArrayList<>();
 

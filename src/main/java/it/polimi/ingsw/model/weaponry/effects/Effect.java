@@ -34,7 +34,7 @@ public abstract class Effect {
             }
             List<DecoratedJsonObject> jConstraints;
             try {
-                jConstraints = jEffect.getArray("constraints").asList();
+                jConstraints = jEffect.getArray("constraints").toList();
             } catch (JullPointerException e) {
                 throw new JsonException("Damage constraints not found.");
             }
@@ -53,7 +53,7 @@ public abstract class Effect {
             }
             List<DecoratedJsonObject> jConstraints;
             try {
-                jConstraints = jEffect.getArray("constraints").asList();
+                jConstraints = jEffect.getArray("constraints").toList();
             } catch (JullPointerException e) {
                 throw new JsonException("Mark constraints not found.");
             }

@@ -23,7 +23,7 @@ public class AttackPattern {
         List<AttackModule> attackModules = new ArrayList<>();
 
         try {
-            for(DecoratedJsonObject jId : jPattern.getArray("first").asList()) {
+            for(DecoratedJsonObject jId : jPattern.getArray("first").toList()) {
                 try {
                     ids.add(jId.getInt("id"));
                 } catch (JullPointerException e) {
@@ -34,7 +34,7 @@ public class AttackPattern {
             throw new JsonException("AttackPattern first not found.");
         }
         try {
-            for(DecoratedJsonObject jAttackModule : jPattern.getArray("content").asList()) {
+            for(DecoratedJsonObject jAttackModule : jPattern.getArray("content").toList()) {
                 attackModules.add(AttackModule.build(jAttackModule));
             }
         } catch (JullPointerException e) {

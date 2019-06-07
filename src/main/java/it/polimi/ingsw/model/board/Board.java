@@ -75,7 +75,7 @@ public class Board {
 
         List<DecoratedJsonObject> jConfigurations;
         try {
-            jConfigurations = jBoards.getArray("configurations").asList();
+            jConfigurations = jBoards.getArray("configurations").toList();
         } catch (JullPointerException e) {
             throw new JsonException("Configurations not found.");
         }
@@ -97,7 +97,7 @@ public class Board {
 
         List<DecoratedJsonObject> jCells;
         try {
-            jCells = jConfiguration.getArray("cells").asList();
+            jCells = jConfiguration.getArray("cells").toList();
         } catch (JullPointerException e) {
             throw new JsonException("Configuration cells not found.");
         }
@@ -157,7 +157,7 @@ public class Board {
 
         List<DecoratedJsonObject> jAdjacencyList;
         try {
-            jAdjacencyList = jConfiguration.getArray("adjacencies").asList();
+            jAdjacencyList = jConfiguration.getArray("adjacencies").toList();
         } catch (JullPointerException e) {
             throw new JsonException("Adjacency list not found.");
         }
@@ -179,7 +179,7 @@ public class Board {
 
         List<DecoratedJsonObject> jRooms;
         try {
-            jRooms = jConfiguration.getArray("rooms").asList();
+            jRooms = jConfiguration.getArray("rooms").toList();
         } catch (JullPointerException e) {
             throw new JsonException("Room list not found.");
         }
@@ -193,7 +193,7 @@ public class Board {
             }
             List<DecoratedJsonObject> jRoomCells;
             try {
-                jRoomCells = jr.getArray("cells").asList();
+                jRoomCells = jr.getArray("cells").toList();
             } catch (JullPointerException e) {
                 throw new JsonException("Room cell list not found");
             }

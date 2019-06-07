@@ -64,19 +64,19 @@ public class AttackModule {
         List<Integer> next = new ArrayList<>();
 
         try {
-            for(DecoratedJsonObject jTarget : jAttackModule.getArray("targets").asList())
+            for(DecoratedJsonObject jTarget : jAttackModule.getArray("targets").toList())
                 targets.add(Target.build(jTarget));
         } catch (JullPointerException e) {
             throw new JsonException("AttackModule targets not found.");
         }
         try {
-            for(DecoratedJsonObject jEffect : jAttackModule.getArray("effects").asList())
+            for(DecoratedJsonObject jEffect : jAttackModule.getArray("effects").toList())
                 effects.add(Effect.build(jEffect));
         } catch (JullPointerException e) {
             throw new JsonException("AttackModule effects not found.");
         }
         try {
-            for(DecoratedJsonObject jNext : jAttackModule.getArray("next").asList())
+            for(DecoratedJsonObject jNext : jAttackModule.getArray("next").toList())
                 try {
                     next.add(jNext.getInt("id"));
                 } catch (JullPointerException e) {

@@ -386,7 +386,7 @@ public class Game {
         List<String> savedPlayerNames;
         try {
             savedPlayerNames = jSaved.getArray("participants")
-                    .asList()
+                    .toList()
                     .stream()
                     .map(djo -> {
                         try {
@@ -445,7 +445,7 @@ public class Game {
 
         List<DecoratedJsonObject> jKillers;
         try {
-            jKillers = jSaved.getArray("killers").asList();
+            jKillers = jSaved.getArray("killers").toList();
         } catch (JullPointerException e) {
             throw new JsonException("Savestate killers not found.");
         }
@@ -464,7 +464,7 @@ public class Game {
 
         List<DecoratedJsonObject> jDoubleKillers;
         try {
-            jDoubleKillers = jSaved.getArray("doubleKillers").asList();
+            jDoubleKillers = jSaved.getArray("doubleKillers").toList();
         } catch (JullPointerException e) {
             throw new JsonException("Savestate doubleKillers not found.");
         }
@@ -482,7 +482,7 @@ public class Game {
 
         List<DecoratedJsonObject> jCells;
         try {
-            jCells = jSaved.getArray("cells").asList();
+            jCells = jSaved.getArray("cells").toList();
         } catch (JullPointerException e) {
             throw new JsonException("Savestate cells not found.");
         }
@@ -498,7 +498,7 @@ public class Game {
                     if (cell.isSpawnPoint()) {
                         try {
                             jc.getArray("weaponShop")
-                                    .asList()
+                                    .toList()
                                     .stream()
                                     .map(djo -> {
                                         try {
@@ -558,7 +558,7 @@ public class Game {
 
         List<DecoratedJsonObject> jPlayers;
         try {
-            jPlayers = jSaved.getArray("participants").asList();
+            jPlayers = jSaved.getArray("participants").toList();
         } catch (JullPointerException e) {
             throw new JsonException("Savestate participants not found.");
         }
@@ -608,7 +608,7 @@ public class Game {
 
                     try {
                         jp.getArray("damage")
-                                .asList()
+                                .toList()
                                 .stream()
                                 .map(djo -> {
                                     try {
@@ -626,7 +626,7 @@ public class Game {
 
                     try {
                         jp.getArray("markings")
-                                .asList()
+                                .toList()
                                 .stream()
                                 .map(djo -> {
                                     try {
@@ -644,7 +644,7 @@ public class Game {
 
                     try {
                         jp.getArray("weapons")
-                                .asList()
+                                .toList()
                                 .stream()
                                 .map(djo -> {
                                     try {
@@ -668,7 +668,7 @@ public class Game {
 
                     try {
                         jp.getArray("powerUps")
-                                .asList()
+                                .toList()
                                 .forEach(
                                         djo -> {
                                             String type;
