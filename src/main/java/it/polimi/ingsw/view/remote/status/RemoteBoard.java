@@ -1,66 +1,65 @@
 package it.polimi.ingsw.view.remote.status;
 
-import it.polimi.ingsw.view.remote.WallType;
-
-import java.util.ArrayList;
 import java.util.List;
 
-public class RemoteBoard {
+public abstract class RemoteBoard {
 
-    private List<RemotePlayer> participants;
-    private List<RemotePlayer> killers;
-    private List<RemotePlayer> doubleKillers;
+    private static List<RemotePlayer> participants;
+    private static List<RemotePlayer> killers;
+    private static List<RemotePlayer> doubleKillers;
 
-    private int Width;
-    private int Height;
+    private static int width;
+    private static int height;
 
-    private ArrayList<RemoteCell> cells;
+    private static List<RemoteCell> cells;
 
-    public int getWidth() {
-        return Width;
+
+
+    public static int getWidth() {
+        return width;
     }
 
-    public int getHeight() {
-        return Height;
+    public static int getHeight() {
+        return height;
     }
 
-    public List<RemotePlayer> getParticipants() {
+    public static List<RemotePlayer> getParticipants() {
         return participants;
     }
 
-    public List<RemotePlayer> getKillers() {
+    public static List<RemotePlayer> getKillers() {
         return killers;
     }
 
-    public List<RemotePlayer> getDoubleKillers() {
+    public static List<RemotePlayer> getDoubleKillers() {
         return doubleKillers;
     }
 
-    public ArrayList<RemoteCell> getCells() {
+    public static List<RemoteCell> getCells() {
         return cells;
     }
 
-    public void setDoubleKillers(List<RemotePlayer> doubleKillers) {
-        this.doubleKillers = doubleKillers;
+    public static void setDoubleKillers(List<RemotePlayer> doubleKillers) {
+        RemoteBoard.doubleKillers = doubleKillers;
     }
 
-    public void setKillers(List<RemotePlayer> killers) {
-        this.killers = killers;
+    public static void setKillers(List<RemotePlayer> killers) {
+        RemoteBoard.killers = killers;
     }
 
-    public void setParticipants(List<RemotePlayer> participants) {
-        this.participants = participants;
+    public static void setParticipants(List<RemotePlayer> participants) {
+        RemoteBoard.participants = participants;
     }
 
-    public void setWidth(int width) {
-        Width = width;
+    public static void setWidth(int width) {
+        RemoteBoard.width = width;
     }
 
-    public void setHeight(int height) {
-        Height = height;
+    public static void setHeight(int height) {
+        RemoteBoard.height = height;
     }
 
-    public RemoteCell getCellByCoordinates(int x, int y) {
+    public static RemoteCell getCellByCoordinates(int x, int y) {
         return null;
         //TODO
     }

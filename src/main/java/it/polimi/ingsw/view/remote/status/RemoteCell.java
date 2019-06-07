@@ -15,7 +15,7 @@ public class RemoteCell {
 
     public RemoteCell (RemoteBoard remoteBoard, boolean isAmmoCell) {
         this.isAmmoCell = isAmmoCell;
-        this.remoteBoard = remoteBoard;
+        //this.remoteBoard = remoteBoard;
     }
 
     public List<RemoteWeapon> getShop() {

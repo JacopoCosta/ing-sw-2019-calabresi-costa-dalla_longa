@@ -26,6 +26,7 @@ import it.polimi.ingsw.view.remote.Dispatcher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.model.Game.godMode;
@@ -102,7 +103,7 @@ public class VirtualView {
     }
 
     private void broadcast(Deliverable deliverable) {
-        if(!deliverable.getType().equals(DeliverableType.INFO))
+        if(!(deliverable.getType().equals(DeliverableType.INFO) || (deliverable.getType().equals(DeliverableType.BULK))))
             throw new DeliverableException("Wrong call to send in VirtualView.");
 
         if(godMode) {
@@ -118,17 +119,82 @@ public class VirtualView {
     }
 
     private void sendStatusInit(Player subject) throws AbortedTurnException {
-        /*
-            send:
-            board morphology,
-            # of players,
-            # of turns,
 
-         */
         if(godMode) {
             Deliverable deliverable = new Bulk(DeliverableEvent.STATUS_INIT, null);
             deliverable.overwriteMessage(game.toString());
             send(subject, deliverable);
+        }
+        else {
+            List<Object> content = new ArrayList<>();
+            //adds participants names
+            content.add(game.getParticipants()
+                    .stream()
+                    .map(Player::getName)
+                    .collect(Collectors.toList()));
+
+            //adds participants scores
+            content.add(game.getParticipants()
+                    .stream()
+                    .map(Player::getScore)
+                    .collect(Collectors.toList()));
+
+            //adds participants ID
+            content.add(game.getParticipants()
+                    .stream()
+                    .map(Player::getPosition)
+                    .map(Cell::getId)
+                    .collect(Collectors.toList()));
+
+            //adds participants DeathCount
+            content.add(game.getParticipants()
+                    .stream()
+                    .map(Player::getDeathCount)
+                    .collect(Collectors.toList()));
+
+            //adds participants ammo
+            content.add(game.getParticipants()
+                    .stream()
+                    .map(Player::getAmmoCubes)
+                    .map(a -> {
+                        int[] ammo = {a.getRed(), a.getYellow(), a.getBlue()};
+                        return ammo;
+                    })
+                    .collect(Collectors.toList()));
+
+            //adds participants powerups
+            for(Player p: game.getParticipants()) {
+                content.add(p.getPowerUps()
+                        .stream()
+                        .map(up -> {
+                            List<String> upHand = new ArrayList<>();
+                            upHand.add(up.getType().toString());
+                            upHand.add(up.getAmmoCubes().toStringAsColor());
+                            return upHand;
+                        })
+                        .collect(Collectors.toList()));
+            }
+
+            //adds killers names
+            content.add(game.getBoard().getKillers()
+                    .stream()
+                    .map(p -> { //that's because some values are set to null
+                        if(p != null)
+                            return p.getName();
+                        else
+                            return null;
+                    })
+                    .collect(Collectors.toList()));
+
+            //adds doublekillers names
+            content.addAll(game.getBoard().getDoubleKillers()
+                    .stream()
+                    .map(Player::getName)
+                    .collect(Collectors.toList()));
+
+            //adds cells
+            //TODO
+
         }
     }
 

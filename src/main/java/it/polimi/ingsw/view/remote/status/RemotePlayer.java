@@ -6,17 +6,16 @@ public class RemotePlayer {
 
     private String name;
 
-    private int score;
-    private int XPos;
-    private int Ypos;
-    private int deathCount;
+    private int score;      //the actual score of the player
+    private int position;   //the current position of the player
+    private int deathCount; //how many times this player has been killed
 
-    private ColorCube ammo;
+    private ColorCube ammo;         //the amount of ammo owned by ths player
 
-    private List<RemoteWeapon> weapons;
-    private List<RemotePowerUp> powerUps;
+    private PlayerColor playerColor;    //determines what physical token the player is using
 
-    private int[] scoreBoard;
+    private List<RemoteWeapon> weapons;     //weapons owned by this player (both loaded and unloaded)
+    private List<RemotePowerUp> powerUps;   //powerups owned by this player
 
     public RemotePlayer(String name) {
         this.name = name;
@@ -30,12 +29,8 @@ public class RemotePlayer {
         return score;
     }
 
-    public int getXPos() {
-        return XPos;
-    }
-
-    public int getYpos() {
-        return Ypos;
+    public int getPosition() {
+        return position;
     }
 
     public int getDeathCount() {
@@ -54,20 +49,16 @@ public class RemotePlayer {
         return powerUps;
     }
 
-    public int[] getScoreBoard() {
-        return scoreBoard;
+    public PlayerColor getPlayerColor() {
+        return playerColor;
     }
 
     public void setScore(int score) {
         this.score = score;
     }
 
-    public void setXPos(int XPos) {
-        this.XPos = XPos;
-    }
-
-    public void setYpos(int ypos) {
-        Ypos = ypos;
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public void setDeathCount(int deathCount) {
@@ -84,10 +75,6 @@ public class RemotePlayer {
 
     public void setPowerUps(List<RemotePowerUp> powerUps) {
         this.powerUps = powerUps;
-    }
-
-    public void setScoreBoard(int[] scoreBoard) {
-        this.scoreBoard = scoreBoard;
     }
 
 }

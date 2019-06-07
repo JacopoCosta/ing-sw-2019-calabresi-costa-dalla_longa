@@ -8,7 +8,7 @@ import it.polimi.ingsw.view.virtual.*;
 
 import java.util.List;
 
-public class GraphicsManager {
+public class GraphicsEventHandler {
 
     private boolean usesGUI;
     private CommunicationHandler communicationHandler;
@@ -16,7 +16,7 @@ public class GraphicsManager {
     private RemoteBoard remoteBoard;
     private List<RemotePlayer> participants;
 
-    public GraphicsManager(boolean usesGUI, CommunicationHandler communicationHandler) {
+    public GraphicsEventHandler(boolean usesGUI, CommunicationHandler communicationHandler) {
         this.usesGUI = usesGUI;
         this.communicationHandler = communicationHandler;
     }
@@ -169,13 +169,22 @@ public class GraphicsManager {
     }
 
     private void CLIBulkHandler(Deliverable deliverable) {
-        Object info = ((Bulk) deliverable).unpack();
+        Object bulk = ((Bulk) deliverable).unpack();
 
         switch (deliverable.getEvent()) {
+            case UPDATE_DAMAGE:
+                break;
+            case UPDATE_MARKING:
+                break;
+            case UPDATE_MOVE:
+                break;
+            case UPDATE_KILL:
+                break;
+            case UPDATE_SCORE:
+                break;
             case STATUS_INIT:
                 break;
         }
-
     }
 
     /*

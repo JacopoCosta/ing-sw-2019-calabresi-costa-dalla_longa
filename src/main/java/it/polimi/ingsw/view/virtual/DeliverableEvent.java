@@ -34,18 +34,18 @@ public enum DeliverableEvent {
     NEWTON_REQUEST_CELL("Where would you like to move them?"),
     NEWTON_FAILURE("Looks like you can't move this player to a cell you can see."),
     TELEPORT_REQUEST_CELL("Where would you like to teleport?"),
-    TARGET_REQUEST(""),
-    UPDATE_DAMAGE(""),
-    UPDATE_MARKING(""),
-    UPDATE_MOVE(""),
-    UPDATE_KILL(""),
-    UPDATE_SCORE(""),
-    UPDATE_FRENZY(""),
-    UPDATE_WINNER(""),
-    UPDATE_DISCONNECT(""),
-    RESPONSE(""),
-    STATUS_INIT(""),
-    STATUS_UPDATE("");
+    TARGET_REQUEST(""),     //Mapped, messages from weapons
+    UPDATE_DAMAGE(""),      //Bulk, contains the scoreboard of a player
+    UPDATE_MARKING(""),     //Bulk, contains a list of players
+    UPDATE_MOVE(""),        //Bulk, contains the new position of a player
+    UPDATE_KILL(""),        //Bulk, contains a new value for List<RemotePlayers> killers and doublekillers
+    UPDATE_SCORE(""),       //Bulk, contains a new value for a player's score
+    UPDATE_FRENZY(""),      //Info
+    UPDATE_WINNER(""),      //Info
+    UPDATE_DISCONNECT(""),  //Info
+    RESPONSE(""),           //This is the only deliverable sent by client to server
+    STATUS_INIT(""),        //Bulk, initialises the RemoteBoard
+    STATUS_UPDATE("");      //Info, it asks the client to refresh its CLI for the user
 
     public final String message;
     DeliverableEvent(String message) {
