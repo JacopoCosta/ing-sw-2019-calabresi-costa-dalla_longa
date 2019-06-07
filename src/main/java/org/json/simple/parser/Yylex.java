@@ -485,7 +485,7 @@ class Yylex {
      * Usual syntax/scanner level error handling should be done
      * in error fallback rules.
      *
-     * @param errorCode the code of the errormessage to display
+     * @param errorCode the code of the errormessage to draw
      */
     private void zzScanError(int errorCode) {
         String message;

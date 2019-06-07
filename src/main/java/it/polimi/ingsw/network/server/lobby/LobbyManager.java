@@ -128,8 +128,6 @@ public class LobbyManager {
         throw new PlayerNotFoundException("Player \"" + player.getName() + "\" not found in any Lobby");
     }
 
-    //returns all the Lobbies on the Server as <lobbyName, [number_of_users/MAX_USERS]>
-
     /**
      * Returns a {@link Map} containing, for each {@link Lobby}, a {@link Map.Entry} representing the status
      * of each {@link Lobby}. A {@link Lobby} status is retrieved via {@link Lobby#getStatus()}.

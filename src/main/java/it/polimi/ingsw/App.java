@@ -4,6 +4,7 @@ import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.client.executable.Client;
 import it.polimi.ingsw.network.common.util.Console;
 import it.polimi.ingsw.network.server.Server;
+import it.polimi.ingsw.view.remote.GraphicManager;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,7 +29,7 @@ public class App {
     private static int port;
 
     private static CommunicationHandler.Interface communicationInterface;
-    private static String graphicalInterface;
+    private static GraphicManager.Interface graphicalInterface;
 
     private static String helpString = "Adrenaline: the game.\n\n" +
             "Usage:\n" +
@@ -41,7 +42,7 @@ public class App {
             "\tip address\tThe host IP address.\n" +
             "\tport\t\tThe host port.\n" +
             "\t-conn [s|r]\tThe connection protocol: socket or RMI. [Default: s].\n" +
-            "\t-mode [c|g]\tThe display method: CLI or GUI. [Default: g].\n";
+            "\t-mode [c|g]\tThe draw method: CLI or GUI. [Default: g].\n";
 
     private static Configuration init(String[] args) {
         console.clear();
@@ -224,22 +225,22 @@ public class App {
             if (config.equals(Configuration.CLIENT_SOCKET_CLI)) {
                 //launch client with ipAddress, port, socket and CLI
                 communicationInterface = CommunicationHandler.Interface.SOCKET_INTERFACE;
-                graphicalInterface = "CLI";
+                graphicalInterface = GraphicManager.Interface.CLI_INTERFACE;
             } else if (config.equals(Configuration.CLIENT_SOCKET_GUI)) {
                 //launch client with ipAddress, port, socket and GUI
                 communicationInterface = CommunicationHandler.Interface.SOCKET_INTERFACE;
-                graphicalInterface = "GUI";
+                graphicalInterface = GraphicManager.Interface.GUI_INTERFACE;
             } else if (config.equals(Configuration.CLIENT_RMI_CLI)) {
                 //launch client with ipAddress, port, RMI and CLI
                 communicationInterface = CommunicationHandler.Interface.RMI_INTERFACE;
-                graphicalInterface = "CLI";
+                graphicalInterface = GraphicManager.Interface.CLI_INTERFACE;
             } else if (config.equals(Configuration.CLIENT_RMI_GUI)) {
                 //launch client with ipAddress, port, RMI and GUI
                 communicationInterface = CommunicationHandler.Interface.RMI_INTERFACE;
-                graphicalInterface = "GUI";
+                graphicalInterface = GraphicManager.Interface.GUI_INTERFACE;
             } else// ERROR
                 System.exit(-1);
-            task = new Client(ipAddress, port, communicationInterface, graphicalInterface, args);
+            task = new Client(ipAddress, port, communicationInterface, graphicalInterface);
         }
         executor.execute(task);
 
