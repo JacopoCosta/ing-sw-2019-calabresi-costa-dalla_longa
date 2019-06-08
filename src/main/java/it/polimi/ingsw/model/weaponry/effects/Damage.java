@@ -8,13 +8,26 @@ import it.polimi.ingsw.view.virtual.VirtualView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Damage is an effect inflicted to a player that reduces their health and enables adrenaline actions above
+ * certain thresholds.
+ */
 public class Damage extends OffensiveEffect {
+    /**
+     * This is the only constructor.
+     * @param amount the amount of health points the damage takes.
+     * @param constraints the requirements each target needs to meet in order to be affected.
+     */
     Damage(int amount, List<Constraint> constraints) {
         this.amount = amount;
         this.constraints = constraints;
         this.type = EffectType.DAMAGE;
     }
 
+    /**
+     * Sets up a damage to be applied, by elaborating the valid target list and checking if the attacker
+     * can use scopes to increase the damage amount to some of their targets.
+     */
     @Override
     public void apply() {
         List<Player> targets = Constraint.filterPlayers(context, constraints);
@@ -31,6 +44,12 @@ public class Damage extends OffensiveEffect {
         }
     }
 
+    /**
+     * Effectively applies the damage taking into accounts the base targets and the targets on whom
+     * the attacker also used one or more scopes.
+     * @param targets the base targets - merely all those who meet all of the constraints.
+     * @param scopedPlayers the scoped players.
+     */
     public void applyAfterScopes(List<Player> targets, List<Player> scopedPlayers) {
         targets.forEach(target -> {
             int scopeCount = (int) scopedPlayers.stream()

@@ -11,11 +11,32 @@ import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Effects are consequences of attacks that change a player's status.
+ */
 public abstract class Effect {
+    /**
+     * The effect's type.
+     */
     protected EffectType type;
+
+    /**
+     * The context the effect is being caused in.
+     */
     protected AttackPattern context;
+
+    /**
+     * The player who caused the effect to happen.
+     */
     protected Player author;
 
+    /**
+     * This factory method constructs an effect, with the properties found inside the JSON object passed as argument.
+     * @param jEffect the JSON object containing the desired properties.
+     * @return an instance of this class in accordance with the specified properties.
+     * @throws InvalidEffectTypeException when attempting to instantiate a new effect whose type is not in the
+     * enumeration of possible effect types.
+     */
     public static Effect build(DecoratedJsonObject jEffect) throws InvalidEffectTypeException {
         String type;
         try {
@@ -92,22 +113,41 @@ public abstract class Effect {
         throw new InvalidEffectTypeException(type + " is not a valid name for an Effect type. Use \"damage\", \"mark\", or \"move\"");
     }
 
+    /**
+     * Sets the effect's author.
+     * @param author the effect's author.
+     */
     public void setAuthor(Player author) {
         this.author = author;
     }
 
+    /**
+     * Returns the effect's author.
+     * @return the effect's author.
+     */
     public Player getAuthor() {
         return author;
     }
 
+    /**
+     * Sets the effect's context.
+     * @param context the context the effect is being caused in.
+     */
     public void setContext(AttackPattern context) {
         this.context = context;
     }
 
+    /**
+     * Returns the effect's type.
+     * @return the effect's type.
+     */
     public EffectType getType() {
         return type;
     }
 
+    /**
+     * Causes the effect's consequences to happen.
+     */
     public abstract void apply();
 
     @Override

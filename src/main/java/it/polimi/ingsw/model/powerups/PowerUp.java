@@ -37,6 +37,8 @@ public abstract class PowerUp {
      * This factory method constructs a power up card, with the properties found inside the JSON object passed as argument.
      * @param jPowerUp the JSON object containing the desired properties.
      * @return an instance of this class in accordance with the specified properties.
+     * @throws InvalidPowerUpTypeException when attempting to instantiate a new power-up whose type is not in the
+     * enumeration of possible power-up types.
      */
     public static PowerUp build(DecoratedJsonObject jPowerUp) throws InvalidPowerUpTypeException {
         String type;
