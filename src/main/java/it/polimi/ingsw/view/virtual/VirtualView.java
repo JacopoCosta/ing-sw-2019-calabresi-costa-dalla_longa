@@ -136,12 +136,6 @@ public class VirtualView {
                     .map(Player::getName)
                     .collect(Collectors.toList()));
 
-            //adds participants scores
-            content.add(game.getParticipants()
-                    .stream()
-                    .map(Player::getScore)
-                    .collect(Collectors.toList()));
-
             //adds participants ID
             content.add(game.getParticipants()
                     .stream()
@@ -149,69 +143,54 @@ public class VirtualView {
                     .map(Cell::getId)
                     .collect(Collectors.toList()));
 
-            //adds participants DeathCount
-            content.add(game.getParticipants()
-                    .stream()
-                    .map(Player::getDeathCount)
-                    .collect(Collectors.toList()));
-
-            //adds participants ammo
-            content.add(game.getParticipants()
-                    .stream()
-                    .map(Player::getAmmoCubes)
-                    .map(a -> new int[]{a.getRed(), a.getYellow(), a.getBlue()})
-                    .collect(Collectors.toList()));
-
-            //adds participants powerups
-            for(Player p: game.getParticipants()) {
-                content.add(p.getPowerUps()
-                        .stream()
-                        .map(up -> {
-                            List<String> upHand = new ArrayList<>();
-                            upHand.add(up.getType().toString());
-                            upHand.add(up.getAmmoCubes().toStringAsColor());
-                            return upHand;
-                        })
-                        .collect(Collectors.toList()));
-            }
-
-            //adds killers names
-            content.add(game.getBoard().getKillers()
-                    .stream()
-                    .map(p -> { //that's because some values are set to null
-                        if(p != null)
-                            return p.getName();
-                        else
-                            return null;
-                    })
-                    .collect(Collectors.toList()));
-
-            //adds doublekillers names
-            content.addAll(game.getBoard().getDoubleKillers()
-                    .stream()
-                    .map(Player::getName)
-                    .collect(Collectors.toList()));
-
             //adds cells
             //TODO
 
-
             Deliverable deliverable = new Bulk(DeliverableEvent.STATUS_INIT, content);
             broadcast(deliverable);
+
+            if(!isNewGame) {    //the game comes from a saved game, so all the info about the players shall be broadcast as well
+
+                for(Player player: game.getParticipants()) {
+                    sendUpdateScore(player);
+                    sendUpdateDamage(player);
+                    sendUpdateMarking(player);
+                    sendUpdateMove(player);
+                    sendUpdatePlayerDeath(player);
+                    sendUpdateInventory(player);
+                }
+
+                sendUpdateBoardKill();
+                sendUpdateDoubleKill();
+            }
         }
     }
 
     //BULK: sends an updated, new value for a player's damage
     private void sendUpdateDamage(Player player) {
 
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_DAMAGE, player.getDamage());
+        List<Object> content = new ArrayList<>();
+
+        content.addAll(player.getDamageAsList()
+                .stream()
+                .map(Player::getName)
+                .collect(Collectors.toList()));
+
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_DAMAGE, content);
         broadcast(deliverable);
     }
 
     //BULK: sends an updated, new value for a player's marking list
     private void sendUpdateMarking(Player player) {
 
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_DAMAGE, player.getMarkingsAsList());
+        List<Object> content = new ArrayList<>();
+
+            content.addAll(player.getMarkingsAsList()
+                    .stream()
+                    .map(Player::getName)
+                    .collect(Collectors.toList()));
+
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_MARKING, content);
         broadcast(deliverable);
     }
 
@@ -225,7 +204,46 @@ public class VirtualView {
     //BULK: sends the updated score of a player
     private void sendUpdateScore(Player player) {
 
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_SCORE, player.getScopes());
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_SCORE, player.getScore());
+        broadcast(deliverable);
+    }
+
+    private void sendUpdateInventory(Player player) {
+        List<Object> content = new ArrayList<>();
+
+        //adds player's ammo
+        content.add(game.getParticipants()
+                .stream()
+                .map(Player::getAmmoCubes)
+                .map(a -> new int[]{a.getRed(), a.getYellow(), a.getBlue()})
+                .collect(Collectors.toList()));
+
+        //adds player's powerups
+        content.add(player.getPowerUps()
+                .stream()
+                .map(up -> {
+                    List<String> upHand = new ArrayList<>();
+                    upHand.add(up.getType().toString());
+                    upHand.add(up.getAmmoCubes().toStringAsColor());
+                    return upHand;
+                })
+                .collect(Collectors.toList()));
+
+        //adds player's weapons
+        content.add(player.getWeapons()
+                .stream()
+                .map(w -> {
+                    List<String> weapon = new ArrayList<>();
+                    weapon.add(w.getName());
+                    weapon.add(w.getPurchaseCost().toString());
+                    weapon.add(w.getReloadCost().toString());
+                    weapon.add(w.isLoaded() ? "0" : "1");
+                    return weapon;
+                })
+                .collect(Collectors.toList()));
+
+        //sends the bulk deliverable
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_INVENTORY, content);
         broadcast(deliverable);
     }
 
@@ -236,7 +254,7 @@ public class VirtualView {
     }
 
     //BULK: sends info about global killers
-    private void SendUpdateBoardKill() {
+    private void sendUpdateBoardKill() {
 
         List<Object> content = new ArrayList<>();
 
@@ -255,7 +273,7 @@ public class VirtualView {
     }
 
     //BULK: sends info about global doublekillers
-    private void SendUpdateDoubleKill() {
+    private void sendUpdateDoubleKill() {
 
          List<Object> content = new ArrayList<>();
 
