@@ -91,7 +91,7 @@ public class AlignmentConstraint extends Constraint {
 
     @Override
     public List<Room> filterRooms(AttackPattern context) {
-        throw new InvalidFilterInvocationException("no");
+        throw new InvalidFilterInvocationException("A room can't be aligned.");
     }
 
     @Override

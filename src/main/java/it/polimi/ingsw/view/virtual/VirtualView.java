@@ -26,7 +26,6 @@ import it.polimi.ingsw.view.remote.Dispatcher;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.model.Game.godMode;
@@ -103,7 +102,7 @@ public class VirtualView {
     }
 
     private void broadcast(Deliverable deliverable) {
-        if(!(deliverable.getType().equals(DeliverableType.INFO) || (deliverable.getType().equals(DeliverableType.BULK))))
+        if(!(deliverable.getType().equals(DeliverableType.INFO) || deliverable.getType().equals(DeliverableType.BULK)))
             throw new DeliverableException("Wrong call to send in VirtualView.");
 
         if(godMode) {
@@ -156,10 +155,7 @@ public class VirtualView {
             content.add(game.getParticipants()
                     .stream()
                     .map(Player::getAmmoCubes)
-                    .map(a -> {
-                        int[] ammo = {a.getRed(), a.getYellow(), a.getBlue()};
-                        return ammo;
-                    })
+                    .map(a -> new int[]{a.getRed(), a.getYellow(), a.getBlue()})
                     .collect(Collectors.toList()));
 
             //adds participants powerups
