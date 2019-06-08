@@ -10,12 +10,9 @@ public class GraphicManager {
         GUI_INTERFACE
     }
 
-    private final CommunicationHandler communicationHandler;
     private GraphicalInterface graphicalInterface;
 
     public GraphicManager(CommunicationHandler communicationHandler, Interface interfaceType) {
-        this.communicationHandler = communicationHandler;
-
         switch (interfaceType) {
             case CLI_INTERFACE:
                 graphicalInterface = new CLI();

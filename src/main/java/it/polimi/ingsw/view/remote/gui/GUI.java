@@ -4,13 +4,16 @@ import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ClientAlreadyRegisteredException;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.view.remote.GraphicalInterface;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,22 +22,24 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.Optional;
 
 public class GUI extends Application implements GraphicalInterface {
     private Stage stage;
-    private StackPane stackPane;
-    private CommunicationHandler communicationHandler;
+    private HBox errorHBox;
+
+    private static CommunicationHandler communicationHandler;
 
     public GUI() {
     }
 
     @Override
     public void setCommunicationHandler(CommunicationHandler communicationHandler) {
-        this.communicationHandler = communicationHandler;
+        GUI.communicationHandler = communicationHandler;
     }
 
     @Override
@@ -44,7 +49,8 @@ public class GUI extends Application implements GraphicalInterface {
 
     private void register(String username) {
         try {
-            communicationHandler.register(username);
+            GUI.communicationHandler.register(username);
+            //TODO: start "lobbySelect" scene
         } catch (ConnectionException e) {
             fatalErrorRoutine(e.getMessage());
         } catch (ClientAlreadyRegisteredException e) {
@@ -55,6 +61,7 @@ public class GUI extends Application implements GraphicalInterface {
     private HBox createLoginForeground() {
         String loginButtonText = "LOGIN";
         String nicknameTextFieldHint = "Choose a nickname";
+        String errorMessage = "Invalid nickname";
 
         double loginBoxSpacing = 10;
 
@@ -66,8 +73,13 @@ public class GUI extends Application implements GraphicalInterface {
         //login Button
         Button loginButton = new Button(loginButtonText);
         loginButton.setOnAction(actionEvent -> {
-            String username = nicknameTextField.getText();
-            register(username);
+            String nickname = nicknameTextField.getText();
+
+            if (nickname == null || nickname.isEmpty() || nickname.isBlank()) {
+                nicknameTextField.setText(null);
+                errorLabelRoutine(errorMessage);
+            } else
+                register(nickname);
         });
 
         //foreground HBox
@@ -79,7 +91,16 @@ public class GUI extends Application implements GraphicalInterface {
         return loginBox;
     }
 
-    private ImageView createBackground() {
+    private HBox createExitLoginForeground() {
+        String exitHint = "[ESC] quit";
+        double hintFontSize = 20;
+        double hintPadding = 10;
+        double hintMargin = 10;
+
+        return Palette.labelBox(exitHint, Palette.OPTION_TEXT_COLOR, Palette.LABEL_BACKGROUND, hintFontSize, hintPadding, hintMargin, Pos.BOTTOM_LEFT);
+    }
+
+    private ImageView createLoginBackground() {
         String backgroundImagePath = "/png/background/background.png";
         Image backgroundImage = new Image(backgroundImagePath);
 
@@ -89,21 +110,40 @@ public class GUI extends Application implements GraphicalInterface {
         return backgroundImageView;
     }
 
-    private Scene toScene(ImageView imageView, HBox hBox1, HBox hBox2) {
-        stackPane = new StackPane();
-        stackPane.getChildren().addAll(imageView, hBox1, hBox2);
-        //adjust image proportions to the screen size, aspect ratio and resolution
-        stackPane.layoutBoundsProperty().addListener((observable, oldValue, newValue) -> {
+    //creates a hidden error labelBox
+    private HBox createLoginErrorHBox() {
+        double errorTextFontSize = 20;
+        double errorTextPadding = 10;
+        double errorLabelMargin = 10;
+
+        HBox hBox = Palette.labelBox(null, Palette.ERROR_TEXT_COLOR, Palette.LABEL_BACKGROUND, errorTextFontSize, errorTextPadding, errorLabelMargin, Pos.CENTER);
+        hBox.setVisible(false);
+        return hBox;
+    }
+
+    private Scene createLoginScene() {
+        HBox loginHBox = createLoginForeground();
+        HBox exitHintHBox = createExitLoginForeground();
+        ImageView backgroundImageView = createLoginBackground();
+        errorHBox = createLoginErrorHBox();
+
+        VBox errorVBox = new VBox();
+        errorVBox.setAlignment(Pos.CENTER);
+        errorVBox.getChildren().addAll(loginHBox, errorHBox);
+
+        StackPane stackPane = new StackPane();
+        stackPane.getChildren().addAll(backgroundImageView, exitHintHBox, errorVBox);
+        stackPane.layoutBoundsProperty().addListener((observable, oldValue, newValue) -> { //adjust image proportions to the screen size, aspect ratio and resolution
             double w = newValue.getWidth();
             double h = newValue.getHeight();
-            imageView.setFitWidth(w);
-            imageView.setFitHeight(h);
+            backgroundImageView.setFitWidth(w);
+            backgroundImageView.setFitHeight(h);
             double ratio = h / w;
-            Image image = imageView.getImage();
+            Image image = backgroundImageView.getImage();
             double ih = image.getHeight();
             double iw = image.getWidth();
             double vR = ih / iw;
-            imageView.setViewport((ratio < vR) ? new Rectangle2D(0, 0, iw, iw * ratio) : new Rectangle2D(0, 0, ih / ratio, ih));
+            backgroundImageView.setViewport((ratio < vR) ? new Rectangle2D(0, 0, iw, iw * ratio) : new Rectangle2D(0, 0, ih / ratio, ih));
         });
 
         Scene scene = new Scene(stackPane);
@@ -125,24 +165,14 @@ public class GUI extends Application implements GraphicalInterface {
     }
 
     private void errorLabelRoutine(String errorMessage) {
-        Color errorTextColor = new Color(208.0 / 255, 100.0 / 255, 88.0 / 255, 1);
-        Color exitBackgroundColor = new Color(34.0 / 255, 32.0 / 255, 43.0 / 255, 0.8);
-        double errorTextFontSize = 20;
-        double errorTextPadding = 10;
-        double errorLabelMargin = 10;
-        Pos errorAlignment = Pos.CENTER;
+        int fadeInTimeout = 3;
 
-        HBox errorLabel = Palette.label(errorMessage, errorTextColor, exitBackgroundColor, errorTextFontSize, errorTextPadding, errorLabelMargin, errorAlignment);
+        ((Label) errorHBox.getChildren().get(0)).setText(errorMessage);
+        errorHBox.setVisible(true);
 
-        stackPane.getChildren().add(errorLabel);
-
-        /*PauseTransition visiblePause = new PauseTransition(
-                Duration.seconds(3)
-        );
-        visiblePause.setOnFinished(
-                event -> errorLabel.setVisible(false)
-        );
-        Platform.runLater(visiblePause::play);*/
+        PauseTransition visiblePause = new PauseTransition(Duration.seconds(fadeInTimeout));
+        visiblePause.setOnFinished(event -> errorHBox.setVisible(false));
+        Platform.runLater(visiblePause::play);
     }
 
     private void exitRoutine() {
@@ -157,21 +187,9 @@ public class GUI extends Application implements GraphicalInterface {
         }
     }
 
-    private Image createIcon() {
+    private Image createStageIcon() {
         String logoImagePath = "/png/logo/logo.png";
         return new Image(logoImagePath);
-    }
-
-    private HBox createExitForeground() {
-        String exitHint = "Press [ESC] to quit";
-        Color textHintColor = new Color(189.0 / 255, 103.0 / 255, 56.0 / 255, 1);
-        Color backgroundHintColor = new Color(34.0 / 255, 32.0 / 255, 43.0 / 255, 0.8);
-        double hintFontSize = 20;
-        double hintPadding = 10;
-        double hintMargin = 10;
-        Pos hintAlignment = Pos.BOTTOM_LEFT;
-
-        return Palette.label(exitHint, textHintColor, backgroundHintColor, hintFontSize, hintPadding, hintMargin, hintAlignment);
     }
 
     @Override
@@ -179,20 +197,15 @@ public class GUI extends Application implements GraphicalInterface {
         this.stage = stage;
 
         String stageTitle = "Adrenaline: the game!";
+        Scene loginScene = createLoginScene();
 
-        HBox loginHBox = createLoginForeground();
-        HBox exitHintHBox = createExitForeground();
-        ImageView backgroundImageView = createBackground();
-
-        Scene scene = toScene(backgroundImageView, exitHintHBox, loginHBox);
-
-        stage.setScene(scene);
+        stage.setScene(loginScene);
         stage.setTitle(stageTitle);
         stage.setResizable(false);
         stage.setFullScreen(true);
         stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         stage.setOnCloseRequest(Event::consume);
-        stage.getIcons().add(createIcon());
+        stage.getIcons().add(createStageIcon());
 
         stage.show();
     }

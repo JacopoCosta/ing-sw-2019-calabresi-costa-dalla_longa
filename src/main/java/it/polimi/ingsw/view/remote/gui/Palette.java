@@ -14,8 +14,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class Palette {
-    public static HBox label(String text, Color textColor, Color backgroundColor, double fontSize, double padding, double margin, Pos alignment) {
-        //quit hint label
+    public static final Color LABEL_BACKGROUND = new Color(34.0 / 255, 32.0 / 255, 43.0 / 255, 0.8);
+    public static final Color OPTION_TEXT_COLOR = new Color(189.0 / 255, 103.0 / 255, 56.0 / 255, 1);
+    public static final Color ERROR_TEXT_COLOR = new Color(208.0 / 255, 81.0 / 255, 67.0 / 255, 1);
+
+    public static HBox labelBox(String text, Color textColor, Color backgroundColor, double fontSize, double padding, double margin, Pos alignment) {
+        //quit hint labelBox
         Label label = new Label(text);
 
         if (fontSize > 0D)
@@ -36,7 +40,9 @@ public class Palette {
             HBox.setMargin(label, new Insets(margin));
 
         exitHintHBox.getChildren().addAll(label);
-        exitHintHBox.setAlignment(alignment);
+
+        if (alignment != null)
+            exitHintHBox.setAlignment(alignment);
         return exitHintHBox;
     }
 
