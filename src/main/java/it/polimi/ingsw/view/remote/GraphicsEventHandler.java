@@ -118,7 +118,7 @@ public class GraphicsEventHandler {
                     break;
                 case UPDATE_MOVE:
                     break;
-                case UPDATE_KILL:
+                case UPDATE_BOARDKILL:
                     break;
                 case UPDATE_SCORE:
                     break;
@@ -178,7 +178,7 @@ public class GraphicsEventHandler {
                 break;
             case UPDATE_MOVE:
                 break;
-            case UPDATE_KILL:
+            case UPDATE_BOARDKILL:
                 break;
             case UPDATE_SCORE:
                 break;

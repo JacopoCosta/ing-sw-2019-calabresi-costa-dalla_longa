@@ -38,8 +38,10 @@ public enum DeliverableEvent {
     UPDATE_DAMAGE(""),      //Bulk, contains the scoreboard of a player
     UPDATE_MARKING(""),     //Bulk, contains a list of players
     UPDATE_MOVE(""),        //Bulk, contains the new position of a player
-    UPDATE_KILL(""),        //Bulk, contains a new value for List<RemotePlayers> killers and doublekillers
     UPDATE_SCORE(""),       //Bulk, contains a new value for a player's score
+    UPDATE_DEATHLIST(""),   //Bulk, contains a new value for a player's number of death
+    UPDATE_BOARDKILL(""),   //Bulk, contains a new value for List<RemotePlayers> killers
+    UPDATE_BOARDDOUBLEKILL(""), //as above, but for doublekillers
     UPDATE_FRENZY(""),      //Info
     UPDATE_WINNER(""),      //Info
     UPDATE_DISCONNECT(""),  //Info

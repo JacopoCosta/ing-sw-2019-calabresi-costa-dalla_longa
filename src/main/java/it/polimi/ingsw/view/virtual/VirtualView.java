@@ -117,7 +117,11 @@ public class VirtualView {
         }
     }
 
-    private void sendStatusInit(Player subject) throws AbortedTurnException {
+    /*
+    BULK sender: sends initial info about the game itself: list of participants, board morphology and game settings.
+    If the game comes from a previous saved game (isNewGame == true), it also sends all the information about players and board status.
+    */
+    private void sendStatusInit(Player subject, boolean isNewGame) throws AbortedTurnException {
 
         if(godMode) {
             Deliverable deliverable = new Bulk(DeliverableEvent.STATUS_INIT, null);
@@ -191,8 +195,79 @@ public class VirtualView {
             //adds cells
             //TODO
 
+
+            Deliverable deliverable = new Bulk(DeliverableEvent.STATUS_INIT, content);
+            broadcast(deliverable);
         }
     }
+
+    //BULK: sends an updated, new value for a player's damage
+    private void sendUpdateDamage(Player player) {
+
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_DAMAGE, player.getDamage());
+        broadcast(deliverable);
+    }
+
+    //BULK: sends an updated, new value for a player's marking list
+    private void sendUpdateMarking(Player player) {
+
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_DAMAGE, player.getMarkingsAsList());
+        broadcast(deliverable);
+    }
+
+    //BULK: sends an updated value for a player's position (sent as index of its cell)
+    private void sendUpdateMove(Player player) {
+
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_MOVE, player.getPosition().getId());
+        broadcast(deliverable);
+    }
+
+    //BULK: sends the updated score of a player
+    private void sendUpdateScore(Player player) {
+
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_SCORE, player.getScopes());
+        broadcast(deliverable);
+    }
+
+    private void sendUpdatePlayerDeath(Player player) {
+
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_DEATHLIST, player.getDeathCount());
+        broadcast(deliverable);
+    }
+
+    //BULK: sends info about global killers
+    private void SendUpdateBoardKill() {
+
+        List<Object> content = new ArrayList<>();
+
+        content.addAll(game.getBoard().getKillers()
+                .stream()
+                .map(p -> { //that's because some values are set to null
+                    if(p != null)
+                        return p.getName();
+                    else
+                        return null;
+                })
+                .collect(Collectors.toList()));
+
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_BOARDKILL, content);
+        broadcast(deliverable);
+    }
+
+    //BULK: sends info about global doublekillers
+    private void SendUpdateDoubleKill() {
+
+         List<Object> content = new ArrayList<>();
+
+        content.addAll(game.getBoard().getDoubleKillers()
+                .stream()
+                .map(Player::getName)
+                .collect(Collectors.toList()));
+
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_BOARDDOUBLEKILL, content);
+        broadcast(deliverable);
+    }
+
 
     private void sendStatusUpdate(Player subject) throws AbortedTurnException {
         if(godMode) {
@@ -672,7 +747,7 @@ public class VirtualView {
     }
 
     public void announceKill(Player author, Player target) {
-        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_KILL);
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_BOARDKILL);
         String message = author.getName() +  " ";
         if(target.isOverKilled())
             message += "over";
