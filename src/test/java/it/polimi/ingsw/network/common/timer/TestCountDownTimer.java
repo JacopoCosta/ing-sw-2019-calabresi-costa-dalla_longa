@@ -16,7 +16,7 @@ public class TestCountDownTimer {
         Thread.sleep(500);
         assertEquals(CountDownTimer.TimerState.STARTED, timer.getState());
 
-        Thread.sleep(501);
+        Thread.sleep(500 + 5);
         assertEquals(CountDownTimer.TimerState.EXPIRED,timer.getState());
     }
 
@@ -44,7 +44,7 @@ public class TestCountDownTimer {
         Thread.sleep(1000);
         timer.stop();
 
-        assertEquals(CountDownTimer.TimerState.STOPPED, timer.getState()); //FIXME "EXPIRED" ?
+        assertEquals(CountDownTimer.TimerState.STOPPED, timer.getState());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class TestCountDownTimer {
 
         timer.start();
 
-        Thread.sleep(1000 + 1);
+        Thread.sleep(1000 + 2);
         assertEquals(CountDownTimer.TimerState.EXPIRED, timer.getState());
     }
 
@@ -74,8 +74,8 @@ public class TestCountDownTimer {
         Thread.sleep(500);
         assertEquals(CountDownTimer.TimerState.STARTED, timer.getState());
 
-        Thread.sleep(1000);
-        assertEquals(CountDownTimer.TimerState.EXPIRED, timer.getState()); //FIXME "STARTED" ?
+        Thread.sleep(1000 + 1);
+        assertEquals(CountDownTimer.TimerState.EXPIRED, timer.getState());
         assertNotEquals(CountDownTimer.TimerState.STOPPED, timer.getState());
     }
 
