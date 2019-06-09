@@ -6,6 +6,7 @@ import it.polimi.ingsw.view.remote.status.RemoteBoard;
 import it.polimi.ingsw.view.remote.status.RemotePlayer;
 import it.polimi.ingsw.view.virtual.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GraphicsEventHandler {
@@ -128,6 +129,7 @@ public class GraphicsEventHandler {
                     break;
                 case UPDATE_DISCONNECT:
                     break;
+                    //FIXME: this list needs an update
             }
         }//end if(usesGUI)
 
@@ -154,6 +156,7 @@ public class GraphicsEventHandler {
     }
 
     private void CLIDualHandler(Deliverable deliverable) throws ConnectionException {
+
         boolean choice = Dispatcher.requestBoolean(deliverable.getMessage());
 
         Deliverable response = new Response(choice ? 1: 0);  //sending 1 if true, 0 if false
@@ -168,35 +171,97 @@ public class GraphicsEventHandler {
         communicationHandler.deliver(response);
     }
 
+
+
     private void CLIBulkHandler(Deliverable deliverable) {
         Object bulk = ((Bulk) deliverable).unpack();
 
         switch (deliverable.getEvent()) {
             case UPDATE_DAMAGE:
+
+                //creates a new damageList from the deliverable content, then sets it as damageList of the player
+                ArrayList<String> damageList = new ArrayList<>();
+
+                for(int i=1; i < ((ArrayList<String>) bulk).size(); i++) {
+                    damageList.add(((ArrayList<String>) bulk).get(i));
+                }
+                //sets damageList as new damageList for the player who needs the update
+                RemoteBoard.getParticipants().get(((ArrayList<Integer>) bulk).get(0) - 1).setDamage(damageList);
+
                 break;
             case UPDATE_MARKING:
+                //creates a new markingList from the deliverable content, then sets it as markingList of the player
+                ArrayList<String> markingList = new ArrayList<>();
+
+                for(int i=1; i < ((ArrayList<String>) bulk).size(); i++) {
+                    markingList.add(((ArrayList<String>) bulk).get(i));
+                }
+                //sets markingList as new markingList for the player who needs the update
+                RemoteBoard.getParticipants().get(((ArrayList<Integer>) bulk).get(0) - 1).setMarkings(markingList);
+
                 break;
             case UPDATE_MOVE:
-                break;
-            case UPDATE_BOARDKILL:
+                //simply sets the new player position to the new position written in the deliverable content
+                RemoteBoard.getParticipants().get(((ArrayList<Integer>) bulk).get(0) - 1).setPosition(((ArrayList<Integer>) bulk).get(1));
+                //NOTE:
+                //Players Ids range from 1 to n, so its value must be decreased by 1 to get its location in RemoteBoard.getParticipants();
+                //Cells Id also range from 1 to n, but in this case we are just setting player's position: we are not getting a cell position
+                //in a list, that's why its value must not be decreased by 1.
+
                 break;
             case UPDATE_SCORE:
+                //sets the new player score extracting it from content
+                RemoteBoard.getParticipants().get(((ArrayList<Integer>) bulk).get(0) - 1).setScore(((ArrayList<Integer>) bulk).get(1));
+
+                break;
+            case UPDATE_DEATHCOUNT:
+                //sets the deathcount of this player
+                RemoteBoard.getParticipants().get(((ArrayList<Integer>) bulk).get(0) -1).setDeathCount(((ArrayList<Integer>) bulk).get(1));
+
+                break;
+            case UPDATE_INVENTORY:
+
+                UpdateInventory(bulk);
+
+                break;
+            case UPDATE_BOARDKILL:
+
+                List<String> boardKill = new ArrayList<>();
+
+                //adds new names to the new boardKill
+                for(int i=0; i < ((ArrayList<String>) bulk).size(); i++) {
+                    boardKill.add(((ArrayList<String>) bulk).get(i));
+                }
+                //replaces the old boardKill with the new boardKill
+                RemoteBoard.setKillers(boardKill);
+
+                break;
+            case UPDATE_BOARDDOUBLEKILL:
+
+                List<String> boardDoubleKill = new ArrayList<>();
+
+                //adds new names to the new boardDoubleKill
+                for(int i=0; i < ((ArrayList<String>) bulk).size(); i++) {
+                    boardDoubleKill.add(((ArrayList<String>) bulk).get(i));
+                }
+                //replaces the old boardDoubleKIll with the new one
+                RemoteBoard.setDoubleKillers(boardDoubleKill);
+
                 break;
             case STATUS_INIT:
+
+                StatusInitializer(bulk);
                 break;
         }
     }
 
-    /*
-    private void spawnRequest(Deliverable deliverable) throws ConnectionException {
+    private void UpdateInventory(Object bulk) {
+        //TODO
 
-        int choice = Dispatcher.requestListedOption(deliverable.getMessage(), deliverable.getOptions());
-
-        Deliverable response = new Deliverable(choice);
-        communicationHandler.deliver(response);
     }
 
-    This is an example of how spawnRequest would look like, if it used CLI instead of GUI
-     */
+    private void StatusInitializer(Object bulk) {
+        //TODO
+    }
 
 }

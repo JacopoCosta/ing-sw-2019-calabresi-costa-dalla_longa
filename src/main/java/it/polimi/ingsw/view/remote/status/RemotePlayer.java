@@ -17,6 +17,9 @@ public class RemotePlayer {
     private List<RemoteWeapon> weapons;     //weapons owned by this player (both loaded and unloaded)
     private List<RemotePowerUp> powerUps;   //powerups owned by this player
 
+    private List<String> damage;
+    private List<String> markings;
+
     public RemotePlayer(String name) {
         this.name = name;
     }
@@ -51,6 +54,22 @@ public class RemotePlayer {
 
     public PlayerColor getPlayerColor() {
         return playerColor;
+    }
+
+    public List<String> getDamage() {
+        return damage;
+    }
+
+    public List<String> getMarkings() {
+        return markings;
+    }
+
+    public void setDamage(List<String> damage) {
+        this.damage = damage;
+    }
+
+    public void setMarkings(List<String> markings) {
+        this.markings = markings;
     }
 
     public void setScore(int score) {

@@ -5,15 +5,13 @@ import java.util.List;
 public abstract class RemoteBoard {
 
     private static List<RemotePlayer> participants;
-    private static List<RemotePlayer> killers;
-    private static List<RemotePlayer> doubleKillers;
+    private static List<String> killers;
+    private static List<String> doubleKillers;
 
     private static int width;
     private static int height;
 
     private static List<RemoteCell> cells;
-
-
 
     public static int getWidth() {
         return width;
@@ -27,11 +25,11 @@ public abstract class RemoteBoard {
         return participants;
     }
 
-    public static List<RemotePlayer> getKillers() {
+    public static List<String> getKillers() {
         return killers;
     }
 
-    public static List<RemotePlayer> getDoubleKillers() {
+    public static List<String> getDoubleKillers() {
         return doubleKillers;
     }
 
@@ -39,11 +37,11 @@ public abstract class RemoteBoard {
         return cells;
     }
 
-    public static void setDoubleKillers(List<RemotePlayer> doubleKillers) {
+    public static void setDoubleKillers(List<String> doubleKillers) {
         RemoteBoard.doubleKillers = doubleKillers;
     }
 
-    public static void setKillers(List<RemotePlayer> killers) {
+    public static void setKillers(List<String> killers) {
         RemoteBoard.killers = killers;
     }
 

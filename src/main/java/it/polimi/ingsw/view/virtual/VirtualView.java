@@ -156,7 +156,7 @@ public class VirtualView {
                     sendUpdateDamage(player);
                     sendUpdateMarking(player);
                     sendUpdateMove(player);
-                    sendUpdatePlayerDeath(player);
+                    sendUpdatePlayerDeathCount(player);
                     sendUpdateInventory(player);
                 }
 
@@ -170,6 +170,8 @@ public class VirtualView {
     private void sendUpdateDamage(Player player) {
 
         List<Object> content = new ArrayList<>();
+
+        content.add(player.getId());  //indicates the player whose damagelist has to be updated
 
         content.addAll(player.getDamageAsList()
                 .stream()
@@ -197,19 +199,32 @@ public class VirtualView {
     //BULK: sends an updated value for a player's position (sent as index of its cell)
     private void sendUpdateMove(Player player) {
 
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_MOVE, player.getPosition().getId());
+
+        List<Integer> content = new ArrayList<>();
+
+        content.add(player.getId());
+        content.add(player.getPosition().getId());
+
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_MOVE, content);
         broadcast(deliverable);
     }
 
     //BULK: sends the updated score of a player
     private void sendUpdateScore(Player player) {
 
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_SCORE, player.getScore());
+        List<Integer> content = new ArrayList<>();
+
+        content.add(player.getId());
+        content.add(player.getScore());
+
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_SCORE, content);
         broadcast(deliverable);
     }
 
     private void sendUpdateInventory(Player player) {
         List<Object> content = new ArrayList<>();
+
+        content.add(player.getId());
 
         //adds player's ammo
         content.add(game.getParticipants()
@@ -247,9 +262,14 @@ public class VirtualView {
         broadcast(deliverable);
     }
 
-    private void sendUpdatePlayerDeath(Player player) {
+    private void sendUpdatePlayerDeathCount(Player player) {
 
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_DEATHLIST, player.getDeathCount());
+        List<Integer> content = new ArrayList<>();
+
+        content.add(player.getId());
+        content.add(player.getDeathCount());
+
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_DEATHCOUNT, content);
         broadcast(deliverable);
     }
 
