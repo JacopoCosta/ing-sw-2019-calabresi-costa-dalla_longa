@@ -7,63 +7,44 @@ import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 import it.polimi.ingsw.view.virtual.VirtualView;
 
 /**
- * Moves are effects inflicted by a player to themselves or to other players. It causes a player to change position.
+ * Moves are effects inflicted by a player to themselves or to other players. A move causes a player to change position.
  */
 public class Move extends Effect {
     /**
-     * -3 if it applies to everyone.
-     * -2 if it applies to the attacker in the position they had before starting their current execution.
-     * -1 if it applies to the attacker in their current position.
-     * The id of the {@code AttackModule} inside the {@code AttackPattern} containing the {@code Target}
-     * from which the effect will start, in every other case.
+     * Works exactly like the {@code sourceAttackModule} property of {@code Constraint}.
+     * @see Constraint
      */
     protected int sourceAttackModuleId;
 
     /**
-     * -3 if it applies to everyone.
-     * -2 if it applies to the attacker in the position they had before starting their current execution.
-     * -1 if it applies to the attacker in their current position.
-     * The id of the {@code Target} from which the effect will start, in every other case.
+     * Works exactly like the {@code sourceTargetId} property of {@code Constraint}.
+     * @see Constraint
      */
     protected int sourceTargetId;
 
     /**
-     * -3 if it applies to everyone.
-     * -2 if it applies to the attacker in the position they had before starting their current execution.
-     * -1 if it applies to the attacker in their current position.
-     * The id of the {@code AttackModule} inside the {@code AttackPattern} containing the {@code Target}
-     * on which the effect will end, in every other case.
+     * Works exactly like the {@code drainAttackModuleId} property of {@code Constraint}.
+     * @see Constraint
      */
     protected int drainAttackModuleId;
 
     /**
-     * -3 if it applies to everyone.
-     * -2 if it applies to the attacker in the position they had before starting their current execution.
-     * -1 if it applies to the attacker in their current position.
-     * The id of the {@code Target} on which the effect will end, in every other case.
+     * Works exactly like the {@code drainTargetId} property of {@code Constraint}.
+     * @see Constraint
      */
     protected int drainTargetId;
 
     /**
      * This is the only constructor
-     * @param sourceAttackModuleId -3 if it applies to everyone.
-     * -2 if it applies to the attacker in the position they had before starting their current execution.
-     * -1 if it applies to the attacker in their current position.
-     * The id of the {@code AttackModule} inside the {@code AttackPattern} containing the {@code Target}
-     * from which the effect will start, in every other case.
-     * @param sourceTargetId -3 if it applies to everyone.
-     * -2 if it applies to the attacker in the position they had before starting their current execution.
-     * -1 if it applies to the attacker in their current position.
-     * The id of the {@code Target} from which the effect will start, in every other case.
-     * @param drainAttackModuleId -3 if it applies to everyone.
-     * -2 if it applies to the attacker in the position they had before starting their current execution.
-     * -1 if it applies to the attacker in their current position.
-     * The id of the {@code AttackModule} inside the {@code AttackPattern} containing the {@code Target}
-     * on which the effect will end, in every other case.
-     * @param drainTargetId -3 if it applies to everyone.
-     * -2 if it applies to the attacker in the position they had before starting their current execution.
-     * -1 if it applies to the attacker in their current position.
-     * The id of the {@code Target} on which the effect will end, in every other case.
+     * @param sourceAttackModuleId the id of the attack module for the source of the constraint for the effect.
+     * @param sourceTargetId the id of the target for the source of the constraint for the effect.
+     * @param drainAttackModuleId the id of the attack module for the drain of the constraint for the effect.
+     * @param drainTargetId the id of the target for the drain of the constraint for the effect.
+     * @see Move#sourceAttackModuleId
+     * @see Move#sourceTargetId
+     * @see Move#drainAttackModuleId
+     * @see Move#drainTargetId
+     * @see Constraint
      */
     Move(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId) {
         this.sourceAttackModuleId = sourceAttackModuleId;
@@ -74,7 +55,7 @@ public class Move extends Effect {
     }
 
     /**
-     * Moves one or more players to another player or to another cell.
+     * Moves one or more players to another player or to another cell, based on the properties.
      */
     @Override
     public void apply() {

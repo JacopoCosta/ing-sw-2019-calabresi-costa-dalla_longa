@@ -10,9 +10,24 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * A room constraint may require that two rooms be the same in order to satisfy the constraint.
+ * Alternatively, it may instead require two rooms not to be the same, depending on the truth attribute.
+ */
 public class RoomConstraint extends Constraint {
+    /**
+     * Whether or not the two rooms should actually be the same room in order to satisfy the constraint.
+     */
     private boolean truth;
 
+    /**
+     * This is the only constructor.
+     * @param sourceAttackModuleId the id of the attack module containing the source target.
+     * @param sourceTargetId the id of the source target.
+     * @param drainAttackModuleId the id of the attack module containing the drain target.
+     * @param drainTargetId the id of the drain target.
+     * @param truth the truth value needed from the predicate asserting equality between rooms, in order to satisfy the constraint.
+     */
     RoomConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
         this.sourceAttackModuleId = sourceAttackModuleId;
         this.sourceTargetId = sourceTargetId;
@@ -22,12 +37,23 @@ public class RoomConstraint extends Constraint {
         this.type = ConstraintType.ROOM;
     }
 
+    /**
+     * Tells if the constraint is satisfied by two given rooms.
+     * @param sourceRoom the source room.
+     * @param drainRoom the drain room.
+     * @return true if the rooms satisfy the constraint, false if they don't or if any of them is null.
+     */
     private boolean verify(Room sourceRoom, Room drainRoom) {
         if(sourceRoom == null || drainRoom == null)
             return false;
         return sourceRoom.equals(drainRoom) == truth;
     }
 
+    /**
+     * Creates a list of all players that satisfy the constraint.
+     * @param context the attack pattern in which the constraint is relevant.
+     * @return the list of players.
+     */
     @Override
     public List<Player> filterPlayers(AttackPattern context) {
         if(sourceAttackModuleId == -3 && sourceTargetId == -3) {
@@ -65,6 +91,11 @@ public class RoomConstraint extends Constraint {
         throw new InvalidFilterInvocationException("This instance of constraint can't use a filter.");
     }
 
+    /**
+     * Creates a list of all cells that satisfy the constraint.
+     * @param context the attack pattern in which the constraint is relevant.
+     * @return the list of cells.
+     */
     @Override
     public List<Cell> filterCells(AttackPattern context) {
         if(sourceAttackModuleId == -3 && sourceTargetId == -3) {
@@ -94,6 +125,11 @@ public class RoomConstraint extends Constraint {
         throw new InvalidFilterInvocationException("This instance of constraint can't use a filter.");
     }
 
+    /**
+     * Creates a list of all rooms that satisfy the constraint.
+     * @param context the attack pattern in which the constraint is relevant.
+     * @return the list of rooms.
+     */
     @Override
     public List<Room> filterRooms(AttackPattern context) {
         if(sourceAttackModuleId == -3 && sourceTargetId == -3) {

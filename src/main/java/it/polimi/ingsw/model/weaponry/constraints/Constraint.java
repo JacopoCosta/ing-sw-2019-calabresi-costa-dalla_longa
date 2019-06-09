@@ -16,15 +16,94 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * A constraint is a simple rule that can be verified or falsified. It is expressed in a form
+ * similar to a well-formed formula of the monadic first-order logic. Constraints come in different types,
+ * each representing a different predicate. Most predicates expressed by constraints have arity 2, i.e.
+ * they describe a situation verifiable on 2 entities, they're also known as binary constraints.
+ * All constraints are verified inside an attack pattern that acts like a context outside of which
+ * the predicate is ambiguous and cannot therefore be verified.<br/>
+ * Binary constraints always include:<br/>
+ * <ul>
+ *     <li><b>Source</b>: the first actor of the predicate, or the "subject".</li>
+ *     <li><b>Drain</b>: the last actor of the predicate, or the "object".</li>
+ * </ul>
+ * There are also ternary constraints, that make a statement about three entities, and also include:<br/>
+ * <ul>
+ *     <li><b>Gate</b>: the middle actor of the predicate, or the "intermediary".</li>
+ * </ul>
+ * <br/>
+ * When constraints are evaluated, their subjects, objects and/or intermediaries often need to
+ * be referenced in a host of different situations, making integers an easy and versatile solution
+ * for creating a path of references that leads to the entity of interest for each role in the constraint.
+ * Specifically, each entity is reached by:
+ * <ul>
+ *     <li>An attack module id: used to identify the attack module in which the entity resides.
+ *          This is possible because constraints are limited to one attack pattern, making it
+ *          unambiguous which attack module the id refers to.</li>
+ *     <li>A target id: used to identify the target inside the attack module that refers to
+ *          the entity of interest, whether it be a cell, a room or a player.</li>
+ * </ul>
+ * This indexed access algorithm makes it impossible to reference targets defined in a
+ * future moment with respect to the moment in which a constraint attempts to reference
+ * an entity as one of its actors, even within the same attack module. In other words,
+ * it is impossible to evaluate a constraint depending partially on decisions not yet taken by the player.
+ * <br/>
+ * In order to grant the constraints internal language a fully operational expressive power, at least as
+ * far as the game logic is concerned, the following encoding rules for numeric ids were devised:
+ * <ul>
+ *     <li><b>Any non-negative integer</b>: simply refers to the index of the attack module inside
+ *          the context, or to the index of the target inside the attack module, as described above.</li>
+ *     <li><b>-1</b>: Refers to the attacker (always known from within the context, as an attack pattern
+ *          cannot be used until it has been signed by a player as its author).</li>
+ *     <li><b>-2</b>: Refers to the attacker, but in the position they had before the beginning of the
+ *          current attack pattern.</li>
+ *     <li><b>-3</b>: Refers to anyone, much like the "for all" operator in the monadic first order logic.
+ *          This value is very important when generating lists of entities that make the constraint evaluate
+ *          to "true": each entity is given the role the -3 is found in, and gets replaced by the following entity
+ *          for elaborating the truth table. All entities that make the constraint evaluate to "true"
+ *          are considered eligible for a choice of the player, when they'll be presented with a question.</li>
+ * </ul>
+ */
 public abstract class Constraint {
 
+    /**
+     * The type of constraint.
+     */
     protected ConstraintType type;
+
+    /**
+     * The id of the attack module in which the subject is located.
+     */
     protected int sourceAttackModuleId;
+
+    /**
+     * The id of the target representing the subject.
+     */
     protected int sourceTargetId;
+
+    /**
+     * The id of the attack module in which the object is located.
+     */
     protected int drainAttackModuleId;
+
+    /**
+     * The id of the target representing the object.
+     */
     protected int drainTargetId;
+
+    /**
+     * The attack pattern in which the constraint needs to be evaluated.
+     */
     protected AttackPattern context;
 
+    /**
+     * This factory method instantiates and returns a constraint, with the properties found inside the JSON object passed as argument.
+     * @param jConstraint the JSON object containing the desired properties.
+     * @return an instance of this class in accordance with the specified properties.
+     * @throws InvalidConstraintTypeException when attempting to instantiate a new constraint whose type is not in the
+     * enumeration of possible power-up types.
+     */
     public static Constraint build(DecoratedJsonObject jConstraint) throws InvalidConstraintTypeException {
         int sourceAttackModuleId;
         try {
