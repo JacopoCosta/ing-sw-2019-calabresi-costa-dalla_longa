@@ -3,10 +3,7 @@ package it.polimi.ingsw.view.remote;
 import it.polimi.ingsw.model.powerups.PowerUpType;
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
-import it.polimi.ingsw.view.remote.status.RemoteBoard;
-import it.polimi.ingsw.view.remote.status.RemotePlayer;
-import it.polimi.ingsw.view.remote.status.RemotePowerUp;
-import it.polimi.ingsw.view.remote.status.RemoteWeapon;
+import it.polimi.ingsw.view.remote.status.*;
 import it.polimi.ingsw.view.virtual.*;
 
 import java.util.ArrayList;
@@ -251,10 +248,44 @@ public class GraphicsEventHandler {
                 RemoteBoard.setDoubleKillers(boardDoubleKill);
 
                 break;
-            case STATUS_INIT:
+            case UPDATE_CELL:
 
-                StatusInitializer(bulk);
+                RemoteCell cell = RemoteBoard.getCells().get(((List<Integer>) bulk).get(0));    //Shorthand for the cell that must be modified
+
+                if(((List<String>) bulk).get(1).equals("0")) {  //cell is an AmmoCell
+
+                    cell.setAmmoCell(true);
+                    int redAmmo = ((List<Integer>) bulk).get(2);
+                    int yellowAmmo = ((List<Integer>) bulk).get(3);
+                    int blueAmmo = ((List<Integer>) bulk).get(4);
+                    boolean includesPowerUp = ((List<String>) bulk).get(5).equals("1");
+
+                    cell.rewrite(redAmmo, yellowAmmo, blueAmmo, includesPowerUp);
+                } //end if (ammoCell)
+                else {
+
+                    cell.setAmmoCell(false);
+                    List<RemoteWeapon> shopList = new ArrayList<>();
+
+                    for(int i = 0; i < ((List<String>)((List<Object>) bulk).get(2)).size(); i++) {
+
+                        Object weaponList = ((List<Object>) bulk).get(2);
+                        Object weaponElement = ((List<Object>) weaponList).get(i);
+
+                        String weaponName = ((List<String>) weaponElement).get(0);
+                        String purchaseCost = ((List<String>) weaponElement).get(1);
+                        String reloadCost = ((List<String>) weaponElement).get(2);
+
+                        shopList.add(new RemoteWeapon(weaponName, purchaseCost, reloadCost, true));
+                    }
+                }
+
                 break;
+            case BOARD_INIT:
+
+                BoardInitializer(bulk);
+                break;
+
         }
     }
 
@@ -312,7 +343,7 @@ public class GraphicsEventHandler {
 
     }
 
-    private void StatusInitializer(Object bulk) {
+    private void BoardInitializer(Object bulk) {
         //TODO
     }
 

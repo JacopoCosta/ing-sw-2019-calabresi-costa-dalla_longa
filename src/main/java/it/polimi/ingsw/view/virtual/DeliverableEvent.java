@@ -47,7 +47,8 @@ public enum DeliverableEvent {
     UPDATE_WINNER(""),      //Info
     UPDATE_DISCONNECT(""),  //Info
     RESPONSE(""),           //This is the only deliverable sent by client to server
-    STATUS_INIT(""),        //Bulk, initialises the RemoteBoard
+    BOARD_INIT(""),         //Bulk, initialises the RemoteBoard in most of its variables
+    UPDATE_CELL(""),        //Bulk, updates the content of a cell
     STATUS_UPDATE("");      //Info, it asks the client to refresh its CLI for the user
 
     public final String message;

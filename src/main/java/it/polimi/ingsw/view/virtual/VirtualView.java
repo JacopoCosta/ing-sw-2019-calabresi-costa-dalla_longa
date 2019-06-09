@@ -4,6 +4,7 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.board.Room;
+import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.*;
@@ -124,7 +125,7 @@ public class VirtualView {
     private void sendStatusInit(Player subject, boolean isNewGame) throws AbortedTurnException {
 
         if(godMode) {
-            Deliverable deliverable = new Bulk(DeliverableEvent.STATUS_INIT, null);
+            Deliverable deliverable = new Bulk(DeliverableEvent.BOARD_INIT, null);
             deliverable.overwriteMessage(game.toString());
             send(subject, deliverable);
         }
@@ -146,7 +147,7 @@ public class VirtualView {
             //adds cells
             //TODO
 
-            Deliverable deliverable = new Bulk(DeliverableEvent.STATUS_INIT, content);
+            Deliverable deliverable = new Bulk(DeliverableEvent.BOARD_INIT, content);
             broadcast(deliverable);
 
             if(!isNewGame) {    //the game comes from a saved game, so all the info about the players shall be broadcast as well
@@ -166,6 +167,41 @@ public class VirtualView {
         }
     }
 
+    //BULK: sends an updated, new value for a cell content
+    private void sendUpdateCell(Cell cell) {
+        List <Object> content = new ArrayList<>();
+
+        content.add(cell.getId());
+        content.add(cell.isSpawnPoint() ? "0" : "1");   //boolean cast to String
+
+        if(cell.isSpawnPoint()) {
+            //adds spawnpoint color
+            content.add(((SpawnCell) cell).getAmmoCubeColor().toStringAsColor());
+
+            //adds weapons list (the encoding is similar to sendUpdateInventory)
+            content.add(((SpawnCell) cell).getWeaponShop()
+                    .stream()
+                    .map(w -> {
+                        List<String> weapon = new ArrayList<>();
+                        weapon.add(w.getName());
+                        weapon.add(w.getPurchaseCost().toString());
+                        weapon.add(w.getReloadCost().toString());
+                        return weapon;
+                    })
+                    .collect(Collectors.toList()));
+        } //end if(isSpawnpoint)
+        else {
+            //adds its ammo
+            content.add(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed());
+            content.add(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow());
+            content.add(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow());
+            content.add(((AmmoCell) cell).getAmmoTile().includesPowerUp() ? "0" : "1"); //boolean cast to String
+        }
+
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_CELL, content);
+        broadcast(deliverable);
+    }
+
     //BULK: sends an updated, new value for a player's damage
     private void sendUpdateDamage(Player player) {
 
@@ -173,7 +209,7 @@ public class VirtualView {
 
         content.add(player.getId());  //indicates the player whose damagelist has to be updated
 
-        content.addAll(player.getDamageAsList()
+        content.add(player.getDamageAsList()
                 .stream()
                 .map(Player::getName)
                 .collect(Collectors.toList()));
@@ -187,7 +223,7 @@ public class VirtualView {
 
         List<Object> content = new ArrayList<>();
 
-            content.addAll(player.getMarkingsAsList()
+            content.add(player.getMarkingsAsList()
                     .stream()
                     .map(Player::getName)
                     .collect(Collectors.toList()));

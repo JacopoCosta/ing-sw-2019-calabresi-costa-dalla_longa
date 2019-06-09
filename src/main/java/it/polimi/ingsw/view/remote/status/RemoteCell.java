@@ -8,22 +8,31 @@ public class RemoteCell {
 
     private List<RemoteWeapon> shop;    //if AmmoCell is true, this list is empty as there's no shop in an ammoCell
 
-    private ColorCube colorCube;
-    private boolean includesPowerUp;
-
     private RemoteBoard remoteBoard;
 
-    public RemoteCell (RemoteBoard remoteBoard, boolean isAmmoCell) {
+    private int red;
+    private int yellow;
+    private int blue;
+    private boolean includesPowerUp;
+
+    public void setAmmoCell(boolean isAmmoCell) {
         this.isAmmoCell = isAmmoCell;
-        //this.remoteBoard = remoteBoard;
     }
 
     public List<RemoteWeapon> getShop() {
         return shop;
     }
 
-    public ColorCube getColorCube() {
-        return colorCube;
+    public int getRed() {
+        return red;
+    }
+
+    public int getYellow() {
+        return yellow;
+    }
+
+    public int getBlue() {
+        return blue;
     }
 
     public boolean isAmmoCell() {
@@ -38,13 +47,19 @@ public class RemoteCell {
         this.shop = shop;
     }
 
-    public void refresh(ColorCube colorCube, boolean includesPowerUp) {
-        this.colorCube = colorCube;
+    public void rewrite(int red, int yellow, int blue, boolean includesPowerUp) {   //used if isAmmoCell == true
+        this.red = red;
+        this.yellow = yellow;
+        this.blue = blue;
         this.includesPowerUp = includesPowerUp;
     }
 
-    public void refresh(List <RemoteWeapon> shop) {
+    public void rewrite(List <RemoteWeapon> shop) {     //used if isAmmoCell == false
         this.shop = shop;
+    }
+
+    public void setRemoteBoard(RemoteBoard remoteBoard) {
+        this.remoteBoard = remoteBoard;
     }
 
     public RemoteBoard getRemoteBoard() {
