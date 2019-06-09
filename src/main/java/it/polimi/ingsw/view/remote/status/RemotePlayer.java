@@ -10,7 +10,9 @@ public class RemotePlayer {
     private int position;   //the current position of the player
     private int deathCount; //how many times this player has been killed
 
-    private ColorCube ammo;         //the amount of ammo owned by ths player
+    private int redAmmo;         //the amount of ammo owned by ths player
+    private int yellowAmmo;
+    private int blueAmmo;
 
     private PlayerColor playerColor;    //determines what physical token the player is using
 
@@ -40,8 +42,16 @@ public class RemotePlayer {
         return deathCount;
     }
 
-    public ColorCube getAmmo() {
-        return ammo;
+    public int getRedAmmo() {
+        return redAmmo;
+    }
+
+    public int getYellowAmmo() {
+        return  yellowAmmo;
+    }
+
+    public int getBlueAmmo() {
+        return blueAmmo;
     }
 
     public List<RemoteWeapon> getWeapons() {
@@ -84,8 +94,16 @@ public class RemotePlayer {
         this.deathCount = deathCount;
     }
 
-    public void setAmmo(ColorCube ammo) {
-        this.ammo = ammo;
+    public void setRedAmmo(int ammo) {
+        this.redAmmo = ammo;
+    }
+
+    public void setYellowAmmo(int ammo) {
+        this.yellowAmmo = ammo;
+    }
+
+    public void setBlueAmmo(int ammo) {
+        this.blueAmmo = ammo;
     }
 
     public void setWeapons(List<RemoteWeapon> weapons) {

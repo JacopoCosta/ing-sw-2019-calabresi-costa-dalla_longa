@@ -4,6 +4,8 @@ import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.view.remote.status.RemoteBoard;
 import it.polimi.ingsw.view.remote.status.RemotePlayer;
+import it.polimi.ingsw.view.remote.status.RemotePowerUp;
+import it.polimi.ingsw.view.remote.status.RemoteWeapon;
 import it.polimi.ingsw.view.virtual.*;
 
 import java.util.ArrayList;
@@ -256,6 +258,17 @@ public class GraphicsEventHandler {
     }
 
     private void UpdateInventory(Object bulk) {
+
+        List<RemotePowerUp> powerUps = new ArrayList<>();
+        List<RemoteWeapon> weapons = new ArrayList<>();
+
+        RemotePlayer player = RemoteBoard.getParticipants().get(((ArrayList<Integer>) bulk).get(0) - 1);    //Shorthand for the player who must be updated
+
+        //update ammo
+        //player.setRedAmmo(((ArrayList<ArrayList<Integer>>) bulk).get(1).get(0));
+        //player.setRedAmmo(((ArrayList<Integer>) bulk.get(1)).get(0));
+        //FIXME
+
         //TODO
 
     }

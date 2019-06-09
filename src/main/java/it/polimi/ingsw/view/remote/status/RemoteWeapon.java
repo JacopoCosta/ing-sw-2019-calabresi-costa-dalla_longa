@@ -3,12 +3,12 @@ package it.polimi.ingsw.view.remote.status;
 public class RemoteWeapon {
 
     private String name;
-    private ColorCube purchaseCost;
-    private ColorCube reloadCost;
+    private String purchaseCost;
+    private String reloadCost;
 
     private boolean loaded;
 
-    public RemoteWeapon(String name, ColorCube purchaseCost, ColorCube reloadCost) {
+    public RemoteWeapon(String name, String purchaseCost, String reloadCost) {
         this.name = name;
         this.purchaseCost = purchaseCost;
         this.reloadCost = reloadCost;
@@ -18,11 +18,11 @@ public class RemoteWeapon {
         return name;
     }
 
-    public ColorCube getPurchaseCost() {
+    public String getPurchaseCost() {
         return purchaseCost;
     }
 
-    public ColorCube getReloadCost() {
+    public String getReloadCost() {
         return reloadCost;
     }
 

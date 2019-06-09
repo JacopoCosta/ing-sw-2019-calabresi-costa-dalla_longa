@@ -227,22 +227,24 @@ public class VirtualView {
         content.add(player.getId());
 
         //adds player's ammo
-        content.add(game.getParticipants()
-                .stream()
-                .map(Player::getAmmoCubes)
-                .map(a -> new int[]{a.getRed(), a.getYellow(), a.getBlue()})
-                .collect(Collectors.toList()));
+        //int[] ammo = {player.getAmmoCubes().getRed(), player.getAmmoCubes().getYellow(), player.getAmmoCubes().getBlue()};
+        List<Integer> ammo = new ArrayList<>();
+        ammo.add(player.getAmmoCubes().getRed());
+        ammo.add(player.getAmmoCubes().getYellow());
+        ammo.add(player.getAmmoCubes().getBlue());
 
-        //adds player's powerups
+        content.add(ammo);
+
+        //adds player's powerups (both type and color)
         content.add(player.getPowerUps()
-                .stream()
-                .map(up -> {
-                    List<String> upHand = new ArrayList<>();
-                    upHand.add(up.getType().toString());
-                    upHand.add(up.getAmmoCubes().toStringAsColor());
-                    return upHand;
-                })
-                .collect(Collectors.toList()));
+               .stream()
+               .map(up -> {
+                   List<String> upHand = new ArrayList<>();
+                   upHand.add(up.getType().toString());             //e.g. "Teleport"
+                   upHand.add(up.getAmmoCubes().toStringAsColor()); //e.g. "Red"
+                   return upHand;
+               })
+               .collect(Collectors.toList()));
 
         //adds player's weapons
         content.add(player.getWeapons()
@@ -260,6 +262,13 @@ public class VirtualView {
         //sends the bulk deliverable
         Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_INVENTORY, content);
         broadcast(deliverable);
+        /*
+        So, there will be an ArrayList deliverable of 4 elements:
+            deliverable [0] contains the player's Id;
+            deliverable [1] contains an ArrayList containing the ammo they own, codified as Integer;
+            deliverable [2] contains an ArrayList containing the name and the color of each powerUp they own, codified as String;
+            deliverable [3] contains an ArrayList containing the name, the cost, the reloadCost and the status (reloaded or not) of each Weapon they own, codified as String.
+         */
     }
 
     private void sendUpdatePlayerDeathCount(Player player) {

@@ -4,9 +4,9 @@ import it.polimi.ingsw.model.powerups.PowerUpType;
 
 public class RemotePowerUp {
     private PowerUpType type;
-    private ColorCube colorCube;
+    private String colorCube;
 
-    public RemotePowerUp(PowerUpType type, ColorCube colorCube) {
+    public RemotePowerUp(PowerUpType type, String colorCube) {
         this.type = type;
         this.colorCube = colorCube;
     }
@@ -15,7 +15,7 @@ public class RemotePowerUp {
         return type;
     }
 
-    public ColorCube getColorCube() {
+    public String getColorCube() {
         return colorCube;
     }
 }
