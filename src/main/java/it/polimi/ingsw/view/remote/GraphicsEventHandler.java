@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.remote;
 
+import it.polimi.ingsw.model.powerups.PowerUpType;
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.view.remote.status.RemoteBoard;
@@ -131,7 +132,7 @@ public class GraphicsEventHandler {
                     break;
                 case UPDATE_DISCONNECT:
                     break;
-                    //FIXME: this list needs an update
+                    //FIXME: this list needs an update (will be done when creating GUI)
             }
         }//end if(usesGUI)
 
@@ -182,29 +183,29 @@ public class GraphicsEventHandler {
             case UPDATE_DAMAGE:
 
                 //creates a new damageList from the deliverable content, then sets it as damageList of the player
-                ArrayList<String> damageList = new ArrayList<>();
+                List<String> damageList = new ArrayList<>();
 
-                for(int i=1; i < ((ArrayList<String>) bulk).size(); i++) {
-                    damageList.add(((ArrayList<String>) bulk).get(i));
+                for(int i=1; i < ((List<String>) bulk).size(); i++) {
+                    damageList.add(((List<String>) bulk).get(i));
                 }
                 //sets damageList as new damageList for the player who needs the update
-                RemoteBoard.getParticipants().get(((ArrayList<Integer>) bulk).get(0) - 1).setDamage(damageList);
+                RemoteBoard.getParticipants().get(((List<Integer>) bulk).get(0) - 1).setDamage(damageList);
 
                 break;
             case UPDATE_MARKING:
                 //creates a new markingList from the deliverable content, then sets it as markingList of the player
-                ArrayList<String> markingList = new ArrayList<>();
+                List<String> markingList = new ArrayList<>();
 
-                for(int i=1; i < ((ArrayList<String>) bulk).size(); i++) {
-                    markingList.add(((ArrayList<String>) bulk).get(i));
+                for(int i=1; i < ((List<String>) bulk).size(); i++) {
+                    markingList.add(((List<String>) bulk).get(i));
                 }
                 //sets markingList as new markingList for the player who needs the update
-                RemoteBoard.getParticipants().get(((ArrayList<Integer>) bulk).get(0) - 1).setMarkings(markingList);
+                RemoteBoard.getParticipants().get(((List<Integer>) bulk).get(0) - 1).setMarkings(markingList);
 
                 break;
             case UPDATE_MOVE:
                 //simply sets the new player position to the new position written in the deliverable content
-                RemoteBoard.getParticipants().get(((ArrayList<Integer>) bulk).get(0) - 1).setPosition(((ArrayList<Integer>) bulk).get(1));
+                RemoteBoard.getParticipants().get(((List<Integer>) bulk).get(0) - 1).setPosition(((List<Integer>) bulk).get(1));
                 //NOTE:
                 //Players Ids range from 1 to n, so its value must be decreased by 1 to get its location in RemoteBoard.getParticipants();
                 //Cells Id also range from 1 to n, but in this case we are just setting player's position: we are not getting a cell position
@@ -213,12 +214,12 @@ public class GraphicsEventHandler {
                 break;
             case UPDATE_SCORE:
                 //sets the new player score extracting it from content
-                RemoteBoard.getParticipants().get(((ArrayList<Integer>) bulk).get(0) - 1).setScore(((ArrayList<Integer>) bulk).get(1));
+                RemoteBoard.getParticipants().get(((List<Integer>) bulk).get(0) - 1).setScore(((List<Integer>) bulk).get(1));
 
                 break;
             case UPDATE_DEATHCOUNT:
                 //sets the deathcount of this player
-                RemoteBoard.getParticipants().get(((ArrayList<Integer>) bulk).get(0) -1).setDeathCount(((ArrayList<Integer>) bulk).get(1));
+                RemoteBoard.getParticipants().get(((List<Integer>) bulk).get(0) -1).setDeathCount(((List<Integer>) bulk).get(1));
 
                 break;
             case UPDATE_INVENTORY:
@@ -231,8 +232,8 @@ public class GraphicsEventHandler {
                 List<String> boardKill = new ArrayList<>();
 
                 //adds new names to the new boardKill
-                for(int i=0; i < ((ArrayList<String>) bulk).size(); i++) {
-                    boardKill.add(((ArrayList<String>) bulk).get(i));
+                for(int i=0; i < ((List<String>) bulk).size(); i++) {
+                    boardKill.add(((List<String>) bulk).get(i));
                 }
                 //replaces the old boardKill with the new boardKill
                 RemoteBoard.setKillers(boardKill);
@@ -243,8 +244,8 @@ public class GraphicsEventHandler {
                 List<String> boardDoubleKill = new ArrayList<>();
 
                 //adds new names to the new boardDoubleKill
-                for(int i=0; i < ((ArrayList<String>) bulk).size(); i++) {
-                    boardDoubleKill.add(((ArrayList<String>) bulk).get(i));
+                for(int i=0; i < ((List<String>) bulk).size(); i++) {
+                    boardDoubleKill.add(((List<String>) bulk).get(i));
                 }
                 //replaces the old boardDoubleKIll with the new one
                 RemoteBoard.setDoubleKillers(boardDoubleKill);
@@ -262,14 +263,52 @@ public class GraphicsEventHandler {
         List<RemotePowerUp> powerUps = new ArrayList<>();
         List<RemoteWeapon> weapons = new ArrayList<>();
 
-        RemotePlayer player = RemoteBoard.getParticipants().get(((ArrayList<Integer>) bulk).get(0) - 1);    //Shorthand for the player who must be updated
+        RemotePlayer player = RemoteBoard.getParticipants().get(((List<Integer>) bulk).get(0) - 1);    //Shorthand for the player who must be updated
 
         //update ammo
-        //player.setRedAmmo(((ArrayList<ArrayList<Integer>>) bulk).get(1).get(0));
-        //player.setRedAmmo(((ArrayList<Integer>) bulk.get(1)).get(0));
-        //FIXME
+        player.setRedAmmo(((List<Integer>)((List<Object>) bulk).get(1)).get(0));    //yes, the cast is right
+        player.setYellowAmmo(((List<Integer>)((List<Object>) bulk).get(1)).get(1));
+        player.setBlueAmmo(((List<Integer>)((List<Object>) bulk).get(1)).get(2));
 
-        //TODO
+        //update powerups
+        for(int i = 0; i < ((List<String>)((List<Object>) bulk).get(2)).size(); i++) {
+
+            Object powerUpList = ((List<Object>) bulk).get(2);
+            Object powerUpElement = ((List<Object>) powerUpList).get(i);
+
+            String powerUpType = ((List<String>) powerUpElement).get(0);
+            String powerUpColor = ((List<String>) powerUpElement).get(1);
+            switch (powerUpType) {
+                case ("GRENADE"):
+                    powerUps.add(new RemotePowerUp(PowerUpType.GRENADE, powerUpColor));
+                    break;
+                case ("NEWTON"):
+                    powerUps.add(new RemotePowerUp(PowerUpType.NEWTON, powerUpColor));
+                    break;
+                case ("SCOPE"):
+                    powerUps.add(new RemotePowerUp(PowerUpType.SCOPE, powerUpColor));
+                    break;
+                case ("TELEPORT"):
+                    powerUps.add(new RemotePowerUp(PowerUpType.TELEPORT, powerUpColor));
+                    break;
+            } //end switch
+        }//end for
+        player.setPowerUps(powerUps);
+
+        //update weapons
+        for(int i = 0; i < ((List<String>)((List<Object>) bulk).get(3)).size(); i++) {
+
+            Object weaponList = ((List<Object>) bulk).get(3);
+            Object weaponElement = ((List<Object>) weaponList).get(i);
+
+            String weaponName = ((List<String>) weaponElement).get(0);
+            String purchaseCost = ((List<String>) weaponElement).get(1);
+            String reloadCost = ((List<String>) weaponElement).get(2);
+            String isLoaded = ((List<String>) weaponElement).get(3);
+
+            weapons.add(new RemoteWeapon(weaponName, purchaseCost, reloadCost, isLoaded.equals("1")));
+        }//end for
+        player.setWeapons(weapons);
 
     }
 

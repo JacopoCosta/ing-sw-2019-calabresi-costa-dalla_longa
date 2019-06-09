@@ -227,7 +227,6 @@ public class VirtualView {
         content.add(player.getId());
 
         //adds player's ammo
-        //int[] ammo = {player.getAmmoCubes().getRed(), player.getAmmoCubes().getYellow(), player.getAmmoCubes().getBlue()};
         List<Integer> ammo = new ArrayList<>();
         ammo.add(player.getAmmoCubes().getRed());
         ammo.add(player.getAmmoCubes().getYellow());
@@ -240,8 +239,8 @@ public class VirtualView {
                .stream()
                .map(up -> {
                    List<String> upHand = new ArrayList<>();
-                   upHand.add(up.getType().toString());             //e.g. "Teleport"
-                   upHand.add(up.getAmmoCubes().toStringAsColor()); //e.g. "Red"
+                   upHand.add(up.getType().toString());             //e.g. "GRENADE"
+                   upHand.add(up.getAmmoCubes().toStringAsColor()); //e.g. "red"
                    return upHand;
                })
                .collect(Collectors.toList()));

@@ -8,10 +8,11 @@ public class RemoteWeapon {
 
     private boolean loaded;
 
-    public RemoteWeapon(String name, String purchaseCost, String reloadCost) {
+    public RemoteWeapon(String name, String purchaseCost, String reloadCost, boolean loaded) {
         this.name = name;
         this.purchaseCost = purchaseCost;
         this.reloadCost = reloadCost;
+        this.loaded = loaded;
     }
 
     public String getName() {
@@ -28,9 +29,5 @@ public class RemoteWeapon {
 
     public boolean isLoaded() {
         return loaded;
-    }
-
-    public void setLoaded(boolean loaded) {
-        this.loaded = loaded;
     }
 }
