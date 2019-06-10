@@ -68,7 +68,9 @@ public class VirtualView {
      * Sends a deliverable to a player's client.
      * @param recipient The recipient of the deliverable.
      * @param deliverable The deliverable of interest.
-     * @throws AbortedTurnException When the request routine catches a {@code ConnectionException} and the current turn needs to be ended prematurely.
+     * @throws AbortedTurnException When the request routine catches a {@code ConnectionException}
+     * and the current turn needs to be ended prematurely.
+     * @return the response to the deliverable.
      */
     private int send(Player recipient, Deliverable deliverable) throws AbortedTurnException {
         if(godMode) {
@@ -123,54 +125,46 @@ public class VirtualView {
     BULK sender: sends initial info about the game itself: list of participants, board morphology and game settings.
     If the game comes from a previous saved game (isNewGame == true), it also sends all the information about players and board status.
     */
-    private void sendStatusInit(Player subject, boolean isNewGame) throws AbortedTurnException {
+    private void sendStatusInit(boolean isNewGame) {
+        List<Object> content = new ArrayList<>();
+        //adds general board structure info
+        content.add(game.getBoard().getWidth());
+        content.add(game.getBoard().getHeight());
+        //NOTE: in every standard configuration, width == 4 and height == 3, however this increases code robustness
 
-        if(godMode) {
-            Deliverable deliverable = new Bulk(DeliverableEvent.BOARD_INIT, null);
-            deliverable.overwriteMessage(game.toString());
-            send(subject, deliverable);
-        }
-        else {
-            List<Object> content = new ArrayList<>();
-            //adds general board structure info
-            content.add(game.getBoard().getWidth());
-            content.add(game.getBoard().getHeight());
-            //NOTE: in every standard configuration, width == 4 and height == 3, however this increases code robustness
+        //adds board morphology (i.e. cell positions and walls, but no info about their content, which will be sent via UPDATE_CELL)
+        //NOTE: this is useful for CLI only, so this method can either be optimized for GUI/CLI choice or reused in both cases for shortness
+        //content.add(Board.getMorphology());
 
-            //adds board morphology (i.e. cell positions and walls, but no info about their content, which will be sent via UPDATE_CELL)
-            //NOTE: this is useful for CLI only, so this method can either be optimized for GUI/CLI choice or reused in both cases for shortness
-            //content.add(Board.getMorphology());
+        //adds participants names
+        content.add(game.getParticipants()
+                .stream()
+                .map(Player::getName)
+                .collect(Collectors.toList()));
 
-            //adds participants names
-            content.add(game.getParticipants()
-                    .stream()
-                    .map(Player::getName)
-                    .collect(Collectors.toList()));
+        //adds participants ID
+        content.add(game.getParticipants()
+                .stream()
+                .map(Player::getPosition)
+                .map(Cell::getId)
+                .collect(Collectors.toList()));
 
-            //adds participants ID
-            content.add(game.getParticipants()
-                    .stream()
-                    .map(Player::getPosition)
-                    .map(Cell::getId)
-                    .collect(Collectors.toList()));
+        Deliverable deliverable = new Bulk(DeliverableEvent.BOARD_INIT, content);
+        broadcast(deliverable);
 
-            Deliverable deliverable = new Bulk(DeliverableEvent.BOARD_INIT, content);
-            broadcast(deliverable);
+        if(!isNewGame) {    //the game comes from a saved game, so all the info about the players shall be broadcast as well
 
-            if(!isNewGame) {    //the game comes from a saved game, so all the info about the players shall be broadcast as well
-
-                for(Player player: game.getParticipants()) {
-                    sendUpdateScore(player);
-                    sendUpdateDamage(player);
-                    sendUpdateMarking(player);
-                    sendUpdateMove(player);
-                    sendUpdatePlayerDeathCount(player);
-                    sendUpdateInventory(player);
-                }
-
-                sendUpdateBoardKill();
-                sendUpdateDoubleKill();
+            for(Player player: game.getParticipants()) {
+                sendUpdateScore(player);
+                sendUpdateDamage(player);
+                sendUpdateMarking(player);
+                sendUpdateMove(player);
+                sendUpdatePlayerDeathCount(player);
+                sendUpdateInventory(player);
             }
+
+            sendUpdateBoardKill();
+            sendUpdateDoubleKill();
         }
     }
 
@@ -356,7 +350,6 @@ public class VirtualView {
         Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_BOARDDOUBLEKILL, content);
         broadcast(deliverable);
     }
-
 
     private void sendStatusUpdate(Player subject) throws AbortedTurnException {
         if(godMode) {

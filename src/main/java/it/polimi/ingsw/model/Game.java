@@ -22,8 +22,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Game {
-    public static final boolean godMode = true;
-    public static final boolean autoPilot = true;
+    public static boolean godMode = false;
+    public static boolean autoPilot = false;
 
     private boolean finalFrenzy;
     private int roundsLeft;

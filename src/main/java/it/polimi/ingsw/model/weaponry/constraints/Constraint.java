@@ -22,17 +22,17 @@ import java.util.stream.Collectors;
  * each representing a different predicate. Most predicates expressed by constraints have arity 2, i.e.
  * they describe a situation verifiable on 2 entities, they're also known as binary constraints.
  * All constraints are verified inside an attack pattern that acts like a context outside of which
- * the predicate is ambiguous and cannot therefore be verified.<br/>
- * Binary constraints always include:<br/>
+ * the predicate is ambiguous and cannot therefore be verified.<br>
+ * Binary constraints always include:<br>
  * <ul>
  *     <li><b>Source</b>: the first actor of the predicate, or the "subject".</li>
  *     <li><b>Drain</b>: the last actor of the predicate, or the "object".</li>
  * </ul>
- * There are also ternary constraints, that make a statement about three entities, and also include:<br/>
+ * There are also ternary constraints, that make a statement about three entities, and also include:<br>
  * <ul>
  *     <li><b>Gate</b>: the middle actor of the predicate, or the "intermediary".</li>
  * </ul>
- * <br/>
+ * <br>
  * When constraints are evaluated, their subjects, objects and/or intermediaries often need to
  * be referenced in a host of different situations, making integers an easy and versatile solution
  * for creating a path of references that leads to the entity of interest for each role in the constraint.
@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * future moment with respect to the moment in which a constraint attempts to reference
  * an entity as one of its actors, even within the same attack module. In other words,
  * it is impossible to evaluate a constraint depending partially on decisions not yet taken by the player.
- * <br/>
+ * <br>
  * In order to grant the constraints internal language a fully operational expressive power, at least as
  * far as the game logic is concerned, the following encoding rules for numeric ids were devised:
  * <ul>
