@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.remote;
 
 public enum ContentType {
+
     NONE,       //Void cell
     CELL,       //Existing cell
 
@@ -10,7 +11,7 @@ public enum ContentType {
     VER_FULL,   //wall between two cells that are ghostlyAdjacent yet not adjacent
     HOR_FULL,
 
-    VER_DOOR,   //wall between two cells adjacent but separated from a door
+    VER_DOOR,   //wall between two cells that are adjacent but separated by a door
     HOR_DOOR,
 
     ANGLE       //angle

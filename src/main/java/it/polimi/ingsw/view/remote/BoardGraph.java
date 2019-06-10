@@ -45,7 +45,7 @@ public class BoardGraph {
         //TODO: gently delete this
     }
 
-    //TODO: delete this (need to fix TestBoardGraph first)
+    //TODO: delete this (need to fix TestBoardGraph first, see the related F1XME)
     public static ContentType getWallBetweenCells(Board board, int x1, int y1, int x2, int y2) {
         if (board.getCellByCoordinates(x1, y1) != null && board.getCellByCoordinates(x2, y2) != null) { //they both exist
 

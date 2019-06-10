@@ -59,7 +59,7 @@ public abstract class RemoteBoard {
 
     public static RemoteCell getCellByCoordinates(int x, int y) {
         return null;
-        //TODO
+        //TODO: remove this
     }
 
 }
