@@ -2,24 +2,23 @@ package it.polimi.ingsw.view.remote.gui;
 
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ClientAlreadyRegisteredException;
+import it.polimi.ingsw.network.common.exceptions.ClientNotRegisteredException;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.view.remote.GraphicalInterface;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.Event;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -28,9 +27,29 @@ import javafx.util.Duration;
 
 import java.util.Optional;
 
+//quando premo esc, se sono in selectLobbyLayout devo sloggare l'utente prima di procedere. ENUM di layout in cui l'app si può trovare
+//così so dove sono e agisco di conseguenza.
+
 public class GUI extends Application implements GraphicalInterface {
+    private enum Layout {
+        LOGIN_LAYOUT,
+        LOBBY_SELECTION_LAYOUT
+    }
+
+    private Layout currentLayout;
+
+    //base components
     private Stage stage;
-    private HBox errorHBox;
+    private StackPane baseLayout;
+    private HBox exitHintHBox;
+
+    //login components
+    private VBox loginVBox;
+    private HBox errorLabelBox;
+
+    //lobby selection components
+    ListView<String> lobbyStatus;
+    HBox lobbyBox;
 
     private static CommunicationHandler communicationHandler;
 
@@ -50,7 +69,7 @@ public class GUI extends Application implements GraphicalInterface {
     private void register(String username) {
         try {
             GUI.communicationHandler.register(username);
-            //TODO: start "lobbySelect" scene
+            stage.getScene().setRoot(createLobbySelectLayout());
         } catch (ConnectionException e) {
             fatalErrorRoutine(e.getMessage());
         } catch (ClientAlreadyRegisteredException e) {
@@ -91,7 +110,7 @@ public class GUI extends Application implements GraphicalInterface {
         return loginBox;
     }
 
-    private HBox createExitLoginForeground() {
+    private HBox createExitForeground() {
         String exitHint = "[ESC] quit";
         double hintFontSize = 20;
         double hintPadding = 10;
@@ -100,14 +119,14 @@ public class GUI extends Application implements GraphicalInterface {
         return Palette.labelBox(exitHint, Palette.OPTION_TEXT_COLOR, Palette.LABEL_BACKGROUND, hintFontSize, hintPadding, hintMargin, Pos.BOTTOM_LEFT);
     }
 
-    private ImageView createLoginBackground() {
-        String backgroundImagePath = "/png/background/background.png";
-        Image backgroundImage = new Image(backgroundImagePath);
+    private Background createLoginBackground() {
+        String backgroundImagePath = "/png/backgrounds/login_bg.png";
+        return Palette.background(backgroundImagePath);
+    }
 
-        ImageView backgroundImageView = new ImageView(backgroundImage);
-        backgroundImageView.setPreserveRatio(true);
-
-        return backgroundImageView;
+    private Background createLobbySelectionBackground() {
+        String backgroundImagePath = "/png/backgrounds/lobby_selection_bg.png";
+        return Palette.background(backgroundImagePath);
     }
 
     //creates a hidden error labelBox
@@ -121,39 +140,39 @@ public class GUI extends Application implements GraphicalInterface {
         return hBox;
     }
 
-    private Scene createLoginScene() {
+    private Parent createLoginLayout() {
+        currentLayout = Layout.LOGIN_LAYOUT;
+
         HBox loginHBox = createLoginForeground();
-        HBox exitHintHBox = createExitLoginForeground();
-        ImageView backgroundImageView = createLoginBackground();
-        errorHBox = createLoginErrorHBox();
+        exitHintHBox = createExitForeground();
+        errorLabelBox = createLoginErrorHBox();
 
-        VBox errorVBox = new VBox();
-        errorVBox.setAlignment(Pos.CENTER);
-        errorVBox.getChildren().addAll(loginHBox, errorHBox);
+        loginVBox = new VBox();
+        loginVBox.setAlignment(Pos.CENTER);
+        loginVBox.getChildren().addAll(loginHBox, errorLabelBox);
 
-        StackPane stackPane = new StackPane();
-        stackPane.getChildren().addAll(backgroundImageView, exitHintHBox, errorVBox);
-        stackPane.layoutBoundsProperty().addListener((observable, oldValue, newValue) -> { //adjust image proportions to the screen size, aspect ratio and resolution
-            double w = newValue.getWidth();
-            double h = newValue.getHeight();
-            backgroundImageView.setFitWidth(w);
-            backgroundImageView.setFitHeight(h);
-            double ratio = h / w;
-            Image image = backgroundImageView.getImage();
-            double ih = image.getHeight();
-            double iw = image.getWidth();
-            double vR = ih / iw;
-            backgroundImageView.setViewport((ratio < vR) ? new Rectangle2D(0, 0, iw, iw * ratio) : new Rectangle2D(0, 0, ih / ratio, ih));
-        });
+        baseLayout.setBackground(createLoginBackground());
+        baseLayout.getChildren().addAll(exitHintHBox, loginVBox);
+        return baseLayout;
+    }
 
-        Scene scene = new Scene(stackPane);
-        scene.addEventHandler(KeyEvent.KEY_PRESSED, t -> { //set the ESC button to exit the program
-            if (t.getCode() == KeyCode.ESCAPE) {
-                exitRoutine();
-            }
-        });
+    private Parent createLobbySelectLayout() {
+        currentLayout = Layout.LOBBY_SELECTION_LAYOUT;
 
-        return scene;
+        baseLayout.setBackground(createLobbySelectionBackground());
+        baseLayout.getChildren().remove(loginVBox);
+
+        /*lobbyStatus = new ListView<>();
+        lobbyStatus.getItems().addAll("a", "b", "c", "d", "e", "f", "g", "h", "i", "j");
+        lobbyStatus.setOrientation(Orientation.VERTICAL);
+        lobbyStatus.setPrefSize(120, 100);
+
+        lobbyBox = new HBox(lobbyStatus);
+        lobbyBox.setSpacing(10);
+        lobbyBox.setAlignment(Pos.CENTER);
+
+        baseLayout.getChildren().add(lobbyBox);*/
+        return baseLayout;
     }
 
     private void fatalErrorRoutine(String errorMessage) {
@@ -161,17 +180,17 @@ public class GUI extends Application implements GraphicalInterface {
 
         Palette.errorAlert(errorTitle, null, errorMessage, stage).showAndWait();
         stage.close();
-        System.exit(0);
+        System.exit(-1);
     }
 
     private void errorLabelRoutine(String errorMessage) {
         int fadeInTimeout = 3;
 
-        ((Label) errorHBox.getChildren().get(0)).setText(errorMessage);
-        errorHBox.setVisible(true);
+        ((Label) errorLabelBox.getChildren().get(0)).setText(errorMessage);
+        errorLabelBox.setVisible(true);
 
         PauseTransition visiblePause = new PauseTransition(Duration.seconds(fadeInTimeout));
-        visiblePause.setOnFinished(event -> errorHBox.setVisible(false));
+        visiblePause.setOnFinished(event -> errorLabelBox.setVisible(false));
         Platform.runLater(visiblePause::play);
     }
 
@@ -182,6 +201,12 @@ public class GUI extends Application implements GraphicalInterface {
         Optional<ButtonType> result = Palette.confirmationAlert(exitAlertTitle, null, exitMessage, stage).showAndWait();
 
         if (result.isPresent() && result.get().equals(ButtonType.OK)) {
+            if (currentLayout.equals(Layout.LOBBY_SELECTION_LAYOUT))
+                try {
+                    communicationHandler.unregister();
+                } catch (ConnectionException | ClientNotRegisteredException e) {
+                    fatalErrorRoutine(e.getMessage());
+                }
             stage.close();
             System.exit(0);
         }
@@ -193,13 +218,20 @@ public class GUI extends Application implements GraphicalInterface {
     }
 
     @Override
-    public void start(Stage stage) {
-        this.stage = stage;
+    public void start(Stage primaryStage) {
+        stage = primaryStage;
+        baseLayout = new StackPane();
 
         String stageTitle = "Adrenaline: the game!";
-        Scene loginScene = createLoginScene();
 
-        stage.setScene(loginScene);
+        Scene scene = new Scene(createLoginLayout());
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, t -> { //set the ESC button to exit the program
+            if (t.getCode() == KeyCode.ESCAPE) {
+                exitRoutine();
+            }
+        });
+
+        stage.setScene(scene);
         stage.setTitle(stageTitle);
         stage.setResizable(false);
         stage.setFullScreen(true);
