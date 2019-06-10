@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.util.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 import it.polimi.ingsw.view.remote.status.RemoteBoard;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class CLI extends View {
@@ -32,13 +33,13 @@ public class CLI extends View {
 
         for(int h=0; h < boardHeight; h++) {
 
-            graph.printWall(WallType.ANGLE);
+            graph.printWall(ContentType.ANGLE);
 
             //printing upper wall of every cell
             for(int w=0; w < boardWidth; w++) {
 
                 graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w, h-1));
-                graph.printWall(WallType.ANGLE);
+                graph.printWall(ContentType.ANGLE);
 
                 if(w == boardWidth-1)
                     print("\n");
@@ -119,12 +120,17 @@ public class CLI extends View {
         } //end for(Height)
 
         //drawing bottom horizontal walls
-        graph.printWall(WallType.ANGLE);
+        graph.printWall(ContentType.ANGLE);
         for(int w=0; w < boardWidth; w++) {
             graph.printWall(BoardGraph.getWallBetweenCells(board, w, boardHeight, w, boardHeight - 1));
-            graph.printWall(WallType.ANGLE);
+            graph.printWall(ContentType.ANGLE);
         }
     } //end printBoard
+
+    public static List<ContentType> getMorphology(Board board) {
+        //TODO
+        return null;
+    }
 
     //prints killers (being normal or overkill) and doublekillers
     public static void printBoardStatus(Board board) {

@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.virtual;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
+import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
@@ -131,6 +132,15 @@ public class VirtualView {
         }
         else {
             List<Object> content = new ArrayList<>();
+            //adds general board structure info
+            content.add(game.getBoard().getWidth());
+            content.add(game.getBoard().getHeight());
+            //NOTE: in every standard configuration, width == 4 and height == 3, however this increases code robustness
+
+            //adds board morphology (i.e. cell positions and walls, but no info about their content, which will be sent via UPDATE_CELL)
+            //NOTE: this is useful for CLI only, so this method can either be optimized for GUI/CLI choice or reused in both cases for shortness
+            //content.add(Board.getMorphology());
+
             //adds participants names
             content.add(game.getParticipants()
                     .stream()
@@ -143,9 +153,6 @@ public class VirtualView {
                     .map(Player::getPosition)
                     .map(Cell::getId)
                     .collect(Collectors.toList()));
-
-            //adds cells
-            //TODO
 
             Deliverable deliverable = new Bulk(DeliverableEvent.BOARD_INIT, content);
             broadcast(deliverable);

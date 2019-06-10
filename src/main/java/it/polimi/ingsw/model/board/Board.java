@@ -6,16 +6,14 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
-import it.polimi.ingsw.model.exceptions.CannotDiscardFirstCardOfDeckException;
-import it.polimi.ingsw.model.exceptions.EmptyDeckException;
-import it.polimi.ingsw.model.exceptions.JsonException;
-import it.polimi.ingsw.model.exceptions.JullPointerException;
+import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ScoreList;
 import it.polimi.ingsw.model.powerups.*;
 import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
 import it.polimi.ingsw.model.util.json.JsonObjectGenerator;
 import it.polimi.ingsw.model.weaponry.Weapon;
+import it.polimi.ingsw.view.remote.ContentType;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -23,6 +21,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static it.polimi.ingsw.view.remote.ContentType.*;
 
 /**
  * T
@@ -606,5 +606,74 @@ public class Board {
             ammoTileDeck.regenerate();
         }
         return Optional.of(ammoTile);
+    }
+
+    public List<ContentType> getMorphology() {
+        List<ContentType> morphology = new ArrayList<>();
+
+
+
+        return null;
+    }
+
+    private ContentType getWallBetweenCells(int x1, int y1, int x2, int y2) {
+        if (this.getCellByCoordinates(x1, y1) != null && this.getCellByCoordinates(x2, y2) != null) { //they both exist
+
+            try {
+                if (this.getCellByCoordinates(x1, y1).isGhostlyAdjacent(this.getCellByCoordinates(x2, y2))) { //the cells may be separated by a wall, a door or nothing
+                    if (!this.getCellByCoordinates(x1, y1).isAdjacent(this.getCellByCoordinates(x2, y2))) { //the cells are separated by a wall
+                        if (x1 == x2)
+                            return HOR_FULL;
+                        else if (y1 == y2)
+                            return VER_FULL;
+                    }
+                    else if (this.getCellByCoordinates(x1, y1).getRoom() == this.getCellByCoordinates(x2, y2).getRoom()) { //they're part of the same room
+                        if (x1 == x2)
+                            return HOR_VOID;
+                        else if (y1 == y2)
+                            return VER_VOID;
+                    }
+                    else { //they are separated by a door
+                        if(x1 == x2)
+                            return HOR_DOOR;
+                        else if (y1 == y2)
+                            return VER_DOOR;
+                    }
+                }
+            } catch (NullCellOperationException ignored) {
+                //it never happens, as this method is invoked only after the whole board has been initialised
+            }
+            //the cells aren't even ghostlyAdjacent, so there isn't any separator between them
+            //return NONE;
+
+            //This case is covered by "return NONE" at the end of the method
+
+        }
+        else if(this.getCellByCoordinates(x1, y1) == null && this.getCellByCoordinates(x2, y2) == null) {
+            //none of them exist; however, they may be printed if they refers to blank spaces
+            if (x1 == x2 && Math.abs(y1 - y2) == 1)
+                return HOR_VOID;
+            else if (y1 == y2 && Math.abs(x1 - x2) == 1)
+                return VER_VOID;
+        }
+        else
+        {
+            if(this.getCellByCoordinates(x1, y1) == null) { //cell1 does not exists, while cell2 does
+                if(x1 == x2 && Math.abs(y1 - y2) == 1)
+                    return HOR_FULL;
+                else if(y1 == y2 && Math.abs(x1 - x2) == 1)
+                    return VER_FULL;
+            }
+            else if(this.getCellByCoordinates(x2, y2) == null) { //cell2 does not exists, while cell1 does
+                if(x1 == x2 && Math.abs(y1 - y2) == 1)
+                    return HOR_FULL;
+                else if(y1 == y2 && Math.abs(x1 - x2) == 1) {
+                    return VER_FULL;
+                }
+            }
+        }//end else (exactly one cell exists)
+        return NONE;
+        //NONE is returned only if the two cells weren't even touching, its purpose is for robustness of code
+        //NOTE: this may be deleted soon
     }
 }

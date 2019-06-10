@@ -1,22 +1,18 @@
 package it.polimi.ingsw.view.remote;
 
 import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.cell.AmmoCell;
-import it.polimi.ingsw.model.cell.Cell;
-import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.NullCellOperationException;
-import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.view.remote.status.RemoteBoard;
 import it.polimi.ingsw.view.remote.status.RemoteCell;
 import it.polimi.ingsw.view.remote.status.RemotePlayer;
 
-import static it.polimi.ingsw.view.remote.WallType.*;
+import static it.polimi.ingsw.view.remote.ContentType.*;
 
 public class BoardGraph {
 
     private static final int internalWidth = 28;
 
-    public void printWall(WallType wall) {
+    public void printWall(ContentType wall) {
         switch (wall) {
             case VER_FULL:
                 CLI.print("┃");
@@ -44,12 +40,13 @@ public class BoardGraph {
         }
     }
 
-    public static WallType getWallBetweenCells(RemoteBoard board, int x1, int y1, int x2, int y2) {
+    public static ContentType getWallBetweenCells(RemoteBoard board, int x1, int y1, int x2, int y2) {
         return null;
-        //TODO
+        //TODO: gently delete this
     }
 
-    public static WallType getWallBetweenCells(Board board, int x1, int y1, int x2, int y2) {
+    //TODO: delete this (need to fix TestBoardGraph first)
+    public static ContentType getWallBetweenCells(Board board, int x1, int y1, int x2, int y2) {
         if (board.getCellByCoordinates(x1, y1) != null && board.getCellByCoordinates(x2, y2) != null) { //they both exist
 
             try {
@@ -107,7 +104,6 @@ public class BoardGraph {
         }//end else (exactly one cell exists)
         return NONE;
         //NONE is returned only if the two cells weren't even touching, its purpose is for robustness of code
-        //TODO: this method should be on virtual view or in model
     }
 
     public void printCellCoordinate(RemoteCell cell) {
