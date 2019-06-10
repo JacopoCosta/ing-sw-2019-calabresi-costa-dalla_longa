@@ -25,6 +25,7 @@ public class CLI extends View {
 
     //CLI display method, may be improved
     public static void printBoard(RemoteBoard board) {
+        //FIXME: this method is obsolete
 
         BoardGraph graph = new BoardGraph();
 

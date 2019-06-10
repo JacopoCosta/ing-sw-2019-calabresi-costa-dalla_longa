@@ -670,12 +670,12 @@ public class Board {
             } catch (NullCellOperationException ignored) {
                 //it never happens, as this method is invoked only after the whole board has been initialised
             }
-            //the cells aren't even ghostlyAdjacent, so there isn't any separator between them
-            //return ContentType.NONE;
+            //the cells aren't even ghostlyAdjacent, so there isn't any separator between them, so it should be
+            //return ContentType.ANGLE;
+            //Yet, this case is covered by "return ANGLE" at the end of the method
 
-            //This case is covered by "return NONE" at the end of the method
+        } //end if (both cells exist)
 
-        }
         else if(this.getCellByCoordinates(x1, y1) == null && this.getCellByCoordinates(x2, y2) == null) {
             //none of them exist; however, they may be printed if they refers to blank spaces
             if (x1 == x2 && Math.abs(y1 - y2) == 1)
@@ -699,8 +699,6 @@ public class Board {
                 }
             }
         }//end else (exactly one cell exists)
-        return ContentType.NONE;
-        //ContentType.NONE is returned only if the two cells weren't even touching, its purpose is for robustness of code
-        //NOTE: this may be deleted soon
+        return ContentType.ANGLE; //can be useful, however in this whole program this method will be called only to determine walls, not angle
     }
 }
