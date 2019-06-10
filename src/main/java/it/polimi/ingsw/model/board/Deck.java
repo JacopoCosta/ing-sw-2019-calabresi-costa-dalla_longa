@@ -154,8 +154,8 @@ public class Deck<T> {
     }
 
     /**
-     * Generates a deck of 36 ammo tile cards:<br/>
-     * 18 without a power up: three copies per colour per pair of equal colours (2×3×3=18)<br/>
+     * Generates a deck of 36 ammo tile cards:<br>
+     * 18 without a power up: three copies per colour per pair of equal colours (2×3×3=18)<br>
      * 18 with a power up: two copies per colour per colour (2×3×3=18).
      * @return a new deck of ammo tiles.
      */

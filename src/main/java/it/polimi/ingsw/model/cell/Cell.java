@@ -69,6 +69,7 @@ public abstract class Cell {
 
     /**
      * Returns a number that uniquely identifies the cell on the board.
+     * @return the cell's id.
      */
     public int getId() {
         return board.getCells().indexOf(this) + 1;

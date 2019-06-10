@@ -72,9 +72,14 @@ public class AttackPattern {
 
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder("Attack modules:\n");
-            for(AttackModule attackModule : content)
-                s.append(attackModule.toString());
+        StringBuilder s = new StringBuilder();
+        List<String> attackModuleNames = new ArrayList<>();
+        for(AttackModule am : content) {
+            if(!attackModuleNames.contains(am.getName())) {
+                attackModuleNames.add(am.getName());
+                s.append("\n ").append(am.toString());
+            }
+        }
         return s.toString();
     }
 }

@@ -94,4 +94,7 @@ public class Weapon {
         }
     }
 
+    public String getDescription() {
+        return name + ":" + attackPattern.toString();
+    }
 }
