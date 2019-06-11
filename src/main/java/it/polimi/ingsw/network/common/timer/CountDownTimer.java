@@ -42,15 +42,15 @@ public class CountDownTimer implements Observable {
 
     private Runnable tick = () -> { //the task to execute every PERIOD seconds
         if (currentSeconds.decrementAndGet() < 0) {
-            timerState = TimerState.EXPIRED;
             try {
                 Thread.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return;
+            } catch (InterruptedException ignored) {
             }
-            stop();
-            notifyObservers();
+            synchronized (this) {
+                timerState = TimerState.EXPIRED;
+                stop();
+                notifyObservers();
+            }
         }
     };
 

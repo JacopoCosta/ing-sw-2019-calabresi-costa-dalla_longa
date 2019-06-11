@@ -2,7 +2,7 @@ package it.polimi.ingsw.network.common.timer;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class TestCountDownTimer {
     @Test
@@ -17,7 +17,7 @@ public class TestCountDownTimer {
         assertEquals(CountDownTimer.TimerState.STARTED, timer.getState());
 
         Thread.sleep(500 + 200);
-        assertEquals(CountDownTimer.TimerState.EXPIRED,timer.getState());
+        assertEquals(CountDownTimer.TimerState.EXPIRED, timer.getState());
     }
 
     @Test
@@ -41,7 +41,7 @@ public class TestCountDownTimer {
 
         timer.start();
 
-        Thread.sleep(1000);
+        Thread.sleep(1000 - 1);
         timer.stop();
 
         assertEquals(CountDownTimer.TimerState.STOPPED, timer.getState());

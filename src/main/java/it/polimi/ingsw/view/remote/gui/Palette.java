@@ -52,6 +52,7 @@ public class Palette {
         alert.setResizable(false);
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initOwner(owner);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         return alert;
     }
 
@@ -63,6 +64,7 @@ public class Palette {
         alert.setResizable(false);
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initOwner(owner);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         return alert;
     }
 
