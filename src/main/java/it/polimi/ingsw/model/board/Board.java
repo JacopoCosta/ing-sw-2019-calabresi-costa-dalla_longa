@@ -606,6 +606,11 @@ public class Board {
         return Optional.of(ammoTile);
     }
 
+    /**
+     * Calculates the morphology of the cell scheme of this board, i.e. a simple scheme containing basic info about the type of walls between every cell.
+     * Its only purpose is being analysed by CLI-type clients in order to draw the correct board configuration.
+     * @return A List containing the morphology of the current board cell scheme.
+     */
     public List<ContentType> getMorphology() {
         List<ContentType> morphology = new ArrayList<>();
 
@@ -640,9 +645,17 @@ public class Board {
         }
 
         return morphology;
-        //TODO: test this method, PLEASE
     }
 
+    /**
+     * Calculates the wall between two given cells. Note that this calculation is symmetrical
+     * (i.e. its result doesn't change in case x1 and x2 are swapped, as long as y1 and y2 are swapped as well).
+     * @param x1 the horizontal coordinate of the first cell, ranging from 0 (left) to boardWidth-1 (right).
+     * @param y1 the vertical coordinate of the first cell, ranging from 0 (top) to boardHeight-1 (bottom).
+     * @param x2 the horizontal coordinate of the second cell, ranging from 0 (left) to boardWidth-1 (right).
+     * @param y2 the vertical coordinate of the second cell, ranging from 0 (top) to boardHeight-1 (bottom).
+     * @return The right wall separating the cells. Note: If given cells are too far to be separated by a wall, ContentType.ANGLE will be returned instead.
+     */
     private ContentType getWallBetweenCells(int x1, int y1, int x2, int y2) {
         if (this.getCellByCoordinates(x1, y1) != null && this.getCellByCoordinates(x2, y2) != null) { //they both exist
 
