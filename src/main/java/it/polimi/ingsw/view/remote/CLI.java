@@ -1,17 +1,8 @@
 package it.polimi.ingsw.view.remote;
 
-import it.polimi.ingsw.model.ammo.AmmoCubes;
-import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.cell.Cell;
-import it.polimi.ingsw.model.cell.SpawnCell;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.model.util.Table;
-import it.polimi.ingsw.model.weaponry.Weapon;
 import it.polimi.ingsw.view.remote.status.RemoteBoard;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import it.polimi.ingsw.view.remote.status.RemotePlayer;
+import it.polimi.ingsw.view.remote.status.RemoteWeapon;
 
 public class CLI extends View {
 
@@ -29,8 +20,8 @@ public class CLI extends View {
 
         BoardGraph graph = new BoardGraph();
 
-        int boardWidth = board.getWidth();
-        int boardHeight = board.getHeight();
+        int boardWidth = RemoteBoard.getWidth();
+        int boardHeight = RemoteBoard.getHeight();
 
         for(int h=0; h < boardHeight; h++) {
 
@@ -128,49 +119,45 @@ public class CLI extends View {
         }
     } //end printBoard
 
-    public static List<ContentType> getMorphology(Board board) {
-        //TODO
-        return null;
-    }
 
     //prints killers (being normal or overkill) and doublekillers
-    public static void printBoardStatus(Board board) {
+    public static void printBoardStatus() {
 
         //print Kills list
         boolean emptyList = true;
-        CLI.print("\nKills list:");
-        for(Player p: board.getKillers()) {
-            if(p != null) {
-                if(board.getKillers().get(board.getKillers().indexOf(p) + 1) == null) {
-                    CLI.print(" " + p.getId() + " (x2)");
+        CLI.println("\nKills list:");
+        for(String killerName: RemoteBoard.getKillers()) {
+            if(killerName != null) {
+                if(RemoteBoard.getKillers().get(RemoteBoard.getKillers().indexOf(killerName) + 1) == null) {
+                    CLI.println("\t" + killerName + " (Overkill!) ");
                 }
                 else {
                     emptyList = false;
-                    CLI.print(" " + p.getId());
+                    CLI.println("\t" + killerName);
                 }
             }
         }
         if(emptyList)
-            CLI.print("\t<No kills yet>");
+            CLI.println("\t<No kills yet>");
 
         emptyList = true;
-        CLI.print("\nDouble kills list:");
-        for(Player p: board.getDoubleKillers()) {
+        CLI.println("\nDouble kills list:");
+        for(String doubleKillerName: RemoteBoard.getDoubleKillers()) {
             emptyList = false;
-            CLI.print(" " + p.getId());
+            CLI.println("\t" + doubleKillerName);
         }
         if(emptyList)
-            CLI.print("\t<No doublekills yet>");
+            CLI.println("\t<No doublekills yet>");
     }
 
-    public static void printWeaponInfo(Weapon weapon) {
+    public static void printWeaponInfo(RemoteWeapon weapon) {
         //TODO: improve it with the right method
     }
 
-    public static void printPlayerStatus(Player player) {
+    public static void printPlayerStatus(RemotePlayer player) {
 
         //given a player, it displays damageboard, list of weapon, owned ammocubes and so on.
-        CLI.println("Player number " + player.getId() + ", codename: " + player.getName());
+        CLI.println("Player: " + player.getName());
         //printing weapons
         if(player.getWeapons().size() == 0) {
             CLI.println("This player has no weapons!");
@@ -178,7 +165,7 @@ public class CLI extends View {
         else {
             int index=1;
             CLI.println("Owned weapons:");
-            for(Weapon w: player.getWeapons()) {
+            for(RemoteWeapon w: player.getWeapons()) {
                 CLI.print(((char) index) + ". " + w.getName());
 
                 if(w.isLoaded())
@@ -190,43 +177,28 @@ public class CLI extends View {
         } //end else
 
         //printing damageboard:
-        CLI.print("Damage taken:\t");
-        CLI.println(Table.list(player.getDamageAsList().stream().map(Player::getId).collect(Collectors.toList())));
+        CLI.println("Damage taken:");
+        for(String author: player.getDamage())
+            CLI.println("\t" + author);
 
         CLI.println("\nMarkers taken:");
-        CLI.println(Table.list(player.getMarkingsAsList().stream().map(Player::getId).collect(Collectors.toList())));
+        for(String author: player.getMarkings())
+            CLI.println("\t" + author);
 
-        CLI.println("Dead " + player.getDeathCount() + " times");
+        CLI.println("\nDead " + player.getDeathCount() + " times");
 
         CLI.printDamageBoard(player);
     }
 
-    private static void printDamageBoard(Player player) {
+    private static void printDamageBoard(RemotePlayer player) {
 
-        int index = player.getDamage();
+        int index = player.getDamage().size();
         //TODO: finish this. Use abstract class scorelist
 
     }
 
 
-    public static void printShop(Board board, AmmoCubes ammoCubeColor) {   //prints every weapon in a selected shop
-
-        Cell cell = board.findSpawnPoint(ammoCubeColor);
-
-        for(int i = 0; i < ((SpawnCell) cell).getWeaponShop().size(); i++) {
-            CLI.println((i + 1) + ". " + ((SpawnCell) cell).getWeaponShop().get(i).getName());
-            CLI.println("\tSelling for: " + ((SpawnCell) cell).getWeaponShop().get(i).getPurchaseCost().toString());
-        }
+    public static void printPowerUps(RemotePlayer player) {
+        CLI.println(player.getName() + " has " + player.getPowerUps().size() + " power ups");
     }
-
-    public static void printPowerUps(Player player) {
-        int index = 0;
-        for(PowerUp pwup: player.getPowerUps()) {
-            CLI.print((index + 1) + ". " + player.getPowerUps().get(index) + "\n");
-            index++;
-        }
-        if(index == 0)
-            CLI.println("No power-up!");
-    }
-
 }
