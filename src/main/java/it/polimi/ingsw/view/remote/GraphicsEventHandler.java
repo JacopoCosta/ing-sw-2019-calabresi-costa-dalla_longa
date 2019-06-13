@@ -14,9 +14,6 @@ public class GraphicsEventHandler {
     private boolean usesGUI;
     private CommunicationHandler communicationHandler;
 
-    private RemoteBoard remoteBoard;
-    private List<RemotePlayer> participants;
-
     public GraphicsEventHandler(boolean usesGUI, CommunicationHandler communicationHandler) {
         this.usesGUI = usesGUI;
         this.communicationHandler = communicationHandler;
@@ -278,6 +275,7 @@ public class GraphicsEventHandler {
 
                         shopList.add(new RemoteWeapon(weaponName, purchaseCost, reloadCost, true));
                     }
+                    cell.setShop(shopList);
                 }
 
                 break;
@@ -344,7 +342,21 @@ public class GraphicsEventHandler {
     }
 
     private void BoardInitializer(Object bulk) {
-        //TODO
+
+        //extracts info about the board
+        RemoteBoard.setWidth(((List<Integer>) bulk).get(0));
+        RemoteBoard.setHeight(((List<Integer>) bulk).get(1));
+
+        //extracts board morphology (sent as List<ContentType>)
+        List<ContentType> morphology = (List<ContentType>) ((List<Object>) bulk).get(2);
+        RemoteBoard.setMorphology(morphology);
+
+        //extracts info about participants, adding them to the RemoteBoard
+        List<String> playerNames = (List<String>) ((List<Object>) bulk).get(3);
+        for(String name: playerNames) {
+            RemotePlayer remotePlayer = new RemotePlayer(name);
+            RemoteBoard.getParticipants().add(remotePlayer);
+        }
     }
 
 }

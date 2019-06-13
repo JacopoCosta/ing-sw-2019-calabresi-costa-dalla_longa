@@ -125,7 +125,7 @@ public class VirtualView {
     BULK sender: sends initial info about the game itself: list of participants, board morphology and game settings.
     If the game comes from a previous saved game (isNewGame == true), it also sends all the information about players and board status.
     */
-    private void sendStatusInit(boolean isNewGame) {
+    private void sendStatusInit(Board board, boolean isNewGame) {
         List<Object> content = new ArrayList<>();
         //adds general board structure info
         content.add(game.getBoard().getWidth());
@@ -133,8 +133,8 @@ public class VirtualView {
         //NOTE: in every standard configuration, width == 4 and height == 3, however this increases code robustness
 
         //adds board morphology (i.e. cell positions and walls, but no info about their content, which will be sent via UPDATE_CELL)
-        //NOTE: this is useful for CLI only, so this method can either be optimized for GUI/CLI choice or reused in both cases for shortness
-        //content.add(Board.getMorphology());
+        //NOTE: this is useful for CLI only
+        content.add(board.getMorphology());
 
         //adds participants names
         content.add(game.getParticipants()
@@ -142,12 +142,20 @@ public class VirtualView {
                 .map(Player::getName)
                 .collect(Collectors.toList()));
 
+        /*
+
+        This is probably redundant.
+        TODO: check its redundancy (useless in case participants ID are used on view-level only, as participants are already
+              sent using a sorted list of participants)
+
         //adds participants ID
         content.add(game.getParticipants()
                 .stream()
                 .map(Player::getPosition)
                 .map(Cell::getId)
                 .collect(Collectors.toList()));
+
+         */
 
         Deliverable deliverable = new Bulk(DeliverableEvent.BOARD_INIT, content);
         broadcast(deliverable);

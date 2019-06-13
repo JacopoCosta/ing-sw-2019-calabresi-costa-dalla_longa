@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view.remote.status;
 
+import it.polimi.ingsw.view.remote.ContentType;
+
 import java.util.List;
 
 public abstract class RemoteBoard {
@@ -10,6 +12,8 @@ public abstract class RemoteBoard {
 
     private static int width;
     private static int height;
+
+    private static List<ContentType> morphology;
 
     private static List<RemoteCell> cells;
 
@@ -55,6 +59,10 @@ public abstract class RemoteBoard {
 
     public static void setHeight(int height) {
         RemoteBoard.height = height;
+    }
+
+    public static void setMorphology(List<ContentType> morphology) {
+        RemoteBoard.morphology = morphology;
     }
 
     public static RemoteCell getCellByCoordinates(int x, int y) {
