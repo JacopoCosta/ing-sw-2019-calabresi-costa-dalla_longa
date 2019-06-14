@@ -8,8 +8,6 @@ public class RemoteCell {
 
     private List<RemoteWeapon> shop;    //if AmmoCell is true, this list is empty as there's no shop in an ammoCell
 
-    private RemoteBoard remoteBoard;
-
     private int red;
     private int yellow;
     private int blue;
@@ -56,13 +54,5 @@ public class RemoteCell {
 
     public void rewrite(List <RemoteWeapon> shop) {     //used if isAmmoCell == false
         this.shop = shop;
-    }
-
-    public void setRemoteBoard(RemoteBoard remoteBoard) {
-        this.remoteBoard = remoteBoard;
-    }
-
-    public RemoteBoard getRemoteBoard() {
-        return remoteBoard;
     }
 }

@@ -1,18 +1,14 @@
 package it.polimi.ingsw.view.remote;
 
-import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.view.remote.status.RemoteBoard;
 import it.polimi.ingsw.view.remote.status.RemoteCell;
 import it.polimi.ingsw.view.remote.status.RemotePlayer;
 
 import static it.polimi.ingsw.view.remote.ContentType.*;
 
-public class BoardGraph {
+public abstract class BoardGraph {
 
-    private static final int internalWidth = 28;
-
-    public void printWall(ContentType wall) {
+    public static void printWall(ContentType wall, int internalWidth) {
         switch (wall) {
             case VER_FULL:
                 CLI.print("┃");
@@ -35,130 +31,76 @@ public class BoardGraph {
             case ANGLE:
                 CLI.print("╋");
                 break;
-            default:    //it covers case NONE
+            default:
                 break;
         }
     }
 
-    public static ContentType getWallBetweenCells(RemoteBoard board, int x1, int y1, int x2, int y2) {
-        return null;
-        //TODO: gently delete this
-    }
+    public static void printFirstLine(int index, int internalWidth) {   //prints the cell ID
 
-    //TODO: delete this (need to fix TestBoardGraph first, see the related F1XME)
-    public static ContentType getWallBetweenCells(Board board, int x1, int y1, int x2, int y2) {
-        if (board.getCellByCoordinates(x1, y1) != null && board.getCellByCoordinates(x2, y2) != null) { //they both exist
+        if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
+            printWall(RemoteBoard.getMorphology().get(index), internalWidth);
 
-            try {
-                if (board.getCellByCoordinates(x1, y1).isGhostlyAdjacent(board.getCellByCoordinates(x2, y2))) { //the cells may be separated by a wall, a door or nothing
-                    if (!board.getCellByCoordinates(x1, y1).isAdjacent(board.getCellByCoordinates(x2, y2))) { //the cells are separated by a wall
-                        if (x1 == x2)
-                            return HOR_FULL;
-                        else if (y1 == y2)
-                            return VER_FULL;
-                    }
-                    else if (board.getCellByCoordinates(x1, y1).getRoom() == board.getCellByCoordinates(x2, y2).getRoom()) { //they're part of the same room
-                        if (x1 == x2)
-                            return HOR_VOID;
-                        else if (y1 == y2)
-                            return VER_VOID;
-                    }
-                    else { //they are separated by a door
-                        if(x1 == x2)
-                            return HOR_DOOR;
-                        else if (y1 == y2)
-                            return VER_DOOR;
-                    }
-                }
-            } catch (NullCellOperationException ignored) {
-                //it never happens, as this method is invoked only after the whole board has been initialised
-            }
-            //the cells aren't even ghostlyAdjacent, so there isn't any separator between them
-                //return NONE;
-
-                //This case is covered by "return NONE" at the end of the method
-
-        }
-        else if(board.getCellByCoordinates(x1, y1) == null && board.getCellByCoordinates(x2, y2) == null) {
-            //none of them exist; however, they may be printed if they refers to blank spaces
-            if (x1 == x2 && Math.abs(y1 - y2) == 1)
-                return HOR_VOID;
-            else if (y1 == y2 && Math.abs(x1 - x2) == 1)
-                return VER_VOID;
-        }
-        else
-        {
-            if(board.getCellByCoordinates(x1, y1) == null) { //cell1 does not exists, while cell2 does
-                if(x1 == x2 && Math.abs(y1 - y2) == 1)
-                    return HOR_FULL;
-                else if(y1 == y2 && Math.abs(x1 - x2) == 1)
-                    return VER_FULL;
-            }
-            else if(board.getCellByCoordinates(x2, y2) == null) { //cell2 does not exists, while cell1 does
-                if(x1 == x2 && Math.abs(y1 - y2) == 1)
-                    return HOR_FULL;
-                else if(y1 == y2 && Math.abs(x1 - x2) == 1) {
-                    return VER_FULL;
-                }
-            }
-        }//end else (exactly one cell exists)
-        return NONE;
-        //NONE is returned only if the two cells weren't even touching, its purpose is for robustness of code
-    }
-
-    public void printCellCoordinate(RemoteCell cell) {
-        /*if(cell != null)
-            if(cell.getId() < 10)
-                CLI.print(" <" + cell.getId() + ">" + fillWith(internalWidth - 4, " "));   //single digit cell ID
-            else
-                CLI.print(" <" + cell.getId() + ">" + fillWith(internalWidth - 5, " "));    //double digit cell ID
-        else
-            CLI.print(fillWith(internalWidth, " "));   //just spaces
-
-            TODO
-            */
-    }
-
-    public void printFirstLine(RemoteCell cell) {
-        /*
-        if(cell == null){
-            CLI.print(fillWith(internalWidth, " "));   //just spaces
-            return;
-        }
-
-        if(cell.isSpawnPoint()) {
-            switch(((SpawnCell) cell).getAmmoCubeColor().toStringAsColor()) {
-                case("red"):
-                    CLI.print(" ~RED SHOP~" + fillWith(internalWidth - 11, " "));
-                    break;
-                case("yellow"):
-                    CLI.print(" ~YELLOW SHOP~" + fillWith(internalWidth - 14, " "));
-                    break;
-                case("blue"):
-                    CLI.print(" ~BLUE SHOP~" + fillWith(internalWidth - 12, " "));
-                default:
-                    break;
-            }
+            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+                CLI.print("\n");
+            //NOTE: this is the only case where a new line can be displayed here
         }
         else {
-            if(((AmmoCell) cell).getAmmoTile() == null)     //it happens when the cell doesn't contain any ammo, for example
-                CLI.print(fillWith(internalWidth, " "));      //right after a player has grabbed its AmmoTile
-            else {
-                if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() > 0)
-                    CLI.print(" RED: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() + fillWith(internalWidth - 7, " "));
+            int cellIndex = (index - 1) / 2;
+            RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
 
-                else if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() > 0)
-                    CLI.print(" YELLOW: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() + fillWith(internalWidth - 10, " "));
-
+            if (cell != null)   //cell is actually an existing cell
+                if (cellIndex + 1 < 10)
+                    CLI.print(" <" + (cellIndex+1) + ">" + fillWith(internalWidth - 4, " "));   //single digit cell ID
                 else
-                    CLI.print(" BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + fillWith(internalWidth - 8, " "));
-            }
+                    CLI.print(" <" + (cellIndex+1) + ">" + fillWith(internalWidth - 5, " "));    //double digit cell ID
+            else    //cell is referring to a void cell
+                CLI.print(fillWith(internalWidth, " "));   //just spaces
         }
-        TODO
-         */
     }
 
-    public void printSecondLine(RemoteCell cell) {
+    public static void printSecondLine(int index, int internalWidth) {
+
+        if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
+            printWall(RemoteBoard.getMorphology().get(index), internalWidth);
+
+            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+                CLI.print("\n");
+            //NOTE: this is the only case where a new line can be displayed here
+        } //end if (not a cell)
+        else {
+            int cellIndex = (index - 1) / 2;
+            RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
+
+            if (cell != null) { //cell is actually an existing cell
+                if(cell.isAmmoCell()) {
+                    if (cell.getRed() > 0)
+                        CLI.print(" RED: " + cell.getRed() + fillWith(internalWidth - 7, " "));
+
+                    else if (cell.getYellow() > 0)
+                        CLI.print(" YELLOW: " + cell.getYellow() + fillWith(internalWidth - 10, " "));
+
+                    else if (cell.getBlue() > 0)
+                        CLI.print(" BLUE: " + cell.getBlue() + fillWith(internalWidth - 8, " "));
+
+                    else    //the cell has no ammo; it happens when an ammo has just been picked up, so there are no ammo here until the cell is refreshed
+                        CLI.print(fillWith(internalWidth, " "));
+                }
+                else {  //cell is a spawn/shop cell
+                    if(cell.getRed() > 0)
+                        CLI.print(" ~RED SHOP~" + fillWith(internalWidth - 11, " "));
+                    else if(cell.getYellow() > 0)
+                        CLI.print(" ~YELLOW SHOP~" + fillWith(internalWidth - 14, " "));
+                    else
+                        CLI.print(" ~BLUE SHOP~" + fillWith(internalWidth - 12, " "));
+                }
+            }
+            else    //cell is referring to a void cell
+                CLI.print(fillWith(internalWidth, " "));   //just spaces
+        } //end else (it's a cell)
+    }
+
+    public static void printThirdLine(int index, int internalWidth) {
         /*
         if(cell == null){
             CLI.print(fillWith(internalWidth, " "));
@@ -221,7 +163,7 @@ public class BoardGraph {
          */
     }
 
-    public void printThirdLine(RemoteCell cell) {
+    public static void printFourthLine(int index, int internalWidth) {
         /*
         if(cell == null) {
             CLI.print(fillWith(internalWidth, " "));   //just spaces
@@ -242,7 +184,7 @@ public class BoardGraph {
             */
     }
 
-    public void printFourthLine(RemoteCell cell) {
+    public static void printFifthLine(int index, int internalWidth) {
         /*
         if(cell == null) {
             CLI.print(fillWith(internalWidth, " "));   //just spaces
@@ -262,26 +204,28 @@ public class BoardGraph {
          */
     }
 
-    public void printFifthLine(RemoteCell cell) {
+    public static void printSixthLine(int index, int internalWidth) {
 
+        /*
         int charCounter = 0;
         if(cell == null){
             CLI.print(fillWith(internalWidth, " "));   //just spaces
             return;
         }
         //this time, it doesn't matter whether the cell is a SpawnCell or not
-        for(RemotePlayer p: cell.getRemoteBoard().getParticipants()) {
-            /*if (p.getPosition() == cell) {
+        for(RemotePlayer p: RemoteBoard.getParticipants()) {
+            if (p.getPosition() == cell) {
                 CLI.print(" " + p.getId());
                 charCounter += 2;
                 TODO
-            }*/
+            }
         }
         //completes the row with the right number of spaces
         CLI.print(fillWith(internalWidth - charCounter, " "));
+        */
     }
 
-    private String fillWith(int amount, String pattern) {
+    private static String fillWith(int amount, String pattern) {
         if(amount <= 0)
             return "";
         else
@@ -290,7 +234,7 @@ public class BoardGraph {
 
 
 
-    private String truncate (String s, int size) {
+    private static String truncate (String s, int size) {
         return s.substring(0, s.length() < size ? s.length() : size);
 
         //TODO: find an elegant way to incorporate this method in CLI.print for code readability

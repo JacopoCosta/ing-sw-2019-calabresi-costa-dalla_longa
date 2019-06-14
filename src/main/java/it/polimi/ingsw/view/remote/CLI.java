@@ -4,7 +4,11 @@ import it.polimi.ingsw.view.remote.status.RemoteBoard;
 import it.polimi.ingsw.view.remote.status.RemotePlayer;
 import it.polimi.ingsw.view.remote.status.RemoteWeapon;
 
+import java.util.List;
+
 public class CLI extends View {
+
+    private static final int internalWidth = 28;
 
     public static void print(String message) {
         System.out.print(message); // this is the only system out print call in the entire program
@@ -14,24 +18,60 @@ public class CLI extends View {
         print(message + "\n");
     }
 
+    public static void printBoard() {
+
+        int schemeWidth = RemoteBoard.getWidth()*2 + 1;     //width of the morphology
+        int schemeHeight = RemoteBoard.getHeight()*2 + 1;   //height of the morphology
+
+        List<ContentType> morphology = RemoteBoard.getMorphology(); //shorthand
+
+        for(int h=0; h<schemeHeight; h++) { //cycling on every row
+
+            if(h%2 == 0) {  //the current row is made of angles and HOR_walls only
+
+                for (int w = 0; w < schemeWidth; w++) { //cycling on every element of a row
+                BoardGraph.printWall(morphology.get(h*schemeHeight + w), internalWidth);
+
+                    if(w == schemeWidth-1)  //prints a new line when the last element has just been printed
+                        CLI.print("\n");
+                }
+            } //end if (h is even)
+
+            else {  //there are cells and VER_walls on this row
+
+                for (int w = 0; w < schemeWidth; w++) { //cycling on every element of a row
+                    BoardGraph.printFirstLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printSecondLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printThirdLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printFourthLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printFifthLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printSixthLine(h*schemeHeight + w, internalWidth);
+                }
+            } //end else (h is odd)
+        }
+
+    }
+
+
+    /*
+
     //CLI display method, may be improved
     public static void printBoard(RemoteBoard board) {
-        //FIXME: this method is obsolete
-
-        BoardGraph graph = new BoardGraph();
+            TODO: this method will be deleted soon, but it was working fine so it will remain commented
+                to be used as pseudo-code until the new printBoard method will be ready
 
         int boardWidth = RemoteBoard.getWidth();
         int boardHeight = RemoteBoard.getHeight();
 
         for(int h=0; h < boardHeight; h++) {
 
-            graph.printWall(ContentType.ANGLE);
+            BoardGraph.printWall(ContentType.ANGLE);
 
             //printing upper wall of every cell
             for(int w=0; w < boardWidth; w++) {
 
-                graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w, h-1));
-                graph.printWall(ContentType.ANGLE);
+                BoardGraph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w, h-1));
+                BoardGraph.printWall(ContentType.ANGLE);
 
                 if(w == boardWidth-1)
                     print("\n");
@@ -40,11 +80,11 @@ public class CLI extends View {
             //drawing cell coordinates of every cell
             for(int w=0; w < boardWidth; w++) {
 
-                graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
-                graph.printCellCoordinate(board.getCellByCoordinates(w, h));
+                BoardGraph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
+                BoardGraph.printCellCoordinate(board.getCellByCoordinates(w, h));
 
                 if(w == boardWidth-1) { //I need to print an extra vertical wall, for this is the last cell of the row
-                    graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
+                    BoardGraph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
                     print("\n");
                 }
             }
@@ -52,11 +92,11 @@ public class CLI extends View {
             //drawing first line of every cell
             for(int w=0; w < boardWidth; w++) {
 
-                graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
-                graph.printFirstLine(board.getCellByCoordinates(w, h));
+                BoardGraph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
+                BoardGraph.printFirstLine(RemoteBoard.getCellByCoordinates(w, h));
 
                 if(w == boardWidth-1) {
-                    graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
+                    BoardGraph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
                     print("\n");
                 }
             }
@@ -64,11 +104,11 @@ public class CLI extends View {
             //drawing second line of every cell
             for(int w=0; w < boardWidth; w++) {
 
-                graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
-                graph.printSecondLine(board.getCellByCoordinates(w, h));
+                BoardGraph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
+                BoardGraph.printSecondLine(RemoteBoard.getCellByCoordinates(w, h));
 
                 if(w == boardWidth-1) {
-                    graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
+                    BoardGraph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
                     print("\n");
                 }
             }
@@ -76,11 +116,11 @@ public class CLI extends View {
             //drawing third line of every cell
             for(int w=0; w < boardWidth; w++) {
 
-                graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
-                graph.printThirdLine(board.getCellByCoordinates(w, h));
+                BoardGraph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
+                BoardGraph.printThirdLine(RemoteBoard.getCellByCoordinates(w, h));
 
                 if(w == boardWidth-1) {
-                    graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
+                    BoardGraph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
                     print("\n");
                 }
             }
@@ -88,11 +128,11 @@ public class CLI extends View {
             //drawing fourth line of every cell
             for(int w=0; w < boardWidth; w++) {
 
-                graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
-                graph.printFourthLine(board.getCellByCoordinates(w, h));
+                BoardGraph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
+                BoardGraph.printFourthLine(board.getCellByCoordinates(w, h));
 
                 if(w == boardWidth-1) {
-                    graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
+                    BoardGraph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
                     print("\n");
                 }
             }
@@ -100,11 +140,11 @@ public class CLI extends View {
             //drawing fifth line of every cell
             for(int w=0; w < boardWidth; w++) {
 
-                graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
-                graph.printFifthLine(board.getCellByCoordinates(w, h));
+                BoardGraph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w-1, h));
+                BoardGraph.printFifthLine(board.getCellByCoordinates(w, h));
 
                 if(w == boardWidth-1) {
-                    graph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
+                    BoardGraph.printWall(BoardGraph.getWallBetweenCells(board, w, h, w+1, h));
                     print("\n");
                 }
             }
@@ -112,12 +152,14 @@ public class CLI extends View {
         } //end for(Height)
 
         //drawing bottom horizontal walls
-        graph.printWall(ContentType.ANGLE);
+        BoardGraph.printWall(ContentType.ANGLE);
         for(int w=0; w < boardWidth; w++) {
-            graph.printWall(BoardGraph.getWallBetweenCells(board, w, boardHeight, w, boardHeight - 1));
-            graph.printWall(ContentType.ANGLE);
+            BoardGraph.printWall(BoardGraph.getWallBetweenCells(board, w, boardHeight, w, boardHeight - 1));
+            BoardGraph.printWall(ContentType.ANGLE);
         }
     } //end printBoard
+
+     */
 
 
     //prints killers (being normal or overkill) and doublekillers

@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.remote.status;
 
 import it.polimi.ingsw.view.remote.ContentType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class RemoteBoard {
@@ -41,6 +42,14 @@ public abstract class RemoteBoard {
         return cells;
     }
 
+    public static List<ContentType> getMorphology() {
+        return morphology;
+    }
+
+    public static void setCells(List<RemoteCell> cells) {
+        RemoteBoard.cells = cells;
+    }
+
     public static void setDoubleKillers(List<String> doubleKillers) {
         RemoteBoard.doubleKillers = doubleKillers;
     }
@@ -65,9 +74,18 @@ public abstract class RemoteBoard {
         RemoteBoard.morphology = morphology;
     }
 
-    public static RemoteCell getCellByCoordinates(int x, int y) {
-        return null;
-        //TODO: remove this
+    public static void generateCellScheme() {
+
+        List<RemoteCell> cells = new ArrayList<>();
+
+        for(ContentType c: morphology) {
+            if(c.equals(ContentType.CELL))
+                cells.add(new RemoteCell());
+
+            else if(c.equals(ContentType.NONE)) {
+                cells.add(null);
+            }
+        }
     }
 
 }

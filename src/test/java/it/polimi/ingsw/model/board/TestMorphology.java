@@ -12,11 +12,6 @@ import static org.junit.Assert.*;
 
 public class TestMorphology {
 
-    private Board board1;
-    private Board board2;
-    private Board board3;
-    private Board board4;
-
     private List<ContentType> morphology1 = new ArrayList<>();  //relative to board1
     private List<ContentType> morphology2 = new ArrayList<>();  //relative to board2
     private List<ContentType> morphology3 = new ArrayList<>();  //relative to board3
@@ -24,16 +19,16 @@ public class TestMorphology {
 
     @Before
     public void setUp() {
-        board1 = Board.generate(null, 1);
-        board2 = Board.generate(null, 2);
-        board3 = Board.generate(null, 3);
-        board4 = Board.generate(null, 4);
+
+        Board board1 = Board.generate(null, 1);
+        Board board2 = Board.generate(null, 2);
+        Board board3 = Board.generate(null, 3);
+        Board board4 = Board.generate(null, 4);
 
         morphology1 = board1.getMorphology();
         morphology2 = board2.getMorphology();
         morphology3 = board3.getMorphology();
         morphology4 = board4.getMorphology();
-
     }
 
     @Test
