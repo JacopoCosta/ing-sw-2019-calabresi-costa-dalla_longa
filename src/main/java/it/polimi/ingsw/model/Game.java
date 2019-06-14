@@ -22,8 +22,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Game {
-    public static boolean godMode = false;
+    public static final int MINIMUM_PLAYER_COUNT = 3;
+
+    public static boolean offlineMode = false;
     public static boolean autoPilot = false;
+    public static boolean silent = false;
 
     private boolean finalFrenzy;
     private int roundsLeft;
@@ -70,6 +73,20 @@ public class Game {
         board.spreadWeapons();
 
         Player subject = participants.get(currentTurnPlayer);
+
+        // verify at least a certain amount of players are still connected
+        participants.forEach(p -> p.setConnected(true)); // assume optimal conditions
+        virtualView.announceTurn(subject); // this disables all flags on disconnected players
+
+        boolean enoughPlayers = participants.stream()
+                .filter(Player::isConnected)
+                .count() >= MINIMUM_PLAYER_COUNT;
+
+        if(enoughPlayers && !offlineMode) { // end game if there are not enough participants
+            gameOver = true;
+            return;
+        }
+
         subject.beginTurn();
 
         if (subject.getPosition() == null) { // player is dead, start respawn routine

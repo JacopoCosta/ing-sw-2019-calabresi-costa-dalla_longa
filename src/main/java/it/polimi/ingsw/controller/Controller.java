@@ -277,4 +277,8 @@ public class Controller {
     public void teleport(Player subject, Cell destination) {
         subject.setPosition(destination);
     }
+
+    public void disconnect(Player player) {
+        player.setConnected(false);
+    }
 }

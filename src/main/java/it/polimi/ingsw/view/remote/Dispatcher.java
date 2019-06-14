@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import static it.polimi.ingsw.model.Game.autoPilot;
-
 // offers the final delivery of a string to the client
 // if the string is a request, it awaits for a valid response that will be returned to the caller
 // used to request values for setup, settings, game choices, and updates about the game status
@@ -56,13 +54,6 @@ public abstract class Dispatcher {
         }
         message = messageBuilder.toString();
 
-        if(autoPilot) {
-            sendMessage("\n" + message);
-            int auto = numbers.get((int) Math.floor(Math.random() * options.size()));
-            sendMessage("\nauto >>> " + auto);
-            return numbers.indexOf(auto);
-        }
-
         int value = numbers.stream().reduce(0, Math::min) - 1;
         do {
             value = Dispatcher.safeIntegerConversion(Dispatcher.requestRoutine(message), value);
@@ -72,13 +63,6 @@ public abstract class Dispatcher {
 
     // keeps requesting a "y" or "n" answer until such request is fulfilled
     public static boolean requestBoolean(String message) {
-        if(autoPilot) {
-            sendMessage("\n" + message);
-            boolean auto = Math.random() < 0.5;
-            sendMessage("\nauto >>> " + auto);
-            return auto;
-        }
-
         String s;
         do {
             s = Dispatcher.requestRoutine(message + " [y|n]");

@@ -48,7 +48,7 @@ public class TestWeapon {
     @Before
     public void setUp() {
 
-        Game.godMode = true;
+        Game.offlineMode = true;
         List<Player> participants = new ArrayList<>();
         participants.add(author);
         participants.add(targetSameCell);

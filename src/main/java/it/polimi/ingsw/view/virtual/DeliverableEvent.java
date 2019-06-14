@@ -35,6 +35,7 @@ public enum DeliverableEvent {
     NEWTON_FAILURE("Looks like you can't move this player to a cell you can see."),
     TELEPORT_REQUEST_CELL("Where would you like to teleport?"),
     TARGET_REQUEST(""),     //Mapped, messages from weapons
+    UPDATE_TURN(""),        //Bulk, contains the new current player
     UPDATE_DAMAGE(""),      //Bulk, contains the scoreboard of a player
     UPDATE_MARKING(""),     //Bulk, contains a list of players
     UPDATE_MOVE(""),        //Bulk, contains the new position of a player

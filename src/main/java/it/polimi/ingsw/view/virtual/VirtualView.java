@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static it.polimi.ingsw.model.Game.godMode;
+import static it.polimi.ingsw.model.Game.*;
 
 /**
  * This class is responsible of bridging the network and model packages converting game-related request into deliverables.
@@ -73,17 +73,46 @@ public class VirtualView {
      * @return the response to the deliverable.
      */
     private int send(Player recipient, Deliverable deliverable) throws AbortedTurnException {
-        if(godMode) {
+        if(offlineMode) {
+            String stampedMessage = "\n<" + recipient.getName() + "> " + deliverable.getMessage();
+            String stampedResponse = "\nauto >>> ";
+            boolean enableDispatch = !silent;
+            boolean enableQuery = enableDispatch && !autoPilot;
             switch (deliverable.getType()) {
                 case INFO:
-                    Dispatcher.sendMessage("\n<" + recipient.getName() + "> " + deliverable.getMessage());
+                    if(enableDispatch)
+                        Dispatcher.sendMessage(stampedMessage);
                     return 0;
+
                 case DUAL:
-                    return Dispatcher.requestBoolean("\n<" + recipient.getName() + "> " + deliverable.getMessage()) ? 1 : 0;
+                    if(enableQuery)
+                        return Dispatcher.requestBoolean(stampedMessage) ? 1 : 0;
+                    else {
+                        int response = (int) Math.round(Math.random()); // either 0 or 1
+                        if(enableDispatch) {
+                            Dispatcher.sendMessage(stampedMessage);
+                            Dispatcher.sendMessage(stampedResponse + (response == 1 ? "y" : "n"));
+                        }
+                        return response;
+                    }
+
                 case MAPPED:
-                    return Dispatcher.requestMappedOption("\n<" + recipient.getName() + "> " + deliverable.getMessage(), ((Mapped) deliverable).getOptions(), ((Mapped) deliverable).getKeys());
+                    List<String> options = ((Mapped) deliverable).getOptions();
+                    List<Integer> keys = ((Mapped) deliverable).getKeys();
+                    if(enableQuery)
+                        return Dispatcher.requestMappedOption(stampedMessage, options, keys);
+                    else {
+                        int response = (int) (Math.random() * keys.size()); // a random index
+                        if(enableDispatch) {
+                            Dispatcher.sendMessage(stampedMessage);
+                            Dispatcher.sendMessage(stampedResponse + response);
+                        }
+                        return response;
+                    }
+
                 case BULK:
-                    Dispatcher.sendMessage(game.toString());
+                    if(enableDispatch)
+                        Dispatcher.sendMessage(game.toString());
                 default:
                     return 0;
             }
@@ -109,14 +138,17 @@ public class VirtualView {
         if(!(deliverable.getType().equals(DeliverableType.INFO) || deliverable.getType().equals(DeliverableType.BULK)))
             throw new DeliverableException("Wrong call to send in VirtualView.");
 
-        if(godMode) {
-            Dispatcher.sendMessage("\n<#ALL> " + deliverable.getMessage());
+        if(offlineMode) {
+            if(!silent)
+                Dispatcher.sendMessage("\n<#ALL> " + deliverable.getMessage());
         }
         else {
             game.getParticipants().forEach(recipient -> {
                 try {
                     send(recipient, deliverable);
-                } catch (AbortedTurnException ignored) { } // just don't send
+                } catch (AbortedTurnException e) {
+                    controller.disconnect(recipient);
+                }
             });
         }
     }
@@ -360,8 +392,8 @@ public class VirtualView {
     }
 
     private void sendStatusUpdate(Player subject) throws AbortedTurnException {
-        if(godMode) {
-            Deliverable deliverable = new Bulk(DeliverableEvent.STATUS_UPDATE, game.getBoard());
+        if(offlineMode) {
+            Deliverable deliverable = new Bulk(DeliverableEvent.STATUS_UPDATE, null);
             deliverable.overwriteMessage(game.toString());
             send(subject, deliverable);
         }
@@ -812,6 +844,12 @@ public class VirtualView {
         int cellIndex = send(subject, new Mapped(DeliverableEvent.TELEPORT_REQUEST_CELL, cellNames, cellIds));
         Cell destination = targetCells.get(cellIndex);
         controller.teleport(subject, destination);
+    }
+
+    public void announceTurn(Player subject) {
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_TURN);
+        deliverable.overwriteMessage("It is now " + subject.getName() + "'s turn.");
+        broadcast(deliverable);
     }
 
     public void announceDamage(Player author, Player target, int amount) {

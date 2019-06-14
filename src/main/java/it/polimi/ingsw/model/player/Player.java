@@ -122,6 +122,11 @@ public class Player extends VirtualClient {
     private Cell savedPosition;
 
     /**
+     * Whether or not the player resulted to be connected after the online player count.
+     */
+    private boolean connected;
+
+    /**
      * This is the only constructor
      * @param name The name of the player.
      */
@@ -449,6 +454,22 @@ public class Player extends VirtualClient {
      */
     public void causeFrenzy() {
         this.causedFrenzy = true;
+    }
+
+    /**
+     * Updates the connection status flag of the player.
+     * @param connected The player's new online status.
+     */
+    public void setConnected(boolean connected) {
+        this.connected = connected;
+    }
+
+    /**
+     * Reports the player's connection status (online or offline).
+     * @return true if and only if the player is online.
+     */
+    public boolean isConnected() {
+        return connected;
     }
 
     /**
