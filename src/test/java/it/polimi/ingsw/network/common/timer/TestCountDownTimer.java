@@ -16,7 +16,7 @@ public class TestCountDownTimer {
         Thread.sleep(500);
         assertEquals(CountDownTimer.TimerState.STARTED, timer.getState());
 
-        Thread.sleep(500 + 200);
+        Thread.sleep(500 + 20);
         assertEquals(CountDownTimer.TimerState.EXPIRED, timer.getState());
     }
 
@@ -35,16 +35,16 @@ public class TestCountDownTimer {
     }
 
     @Test
-    public void stopAtZero() throws InterruptedException {
+    public void stopAfterZero() throws InterruptedException {
         int startingSeconds = 1;
         CountDownTimer timer = new CountDownTimer(startingSeconds);
 
         timer.start();
 
-        Thread.sleep(1000 - 1);
+        Thread.sleep(1000 + 20);
         timer.stop();
 
-        assertEquals(CountDownTimer.TimerState.STOPPED, timer.getState());
+        assertEquals(CountDownTimer.TimerState.EXPIRED, timer.getState());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class TestCountDownTimer {
 
         timer.start();
 
-        Thread.sleep(1000 + 200);
+        Thread.sleep(1000 + 20);
         assertEquals(CountDownTimer.TimerState.EXPIRED, timer.getState());
     }
 
@@ -74,7 +74,7 @@ public class TestCountDownTimer {
         Thread.sleep(500);
         assertEquals(CountDownTimer.TimerState.STARTED, timer.getState());
 
-        Thread.sleep(1000 + 200);
+        Thread.sleep(1000 + 20);
         assertEquals(CountDownTimer.TimerState.EXPIRED, timer.getState());
     }
 

@@ -19,8 +19,8 @@ public class RMIServerCommunicationInterface implements ServerCommunicationInter
 
     public RMIServerCommunicationInterface(String hostAddress, int port) throws ConnectionException {
         try {
-            Registry remoteRegistry = LocateRegistry.getRegistry(hostAddress, RMIController.DEFAULT_PORT);
-            serverController = (RMIController) remoteRegistry.lookup("rmi://" + hostAddress + ":" + RMIController.DEFAULT_PORT + "/RMIController");
+            Registry remoteRegistry = LocateRegistry.getRegistry(hostAddress, Registry.REGISTRY_PORT);
+            serverController = (RMIController) remoteRegistry.lookup("rmi://" + hostAddress + ":" + Registry.REGISTRY_PORT + "/RMIController");
 
             clientController = new ClientController();
             RMIController controller = (RMIController) UnicastRemoteObject.exportObject(clientController, 0);

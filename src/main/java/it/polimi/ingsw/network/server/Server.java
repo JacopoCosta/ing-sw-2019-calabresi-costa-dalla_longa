@@ -1,10 +1,10 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.network.common.rmi.RMIController;
 import it.polimi.ingsw.network.common.util.Console;
 import it.polimi.ingsw.network.server.executable.RMIServer;
 import it.polimi.ingsw.network.server.executable.SocketServer;
 
+import java.rmi.registry.Registry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,7 +26,7 @@ public class Server implements Runnable {
     @Override
     public void run() {
         int socketPort = port;
-        int rmiPort = RMIController.DEFAULT_PORT;
+        int rmiPort = Registry.REGISTRY_PORT;
 
         SocketServer socketServer = new SocketServer(ipAddress, socketPort);
         RMIServer rmiServer = new RMIServer(ipAddress, rmiPort);
