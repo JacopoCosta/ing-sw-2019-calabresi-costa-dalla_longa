@@ -101,128 +101,287 @@ public abstract class BoardGraph {
     }
 
     public static void printThirdLine(int index, int internalWidth) {
-        /*
-        if(cell == null){
-            CLI.print(fillWith(internalWidth, " "));
-            return;
-        }
 
-        if(cell.isSpawnPoint()) {   //prints the first weapon in the relative shop
-            try {
-                CLI.print(truncate(((SpawnCell) cell).getWeaponShop().get(0).getName() + fillWith(internalWidth, " "), internalWidth));
-            }
-            catch(IndexOutOfBoundsException e) {
-                CLI.print(fillWith(internalWidth, " "));
-            }
-        }
+        if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
+            printWall(RemoteBoard.getMorphology().get(index), internalWidth);
 
-        else {  //cell is AmmoCell
-            if(((AmmoCell) cell).getAmmoTile() == null)     //it happens when the cell doesn't contain any ammo, for example
-                CLI.print(fillWith(internalWidth, " "));      //right after a player has grabbed its AmmoTile
-            else {
-                if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() > 0) {
-                    //red cubes have been printed by printFirstLine method, so this has to print yellow or blue cubes
-                    if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() > 0)
-                        CLI.print(" YELLOW: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() + fillWith(internalWidth - 10, " "));
+            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+                CLI.print("\n");
+            //NOTE: this is the only case where a new line can be displayed here
+        } //end if (not a cell)
+        else {
+            int cellIndex = (index - 1) / 2;
+            RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
 
-                    else if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() > 0)
-                        CLI.print(" BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + fillWith(internalWidth - 8, " "));
-
-                    else    //if you are here, that means the cell contained only red cubes, so there aren't any more to print. However, it might be a powerup
-                        try {
-                            //only power-ups may be displayed
-                            if (((AmmoCell) cell).getAmmoTile().includesPowerUp())
+            if (cell != null) { //cell is actually an existing cell
+                if(cell.isAmmoCell()) {
+                    if (cell.getRed() > 0) {
+                        if(cell.getBlue() > 0)              //red ammo were already printed by printSecondLine, so blue ammo or yellow ones are next
+                            CLI.print(" BLUE: " + cell.getBlue() + fillWith(internalWidth - 8, " "));
+                        else if(cell.getYellow() > 0)       //same, but there aren't blue ammo, so yellow ones are printed instead
+                            CLI.print(" YELLOW: " + cell.getYellow() + fillWith(internalWidth - 10, " "));
+                        else if (cell.includesPowerUp())    //the ammo tile is made of red ammo and a powerup
+                            CLI.print(" *POWER UP*" + fillWith(internalWidth - 11, " "));
+                    }
+                    else {  //there were no red ammo, so blue or yellow must have been printed instead
+                        if(cell.getBlue() > 0) {        //blue ammo were already printed by printSecondLine
+                            if (cell.getYellow() > 0)
+                                CLI.print(" YELLOW: " + cell.getYellow() + fillWith(internalWidth - 10, " "));
+                            else if (cell.includesPowerUp())
                                 CLI.print(" *POWER UP*" + fillWith(internalWidth - 11, " "));
-                            else
-                                CLI.print(fillWith(internalWidth, " "));   //just spaces
                         }
-                        catch(NullPointerException e) {
-                            CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        else {  //the cell has just yellow ammo AND a powerup, and the yellow ammo was printed by printSecondLine
+                            CLI.print(" *POWER UP*" + fillWith(internalWidth - 11, " "));
                         }
-                } //end if(there were red ammocubes)
-
-                else {
-                    //yellow cubes has already been printed by printFirstLine, so this must print blue cubes, if any
-                    if (((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() > 0)
-                        CLI.print(" BLUE: " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue() + fillWith(internalWidth - 8, " "));
-                    else
-                        try {
-                            //only power-ups may be displayed
-                            if (((AmmoCell) cell).getAmmoTile().includesPowerUp())
-                                CLI.print(" *POWER UP*" + fillWith(internalWidth - 11, " "));
-                            else
-                                CLI.print(fillWith(internalWidth, " "));   //just spaces
-                        }
-                        catch(NullPointerException e) {
-                            CLI.print(fillWith(internalWidth, " "));   //just spaces
-                        }
+                    }
                 }
-            } //end else (there were some ammocubes on the cell)
-        } //end else (cell is AmmoCell)
-        TODO
-         */
+                else {  //cell is a spawn/shop cell, so its shop needs be printed
+                    if(cell.getShop().size() >= 1)
+                        CLI.print(truncate(cell.getShop().get(0).getName() + fillWith(internalWidth, " "), internalWidth));
+                    else
+                        CLI.print(fillWith(internalWidth, " "));
+                }
+            }
+            else    //cell is referring to a void cell
+                CLI.print(fillWith(internalWidth, " "));   //just spaces
+        }
+
+        //TODO: this method isn't very robust, can be improved using a List containing all the possible ammo configurations.
+        //  It will be improved, but its priority is very low.
     }
 
     public static void printFourthLine(int index, int internalWidth) {
-        /*
-        if(cell == null) {
-            CLI.print(fillWith(internalWidth, " "));   //just spaces
-            return;
-        }
-        if(cell.isSpawnPoint()) {   //prints the second weapon in the relative shop
-            try {
-                CLI.print(truncate(((SpawnCell) cell).getWeaponShop().get(1).getName() + fillWith(internalWidth, " "), internalWidth));
-            }
-            catch(IndexOutOfBoundsException e) {
-                CLI.print(fillWith(internalWidth, " "));
-            }
-        }
-        else
-            CLI.print(fillWith(internalWidth, " "));
 
-            TODO
-            */
+        if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
+            printWall(RemoteBoard.getMorphology().get(index), internalWidth);
+
+            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+                CLI.print("\n");
+            //NOTE: this is the only case where a new line can be displayed here
+        } //end if (not a cell)
+        else {
+
+            int cellIndex = (index - 1) / 2;
+            RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
+
+            if (cell != null) { //cell is actually an existing cell
+                if(cell.isAmmoCell())   //there are no more ammo to print, so a blank line will be printed instead
+                    CLI.print(fillWith(internalWidth, " "));    //just spaces
+                else {                  //there's a shop, so the second weapon, if existing, will be printed
+                    if(cell.getShop().size() >= 2)
+                        CLI.print(truncate(cell.getShop().get(1).getName() + fillWith(internalWidth, " "), internalWidth));
+                    else                //there aren't enough weapons to display
+                        CLI.print(fillWith(internalWidth, " "));
+                }
+            }
+            else    //cell is referring to a void cell
+                CLI.print(fillWith(internalWidth, " "));   //just spaces
+        }
     }
 
     public static void printFifthLine(int index, int internalWidth) {
-        /*
-        if(cell == null) {
-            CLI.print(fillWith(internalWidth, " "));   //just spaces
-            return;
-        }
-        if(cell.isSpawnPoint()) {   //prints the third weapon in the relative shop
-            try {
-                CLI.print(truncate(((SpawnCell) cell).getWeaponShop().get(2).getName() + fillWith(internalWidth, " "), internalWidth));
+
+        if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
+            printWall(RemoteBoard.getMorphology().get(index), internalWidth);
+
+            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+                CLI.print("\n");
+            //NOTE: this is the only case where a new line can be displayed here
+        } //end if (not a cell)
+        else {
+
+            int cellIndex = (index - 1) / 2;
+            RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
+
+            if (cell != null) { //cell is actually an existing cell
+                if(cell.isAmmoCell())   //there are no more ammo to print, so a blank line will be printed instead
+                    CLI.print(fillWith(internalWidth, " "));    //just spaces
+                else {                  //there's a shop, so the second weapon, if existing, will be printed
+                    if(cell.getShop().size() >= 3)
+                        CLI.print(truncate(cell.getShop().get(2).getName() + fillWith(internalWidth, " "), internalWidth));
+                    else                //there aren't enough weapons to display
+                        CLI.print(fillWith(internalWidth, " "));
+                }
             }
-            catch(IndexOutOfBoundsException e) {
-                CLI.print(fillWith(internalWidth, " "));
-            }
+            else    //cell is referring to a void cell
+                CLI.print(fillWith(internalWidth, " "));   //just spaces
         }
-        else
-            CLI.print(fillWith(internalWidth, " "));
-            TODO
-         */
     }
 
+    //starts to print players on this cell, if any
     public static void printSixthLine(int index, int internalWidth) {
 
-        /*
-        int charCounter = 0;
-        if(cell == null){
-            CLI.print(fillWith(internalWidth, " "));   //just spaces
-            return;
-        }
-        //this time, it doesn't matter whether the cell is a SpawnCell or not
-        for(RemotePlayer p: RemoteBoard.getParticipants()) {
-            if (p.getPosition() == cell) {
-                CLI.print(" " + p.getId());
-                charCounter += 2;
-                TODO
+        if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
+            printWall(RemoteBoard.getMorphology().get(index), internalWidth);
+
+            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+                CLI.print("\n");
+            //NOTE: this is the only case where a new line can be displayed here
+        } //end if (not a cell)
+        else {
+
+            int cellIndex = (index - 1) / 2;
+            RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
+
+            if (cell != null) { //cell is actually an existing cell
+                switch (cell.getPlayers().size()) {
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        break;
+                    case 5:
+                        CLI.print(truncate(cell.getPlayers().get(0) + fillWith(internalWidth, " "), internalWidth));
+                        break;
+                }
             }
+            else    //cell is referring to a void cell
+                CLI.print(fillWith(internalWidth, " "));   //just spaces
         }
-        //completes the row with the right number of spaces
-        CLI.print(fillWith(internalWidth - charCounter, " "));
-        */
+    }
+
+    public static void printSeventhLine(int index, int internalWidth) {
+
+        if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
+            printWall(RemoteBoard.getMorphology().get(index), internalWidth);
+
+            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+                CLI.print("\n");
+            //NOTE: this is the only case where a new line can be displayed here
+        } //end if (not a cell)
+        else {
+
+            int cellIndex = (index - 1) / 2;
+            RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
+
+            if (cell != null) { //cell is actually an existing cell
+                switch (cell.getPlayers().size()) {
+                    case 0:
+                    case 1:
+                        CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                        CLI.print(truncate(cell.getPlayers().get(0) + fillWith(internalWidth, " "), internalWidth));
+                    case 5:
+                        CLI.print(truncate(cell.getPlayers().get(1) + fillWith(internalWidth, " "), internalWidth));
+                        break;
+                }
+            }
+            else    //cell is referring to a void cell
+                CLI.print(fillWith(internalWidth, " "));   //just spaces
+        }
+    }
+
+    public static void printEigthLine(int index, int internalWidth) {
+
+        if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
+            printWall(RemoteBoard.getMorphology().get(index), internalWidth);
+
+            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+                CLI.print("\n");
+            //NOTE: this is the only case where a new line can be displayed here
+        } //end if (not a cell)
+        else {
+
+            int cellIndex = (index - 1) / 2;
+            RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
+
+            if (cell != null) { //cell is actually an existing cell
+                switch (cell.getPlayers().size()) {
+                    case 1:
+                        CLI.print(truncate(cell.getPlayers().get(0) + fillWith(internalWidth, " "), internalWidth));
+                        break;
+                    case 0:
+                    case 2:
+                        CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        break;
+                    case 3:
+                    case 4:
+                        CLI.print(truncate(cell.getPlayers().get(1) + fillWith(internalWidth, " "), internalWidth));
+                        break;
+                    case 5:
+                        CLI.print(truncate(cell.getPlayers().get(2) + fillWith(internalWidth, " "), internalWidth));
+                        break;
+                }
+            }
+            else    //cell is referring to a void cell
+                CLI.print(fillWith(internalWidth, " "));   //just spaces
+        }
+    }
+
+    public static void printNinthLine(int index, int internalWidth) {
+
+        if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
+            printWall(RemoteBoard.getMorphology().get(index), internalWidth);
+
+            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+                CLI.print("\n");
+            //NOTE: this is the only case where a new line can be displayed here
+        } //end if (not a cell)
+        else {
+
+            int cellIndex = (index - 1) / 2;
+            RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
+
+            if (cell != null) { //cell is actually an existing cell
+                switch (cell.getPlayers().size()) {
+                    case 0:
+                    case 1:
+                        CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        break;
+                    case 2:
+                        CLI.print(truncate(cell.getPlayers().get(1) + fillWith(internalWidth, " "), internalWidth));
+                        break;
+                    case 3:
+                    case 4:
+                        CLI.print(truncate(cell.getPlayers().get(2) + fillWith(internalWidth, " "), internalWidth));
+                    case 5:
+                        CLI.print(truncate(cell.getPlayers().get(3) + fillWith(internalWidth, " "), internalWidth));   //just spaces
+                        break;
+                }
+            }
+            else    //cell is referring to a void cell
+                CLI.print(fillWith(internalWidth, " "));   //just spaces
+        }
+    }
+
+    public static void printTenthLine(int index, int internalWidth) {
+
+        if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
+            printWall(RemoteBoard.getMorphology().get(index), internalWidth);
+
+            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+                CLI.print("\n");
+            //NOTE: this is the only case where a new line can be displayed here
+        } //end if (not a cell)
+        else {
+
+            int cellIndex = (index - 1) / 2;
+            RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
+
+            if (cell != null) { //cell is actually an existing cell
+                switch (cell.getPlayers().size()) {
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        break;
+                    case 4:
+                        CLI.print(truncate(cell.getPlayers().get(3) + fillWith(internalWidth, " "), internalWidth));
+                        break;
+                    case 5:
+                        CLI.print(truncate(cell.getPlayers().get(4) + fillWith(internalWidth, " "), internalWidth));   //just spaces
+                        break;
+                }
+            }
+            else    //cell is referring to a void cell
+                CLI.print(fillWith(internalWidth, " "));   //just spaces
+        }
     }
 
     private static String fillWith(int amount, String pattern) {

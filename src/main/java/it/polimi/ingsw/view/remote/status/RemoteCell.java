@@ -7,6 +7,7 @@ public class RemoteCell {
     private boolean isAmmoCell;
 
     private List<RemoteWeapon> shop;    //if AmmoCell is true, this list is empty as there's no shop in an ammoCell
+    private List<String> players;       //names of the players occupying this cell
 
     private int red;
     private int yellow;
@@ -19,6 +20,10 @@ public class RemoteCell {
 
     public List<RemoteWeapon> getShop() {
         return shop;
+    }
+
+    public List<String> getPlayers() {
+        return players;
     }
 
     public int getRed() {
@@ -43,6 +48,10 @@ public class RemoteCell {
 
     public void setShop(List<RemoteWeapon> shop) {
         this.shop = shop;
+    }
+
+    public void setPlayers(List<String> players) {
+        this.players = players;
     }
 
     public void rewrite(int red, int yellow, int blue, boolean includesPowerUp) {   //used if isAmmoCell == true

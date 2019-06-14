@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.remote;
 
+import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.view.remote.status.RemoteBoard;
 import it.polimi.ingsw.view.remote.status.RemotePlayer;
 import it.polimi.ingsw.view.remote.status.RemoteWeapon;
@@ -8,7 +9,7 @@ import java.util.List;
 
 public class CLI extends View {
 
-    private static final int internalWidth = 28;
+    private static final int internalWidth = 28;    //at least 14, for now
 
     public static void print(String message) {
         System.out.print(message); // this is the only system out print call in the entire program
@@ -46,6 +47,10 @@ public class CLI extends View {
                     BoardGraph.printFourthLine(h*schemeHeight + w, internalWidth);
                     BoardGraph.printFifthLine(h*schemeHeight + w, internalWidth);
                     BoardGraph.printSixthLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printSeventhLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printEigthLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printNinthLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printTenthLine(h*schemeHeight + w, internalWidth);
                 }
             } //end else (h is odd)
         }
