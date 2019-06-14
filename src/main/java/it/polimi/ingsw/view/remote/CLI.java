@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.remote;
 
-import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.view.remote.status.RemoteBoard;
 import it.polimi.ingsw.view.remote.status.RemotePlayer;
 import it.polimi.ingsw.view.remote.status.RemoteWeapon;
@@ -25,6 +24,8 @@ public class CLI extends View {
         int schemeHeight = RemoteBoard.getHeight()*2 + 1;   //height of the morphology
 
         List<ContentType> morphology = RemoteBoard.getMorphology(); //shorthand
+
+        RemoteBoard.updatePlayersPosition();
 
         for(int h=0; h<schemeHeight; h++) { //cycling on every row
 

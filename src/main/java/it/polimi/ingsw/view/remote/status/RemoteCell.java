@@ -50,10 +50,6 @@ public class RemoteCell {
         this.shop = shop;
     }
 
-    public void setPlayers(List<String> players) {
-        this.players = players;
-    }
-
     public void rewrite(int red, int yellow, int blue, boolean includesPowerUp) {   //used if isAmmoCell == true
         this.red = red;
         this.yellow = yellow;
@@ -61,7 +57,7 @@ public class RemoteCell {
         this.includesPowerUp = includesPowerUp;
     }
 
-    public void rewrite(List <RemoteWeapon> shop) {     //used if isAmmoCell == false
-        this.shop = shop;
+    public void setPlayers(List<String> players) {
+        this.players = players;
     }
 }

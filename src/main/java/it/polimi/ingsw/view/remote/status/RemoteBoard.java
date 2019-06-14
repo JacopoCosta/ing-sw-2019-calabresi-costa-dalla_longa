@@ -88,4 +88,17 @@ public abstract class RemoteBoard {
         }
     }
 
+    public static void updatePlayersPosition() {
+        for(int i=0; i<getCells().size(); i++) {
+
+            List<String> playersInThisCell = new ArrayList<>();
+
+            for(RemotePlayer p: RemoteBoard.getParticipants()) {
+                if(p.getPosition() == i)
+                    playersInThisCell.add(p.getName());
+            }
+            RemoteBoard.getCells().get(i).setPlayers(playersInThisCell);
+        }
+    }
+
 }
