@@ -4,28 +4,30 @@ import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.InvalidFilterInvocationException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
+import it.polimi.ingsw.model.weaponry.targets.Target;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * An identity constraint requires either that two players actually be the same player, or the opposite,
- * requiring two different identities from the two players.
+ * An {@link IdentityConstraint} requires either that two {@link Player}s actually be the same {@link Player}, or the opposite,
+ * requiring two different identities from the two {@link Player}s.
  */
 public class IdentityConstraint extends Constraint {
     /**
-     * Whether or not the two players should actually be the same player in order to satisfy the constraint.
+     * Whether or not the two {@link Player}s should actually be the same {@link Player} in order to satisfy the {@link Constraint}.
      */
     private boolean truth;
 
     /**
      * This is the only constructor.
-     * @param sourceAttackModuleId the id of the attack module containing the source target.
-     * @param sourceTargetId the id of the source target.
-     * @param drainAttackModuleId the id of the attack module containing the drain target.
-     * @param drainTargetId the id of the drain target.
-     * @param truth the truth value needed from the identity predicate, in order to satisfy the constraint.
+     * @param sourceAttackModuleId the id of the {@link AttackModule} containing the source {@link Target}.
+     * @param sourceTargetId the id of the source {@link Target}.
+     * @param drainAttackModuleId the id of the {@link AttackModule} containing the drain {@link Target}.
+     * @param drainTargetId the id of the drain {@link Target}.
+     * @param truth the truth value needed from the identity predicate, in order to satisfy the {@link Constraint}.
      */
     IdentityConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
         this.sourceAttackModuleId = sourceAttackModuleId;
@@ -37,19 +39,19 @@ public class IdentityConstraint extends Constraint {
     }
 
     /**
-     * Tells if the constraint is satisfied by two given players.
-     * @param sourcePlayer the source player.
-     * @param drainPlayer the drain player.
-     * @return true if the cells satisfy the constraint, false if they don't.
+     * Tells if the {@link Constraint} is satisfied by two given {@link Player}s.
+     * @param sourcePlayer the source {@link Player}.
+     * @param drainPlayer the drain {@link Player}.
+     * @return true if the cells satisfy the {@link Constraint}, false if they don't.
      */
     private boolean verify(Player sourcePlayer, Player drainPlayer) {
         return sourcePlayer.equals(drainPlayer) == truth;
     }
 
     /**
-     * Creates a list of all players that satisfy the constraint.
-     * @param context the attack pattern in which the constraint is relevant.
-     * @return the list of players.
+     * Creates a list of all {@link Player}s that satisfy the {@link Constraint}.
+     * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
+     * @return the list of {@link Player}s.
      */
     @Override
     public List<Player> filterPlayers(AttackPattern context) {
@@ -81,13 +83,13 @@ public class IdentityConstraint extends Constraint {
     }
 
     /**
-     * Since the identity constraint is not defined on cells, this method instantly
+     * Since the {@link IdentityConstraint} is not defined on cells, this method instantly
      * throws an {@code InvalidFilterInvocationException} at runtime, since calling
      * this method on an instance of this class is symptom of logical flaws in the
-     * constraint management workflow. This method was implemented anyway in order
+     * {@link Constraint} management workflow. This method was implemented anyway in order
      * to reduce the number of explicit casts and to be able to factorize it in
      * the {@code Constraint} superclass, where it is declared as abstract.
-     * @param context the attack pattern in which the constraint is relevant.
+     * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return nothing.
      */
     @Override
@@ -96,13 +98,13 @@ public class IdentityConstraint extends Constraint {
     }
 
     /**
-     * Since the identity constraint is not defined on rooms, this method instantly
+     * Since the {@link IdentityConstraint} is not defined on {@link Room}s, this method instantly
      * throws an {@code InvalidFilterInvocationException} at runtime, since calling
      * this method on an instance of this class is symptom of logical flaws in the
-     * constraint management workflow. This method was implemented anyway in order
+     * {@link Constraint} management workflow. This method was implemented anyway in order
      * to reduce the number of explicit casts and to be able to factorize it in
      * the {@code Constraint} superclass, where it is declared as abstract.
-     * @param context the attack pattern in which the constraint is relevant.
+     * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return nothing.
      */
     @Override

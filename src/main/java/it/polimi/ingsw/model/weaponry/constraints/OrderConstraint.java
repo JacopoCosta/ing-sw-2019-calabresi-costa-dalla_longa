@@ -5,37 +5,39 @@ import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.model.exceptions.InvalidFilterInvocationException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
+import it.polimi.ingsw.model.weaponry.targets.Target;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * An order constraint requires that three cells be aligned and in the order listed.
- * Since this is a ternary constraint, it requires an intermediary entity to make a complete statement.
+ * An {@link OrderConstraint} requires that three cells be aligned and in the order listed.
+ * Since this is a ternary {@link Constraint}, it requires an intermediary entity to make a complete statement.
  * It is necessary (but not sufficient) that the intermediary be either in the middle or share at least one
  * extremity with either of the other two cells, or both of them.
  * @see Cell#isBetween(Cell, Cell)
  */
 public class OrderConstraint extends Constraint {
     /**
-     * The id of the attack module in which the intermediary is located.
+     * The id of the {@link AttackModule} in which the intermediary is located.
      */
     private int gateAttackModuleId;
 
     /**
-     * The id of the target representing the intermediary.
+     * The id of the {@link Target} representing the intermediary.
      */
     private int gateTargetId;
 
     /**
      * This is the only constructor.
-     * @param sourceAttackModuleId the id of the attack module containing the source target.
-     * @param sourceTargetId the id of the source target.
-     * @param gateAttackModuleId the id of the attack module containing the gate target.
-     * @param gateTargetId the id of the gate target.
-     * @param drainAttackModuleId the id of the attack module containing the drain target.
-     * @param drainTargetId the id of the drain target.
+     * @param sourceAttackModuleId the id of the {@link AttackModule} containing the source {@link Target}.
+     * @param sourceTargetId the id of the source {@link Target}.
+     * @param gateAttackModuleId the id of the {@link AttackModule} containing the gate {@link Target}.
+     * @param gateTargetId the id of the gate {@link Target}.
+     * @param drainAttackModuleId the id of the {@link AttackModule} containing the drain {@link Target}.
+     * @param drainTargetId the id of the drain {@link Target}.
      */
     OrderConstraint(int sourceAttackModuleId, int sourceTargetId, int gateAttackModuleId, int gateTargetId, int drainAttackModuleId, int drainTargetId) {
         this.sourceAttackModuleId = sourceAttackModuleId;
@@ -48,11 +50,11 @@ public class OrderConstraint extends Constraint {
     }
 
     /**
-     * Tells if the constraint is satisfied by two given cells.
+     * Tells if the {@link Constraint} is satisfied by two given cells.
      * @param sourceCell the source cell.
      * @param gateCell the gate cell.
      * @param drainCell the drain cell.
-     * @return true if the cells satisfy the constraint, false if they don't or if any of them is null.
+     * @return true if the cells satisfy the {@link Constraint}, false if they don't or if any of them is null.
      */
     private boolean verify(Cell sourceCell, Cell gateCell, Cell drainCell) {
         if(gateCell == null)
@@ -65,9 +67,9 @@ public class OrderConstraint extends Constraint {
     }
 
     /**
-     * Creates a list of all players that satisfy the constraint.
-     * @param context the attack pattern in which the constraint is relevant.
-     * @return the list of players.
+     * Creates a list of all {@link Player}s that satisfy the {@link Constraint}.
+     * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
+     * @return the list of {@link Player}s.
      */
     @Override
     public List<Player> filterPlayers(AttackPattern context) {
@@ -114,8 +116,8 @@ public class OrderConstraint extends Constraint {
     }
 
     /**
-     * Creates a list of all cells that satisfy the constraint.
-     * @param context the attack pattern in which the constraint is relevant.
+     * Creates a list of all cells that satisfy the {@link Constraint}.
+     * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return the list of cells.
      */
     @Override
@@ -163,13 +165,13 @@ public class OrderConstraint extends Constraint {
     }
 
     /**
-     * Since the order constraint is not defined on rooms, this method instantly
+     * Since the {@link OrderConstraint} is not defined on {@link Room}s, this method instantly
      * throws an {@code InvalidFilterInvocationException} at runtime, since calling
      * this method on an instance of this class is symptom of logical flaws in the
-     * constraint management workflow. This method was implemented anyway in order
+     * {@link Constraint} management workflow. This method was implemented anyway in order
      * to reduce the number of explicit casts and to be able to factorize it in
      * the {@code Constraint} superclass, where it is declared as abstract.
-     * @param context the attack pattern in which the constraint is relevant.
+     * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return nothing.
      */
     @Override

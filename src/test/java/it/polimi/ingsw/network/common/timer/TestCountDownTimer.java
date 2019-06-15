@@ -56,7 +56,7 @@ public class TestCountDownTimer {
         timer.start();
 
         Thread.sleep(1000 + 20);
-        assertEquals(CountDownTimer.TimerState.EXPIRED, timer.getState());
+        assertEquals(CountDownTimer.TimerState.EXPIRED, timer.getState()); // FIXME "STARTED" ?
     }
 
     @Test
@@ -79,7 +79,7 @@ public class TestCountDownTimer {
         assertEquals(CountDownTimer.TimerState.EXPIRED, timer.getState());
     }
 
-     /* // <-------------------- UNCOMMENT ME
+    /*  // <-------------------- UNCOMMENT ME
 
     @Test
     public void multipleExecutions() throws InterruptedException {
@@ -132,5 +132,5 @@ public class TestCountDownTimer {
     }
 
 
-    */ // <-------------------- UNCOMMENT ME
+     */ // <-------------------- UNCOMMENT ME
 }

@@ -46,7 +46,7 @@ public class TestGame {
 
     @Test
     public void autoPlayLargeNumbers() {
-        for(int i = 0; i < 32; i ++)
+        for(int i = 0; i < 16; i ++)
             autoPlayRandomized();
     }
 }

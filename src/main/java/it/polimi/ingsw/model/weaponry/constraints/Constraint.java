@@ -4,7 +4,9 @@ import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
+import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.model.weaponry.targets.TargetCell;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
  * similar to a well-formed formula of the monadic first-order logic. Constraints come in different types,
  * each representing a different predicate. Most predicates expressed by constraints have arity 2, i.e.
  * they describe a situation verifiable on 2 entities, they're also known as binary constraints.
- * All constraints are verified inside an attack pattern that acts like a context outside of which
+ * All constraints are verified inside an {@link AttackPattern} that acts like a context outside of which
  * the predicate is ambiguous and cannot therefore be verified.<br>
  * Binary constraints always include:<br>
  * <ul>
@@ -38,26 +40,26 @@ import java.util.stream.Collectors;
  * for creating a path of references that leads to the entity of interest for each role in the constraint.
  * Specifically, each entity is reached by:
  * <ul>
- *     <li>An attack module id: used to identify the attack module in which the entity resides.
- *          This is possible because constraints are limited to one attack pattern, making it
- *          unambiguous which attack module the id refers to.</li>
- *     <li>A target id: used to identify the target inside the attack module that refers to
- *          the entity of interest, whether it be a cell, a room or a player.</li>
+ *     <li>An {@link AttackModule} id: used to identify the {@link AttackModule} in which the entity resides.
+ *          This is possible because constraints are limited to one {@link AttackPattern}, making it
+ *          unambiguous which {@link AttackModule} the id refers to.</li>
+ *     <li>A {@link Target} id: used to identify the {@link Target} inside the {@link AttackModule} that refers to
+ *          the entity of interest, whether it be a cell, a {@link Room} or a player.</li>
  * </ul>
- * This indexed access algorithm makes it impossible to reference targets defined in a
+ * This indexed access algorithm makes it impossible to reference {@link Target}s defined in a
  * future moment with respect to the moment in which a constraint attempts to reference
- * an entity as one of its actors, even within the same attack module. In other words,
+ * an entity as one of its actors, even within the same {@link AttackModule}. In other words,
  * it is impossible to evaluate a constraint depending partially on decisions not yet taken by the player.
  * <br>
  * In order to grant the constraints internal language a fully operational expressive power, at least as
  * far as the game logic is concerned, the following encoding rules for numeric ids were devised:
  * <ul>
- *     <li><b>Any non-negative integer</b>: simply refers to the index of the attack module inside
- *          the context, or to the index of the target inside the attack module, as described above.</li>
- *     <li><b>-1</b>: Refers to the attacker (always known from within the context, as an attack pattern
+ *     <li><b>Any non-negative integer</b>: simply refers to the index of the {@link AttackModule} inside
+ *          the context, or to the index of the {@link Target} inside the {@link AttackModule}, as described above.</li>
+ *     <li><b>-1</b>: Refers to the attacker (always known from within the context, as an {@link AttackPattern}
  *          cannot be used until it has been signed by a player as its author).</li>
  *     <li><b>-2</b>: Refers to the attacker, but in the position they had before the beginning of the
- *          current attack pattern.</li>
+ *          current {@link AttackPattern}.</li>
  *     <li><b>-3</b>: Refers to anyone, much like the "for all" operator in the monadic first order logic.
  *          This value is very important when generating lists of entities that make the constraint evaluate
  *          to "true": each entity is given the role the -3 is found in, and gets replaced by the following entity
@@ -73,27 +75,27 @@ public abstract class Constraint {
     protected ConstraintType type;
 
     /**
-     * The id of the attack module in which the subject is located.
+     * The id of the {@link AttackModule} in which the subject is located.
      */
     protected int sourceAttackModuleId;
 
     /**
-     * The id of the target representing the subject.
+     * The id of the {@link Target} representing the subject.
      */
     protected int sourceTargetId;
 
     /**
-     * The id of the attack module in which the object is located.
+     * The id of the {@link AttackModule} in which the object is located.
      */
     protected int drainAttackModuleId;
 
     /**
-     * The id of the target representing the object.
+     * The id of the {@link Target} representing the object.
      */
     protected int drainTargetId;
 
     /**
-     * The attack pattern in which the constraint needs to be evaluated.
+     * The {@link AttackPattern} in which the constraint needs to be evaluated.
      */
     protected AttackPattern context;
 
@@ -102,7 +104,7 @@ public abstract class Constraint {
      * @param jConstraint the JSON object containing the desired properties.
      * @return an instance of this class in accordance with the specified properties.
      * @throws InvalidConstraintTypeException when attempting to instantiate a new constraint whose type is not in the
-     * enumeration of possible power-up types.
+     * enumeration of possible {@link PowerUp} types.
      */
     public static Constraint build(DecoratedJsonObject jConstraint) throws InvalidConstraintTypeException {
         int sourceAttackModuleId;

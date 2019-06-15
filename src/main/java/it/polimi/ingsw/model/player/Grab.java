@@ -1,9 +1,15 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.model.ammo.AmmoCubes;
+import it.polimi.ingsw.model.cell.AmmoCell;
+import it.polimi.ingsw.model.cell.SpawnCell;
+import it.polimi.ingsw.model.weaponry.Weapon;
+
 /**
- * The grab activity is used to collect ammo from an ammo crate or buy a weapon from a spawn point's weapon shop.
+ * The {@link Grab} {@link Activity} is used to collect {@link AmmoCubes} from an {@link AmmoCell}
+ * or buy a {@link Weapon} from a {@link SpawnCell}'s {@link Weapon} shop.
  */
-class Grab extends Activity {
+public class Grab extends Activity {
     /**
      * This is the only constructor.
      */

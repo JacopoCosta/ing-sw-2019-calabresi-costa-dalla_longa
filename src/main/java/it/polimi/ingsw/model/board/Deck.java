@@ -14,12 +14,12 @@ import java.util.function.Function;
 import static it.polimi.ingsw.model.Game.autoPilot;
 
 /**
- * Decks are ordered collections of objects from which it is only possible to remove, and then read, one object at a time.
- * @param <T> the type of object that makes up the "cards" of the deck.
+ * {@link Deck}s are ordered collections of objects from which it is only possible to remove, and then read, one object at a time.
+ * @param <T> the type of object that makes up the "cards" of the {@link Deck}.
  */
 public class Deck<T> {
     /**
-     * The list of cards inside the deck (only the first of which is accessible).
+     * The list of cards inside the {@link Deck} (only the first of which is accessible).
      * @see Deck#draw()
      */
     private List<T> cards;
@@ -31,7 +31,7 @@ public class Deck<T> {
     private List<T> discarded;
 
     /**
-     * This is the only constructor. It creates an empty deck.
+     * This is the only constructor. It creates an empty {@link Deck}.
      */
     private Deck() {
         this.cards = new ArrayList<>();
@@ -39,8 +39,8 @@ public class Deck<T> {
     }
 
     /**
-     * Removes the first card of the deck and returns it.
-     * @return the first card of the deck (no longer part of the deck once drawn).
+     * Removes the first card of the {@link Deck} and returns it.
+     * @return the removed card (no longer part of the {@link Deck} once drawn).
      * @throws EmptyDeckException when there are no cards left to draw.
      */
     public T draw() throws EmptyDeckException {
@@ -62,7 +62,7 @@ public class Deck<T> {
     }
 
     /**
-     * Shuffles the order of the cards in the deck.
+     * Shuffles the order of the cards in the {@link Deck}.
      */
     void shuffle() {
         if(autoPilot)
@@ -79,10 +79,10 @@ public class Deck<T> {
     }
 
     /**
-     * Attempts to draw from the deck. If the draw was successful, an optional containing the drawn card is returned
-     * If, instead, the draw failed because the deck is empty, if {@code autoRegenerate} is false, an empty optional is returned.
-     * Otherwise, if {@code autoRegenerate} is true, the deck is regenerated from the discard pile and shuffled,
-     * then a second attempt to draw a card occurs. If the deck is empty again, an empty optional is returned, while if
+     * Attempts to draw from the {@link Deck}. If the draw was successful, an optional containing the drawn card is returned
+     * If, instead, the draw failed because the {@link Deck} is empty, if {@code autoRegenerate} is false, an empty optional is returned.
+     * Otherwise, if {@code autoRegenerate} is true, the {@link Deck} is regenerated from the discard pile and shuffled,
+     * then a second attempt to draw a card occurs. If the {@link Deck} is empty again, an empty optional is returned, while if
      * a card was successfully drawn, it is returned as optional.
      * @param autoRegenerate whether or not to regenerate and shuffle for a second attempt after a possible failure.
      * @return Either an empty optional, or an optional containing a card, as described above.
@@ -107,7 +107,7 @@ public class Deck<T> {
     }
 
     /**
-     * This factory method constructs a deck of weapon cards, with the properties found inside the JSON object passed as argument.
+     * This factory method constructs a {@link Deck} of {@link Weapon} cards, with the properties found inside the JSON object passed as argument.
      * @param jDeck the JSON object containing the desired properties.
      * @return an instance of this class in accordance with the specified properties.
      */
@@ -125,8 +125,8 @@ public class Deck<T> {
     }
 
     /**
-     * Generates a deck of 24 power up cards: two copies per colour per type (2×3×4=24)
-     * @return a new deck of power ups.
+     * Generates a {@link Deck} of 24 {@link PowerUp} cards: two copies per colour per type (2×3×4=24)
+     * @return a new {@link Deck} of {@link PowerUp}s.
      */
     static Deck<PowerUp> generatePowerUps() {
         Deck<PowerUp> deck = new Deck<>();
@@ -154,10 +154,10 @@ public class Deck<T> {
     }
 
     /**
-     * Generates a deck of 36 ammo tile cards:<br>
-     * 18 without a power up: three copies per colour per pair of equal colours (2×3×3=18)<br>
-     * 18 with a power up: two copies per colour per colour (2×3×3=18).
-     * @return a new deck of ammo tiles.
+     * Generates a {@link Deck} of 36 {@link AmmoTile} cards:<br>
+     * 18 without a {@link PowerUp}: three copies per colour per pair of equal colours (2×3×3=18)<br>
+     * 18 with a {@link PowerUp}: two copies per colour per colour (2×3×3=18).
+     * @return a new {@link Deck} of {@link AmmoTile}s.
      */
     static Deck<AmmoTile> generateAmmoTiles() {
         Deck<AmmoTile> deck = new Deck<>();

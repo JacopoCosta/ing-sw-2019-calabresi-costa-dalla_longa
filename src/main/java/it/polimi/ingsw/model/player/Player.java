@@ -2,14 +2,21 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
+import it.polimi.ingsw.model.board.Board;
+import it.polimi.ingsw.model.board.Deck;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.exceptions.CannotDiscardFirstCardOfDeckException;
 import it.polimi.ingsw.model.exceptions.FullHandException;
+import it.polimi.ingsw.model.powerups.Grenade;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.powerups.PowerUpType;
+import it.polimi.ingsw.model.powerups.Scope;
 import it.polimi.ingsw.model.weaponry.Weapon;
+import it.polimi.ingsw.model.weaponry.effects.Damage;
+import it.polimi.ingsw.model.weaponry.effects.Mark;
+import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.network.server.VirtualClient;
 
 import java.util.ArrayList;
@@ -23,38 +30,38 @@ import java.util.stream.Collectors;
  */
 public class Player extends VirtualClient {
     /**
-     * The number of damage required in order to declare a player as dead.
+     * The number of {@link Damage} required in order to declare a player as dead.
      */
     private static final int KILL_THRESHOLD = 10; // maximum amount of damage before a Player is declared as "killed"
 
     /**
-     * The number of damage required in order to declare a player as dead, and also overkilled.
+     * The number of {@link Damage} required in order to declare a player as dead, and also overkilled.
      */
     private static final int OVERKILL_THRESHOLD = 11; // maximum amount of damage before a Player is declared as "overkilled"
 
     /**
-     * The maximum allowed number of markings a player can have from the same opponent.
+     * The maximum allowed number of {@link Mark}s a player can have from the same opponent.
      */
     private static final int MAX_MARKINGS_PER_AUTHOR = 3; // maximum number of markings an "author" can give to another Player
 
     /**
-     * The number of executions a player performs on each turn, in standard conditions.
+     * The number of {@link Execution}s a player performs on each turn, in standard conditions.
      */
     private static final int EXECUTIONS_PER_TURN = 2; // number of executions a player needs to perform on each non-frenzy turn
 
     /**
-     * The number of executions a player performs on each turn, once final frenzy is activated on said player.
+     * The number of {@link Execution}s a player performs on each turn, once final frenzy is activated on said player.
      */
     private static final int EXECUTIONS_PER_TURN_FRENETIC = 1; // number of executions a player needs to perform on each frenzy turn
 
     /**
      * The maximum number of cards of each type a player is allowed in their hand.
-     * This means a player must discard a weapon as soon as they have more than this threshold, and the same goes for power ups.
+     * This means a player must discard a {@link Weapon} as soon as they have more than this threshold, and the same goes for {@link PowerUp}s.
      */
     private static final int MAX_CARDS_IN_HAND = 3;
 
     /**
-     * The game the player is playing.
+     * The {@link Game} the player is playing.
      */
     private Game game;
 
@@ -79,29 +86,29 @@ public class Player extends VirtualClient {
     private boolean causedFrenzy;
 
     /**
-     * The number of executions left to play on the player's current turn.
+     * The number of {@link Execution}s left to play on the player's current turn.
      */
     private int remainingExecutions;
 
     /**
      * The list of opponents who damaged the player.
-     * Each opponent appears as many times as damage points they inflicted to the player, and in chronological order.
+     * Each opponent appears as many times as {@link Damage} points they inflicted to the player, and in chronological order.
      */
     private List<Player> damage;
 
     /**
      * The list of opponents who marked the player.
-     * Each opponent appears as many times as markings they dealt to the player, and in chronological order.
+     * Each opponent appears as many times as {@link Mark}s they dealt to the player, and in chronological order.
      */
     private List<Player> markings;
 
     /**
-     * The weapon cards in the player's hand.
+     * The {@link Weapon} cards in the player's hand.
      */
     private List<Weapon> weapons;
 
     /**
-     * The power up cards in the player's hand.
+     * The {@link PowerUp} cards in the player's hand.
      */
     private List<PowerUp> powerUps;
 
@@ -111,12 +118,12 @@ public class Player extends VirtualClient {
     private AmmoCubes ammoCubes;
 
     /**
-     * The cell corresponding to the player's current position on the board.
+     * The cell corresponding to the player's current position on the {@link Board}.
      */
     private Cell position;
 
     /**
-     * The cell corresponding to the player's position on the board, at the beginning of the current execution.
+     * The cell corresponding to the player's position on the {@link Board}, at the beginning of the current {@link Execution}.
      * @see Execution
      */
     private Cell savedPosition;
@@ -148,23 +155,23 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Binds the player to a game.
-     * @param game The game the player needs to be bound to.
+     * Binds the player to a {@link Game}.
+     * @param game The {@link Game} the player needs to be bound to.
      */
     public void setGame(Game game) {
         this.game = game;
     }
 
     /**
-     * Returns the game the player belongs to.
-     * @return the player's game.
+     * Returns the {@link Game} the player belongs to.
+     * @return the player's {@link Game}.
      */
     public Game getGame() {
         return game;
     }
 
     /**
-     * Returns a number that, inside the game, is unique to this player.
+     * Returns a number that, inside the {@link Game}, is unique to this player.
      * @return the player's id.
      */
     public int getId() {
@@ -180,7 +187,7 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Returns how many times the player has died in the current game.
+     * Returns how many times the player has died in the current {@link Game}.
      * @return the player's death count.
      */
     public int getDeathCount() {
@@ -188,7 +195,7 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Sets the player's death count to a given value. This is used when loading a game from a save state.
+     * Sets the player's death count to a given value. This is used when loading a {@link Game} from a save state.
      * @param deathCount the death count to set on the player.
      */
     public void setDeathCount(int deathCount) {
@@ -214,25 +221,25 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Returns the total amount of damage points the player has taken since they last spawned.
-     * @return the total damage count.
+     * Returns the total amount of {@link Damage} points the player has taken since they last spawned.
+     * @return the total {@link Damage} count.
      */
     public int getDamage() {
         return this.damage.size();
     }
 
     /**
-     * Returns the list of opponents who dealt damage to the player.
-     * @return the list of opponents who dealt damage to the player.
+     * Returns the list of opponents who dealt {@link Damage} to the player.
+     * @return the list.
      */
     public List<Player> getDamageAsList() {
         return this.damage;
     }
 
     /**
-     * Returns the amount of damage points the player has taken by a given opponent, since the player last spawned.
-     * @param author The opponent for which to count damage points on the player.
-     * @return The damage count from the fixed opponent.
+     * Returns the amount of {@link Damage} points the player has taken by a given opponent, since the player last spawned.
+     * @param author The opponent for which to count {@link Damage} points on the player.
+     * @return The {@link Damage} count from the fixed opponent.
      */
     public int getDamageByAuthor(Player author) {
         int count = 0;
@@ -251,9 +258,9 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Returns the amount of markings the player has taken by a given opponent, since the player last spawned.
-     * @param author The opponent for which to count markings on the player.
-     * @return The marking count from the fixed opponent.
+     * Returns the amount of {@link Mark}s the player has taken by a given opponent, since the player last spawned.
+     * @param author The opponent for which to count {@link Mark}s on the player.
+     * @return The {@link Mark} count from the fixed opponent.
      */
     public int getMarkingsByAuthor(Player author) {
         int count = 0;
@@ -272,8 +279,8 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Returns whether or not the player was the first to trigger the final frenzy stage of the game.
-     * @return whether or not the player was the first to trigger the final frenzy stage of the game.
+     * Returns whether or not the player was the first to trigger the final frenzy stage of the {@link Game}.
+     * @return whether or not the player was the first to trigger the final frenzy stage of the {@link Game}.
      */
     public boolean causedFrenzy() { // this is used to determine which executions the player should be allowed to pick from, after final frenzy has been triggered
         return this.causedFrenzy;
@@ -295,24 +302,24 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Returns how many executions the player has to perform before the end of their turn.
-     * @return how many executions the player has to perform before the end of their turn.
+     * Returns how many {@link Execution}s the player has to perform before the end of their turn.
+     * @return the number of {@link Execution}s.
      */
     public int getRemainingExecutions() {
         return this.remainingExecutions;
     }
 
     /**
-     * Returns a list containing the weapons in the player's hand.
-     * @return the player's hand of weapons.
+     * Returns a list containing the {@link Weapon}s in the player's hand.
+     * @return the player's hand of {@link Weapon}s.
      */
     public List<Weapon> getWeapons() {
         return this.weapons;
     }
 
     /**
-     * Returns a list containing the power up cards in the player's hand.
-     * @return the player's hand of power ups.
+     * Returns a list containing the {@link PowerUp} cards in the player's hand.
+     * @return the player's hand of {@link PowerUp}s.
      */
     public List<PowerUp> getPowerUps() {
         return this.powerUps;
@@ -327,9 +334,9 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Gives the player a weapon.
-     * @param weapon the weapon to give to the player.
-     * @throws FullHandException when the amount of weapons in the player's hand exceeds a fixed threshold.
+     * Gives the player a {@link Weapon}.
+     * @param {@link Weapon} the {@link Weapon} to give to the player.
+     * @throws FullHandException when the amount of {@link Weapon}s in the player's hand exceeds a fixed threshold.
      * @see Player#MAX_CARDS_IN_HAND
      */
     public void giveWeapon(Weapon weapon) throws FullHandException {
@@ -340,8 +347,8 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Causes the player to discard a weapon and put it back in the weapon shop of the cell the player is currently standing on.
-     * @param weapon the weapon to discard.
+     * Causes the player to discard a {@link Weapon} and put it back in the {@link Weapon} shop of the cell the player is currently standing on.
+     * @param {@link Weapon} the weapon to discard.
      */
     public void discardWeapon(Weapon weapon) {
         weapons.remove(weapon);
@@ -351,9 +358,9 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Gives the player a power up.
-     * @param powerUp the power up to give to the player.
-     * @throws FullHandException when the amount of power ups in the player's hand exceeds a fixed threshold.
+     * Gives the player a {@link PowerUp}.
+     * @param powerUp the {@link PowerUp} to give to the player.
+     * @throws FullHandException when the amount of {@link PowerUp}s in the player's hand exceeds a fixed threshold.
      */
     public void givePowerUp(PowerUp powerUp) throws FullHandException {
         this.powerUps.add(powerUp);
@@ -363,8 +370,8 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Causes the player to discard a power up and put it in the discard pile of the power up deck.
-     * @param powerUp The power up to discard.
+     * Causes the player to discard a {@link PowerUp} and put it in the discard pile of the {@link PowerUp} {@link Deck}.
+     * @param powerUp The {@link PowerUp} to discard.
      */
     public void discardPowerUp(PowerUp powerUp) {
         powerUps.remove(powerUp);
@@ -374,7 +381,7 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Gives the player an amount of ammo cubes that will be summed to the player's personal stash.
+     * Gives the player an amount of {@link AmmoCubes} that will be summed to the player's personal stash.
      * @param ammoCubes The amount of ammo to give.
      * @see AmmoCubes#sum(AmmoCubes)
      */
@@ -424,7 +431,7 @@ public class Player extends VirtualClient {
 
     /**
      * Whether or not a player can afford an ammo cost, using only their personal stash of ammo.
-     * @param cost The amount of ammo cubes the cost consists of.
+     * @param cost The amount of {@link AmmoCubes} the cost consists of.
      * @return whether or not the player can afford such cost.
      */
     public boolean canAfford(AmmoCubes cost) {
@@ -432,8 +439,8 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Whether or not a player can afford an ammo cost, using their personal stash of ammo and possibly their power ups.
-     * @param cost The amount of ammo cubes the cost consists of.
+     * Whether or not a player can afford an ammo cost, using their personal stash of ammo and possibly their {@link PowerUp}s.
+     * @param cost The amount of {@link AmmoCubes} the cost consists of.
      * @return Whether or not the player can afford such cost.
      * @see AmmoCubes#augment(List)
      */
@@ -473,10 +480,10 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Returns the list of scope power ups in the player's hand.
-     * This is used when checking whether or not the player can add one or more scopes to an attack,
-     * in order to deal additional damage to their targets.
-     * @return the list of scope power ups in the player's hand.
+     * Returns the list of {@link Scope} {@link PowerUp}s in the player's hand.
+     * This is used when checking whether or not the player can add one or more {@link Scope}s to an attack,
+     * in order to deal additional {@link Damage} to their {@link Target}s.
+     * @return the list of {@link Scope} {@link PowerUp}s in the player's hand.
      */
     public List<PowerUp> getScopes() {
         return powerUps.stream()
@@ -485,9 +492,9 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Returns the list of grenade power ups in the player's hand.
-     * This is used when checking whether or not the player can respond to the fire with a tagback grenade.
-     * @return the list of grenade power ups in the player's hand.
+     * Returns the list of {@link Grenade} {@link PowerUp}s in the player's hand.
+     * This is used when checking whether or not the player can respond to the fire with a tagback {@link Grenade}.
+     * @return the list of {@link Grenade} {@link PowerUp}s in the player's hand.
      */
     public List<PowerUp> getGrenades() {
         return powerUps.stream()
@@ -496,7 +503,7 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Raises the amount of remaining executions of the player to the maximum allowed per turn, given the player's conditions.
+     * Raises the amount of remaining {@link Execution}s of the player to the maximum allowed per turn, given the player's conditions.
      * @see Player#EXECUTIONS_PER_TURN
      * @see Player#EXECUTIONS_PER_TURN_FRENETIC
      */
@@ -505,15 +512,15 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Decrements the amount of remaining executions for the player on the current turn.
+     * Decrements the amount of remaining {@link Execution}s for the player on the current turn.
      */
     public void endExecution() {
         this.remainingExecutions --;
     }
 
     /**
-     * Inflicts the player with one damage point.
-     * @param author the source of that damage point.
+     * Inflicts the player with one {@link Damage} point.
+     * @param author the source of that {@link Damage} point.
      */
     public void applyDamage(Player author) {
         if(damage.size() <= OVERKILL_THRESHOLD) // no more than the max amount of tokens can be stored, any excess tokens are ignored
@@ -532,8 +539,8 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Inflicts the player with one marking, unless the number of markings from the same source were to exceed the threshold.
-     * @param author the source of the marking.
+     * Inflicts the player with one {@link Mark}, unless the number of {@link Mark}s from the same source were to exceed the threshold.
+     * @param author the source of the {@link Mark}.
      * @see Player#MAX_MARKINGS_PER_AUTHOR
      */
     public void applyMarking(Player author) {
@@ -550,11 +557,11 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * This method is used immediately before respawning and at the end of the game before the final scoring.
-     * The player hands out points to all those opponents they took damage from, ranked highest to lowest total damage inflicted.
-     * Opponents who dealt no damage to the player are not considered.
+     * This method is used immediately before respawning and at the end of the {@link Game} before the final scoring.
+     * The player hands out points to all those opponents they took {@link Damage} from, ranked highest to lowest total {@link Damage} inflicted.
+     * Opponents who dealt no {@link Damage} to the player are not considered.
      * Ties are broken in favour of the opponent who damaged the player the earliest.
-     * If the player is not on final frenzy, the opponent who dealt the very first damage point is awarded one extra point.
+     * If the player is not on final frenzy, the opponent who dealt the very first {@link Damage} point is awarded one extra point.
      * @see ScoreList
      */
     public void scoreDamageTrack() {
@@ -611,7 +618,7 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Increments the player's death count and removes them from the board (in order to allow for the respawning mechanic to take place).
+     * Increments the player's death count and removes them from the {@link Board} (in order to allow for the respawning mechanic to take place).
      */
     public void die() {
         this.deathCount ++;
@@ -619,7 +626,7 @@ public class Player extends VirtualClient {
     }
 
     /**
-     * Clears the damage track of the player and sets them on a spawn point.
+     * Clears the {@link Damage} track of the player and sets them on a {@link SpawnCell}.
      * @param cell the spawnpoint chosen for the respawn.
      */
     public void spawn(Cell cell) {

@@ -1,21 +1,22 @@
 package it.polimi.ingsw.model.weaponry.effects;
 
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.powerups.Grenade;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 import it.polimi.ingsw.view.virtual.VirtualView;
 
 import java.util.List;
 
 /**
- * Marks are effects inflicted to a player that causes them to take increased damage the next time they
- * are damaged by the same source as the mark.
+ * {@link Mark}s are {@link Effect}s inflicted to a {@link Player} that causes them to take increased {@link Damage} the next time they
+ * are damaged by the same source as the {@link Mark}.
  */
 public class Mark extends OffensiveEffect{
 
     /**
      * This is the only constructor.
-     * @param amount the amount of marks the effect applies.
-     * @param constraints the list of requirements each player needs to meet in order to be affected.
+     * @param amount the amount of {@link Mark}s the {@link Effect} applies.
+     * @param constraints the list of requirements each {@link Player} needs to meet in order to be affected.
      */
     public Mark(int amount, List<Constraint> constraints) {
         this.amount = amount;
@@ -24,8 +25,8 @@ public class Mark extends OffensiveEffect{
     }
 
     /**
-     * Sets up a marking to be applied by elaborating the valid target list and then applies it directly to all
-     * players in that list.
+     * Sets up a {@link Mark} to be applied by elaborating the valid target list and then applies it directly to all
+     * {@link Player}s in that list.
      */
     @Override
     public void apply() {
@@ -39,9 +40,9 @@ public class Mark extends OffensiveEffect{
     }
 
     /**
-     * This is a light-weight version of {@code apply()}, since it is used when a player is hit by an attack
-     * and wants to respond with a tagback grenade, dealing 1 mark to their original attacker.
-     * @param author the player being hit.
+     * This is a light-weight version of {@code apply()}, since it is used when a {@link Player} is hit by an attack
+     * and wants to respond with a tagback {@link Grenade}, dealing 1 {@link Mark} to their original attacker.
+     * @param author the {@link Player} being hit.
      * @param target the original attacker.
      */
     public void grenade(Player author, Player target) {

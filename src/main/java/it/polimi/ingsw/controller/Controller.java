@@ -1,6 +1,8 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoTile;
+import it.polimi.ingsw.model.board.Deck;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
@@ -8,13 +10,15 @@ import it.polimi.ingsw.model.exceptions.AbortedTurnException;
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.exceptions.CannotDiscardFirstCardOfDeckException;
 import it.polimi.ingsw.model.exceptions.FullHandException;
+import it.polimi.ingsw.model.player.Grab;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.model.powerups.PowerUpType;
+import it.polimi.ingsw.model.player.Reload;
+import it.polimi.ingsw.model.powerups.*;
 import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.Weapon;
 import it.polimi.ingsw.model.weaponry.effects.Damage;
+import it.polimi.ingsw.model.weaponry.effects.Effect;
 import it.polimi.ingsw.model.weaponry.effects.Mark;
 import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.view.virtual.VirtualView;
@@ -24,12 +28,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * This class controls changes in the status of the game. One controller is instantiated for each game.
+ * This class controls changes in the status of the {@link Game}. One {@link Controller} is instantiated for each {@link Game}.
+ * @see Game;
  */
 
 public class Controller {
     /**
-     * A reference to the virtual view of the same game. This is useful for allowing message exchanges that involve
+     * A reference to the {@link VirtualView} of the same {@link Game}. This is useful for allowing message exchanges that involve
      * a multiple sequence of request/response before any effect actually takes action on the game. It's essentially a shortcut
      * that skips the model altogether as long as it doesn't have enough information to fully describe a state transition.
      */
@@ -37,16 +42,16 @@ public class Controller {
 
     /**
      * This is the only constructor.
-     * @param virtualView The virtual view that calls this constructor and passes itself as argument.
+     * @param virtualView The {@link VirtualView} that calls this constructor and passes itself as argument.
      */
     public Controller(VirtualView virtualView) {
         this.virtualView = virtualView;
     }
 
     /**
-     * Causes a player to spawn, after they selected the power up to discard.
+     * Causes a {@link Player} to spawn, after they selected the {@link PowerUp} to discard.
      * @param subject The player that is about to spawn.
-     * @param powerUpToDiscard The power up the player has discarded. The power up's colour is used to infer the cell where the spawn event will take place.
+     * @param powerUpToDiscard The {@link PowerUp} the player has discarded. The {@link PowerUp}'s colour is used to infer the cell where the spawn event will take place.
      */
     public void spawn(Player subject, PowerUp powerUpToDiscard) {
         subject.spawn(powerUpToDiscard.getSpawnPoint(subject.getGame().getBoard()));
@@ -54,9 +59,9 @@ public class Controller {
     }
 
     /**
-     * Causes a player to discard a power up card.
-     * @param subject The player who has discarded a power up.
-     * @param toDiscard The power up to remove from the player's hand and place back into the deck.
+     * Causes a player to discard a {@link PowerUp} card.
+     * @param subject The player who has discarded a {@link PowerUp}.
+     * @param toDiscard The {@link PowerUp} to remove from the player's hand and place back into the {@link Deck}.
      */
     public void discardPowerUp(Player subject, PowerUp toDiscard) {
         subject.discardPowerUp(toDiscard);
@@ -81,9 +86,9 @@ public class Controller {
     }
 
     /**
-     * Causes a player to grab ammo from the cell they are currently standing on.
+     * Causes a player to {@link Grab} ammo from the cell they are currently standing on.
      * @param subject The player who is about to grab ammo.
-     * @return Whether or not the grab was successful. For example, grabbing on an empty cell will be considered a failure case.
+     * @return Whether or not the {@link Grab} was successful. For example, grabbing on an empty cell will be considered a failure case.
      * @throws AbortedTurnException When the request routine catches a {@code ConnectionException} and the current turn needs to be ended prematurely.
      */
     public boolean grabAmmo(Player subject) throws AbortedTurnException {
@@ -139,9 +144,9 @@ public class Controller {
     }
 
     /**
-     * Sets up an attack pattern to be authored by a player and ready to be used.
+     * Sets up an {@link AttackPattern} to be authored by a player and ready to be used.
      * @param subject The attacker.
-     * @param pattern The attack pattern that the player intends to use.
+     * @param pattern The {@link AttackPattern} that the player intends to use.
      */
     public void prepareForShoot(Player subject, AttackPattern pattern) {
         pattern.setAuthor(subject);
@@ -149,10 +154,10 @@ public class Controller {
     }
 
     /**
-     * Starts an attack module and invokes the target acquisition.
+     * Starts an {@link AttackModule} and invokes the target acquisition.
      * @param subject The attacker.
-     * @param pattern The attack pattern the module belongs to.
-     * @param moduleId The identifier of the attack module inside the attack pattern.
+     * @param pattern The {@link AttackPattern} the module belongs to.
+     * @param moduleId The identifier of the {@link AttackModule} inside the {@link AttackPattern}.
      * @throws AbortedTurnException When the request routine catches a {@code ConnectionException} and the current turn needs to be ended prematurely.
      */
     public void shoot(Player subject, AttackPattern pattern, int moduleId) throws AbortedTurnException {
@@ -168,10 +173,10 @@ public class Controller {
     }
 
     /**
-     * After the target acquisition, it applies every effect of the attack module.
+     * After the target acquisition, it applies every {@link Effect} of the {@link AttackModule}.
      * @param subject The attacker.
-     * @param attackModule The attack module containing the targets and effects of relevance.
-     * @param targets The targets on which the effects will be applied to.
+     * @param attackModule The {@link AttackModule} containing the targets and {@link Effect}s of relevance.
+     * @param targets The targets on which the {@link Effect}s will be applied to.
      * @throws AbortedTurnException When the request routine catches a {@code ConnectionException} and the current turn needs to be ended prematurely.
      * @see it.polimi.ingsw.model.weaponry.effects.Effect
      */
@@ -212,7 +217,7 @@ public class Controller {
     }
 
     /**
-     * Causes a player to reload a weapon and pay the relevant cost.
+     * Causes a player to {@link Reload} a weapon and pay the relevant cost.
      * @param subject The buyer.
      * @param weapon The weapon about to be reloaded.
      */
@@ -225,9 +230,9 @@ public class Controller {
     }
 
     /**
-     * Causes a player to use a power up between turns (either {@code Newton} or {@code Teleport}).
-     * @param subject The player who is using a power up.
-     * @param powerUp The power up being used by the player.
+     * Causes a player to use a {@link PowerUp} between turns (either {@code Newton} or {@code Teleport}).
+     * @param subject The player who is using a {@link PowerUp}.
+     * @param powerUp The {@link PowerUp} being used by the player.
      * @throws AbortedTurnException When the request routine catches a {@code ConnectionException} and the current turn needs to be ended prematurely.
      */
     public void usePowerUp(Player subject, PowerUp powerUp) throws AbortedTurnException {
@@ -238,19 +243,19 @@ public class Controller {
     }
 
     /**
-     * Applies the effect of a scope power up to an active damage effect, increasing its value by 1.
-     * @param damage The damage effect being buffed.
-     * @param targets The targets associated with the damage effect, scoped or not.
-     * @param scopedPlayers The targets associated with the damage effect that have been chosen as victims to the scope's effect.
+     * Applies the effect of a {@link Scope} {@link PowerUp} to an active {@link Damage} {@link Effect}, increasing its value by 1.
+     * @param damage The {@link Damage} {@link Effect} being buffed.
+     * @param targets The targets associated with the {@link Damage} {@link Effect}, scoped or not.
+     * @param scopedPlayers The targets associated with the {@link Damage} {@link Effect} that have been chosen as victims to the {@link Scope}'s effect.
      */
     public void scope(Damage damage, List<Player> targets, List<Player> scopedPlayers) {
         damage.applyAfterScopes(targets, scopedPlayers);
     }
 
     /**
-     * Applies the effect of a grenade power up.
+     * Applies the effect of a {@link Grenade} {@link PowerUp}.
      * @param subject The player that was hit and chose to respond to the fire.
-     * @param originalAttacker The original attacker, namely the target of the grenade.
+     * @param originalAttacker The original attacker, namely the target of the {@link Grenade}.
      */
     public void grenade(Player subject, Player originalAttacker) {
         if(originalAttacker == null)
@@ -261,7 +266,7 @@ public class Controller {
     }
 
     /**
-     * Applies the effect of a newton power up.
+     * Applies the effect of a {@link Newton} {@link PowerUp}.
      * @param target The player being moved.
      * @param destination The cell the player is being moved to.
      */
@@ -270,8 +275,8 @@ public class Controller {
     }
 
     /**
-     * Applies the effect of a teleport power up.
-     * @param subject The player using the power up, i.e. the player being moved.
+     * Applies the effect of a {@link Teleport} {@link PowerUp}.
+     * @param subject The player using the {@link PowerUp}, i.e. the player being moved.
      * @param destination The player's destination cell.
      */
     public void teleport(Player subject, Cell destination) {

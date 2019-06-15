@@ -8,11 +8,17 @@ import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
+import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Targets are the actors that have a role in attacks. Each {@link AttackModule}
+ * has a list of targets, each of which corresponds to a choice made by the attacker. Targets can be {@link Room}s,
+ * {@link Cell}s or {@link Player}s.
+ */
 public abstract class Target {
     protected TargetType type;
     protected String message;

@@ -1,8 +1,12 @@
 package it.polimi.ingsw.model.exceptions;
 
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.weaponry.targets.Target;
+import it.polimi.ingsw.view.virtual.VirtualView;
+
 /**
- * This exception is thrown (and caught) internally in the {@code VirtualView}, when it is impossible to provide
- * the player with a valid list of targets to choose for an attack.
+ * This exception is thrown (and caught) internally in the {@link VirtualView}, when it is impossible to provide
+ * the {@link Player} with a valid list of {@link Target}s to choose for an attack.
  * @see it.polimi.ingsw.view.virtual.VirtualView
  */
 public class NoValidTargetsException extends Exception {

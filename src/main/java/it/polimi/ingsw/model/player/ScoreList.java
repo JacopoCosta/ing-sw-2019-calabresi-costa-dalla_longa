@@ -1,41 +1,44 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.model.weaponry.effects.Damage;
+
 /**
- * This class determines the amount of points a player hands out to his opponents from whom they took damage.
+ * This class determines the amount of points a player hands out to his opponents from whom they took {@link Damage}.
  */
 public abstract class ScoreList {
     /**
      * The amount of points that a kill is worth such that the sum of the amount of times the player
-     * had already died in the past and the number of players who dealt either more damage
-     * or the same amount of damage, the first of which being earlier, on the same kill on the same player is equal to 0.
+     * had already died in the past and the number of players who dealt either more {@link Damage}
+     * or the same amount of {@link Damage}, the first of which being earlier, on the same kill on the same player is equal to 0.
      */
     private static final int VALUE_0 = 8;
 
     /**
      * The amount of points that a kill is worth such that the sum of the amount of times the player
-     * had already died in the past and the number of players who dealt either more damage
-     * or the same amount of damage, the first of which being earlier, on the same kill on the same player is equal to 1.
+     * had already died in the past and the number of players who dealt either more {@link Damage}
+     * or the same amount of {@link Damage}, the first of which being earlier, on the same kill on the same player is equal to 1.
      */
     private static final int VALUE_1 = 6;
 
     /**
      * The amount of points that a kill is worth such that the sum of the amount of times the player
-     * had already died in the past and the number of players who dealt either more damage
-     * or the same amount of damage, the first of which being earlier, on the same kill on the same player is equal to 2.
+     * had already died in the past and the number of players who dealt either more {@link Damage}
+     * or the same amount of {@link Damage}, the first of which being earlier, on the same kill on the same player is equal to 2.
      */
     private static final int VALUE_2 = 4;
 
     /**
      * The amount of points that a kill is worth such that the sum of the amount of times the player
-     * had already died in the past and the number of players who dealt either more damage
-     * or the same amount of damage, the first of which being earlier, on the same kill on the same player is equal to 3.
+     * had already died in the past and the number of players who dealt either more {@link Damage}
+     * or the same amount of {@link Damage}, the first of which being earlier, on the same kill on the same player is equal to 3.
      */
     private static final int VALUE_3 = 2;
 
     /**
      * The amount of points that a kill is worth such that the sum of the amount of times the player
-     * had already died in the past and the number of players who dealt either more damage
-     * or the same amount of damage, the first of which being earlier, on the same kill on the same player is equal to or greater than 4.
+     * had already died in the past and the number of players who dealt either more {@link Damage}
+     * or the same amount of {@link Damage}, the first of which being earlier, on the same kill on the
+     * same player is equal to or greater than 4.
      */
     private static final int VALUE_INFINITY = 1;
 

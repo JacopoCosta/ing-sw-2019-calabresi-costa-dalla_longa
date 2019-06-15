@@ -2,21 +2,23 @@ package it.polimi.ingsw.model.weaponry.effects;
 
 import it.polimi.ingsw.model.exceptions.AbortedTurnException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.powerups.Scope;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
+import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.view.virtual.VirtualView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Damage is an effect inflicted to a player that reduces their health and enables adrenaline actions above
+ * Damage is an {@link Effect} inflicted to a {@link Player} that reduces their health and enables adrenaline actions above
  * certain thresholds.
  */
 public class Damage extends OffensiveEffect {
     /**
      * This is the only constructor.
-     * @param amount the amount of health points the damage takes.
-     * @param constraints the requirements each target needs to meet in order to be affected.
+     * @param amount the amount of health points the {@link Damage} takes.
+     * @param constraints the requirements each {@link Target} needs to meet in order to be affected.
      */
     Damage(int amount, List<Constraint> constraints) {
         this.amount = amount;
@@ -25,8 +27,8 @@ public class Damage extends OffensiveEffect {
     }
 
     /**
-     * Sets up a damage to be applied, by elaborating the valid target list and checking if the attacker
-     * can use scopes to increase the damage amount to some of their targets.
+     * Sets up a {@link Damage} to be applied, by elaborating the valid {@link Target} list and checking if the attacker
+     * can use {@link Scope}s to increase the {@link Damage} amount to some of their {@link Target}s.
      */
     @Override
     public void apply() {
@@ -45,10 +47,10 @@ public class Damage extends OffensiveEffect {
     }
 
     /**
-     * Effectively applies the damage taking into accounts the base targets and the targets on whom
-     * the attacker also used one or more scopes.
-     * @param targets the base targets - merely all those who meet all of the constraints.
-     * @param scopedPlayers the scoped players.
+     * Effectively applies the {@link Damage} taking into accounts the base {@link Target}s and the {@link Target}s on whom
+     * the attacker also used one or more {@link Scope}s.
+     * @param {@link Target}s the base {@link Target}s - merely all those who meet all of the {@link Constraint}s.
+     * @param scopedPlayers the scoped {@link Player}s.
      */
     public void applyAfterScopes(List<Player> targets, List<Player> scopedPlayers) {
         targets.forEach(target -> {

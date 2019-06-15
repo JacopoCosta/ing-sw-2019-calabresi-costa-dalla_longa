@@ -16,25 +16,25 @@ import java.util.List;
  */
 public abstract class Effect {
     /**
-     * The effect's type.
+     * The {@link Effect}'s type.
      */
     protected EffectType type;
 
     /**
-     * The context the effect is being caused in.
+     * The context the {@link Effect} is being caused in.
      */
     protected AttackPattern context;
 
     /**
-     * The player who caused the effect to happen.
+     * The player who caused the {@link Effect} to happen.
      */
     protected Player author;
 
     /**
-     * This factory method constructs an effect, with the properties found inside the JSON object passed as argument.
+     * This factory method constructs an {@link Effect}, with the properties found inside the JSON object passed as argument.
      * @param jEffect the JSON object containing the desired properties.
      * @return an instance of this class in accordance with the specified properties.
-     * @throws InvalidEffectTypeException when attempting to instantiate a new effect whose type is not in the
+     * @throws InvalidEffectTypeException when attempting to instantiate a new {@link Effect} whose type is not in the
      * enumeration of possible effect types.
      */
     public static Effect build(DecoratedJsonObject jEffect) throws InvalidEffectTypeException {
@@ -114,39 +114,39 @@ public abstract class Effect {
     }
 
     /**
-     * Sets the effect's author.
-     * @param author the effect's author.
+     * Sets the {@link Effect}'s author.
+     * @param author the {@link Effect}'s author.
      */
     public void setAuthor(Player author) {
         this.author = author;
     }
 
     /**
-     * Returns the effect's author.
-     * @return the effect's author.
+     * Returns the {@link Effect}'s author.
+     * @return the {@link Effect}'s author.
      */
     public Player getAuthor() {
         return author;
     }
 
     /**
-     * Sets the effect's context.
-     * @param context the context the effect is being caused in.
+     * Sets the {@link Effect}'s context.
+     * @param context the context the {@link Effect} is being caused in.
      */
     public void setContext(AttackPattern context) {
         this.context = context;
     }
 
     /**
-     * Returns the effect's type.
-     * @return the effect's type.
+     * Returns the {@link Effect}'s type.
+     * @return the {@link Effect}'s type.
      */
     public EffectType getType() {
         return type;
     }
 
     /**
-     * Causes the effect's consequences to happen.
+     * Causes the {@link Effect}'s consequences to happen.
      */
     public abstract void apply();
 

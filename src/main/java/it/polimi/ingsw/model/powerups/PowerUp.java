@@ -7,38 +7,39 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.InvalidPowerUpTypeException;
 import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
+import it.polimi.ingsw.model.player.Execution;
 import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
 
 /**
- * Power-ups are action cards that each player can use in their turn, before each execution, during an attack,
+ * Power-ups are action cards that each player can use in their turn, before each {@link Execution}, during an attack,
  * or during someone else's attack when they're being damaged.
  */
 public abstract class PowerUp {
     /**
-     * The type of the power up.
+     * The type of the {@link PowerUp}.
      */
     protected PowerUpType type;
 
     /**
-     * A set of ammo cubes containing only one cube equivalent to the spawn point the power up is linked to.
+     * A set of {@link AmmoCubes} containing only one cube equivalent to the {@link SpawnCell} the {@link PowerUp} is linked to.
      * @see PowerUp#getSpawnPoint(Board)
      */
     protected AmmoCubes ammoCubes;
 
     /**
      * This is the only constructor.
-     * @param ammoCubes a set of ammo cubes containing only one cube of the colour of the power up.
+     * @param ammoCubes a set of {@link AmmoCubes} containing only one cube of the colour of the {@link PowerUp}.
      */
     public PowerUp(AmmoCubes ammoCubes) {
         this.ammoCubes = ammoCubes;
     }
 
     /**
-     * This factory method constructs a power up card, with the properties found inside the JSON object passed as argument.
+     * This factory method constructs a {@link PowerUp} card, with the properties found inside the JSON object passed as argument.
      * @param jPowerUp the JSON object containing the desired properties.
      * @return an instance of this class in accordance with the specified properties.
-     * @throws InvalidPowerUpTypeException when attempting to instantiate a new power-up whose type is not in the
-     * enumeration of possible power-up types.
+     * @throws InvalidPowerUpTypeException when attempting to instantiate a new {@link PowerUp} whose type is not in the
+     * enumeration of possible {@link PowerUp} types.
      */
     public static PowerUp build(DecoratedJsonObject jPowerUp) throws InvalidPowerUpTypeException {
         String type;
@@ -66,25 +67,25 @@ public abstract class PowerUp {
     }
 
     /**
-     * Returns the type of the power up.
-     * @return the type of the power up.
+     * Returns the type of the {@link PowerUp}.
+     * @return the type of the {@link PowerUp}.
      */
     public PowerUpType getType() {
         return type;
     }
 
     /**
-     * Returns a set of ammo cubes containing one cube of the colour of the power up.
-     * @return a set of ammo cubes containing one cube of the colour of the power up.
+     * Returns a set of {@link AmmoCubes} containing one cube of the colour of the {@link PowerUp}.
+     * @return the set.
      */
     public AmmoCubes getAmmoCubes() {
         return ammoCubes;
     }
 
     /**
-     * Looks for the spawn point whose colour is the same as the power up's.
-     * @param board the board in which to search for the spawn point.
-     * @return the spawn cell.
+     * Looks for the {@link SpawnCell} whose colour is the same as the {@link PowerUp}'s.
+     * @param board the {@link Board} in which to search for the {@link SpawnCell}.
+     * @return the {@link SpawnCell}.
      */
     public Cell getSpawnPoint(Board board) {
         return board.getCells()

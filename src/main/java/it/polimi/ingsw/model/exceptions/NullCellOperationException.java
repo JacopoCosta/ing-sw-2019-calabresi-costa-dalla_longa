@@ -1,7 +1,9 @@
 package it.polimi.ingsw.model.exceptions;
 
+import it.polimi.ingsw.model.cell.Cell;
+
 /**
- * This method is thrown when attempting to evaluate any binary predicative or functional method in the class {@code Cell},
+ * This method is thrown when attempting to evaluate any binary predicative or functional method in the class {@link Cell},
  * when passing {@code null} as argument.
  * @see it.polimi.ingsw.model.cell.Cell
  */

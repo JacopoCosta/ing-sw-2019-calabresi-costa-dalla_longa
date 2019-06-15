@@ -33,23 +33,23 @@ import java.util.stream.Collectors;
 import static it.polimi.ingsw.model.Game.*;
 
 /**
- * This class is responsible of bridging the network and model packages converting game-related request into deliverables.
- * On this end, deliverables are sent to (and received from) the virtual client, whose {@code .deliver()} method is invoked.
+ * This class is responsible of bridging the network and model packages converting game-related request into {@link Deliverable}s.
+ * On this end, {@link Deliverable}s are sent to (and received from) the virtual client, whose {@code .deliver()} method is invoked.
  */
 public class VirtualView {
     /**
-     * The game that instantiated the virtual view.
+     * The {@link Game} that instantiated the virtual view.
      */
     private Game game;
 
     /**
-     * The controller that the virtual view will forward its responses to, triggering changes in the game status.
+     * The {@link Controller} that the virtual view will forward its responses to, triggering changes in the {@link Game} status.
      */
     private Controller controller;
 
     /**
      * This is the only constructor.
-     * @param game The relevant game.
+     * @param game The relevant {@link Game}.
      */
     public VirtualView(Game game) {
         this.game = game;
@@ -57,20 +57,20 @@ public class VirtualView {
     }
 
     /**
-     * Getter method for the controller attribute.
-     * @return The controller.
+     * Getter method for the {@link Controller} attribute.
+     * @return The {@link Controller}.
      */
     public Controller getController() {
         return controller;
     }
 
     /**
-     * Sends a deliverable to a player's client.
-     * @param recipient The recipient of the deliverable.
-     * @param deliverable The deliverable of interest.
+     * Sends a {@link Deliverable} to a player's client.
+     * @param recipient The recipient of the {@link Deliverable}.
+     * @param deliverable The {@link Deliverable} of interest.
      * @throws AbortedTurnException When the request routine catches a {@code ConnectionException}
      * and the current turn needs to be ended prematurely.
-     * @return the response to the deliverable.
+     * @return the response to the {@link Deliverable}.
      */
     private int send(Player recipient, Deliverable deliverable) throws AbortedTurnException {
         if(offlineMode) {
@@ -307,7 +307,7 @@ public class VirtualView {
 
         List<Integer> content = new ArrayList<>();
 
-        content.add(creditor.getId());
+        content.add(creditor.getId()); // FIXME tests give NullPointerException
         content.add(creditor.getScore());
 
         Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_SCORE, content);

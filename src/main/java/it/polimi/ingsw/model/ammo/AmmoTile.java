@@ -1,29 +1,34 @@
 package it.polimi.ingsw.model.ammo;
 
+import it.polimi.ingsw.model.board.Deck;
+import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
+import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
 
 /**
- * Ammo tiles are tokens spread on the cells that are not spawn points.
- * Each ammo tile allows for the collection of 2~3 ammo cubes, and may include the ability to draw once from the power up deck.
+ * {@link AmmoTile}s are tokens spread on the {@link Cell}s that are not {@link SpawnCell}s.
+ * Each {@link AmmoTile} allows for the collection of 2~3 {@link AmmoCubes}, and may include the ability to draw once
+ * from the {@link PowerUp} {@link Deck}.
  * @see it.polimi.ingsw.model.cell.AmmoCell
  */
 public class AmmoTile {
     /**
-     * The amount of ammo cubes the player gains when collecting this ammo tile.
+     * The amount of {@link AmmoCubes} the player gains when collecting this {@link AmmoTile}.
      */
     private AmmoCubes ammoCubes;
 
     /**
-     * Whether or not a power up is included in the ammo tile.
+     * Whether or not a {@link PowerUp} is included in the {@link AmmoTile}.
      */
     private boolean includesPowerUp;
 
     /**
      * This is the only constructor.
-     * @param ammoCubes the ammo cube set included.
-     * @param includesPowerUp whether or not to include a power up.
+     * @param ammoCubes the {@link AmmoCubes} set included.
+     * @param includesPowerUp whether or not to include a {@link PowerUp}.
      */
     public AmmoTile(AmmoCubes ammoCubes, boolean includesPowerUp) {
         this.ammoCubes = ammoCubes;
@@ -53,16 +58,16 @@ public class AmmoTile {
     }
 
     /**
-     * Returns the amount of ammo cubes included in the ammo tile.
-     * @return the amount of ammo cubes included in the ammo tile.
+     * Returns the amount of {@link AmmoCubes} included in the {@link AmmoTile}.
+     * @return that amount.
      */
     public AmmoCubes getAmmoCubes() {
         return ammoCubes;
     }
 
     /**
-     * Returns whether or not a power up is included in the ammo tile.
-     * @return whether or not a power up is included in the ammo tile.
+     * Returns whether or not a {@link PowerUp} is included in the {@link AmmoTile}.
+     * @return true if it is included.
      */
     public boolean includesPowerUp() {
         return includesPowerUp;

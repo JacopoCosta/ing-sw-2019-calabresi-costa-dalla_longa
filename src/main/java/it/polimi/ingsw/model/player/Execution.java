@@ -1,99 +1,108 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.weaponry.Weapon;
+import it.polimi.ingsw.model.weaponry.effects.Damage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An execution is an ordered list of activities the player can perform during their turn.
- * On each turn, a player can normally perform two executions, except when they use frenetic actions.
+ * An {@link Execution} is an ordered list of {@link Activity}s the {@link Player} can perform during their turn.
+ * On each turn, a {@link Player} can normally perform two {@link Execution}s, except when they use frenetic actions.
  */
 public class Execution {
     /**
-     * The maximum number of moves in standard conditions.
+     * The maximum number of {@link Move}s in standard conditions.
      */
     private static final int MAX_MOVES = 3; // max number of moves in standard conditions
 
     /**
-     * The maximum number of moves before grabbing, in standard conditions.
+     * The maximum number of {@link Move}s before grabbing, in standard conditions.
      */
     private static final int MAX_MOVES_ON_GRAB = 1; // max number of moves before grabbing in standard conditions
 
     /**
-     * The maximum number of moves before grabbing in enhanced conditions, i.e. after taking a certain amount of damage.
+     * The maximum number of {@link Move}s before grabbing in enhanced conditions,
+     * i.e. after taking a certain amount of {@link Damage}.
      * @see Execution#GRAB_ENHANCE_THRESHOLD
      */
-    private static final int MAX_MOVES_ON_GRAB_ENHANCED = 2; // max number of moves before grabbing in enhanced conditions (enhanced: after taking a set amount of damage)
+    private static final int MAX_MOVES_ON_GRAB_ENHANCED = 2; // max number of moves before grabbing in enhanced conditions (enhanced: after taking a set amount of {@link Damage})
 
     /**
-     * The maximum number of moves before shooting in enhanced conditions, i.e. after taking a certain amount of damage.
+     * The maximum number of {@link Move}s before {@link Shoot}ing in enhanced conditions,
+     * i.e. after taking a certain amount of {@link Damage}.
      * @see Execution#SHOOT_ENHANCE_THRESHOLD
      */
     private static final int MAX_MOVES_ON_SHOOT_ENHANCED = 1; // max number of moves before shooting in enhanced conditions
 
     /**
-     * The maximum number of moves in standard conditions, when final frenzy is activated, on a turn preceding the starting player.
+     * The maximum number of {@link Move}s in standard conditions, when final frenzy is activated,
+     * on a turn preceding the starting {@link Player}.
      */
     private static final int MAX_MOVES_FRENETIC = 4; // max number of moves in standard conditions on final frenzy on a turn before the starting player
 
     /**
-     * The maximum number of moves before grabbing, when final frenzy is activated, on a turn preceding the starting player.
+     * The maximum number of {@link Move}s before grabbing, when final frenzy is activated,
+     * on a turn preceding the starting {@link Player}.
      */
     private static final int MAX_MOVES_FRENETIC_ON_GRAB_BEFORE = 2; // max number of moves before grabbing on final frenzy on a turn before the starting player
 
     /**
-     * The maximum number of moves before grabbing, when final frenzy is activated, on a turn equal to or following the starting player's turn.
+     * The maximum number of {@link Move}s before grabbing, when final frenzy is activated,
+     * on a turn equal to or following the starting {@link Player}'s turn.
      */
     private static final int MAX_MOVES_FRENETIC_ON_GRAB_AFTER = 3; // max number of moves before grabbing on final frenzy on a turn equal to or after the starting player
 
     /**
-     * The maximum number of moves before reloading and shooting, when final frenzy is activated, on a turn preceding the starting player.
+     * The maximum number of {@link Move}s before {@link Reload}ing and {@link Shoot}ing,
+     * when final frenzy is activated, on a turn preceding the starting {@link Player}.
      */
     private static final int MAX_MOVES_FRENETIC_ON_SHOOT_BEFORE = 1; // max number of moves before reloading and shooting on final frenzy on a turn before the starting player
 
     /**
-     * The maximum number of moves before reloading and shooting, when final frenzy is activated, on a turn equal to or following the starting player's turn.
+     * The maximum number of {@link Move}s before {@link Reload}ing and {@link Shoot}ing,
+     * when final frenzy is activated, on a turn equal to or following the starting {@link Player}'s turn.
      */
     private static final int MAX_MOVES_FRENETIC_ON_SHOOT_AFTER = 2; // max number of moves before reloading and shooting on final frenzy on a turn equal to or after the starting player
 
     /**
-     * The amount of damage a player must take before being able to use the enhanced version of the grab.
+     * The amount of {@link Damage} a {@link Player} must take before being able to use the enhanced version of the {@link Grab}.
      * @see Execution#MAX_MOVES_ON_GRAB_ENHANCED
      */
     private static final int GRAB_ENHANCE_THRESHOLD = 3; // the amount of damage a player must take before being able to use the enhanced version of grab
 
     /**
-     * The amount of damage a player must take before being able to move before using the shoot.
+     * The amount of {@link Damage} a {@link Player} must take before being able to {@link Move} before using the {@link Shoot}.
      * @see Execution#MAX_MOVES_ON_SHOOT_ENHANCED
      */
     private static final int SHOOT_ENHANCE_THRESHOLD = 6; // the amount of damage a player must take before being able to use the enhanced version of shoot
 
     /**
-     * The list of activities the execution consists of.
+     * The list of {@link Activity}s the {@link Execution} consists of.
      */
     private List<Activity> activities;
 
     /**
      * This is the only constructor.
-     * @param activities the list of activities the execution will be made out of.
+     * @param activities the list of {@link Activity}s the {@link Execution} will be made out of.
      */
     private Execution(List<Activity> activities) {
         this.activities = activities;
     }
 
     /**
-     * Returns the list of activities composing the execution.
-     * @return the list of activities composing the execution.
+     * Returns the list of {@link Activity}s composing the {@link Execution}.
+     * @return the list.
      */
     public List<Activity> getActivities() {
         return this.activities;
     }
 
     /**
-     * Generates an execution using the {@code Move} activity, based on the condition of the player passed as argument.
-     * @param subject The player for whom this method needs to generate the execution.
-     * @return The execution deemed correct for the player, given their status.
+     * Generates an {@link Execution} using the {@code Move} {@link Activity},
+     * based on the condition of the {@link Player} passed as argument.
+     * @param subject The {@link Player} for whom this method needs to generate the {@link Execution}.
+     * @return The {@link Execution} deemed correct for the {@link Player}, given their status.
      * @see Move
      */
     private static Execution generateMove(Player subject) { // moves only
@@ -106,9 +115,10 @@ public class Execution {
     }
 
     /**
-     * Generates an execution using the {@code Move} and {@code Grab} activities, based on the condition of the player passed as argument.
-     * @param subject The player for whom this method needs to generate the execution.
-     * @return The execution deemed correct for the player, given their status.
+     * Generates an {@link Execution} using the {@code Move} and {@code Grab} {@link Activity}s,
+     * based on the condition of the {@link Player} passed as argument.
+     * @param subject The {@link Player} for whom this method needs to generate the {@link Execution}.
+     * @return The {@link Execution} deemed correct for the {@link Player}, given their status.
      * @see Move
      * @see Grab
      */
@@ -125,10 +135,11 @@ public class Execution {
     }
 
     /**
-     * Generates an execution using the {@code Shoot} activity, occasionally coupled with the {@code Move} and/or {@code Reload} activities,
-     * based on the condition of the player passed as argument.
-     * @param subject The player for whom this methods needs to generate the execution.
-     * @return The execution deemed correct for the player, given their status.
+     * Generates an {@link Execution} using the {@code Shoot} {@link Activity},
+     * occasionally coupled with the {@code Move} and/or {@code Reload} {@link Activity}s,
+     * based on the condition of the {@link Player} passed as argument.
+     * @param subject The {@link Player} for whom this methods needs to generate the {@link Execution}.
+     * @return The {@link Execution} deemed correct for the {@link Player}, given their status.
      * @see Move
      * @see Shoot
      * @see Reload
@@ -150,13 +161,15 @@ public class Execution {
     }
 
     /**
-     * This method takes in a list of activity (the soon-to-be execution) and a player.
-     * If the player is not on final frenzy and they are about to perform the last execution of their turn, the option
-     * to reload a weapon at the end is added. This is achieved by concatenating a {@code Reload} activity at the end
-     * of the list of activities passed in as argument. Should the player not meet the requirements to be able to reload
-     * at the end of the execution, this method will have no effect on the activity list.
-     * @param activityList The list of activities that will shortly be turned into an execution.
-     * @param subject The player for whom to evaluate whether or not to allow a reload at the end of their turn.
+     * This method takes in a list of {@link Activity} (the soon-to-be {@link Execution}) and a {@link Player}.
+     * If the {@link Player} is not on final frenzy and they are about to perform the last {@link Execution} of their turn, the option
+     * to {@link Reload} a {@link Weapon} at the end is added.
+     * This is achieved by concatenating a {@code Reload} {@link Activity} at the end
+     * of the list of {@link Activity}s passed in as argument.
+     * Should the {@link Player} not meet the requirements to be able to {@link Reload}
+     * at the end of the {@link Execution}, this method will have no effect on the {@link Activity} list.
+     * @param activityList The list of {@link Activity}s that will shortly be turned into an {@link Execution}.
+     * @param subject The {@link Player} for whom to evaluate whether or not to allow a {@link Reload} at the end of their turn.
      */
     private static void concatenateReload(List<Activity> activityList, Player subject) { // each last execution of a non-frenzy turn also offers a reload at the end
         if(!subject.isOnFrenzy() && subject.getRemainingExecutions() == 1) // this is the last execution of a non-frenzy turn
@@ -164,9 +177,9 @@ public class Execution {
     }
 
     /**
-     * Generates a list of executions based on a player's current condition.
-     * @param subject The player for whom to generate a list of options.
-     * @return A list of executions from which the player will pick one to perform.
+     * Generates a list of {@link Execution}s based on a {@link Player}'s current condition.
+     * @param subject The {@link Player} for whom to generate a list of options.
+     * @return A list of {@link Execution}s from which the {@link Player} will pick one to perform.
      */
     public static List<Execution> getOptionsForPlayer(Player subject) {
         List<Execution> e = new ArrayList<>();

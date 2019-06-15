@@ -23,68 +23,69 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * T
+ * The {@link Board} is the space the game is played on.
+ * @see Cell
  */
 public class Board {
 
     /**
-     * The maximum number of weapons each weapon shop can hold at any given time.
+     * The maximum number of {@link Weapon}s each {@link Weapon} shop can hold at any given time.
      */
     private static final int MAX_WEAPONS_PER_SPAWNPOINT = 3;
 
     /**
-     * The game the board is pertaining to.
+     * The {@link Game} the {@link Board} is pertaining to.
      */
     private Game game;
 
     /**
-     * The list of players who committed murder since the beginning of the current turn.
-     * Each player appears as many times as kills they were able to score.
+     * The list of {@link Player}s who committed murder since the beginning of the current turn.
+     * Each {@link Player} appears as many times as kills they were able to score.
      */
     private List<Player> turnKillers;
 
     /**
-     * The list of players who committed murder since the beginning of the game.
-     * Each player appears as many times as kills they were able to score.
+     * The list of {@link Player}s who committed murder since the beginning of the {@link Game}.
+     * Each {@link Player} appears as many times as kills they were able to score.
      */
     private List<Player> killers;
 
     /**
-     * The list of players who killed two opponents in the same turn since the beginning of the game.
-     * Each player appears as many times as double kills they were able to score.
+     * The list of {@link Player}s who killed two opponents in the same turn since the beginning of the {@link Game}.
+     * Each {@link Player} appears as many times as double kills they were able to score.
      */
     private List<Player> doubleKillers;
 
     /**
-     * The list of cells that make up the board.
+     * The list of {@link Cell}s that make up the {@link Board}.
      */
     private List<Cell> cells;
 
     /**
-     * The deck of weapons.
+     * The {@link Deck} of {@link Weapon}s.
      */
     private Deck<Weapon> weaponDeck;
 
     /**
-     * The deck of power ups.
+     * The {@link Deck} of {@link PowerUp}s.
      */
     private Deck<PowerUp> powerUpDeck;
 
     /**
-     * The deck of ammo tiles.
+     * The {@link Deck} of {@link AmmoTile}s.
      */
     private Deck<AmmoTile> ammoTileDeck;
 
     /**
-     * This is the only constructor. It does nothing (thus creates an empty board) and is inaccessible from outside this class.
+     * This is the only constructor. It does nothing (thus creates an empty {@link Board}) and is inaccessible from outside this class.
      */
     private Board() {}
 
     /**
-     * This factory method creates a board, based on the board type. It then binds the board to a game.
-     * @param game The game the board belongs to.
+     * This factory method creates a {@link Board}, based on the board type. It then binds the {@link Board} to a {@link Game}.
+     * @param game The {@link Game} the {@link Board} belongs to.
      * @param type The id of the board configuration (1~4).
-     * @return a newly generated board.
+     * @return a newly generated {@link Board}.
      */
     public static Board generate(Game game, int type) {
         Board board = new Board();
@@ -113,7 +114,7 @@ public class Board {
 
     /**
      * This factory method constructs an object with the properties found inside the JSON object passed as argument.
-     * @param jBoardSet the JSON object containing the list of boards, each with the desired properties.
+     * @param jBoardSet the JSON object containing the list of {@link Board}s, each with the desired properties.
      * @param boardType The id of the board configuration (1~4).
      * @return an instance of this class in accordance with the specified properties.
      */
@@ -267,10 +268,10 @@ public class Board {
     }
 
     /**
-     * Finds the spawn cell whose colour corresponds with the colour of the ammo cube passed in as argument.
-     * @param ammoCubeColor the ammo cube used to identify the cell.
-     * @return the cell whose colour corresponds with the colour of the ammo cube passed in as argument,
-     * or null if no cell meets the described criteria.
+     * Finds the {@link SpawnCell} whose colour corresponds with the colour of the {@link AmmoCubes} passed in as argument.
+     * @param ammoCubeColor the {@link AmmoCubes} used to identify the {@link Cell}.
+     * @return the {@link Cell} whose colour corresponds with the colour of the {@link AmmoCubes} passed in as argument,
+     * or null if no {@link Cell} meets the described criteria.
      */
     public Cell findSpawnPoint(AmmoCubes ammoCubeColor) {
         for(Cell cell : cells) {
@@ -281,10 +282,10 @@ public class Board {
     }
 
     /**
-     * Finds the cell whose coordinates are equal to those passed in as arguments.
-     * @param xCoord The horizontal coordinate of the cell.
-     * @param yCoord The vertical coordinate of the cell.
-     * @return the cell at the given coordinates, or null if no cell is at the given coordinates.
+     * Finds the {@link Cell} whose coordinates are equal to those passed in as arguments.
+     * @param xCoord The horizontal coordinate of the {@link Cell}.
+     * @param yCoord The vertical coordinate of the {@link Cell}.
+     * @return the {@link Cell} at the given coordinates, or null if no {@link Cell} is at the given coordinates.
      */
     public Cell getCellByCoordinates(int xCoord, int yCoord) {
         for(Cell cell: cells) {
@@ -295,8 +296,8 @@ public class Board {
     }
 
     /**
-     * Returns the width of the board expressed as number of cells.
-     * @return the board width.
+     * Returns the width of the {@link Board} expressed as number of {@link Cell}s.
+     * @return the {@link Board} width.
      */
     public int getWidth() {
         return cells.stream()
@@ -305,8 +306,8 @@ public class Board {
     }
 
     /**
-     * Returns the height of the board expressed as number of cells.
-     * @return the board height.
+     * Returns the height of the {@link Board} expressed as number of {@link Cell}s.
+     * @return the {@link Board} height.
      */
     public int getHeight() {
         return cells.stream()
@@ -315,15 +316,15 @@ public class Board {
     }
 
     /**
-     * Returns the list of cells composing the board.
-     * @return the list of cells composing the board.
+     * Returns the list of {@link Cell}s composing the {@link Board}.
+     * @return the list of {@link Cell}s composing the {@link Board}.
      */
     public List<Cell> getCells() {
         return cells;
     }
 
     /**
-     * Adds all players appearing more than once in the {@code turnKillers} list
+     * Adds all {@link Player}s appearing more than once in the {@code turnKillers} list
      * to the {@code doubleKilllers} list.
      * @see Board#turnKillers
      * @see Board#doubleKillers
@@ -342,8 +343,8 @@ public class Board {
     }
 
     /**
-     * Adds a player to the killers list.
-     * @param killer the player to add.
+     * Adds a {@link Player} to the killers list.
+     * @param killer the {@link Player} to add.
      */
     public void addKiller(Player killer) {
         turnKillers.add(killer);
@@ -383,41 +384,41 @@ public class Board {
     }
 
     /**
-     * Returns the weapon deck.
-     * @return the weapon deck.
+     * Returns the {@link Weapon} {@link Deck}.
+     * @return the {@link Deck}.
      */
     public Deck<Weapon> getWeaponDeck() {
         return weaponDeck;
     }
 
     /**
-     * Returns the power up deck.
-     * @return the power up deck.
+     * Returns the {@link PowerUp} {@link Deck}.
+     * @return the {@link Deck}.
      */
     public Deck<PowerUp> getPowerUpDeck() {
         return powerUpDeck;
     }
 
     /**
-     * Returns the ammo tile deck.
-     * @return the ammo tile deck.
+     * Returns the {@link AmmoTile} {@link Deck}.
+     * @return the {@link Deck}.
      */
     public Deck<AmmoTile> getAmmoTileDeck() {
         return ammoTileDeck;
     }
 
     /**
-     * Returns the game that is being played on the board.
-     * @return the game that is being played on the board.
+     * Returns the {@link Game} that is being played on the {@link Board}.
+     * @return the {@link Game} that is being played on the {@link Board}.
      */
     public Game getGame() {
         return this.game;
     }
 
     /**
-     * Spreads ammo on every ammo cell of the board.
-     * More specifically, for each ammo cell that does not contain any ammo tile, a new ammo tile is drawn from
-     * the ammo tile deck and placed onto that cell.
+     * Spreads ammo on every {@link AmmoCell} of the {@link Board}.
+     * More specifically, for each {@link AmmoCell} that does not contain any {@link AmmoTile}, a new {@link AmmoTile} is drawn from
+     * the {@link AmmoTile} {@link Deck} and placed onto that {@link Cell}.
      * @see Board#ammoTileDeck
      */
     public void spreadAmmo() {
@@ -429,10 +430,10 @@ public class Board {
     }
 
     /**
-     * Spreads weapons on every spawn point's weapon shop.
-     * More specifically, for each spawn cell that contains fewer weapons than the maximum allowed amount,
-     * a new weapon card is drawn from the weapon deck for each free slot in the shop, to which the weapon is added.
-     * This method stops having an effect once the weapon deck has been depleted.
+     * Spreads {@link Weapon}s on every {@link SpawnCell}'s {@link Weapon} shop.
+     * More specifically, for each {@link SpawnCell} that contains fewer {@link Weapon}s than the maximum allowed amount,
+     * a new {@link Weapon} card is drawn from the {@link Weapon} {@link Deck} for each free slot in the shop, to which the {@link Weapon} is added.
+     * This method stops having an effect once the {@link Weapon} {@link Deck} has been depleted.
      * @see Board#weaponDeck
      * @see Board#MAX_WEAPONS_PER_SPAWNPOINT
      */
@@ -449,10 +450,10 @@ public class Board {
     }
 
     /**
-     * Awards players with points from the {@code ScoreList}, with the players ranked best to last according
-     * to amount of kills (overkills are worth two kills), with ties broken in favour of the player who made the first
-     * kill the earliest. One additional point is awarded to each player for each double kill they were able to
-     * perform during the game.
+     * Awards {@link Player}s with points from the {@code ScoreList}, with the {@link Player}s ranked best to last according
+     * to amount of kills (overkills are worth two kills), with ties broken in favour of the {@link Player} who made the first
+     * kill the earliest. One additional point is awarded to each {@link Player} for each double kill they were able to
+     * perform during the {@link Game}.
      * @see ScoreList
      * @see Board#countKills(Player)
      */
@@ -485,9 +486,9 @@ public class Board {
     }
 
     /**
-     * Counts the equivalent number of kills a player scored during the game.
+     * Counts the equivalent number of kills a {@link Player} scored during the {@link Game}.
      * Overkills are counted as two kills.
-     * @param author the player on whom to count the kills.
+     * @param author the {@link Player} on whom to count the kills.
      * @return the number of equivalent kills.
      */
     private int countKills(Player author) {
@@ -503,9 +504,9 @@ public class Board {
     }
 
     /**
-     * Searches through the weapon deck until it finds a weapon with the given name.
-     * @param name the name of the weapon.
-     * @return An optional containing that weapon, if found, otherwise an empty optional.
+     * Searches through the {@link Weapon} {@link Deck} until it finds a {@link Weapon} with the given name.
+     * @param name the name of the {@link Weapon}.
+     * @return An optional containing that {@link Weapon}, if found, otherwise an empty optional.
      */
     public Optional<Weapon> fetchWeapon(String name) {
         Weapon weapon = null;
@@ -525,10 +526,10 @@ public class Board {
     }
 
     /**
-     * Searches through the power up deck until it finds a power up with the given type and colour.
-     * @param type the type of the power up.
-     * @param color the colour of the power up.
-     * @return An optional containing that power up, if found, otherwise an empty optional.
+     * Searches through the {@link PowerUp} {@link Deck} until it finds a {@link PowerUp} with the given type and colour.
+     * @param type the type of the {@link PowerUp}.
+     * @param color the colour of the {@link PowerUp}.
+     * @return An optional containing that {@link PowerUp}, if found, otherwise an empty optional.
      */
     public Optional<PowerUp> fetchPowerUp(String type, String color) {
         AmmoCubes ammoCubeColor;
@@ -580,12 +581,12 @@ public class Board {
     }
 
     /**
-     * Searches through the ammo tile deck until it finds an ammo tile with the given properties.
-     * @param red the amount of red cubes on the ammo tile.
-     * @param yellow the amount of yellow cubes on the ammo tile.
-     * @param blue the amount of blue cubes on the ammo tile.
-     * @param includesPowerUp whether or not the ammo tile includes a power up.
-     * @return An optional containing that power up, if found, otherwise an empty optional.
+     * Searches through the {@link AmmoTile} {@link Deck} until it finds an {@link AmmoTile} with the given properties.
+     * @param red the amount of red cubes on the {@link AmmoTile}.
+     * @param yellow the amount of yellow cubes on the {@link AmmoTile}.
+     * @param blue the amount of blue cubes on the {@link AmmoTile}.
+     * @param includesPowerUp whether or not the {@link AmmoTile} includes a {@link PowerUp}.
+     * @return An optional containing that {@link PowerUp}, if found, otherwise an empty optional.
      */
     public Optional<AmmoTile> fetchAmmoTile(int red, int yellow, int blue, boolean includesPowerUp) {
         AmmoCubes comparisonAmmoCubes = new AmmoCubes(red, yellow, blue);
@@ -607,9 +608,9 @@ public class Board {
     }
 
     /**
-     * Calculates the morphology of the cell scheme of this board, i.e. a simple scheme containing basic info about the type of walls between every cell.
-     * Its only purpose is being analysed by CLI-type clients in order to draw the correct board configuration.
-     * @return A List containing the morphology of the current board cell scheme.
+     * Calculates the morphology of the {@link Cell} scheme of this {@link Board}, i.e. a simple scheme containing basic info about the type of walls between every {@link Cell}.
+     * Its only purpose is being analysed by CLI-type clients in order to draw the correct {@link Board} configuration.
+     * @return A List containing the morphology of the current {@link Board} {@link Cell} scheme.
      */
     public List<ContentType> getMorphology() {
         List<ContentType> morphology = new ArrayList<>();
@@ -648,13 +649,13 @@ public class Board {
     }
 
     /**
-     * Calculates the wall between two given cells. Note that this calculation is symmetrical
+     * Calculates the wall between two given {@link Cell}s. Note that this calculation is symmetrical
      * (i.e. its result doesn't change in case x1 and x2 are swapped, as long as y1 and y2 are swapped as well).
-     * @param x1 the horizontal coordinate of the first cell, ranging from 0 (left) to boardWidth-1 (right).
-     * @param y1 the vertical coordinate of the first cell, ranging from 0 (top) to boardHeight-1 (bottom).
-     * @param x2 the horizontal coordinate of the second cell, ranging from 0 (left) to boardWidth-1 (right).
-     * @param y2 the vertical coordinate of the second cell, ranging from 0 (top) to boardHeight-1 (bottom).
-     * @return The right wall separating the cells. Note: If given cells are too far to be separated by a wall, ContentType.ANGLE will be returned instead.
+     * @param x1 the horizontal coordinate of the first {@link Cell}, ranging from 0 (left) to boardWidth-1 (right).
+     * @param y1 the vertical coordinate of the first {@link Cell}, ranging from 0 (top) to boardHeight-1 (bottom).
+     * @param x2 the horizontal coordinate of the second {@link Cell}, ranging from 0 (left) to boardWidth-1 (right).
+     * @param y2 the vertical coordinate of the second {@link Cell}, ranging from 0 (top) to boardHeight-1 (bottom).
+     * @return The right wall separating the {@link Cell}s. Note: If given {@link Cell}s are too far to be separated by a wall, ContentType.ANGLE will be returned instead.
      */
     private ContentType getWallBetweenCells(int x1, int y1, int x2, int y2) {
         if (this.getCellByCoordinates(x1, y1) != null && this.getCellByCoordinates(x2, y2) != null) { //they both exist

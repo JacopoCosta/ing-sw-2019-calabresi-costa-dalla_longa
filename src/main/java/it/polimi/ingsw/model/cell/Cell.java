@@ -12,12 +12,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * The cell is the unit of space on the board. Cells are organized in a 2-dimensional
+ * The {@link Cell} is the unit of space on the {@link Board}. Cells are organized in a 2-dimensional
  * lattice space, forming a grid of 10 ~ 12 units that fits in a bounding box spanning
- * 4 units horizontally and 3 units vertically. The coordinate system used to identify cells
+ * 4 units horizontally and 3 units vertically. The coordinate system used to identify {@link Cell}s
  * is a clockwise pair of axes with the {@code x} coordinate increasing to the right and the {@code y}
  * coordinate increasing downwards.
- * Cells are grouped into rooms, this is important when evaluating visibility between two cells.
+ * Cells are grouped into {@link Room}s, this is important when evaluating visibility between two {@link Cell}s.
  * @see Room
  * @see it.polimi.ingsw.model.board.Board
  */
@@ -25,32 +25,32 @@ import java.util.stream.Collectors;
 public abstract class Cell {
 
     /**
-     * A list of all the cells considered to be adjacent to the current cell.
+     * A list of all the {@link Cell}s considered to be adjacent to the current {@link Cell}.
      */
     private List<Cell> adjacentCells;
 
     /**
-     * The board this cell belongs to.
+     * The {@link Board} this {@link Cell} belongs to.
      */
     protected Board board;
 
     /**
-     * The room this cell belongs to.
+     * The {@link Room} this {@link Cell} belongs to.
      */
     protected Room room;
 
     /**
-     * The horizontal coordinate of the cell on the board.
+     * The horizontal coordinate of the {@link Cell} on the {@link Board}.
      */
     private int xCoord;
 
     /**
-     * The vertical coordinate of the cell on the board.
+     * The vertical coordinate of the {@link Cell} on the {@link Board}.
      */
     private int yCoord;
 
     /**
-     * Indicates if a cell is instance of {@code SpawnCell} (the alternative being {@code AmmoCell}).
+     * Indicates if a {@link Cell} is instance of {@code SpawnCell} (the alternative being {@code AmmoCell}).
      * @see SpawnCell
      * @see AmmoCell
      */
@@ -58,8 +58,8 @@ public abstract class Cell {
 
     /**
      * This is the only constructor.
-     * @param xCoord the x (horizontal) coordinate in the 2-dimensional discrete space this cell will be put at.
-     * @param yCoord the y (vertical) coordinate in the 2-dimensional discrete space this cell will be put at.
+     * @param xCoord the x (horizontal) coordinate in the 2-dimensional discrete space this {@link Cell} will be put at.
+     * @param yCoord the y (vertical) coordinate in the 2-dimensional discrete space this {@link Cell} will be put at.
      */
     public Cell(int xCoord, int yCoord) {
         this.adjacentCells = new ArrayList<>();
@@ -68,8 +68,8 @@ public abstract class Cell {
     }
 
     /**
-     * Returns a number that uniquely identifies the cell on the board.
-     * @return the cell's id.
+     * Returns a number that uniquely identifies the {@link Cell} on the {@link Board}.
+     * @return the {@link Cell}'s id.
      */
     public int getId() {
         return board.getCells().indexOf(this) + 1;
@@ -77,7 +77,7 @@ public abstract class Cell {
 
     /**
      * This method is used to distinguish between the two possible implementations of this class.
-     * @return whether or not this cell acts as a spawn point.
+     * @return whether or not this {@link Cell} acts as a spawn point.
      * @see SpawnCell
      * @see AmmoCell
      */
@@ -86,39 +86,39 @@ public abstract class Cell {
     }
 
     /**
-     * Binds the cell to a board.
-     * @param board the board to bind the cell to.
+     * Binds the {@link Cell} to a {@link Board}.
+     * @param board the board to bind the {@link Cell} to.
      */
     public void setBoard(Board board) {
         this.board = board;
     }
 
     /**
-     * This method tells which board a cell belongs to.
-     * @return the board containing the cell this method was called upon.
+     * This method tells which {@link Board} a {@link Cell} belongs to.
+     * @return the {@link Board} containing the {@link Cell} this method was called upon.
      */
     public Board getBoard() {
         return board;
     }
 
     /**
-     * When constructing a new room, this method is called on each cell to set its membership in the room.
-     * @param room the room needed to contain the cell this method was called upon.
+     * When constructing a new {@link Room}, this method is called on each cell to set its membership in the {@link Room}.
+     * @param room the {@link Room} needed to contain the cell this method was called upon.
      */
     public void setRoom(Room room) {
         this.room = room;
     }
 
     /**
-     * This method tells which room a cell belongs to.
-     * @return the room containing the cell this method was called upon.
+     * This method tells which {@link Room} a cell belongs to.
+     * @return the {@link Room} containing the cell this method was called upon.
      */
     public Room getRoom() {
         return room;
     }
 
     /**
-     * This method tells the horizontal coordinate of a cell on the board.
+     * This method tells the horizontal coordinate of a cell on the {@link Board}.
      * @return the horizontal coordinate of the cell.
      */
     public int getXCoord() {
@@ -126,7 +126,7 @@ public abstract class Cell {
     }
 
     /**
-     * This method tells the vertical coordinate of a cell on the board.
+     * This method tells the vertical coordinate of a cell on the {@link Board}.
      * @return the vertical coordinate of the cell.
      */
     public int getYCoord() {
@@ -222,7 +222,7 @@ public abstract class Cell {
 
     /**
      * This method tells if a cell is visible from another cell.
-     * A cell can see another cell if and only if it belongs to a room containing any of the first cell's neighbours.
+     * A cell can see another cell if and only if it belongs to a {@link Room} containing any of the first cell's neighbours.
      * A cell can always see itself.
      * @param cell the target cell.
      * @return whether or not the cell this method is called upon is able to see the cell passed as argument.

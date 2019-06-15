@@ -3,11 +3,13 @@ package it.polimi.ingsw.model.weaponry.effects;
 
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
+import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.view.virtual.VirtualView;
 
 /**
- * Moves are effects inflicted by a player to themselves or to other players. A move causes a player to change position.
+ * {@link Move}s are {@link Effect}s inflicted by a {@link Player} to themselves or to other {@link Player}s. A {@link Move} causes a {@link Player} to change position.
  */
 public class Move extends Effect {
     /**
@@ -36,10 +38,10 @@ public class Move extends Effect {
 
     /**
      * This is the only constructor
-     * @param sourceAttackModuleId the id of the attack module for the source of the constraint for the effect.
-     * @param sourceTargetId the id of the target for the source of the constraint for the effect.
-     * @param drainAttackModuleId the id of the attack module for the drain of the constraint for the effect.
-     * @param drainTargetId the id of the target for the drain of the constraint for the effect.
+     * @param sourceAttackModuleId the id of the {@link AttackModule} for the source of the {@link Constraint} for the {@link Effect}.
+     * @param sourceTargetId the id of the {@link Target} for the source of the {@link Constraint} for the {@link Effect}.
+     * @param drainAttackModuleId the id of the {@link AttackModule} for the drain of the {@link Constraint} for the {@link Effect}.
+     * @param drainTargetId the id of the {@link Target} for the drain of the {@link Constraint} for the {@link Effect}.
      * @see Move#sourceAttackModuleId
      * @see Move#sourceTargetId
      * @see Move#drainAttackModuleId
@@ -55,7 +57,7 @@ public class Move extends Effect {
     }
 
     /**
-     * Moves one or more players to another player or to another cell, based on the properties.
+     * Moves one or more {@link Player}s to another {@link Player} or to another {@link Cell}, based on the properties.
      */
     @Override
     public void apply() {

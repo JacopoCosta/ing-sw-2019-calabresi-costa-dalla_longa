@@ -1,8 +1,11 @@
 package it.polimi.ingsw.model.exceptions;
 
+import it.polimi.ingsw.model.weaponry.effects.Effect;
+import it.polimi.ingsw.model.weaponry.effects.EffectType;
+
 /**
- * This exception is thrown when attempting to instantiate a new effect whose type is not in the
- * enumeration of possible effect types. It is declared as a runtime exception because its main
+ * This exception is thrown when attempting to instantiate a new {@link Effect} whose type is not in the
+ * enumeration of possible {@link EffectType}s. It is declared as a runtime exception because its main
  * cause are spelling mistakes in the JSON files, and attempting to run an application in such conditions
  * makes no sense.
  * @see it.polimi.ingsw.model.weaponry.effects.Effect

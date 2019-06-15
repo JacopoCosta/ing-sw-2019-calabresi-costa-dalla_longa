@@ -5,13 +5,15 @@ import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.InvalidFilterInvocationException;
 import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
+import it.polimi.ingsw.model.weaponry.targets.Target;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * A visibility constraint requires that a cell be visible from another. More specifically,
+ * A {@link VisibilityConstraint} requires that a cell be visible from another. More specifically,
  * the drain must be visible from the source.
  * @see Cell#canSee(Cell)
  */
@@ -20,11 +22,11 @@ public class VisibilityConstraint extends Constraint {
 
     /**
      * This is the only constructor.
-     * @param sourceAttackModuleId the id of the attack module containing the source target.
-     * @param sourceTargetId the id of the source target.
-     * @param drainAttackModuleId the id of the attack module containing the drain target.
-     * @param drainTargetId the id of the drain target.
-     * @param truth the truth value needed from the visibility predicate, in order to satisfy the constraint.
+     * @param sourceAttackModuleId the id of the {@link AttackModule} containing the source {@link Target}.
+     * @param sourceTargetId the id of the source {@link Target}.
+     * @param drainAttackModuleId the id of the {@link AttackModule} containing the drain {@link Target}.
+     * @param drainTargetId the id of the drain {@link Target}.
+     * @param truth the truth value needed from the visibility predicate, in order to satisfy the {@link Constraint}.
      */
     VisibilityConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
         this.sourceAttackModuleId = sourceAttackModuleId;
@@ -36,10 +38,10 @@ public class VisibilityConstraint extends Constraint {
     }
 
     /**
-     * Tells if the constraint is satisfied by two given cells.
+     * Tells if the {@link Constraint} is satisfied by two given cells.
      * @param sourceCell the source cell.
      * @param drainCell the drain cell.
-     * @return true if the cells satisfy the constraint, false if they don't or if any of them is null.
+     * @return true if the cells satisfy the {@link Constraint}, false if they don't or if any of them is null.
      */
     private boolean verify(Cell sourceCell, Cell drainCell) {
         if(sourceCell == null)
@@ -52,10 +54,10 @@ public class VisibilityConstraint extends Constraint {
     }
 
     /**
-     * Tells if the constraint is satisfied by a cell and any other cell found inside a room.
+     * Tells if the {@link Constraint} is satisfied by a cell and any other cell found inside a {@link Room}.
      * @param sourceCell the cell.
-     * @param drainRoom the room.
-     * @return true if and only if the cell satisfies the constraint as the source, with any of the cells inside the room
+     * @param drainRoom the {@link Room}.
+     * @return true if and only if the cell satisfies the {@link Constraint} as the source, with any of the cells inside the {@link Room}
      * acting as the drain.
      */
     private boolean verify(Cell sourceCell, Room drainRoom) {
@@ -71,9 +73,9 @@ public class VisibilityConstraint extends Constraint {
     }
 
     /**
-     * Creates a list of all players that satisfy the constraint.
-     * @param context the attack pattern in which the constraint is relevant.
-     * @return the list of players.
+     * Creates a list of all {@link Player}s that satisfy the {@link Constraint}.
+     * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
+     * @return the list of {@link Player}s.
      */
     @Override
     public List<Player> filterPlayers(AttackPattern context) {
@@ -105,8 +107,8 @@ public class VisibilityConstraint extends Constraint {
     }
 
     /**
-     * Creates a list of all cells that satisfy the constraint.
-     * @param context the attack pattern in which the constraint is relevant.
+     * Creates a list of all cells that satisfy the {@link Constraint}.
+     * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return the list of cells.
      */
     @Override
@@ -139,9 +141,9 @@ public class VisibilityConstraint extends Constraint {
     }
 
     /**
-     * Creates a list of all rooms that satisfy the constraint.
-     * @param context the attack pattern in which the constraint is relevant.
-     * @return the list of rooms.
+     * Creates a list of all {@link Room}s that satisfy the {@link Constraint}.
+     * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
+     * @return the list of {@link Room}s.
      */
     @Override
     public List<Room> filterRooms(AttackPattern context) {
