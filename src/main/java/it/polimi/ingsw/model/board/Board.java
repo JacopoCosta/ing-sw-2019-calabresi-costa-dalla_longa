@@ -476,12 +476,12 @@ public class Board {
         for(int i = 0; i < trueKillers.size(); i ++) {
             int points = ScoreList.get(i, false);
             trueKillers.get(i).giveScore(points); // give scores in descending order to the players sorted best to worst
-            game.getVirtualView().sendUpdateScore(null, trueKillers.get(i), points, false);
+            game.getVirtualView().sendUpdateScore(trueKillers.get(i), null, points, false);
         }
 
         doubleKillers.forEach(p -> {
             p.giveScore(1);
-            game.getVirtualView().sendUpdateScore(null, p, 1, true);
+            game.getVirtualView().sendUpdateScore(p, null, 1, true);
         }); // one extra point for each double kill scored
     }
 
