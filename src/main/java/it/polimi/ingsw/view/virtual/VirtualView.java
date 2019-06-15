@@ -157,7 +157,7 @@ public class VirtualView {
     BULK sender: sends initial info about the game itself: list of participants, board morphology and game settings.
     If the game comes from a previous saved game (isNewGame == true), it also sends all the information about players and board status.
     */
-    private void sendStatusInit(Board board, boolean isNewGame) {
+    public void sendStatusInit(Board board, boolean isNewGame) {
         List<Object> content = new ArrayList<>();
         //adds general board structure info
         content.add(game.getBoard().getWidth());
@@ -195,21 +195,21 @@ public class VirtualView {
         if(!isNewGame) {    //the game comes from a saved game, so all the info about the players shall be broadcast as well
 
             for(Player player: game.getParticipants()) {
-                sendUpdateScore(player);
-                sendUpdateDamage(player);
-                sendUpdateMarking(player);
-                sendUpdateMove(player);
+                sendUpdateScore(player, null, 0, false);    //the important part is amount set to 0
+                sendUpdateDamage(player, null, 0);  //the important part is author set to null
+                sendUpdateMarking(player, null, 0);
+                sendUpdateMove(player, null, null);
                 sendUpdatePlayerDeathCount(player);
                 sendUpdateInventory(player);
             }
 
-            sendUpdateBoardKill();
+            sendUpdateBoardKill(null, null);
             sendUpdateDoubleKill();
         }
     }
 
     //BULK: sends an updated, new value for a cell content
-    private void sendUpdateCell(Cell cell) {
+    public void sendUpdateCell(Cell cell) {
         List <Object> content = new ArrayList<>();
 
         content.add(cell.getId());
@@ -244,61 +244,94 @@ public class VirtualView {
     }
 
     //BULK: sends an updated, new value for a player's damage
-    private void sendUpdateDamage(Player player) {
+    public void sendUpdateDamage(Player target, Player author, int amount) {
 
         List<Object> content = new ArrayList<>();
 
-        content.add(player.getId());  //indicates the player whose damagelist has to be updated
+        content.add(target.getId());  //indicates the player whose damagelist has to be updated
 
-        content.add(player.getDamageAsList()
+        content.add(target.getDamageAsList()
                 .stream()
                 .map(Player::getName)
                 .collect(Collectors.toList()));
 
         Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_DAMAGE, content);
+        if(author != null)
+            deliverable.overwriteMessage(author.getName() + " dealt " + amount + " damage to " + target.getName() + ".");
         broadcast(deliverable);
     }
 
+
     //BULK: sends an updated, new value for a player's marking list
-    private void sendUpdateMarking(Player player) {
+    public void sendUpdateMarking(Player target, Player author, int amount) {
 
         List<Object> content = new ArrayList<>();
 
-            content.add(player.getMarkingsAsList()
+            content.add(target.getMarkingsAsList()
                     .stream()
                     .map(Player::getName)
                     .collect(Collectors.toList()));
 
         Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_MARKING, content);
+
+        if(author != null) {
+            String lexeme = amount > 1 ? "marks" : "mark";
+            deliverable.overwriteMessage(author.getName() + " dealt " + amount + " " + lexeme + " to " + target.getName() + ".");
+        }
+
         broadcast(deliverable);
     }
 
     //BULK: sends an updated value for a player's position (sent as index of its cell)
-    private void sendUpdateMove(Player player) {
-
+    public void sendUpdateMove(Player target, Player author, Cell destination) {
 
         List<Integer> content = new ArrayList<>();
 
-        content.add(player.getId());
-        content.add(player.getPosition().getId());
+        content.add(target.getId());
+        content.add(target.getPosition().getId());
 
         Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_MOVE, content);
+
+        if(destination != null) {
+            String message = author.getName() + " moved";
+            if(!target.equals(author))
+                message += " " + target.getName();
+            deliverable.overwriteMessage(message + " to " + destination.toString() + ".");
+        }
+
         broadcast(deliverable);
     }
 
-    //BULK: sends the updated score of a player
-    private void sendUpdateScore(Player player) {
+    //BULK: sends the updated score of a player (creditor)
+    public void sendUpdateScore(Player creditor, Player source, int amount, boolean firstBloodOrDoubleKill) {
 
         List<Integer> content = new ArrayList<>();
 
-        content.add(player.getId());
-        content.add(player.getScore());
+        content.add(creditor.getId());
+        content.add(creditor.getScore());
 
         Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_SCORE, content);
+
+        if(amount != 0) {
+            String lexeme = amount == 1 ? "point" : "points";
+            String message = creditor + " earned " + amount + " " + lexeme;
+            if(source == null) {
+                if(firstBloodOrDoubleKill)
+                    message += " for scoring a doubleKill.";
+                else
+                    message += " from the killshot track.";
+            }
+            else if (firstBloodOrDoubleKill)
+                message += " for drawing first blood on " + source + ".";
+            else
+                message += " for damaging " + source + ".";
+            deliverable.overwriteMessage(message);
+        }
+
         broadcast(deliverable);
     }
 
-    private void sendUpdateInventory(Player player) {
+    public void sendUpdateInventory(Player player) {
         List<Object> content = new ArrayList<>();
 
         content.add(player.getId());
@@ -347,7 +380,7 @@ public class VirtualView {
          */
     }
 
-    private void sendUpdatePlayerDeathCount(Player player) {
+    public void sendUpdatePlayerDeathCount(Player player) {
 
         List<Integer> content = new ArrayList<>();
 
@@ -359,7 +392,7 @@ public class VirtualView {
     }
 
     //BULK: sends info about global killers
-    private void sendUpdateBoardKill() {
+    public void sendUpdateBoardKill(Player author, Player target) {
 
         List<Object> content = new ArrayList<>();
 
@@ -374,11 +407,19 @@ public class VirtualView {
                 .collect(Collectors.toList()));
 
         Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_BOARDKILL, content);
+
+        if(author != null) {
+            String message = author.getName() +  " ";
+            if(target.isOverKilled())
+                message += "over";
+            message += "killed " + target.getName() + "!";
+            deliverable.overwriteMessage(message);
+        }
         broadcast(deliverable);
     }
 
     //BULK: sends info about global doublekillers
-    private void sendUpdateDoubleKill() {
+    public void sendUpdateDoubleKill() {
 
          List<Object> content = new ArrayList<>();
 
@@ -849,56 +890,6 @@ public class VirtualView {
     public void announceTurn(Player subject) {
         Deliverable deliverable = new Info(DeliverableEvent.UPDATE_TURN);
         deliverable.overwriteMessage("It is now " + subject.getName() + "'s turn.");
-        broadcast(deliverable);
-    }
-
-    public void announceDamage(Player author, Player target, int amount) {
-        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_DAMAGE);
-        deliverable.overwriteMessage(author.getName() + " dealt " + amount + " damage to " + target.getName() + ".");
-        broadcast(deliverable);
-    }
-
-    public void announceMarking(Player author, Player target, int amount) {
-        String lexeme = amount > 1 ? "marks" : "mark";
-        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_MARKING);
-        deliverable.overwriteMessage(author.getName() + " dealt " + amount + " " + lexeme + " to " + target.getName() + ".");
-        broadcast(deliverable);
-    }
-
-    public void announceMove(Player author, Player target, Cell destination) {
-        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_MOVE);
-        String message = author.getName() + " moved";
-        if(!target.equals(author))
-            message += " " + target.getName();
-        deliverable.overwriteMessage(message + " to " + destination.toString() + ".");
-        broadcast(deliverable);
-    }
-
-    public void announceKill(Player author, Player target) {
-        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_BOARDKILL);
-        String message = author.getName() +  " ";
-        if(target.isOverKilled())
-            message += "over";
-        message += "killed " + target.getName() + "!";
-        deliverable.overwriteMessage(message);
-        broadcast(deliverable);
-    }
-
-    public void announceScore(Player source, Player creditor, int amount, boolean firstBloodOrDoubleKill) {
-        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_SCORE);
-        String lexeme = amount == 1 ? "point" : "points";
-        String message = creditor + " earned " + amount + " " + lexeme;
-        if(source == null) {
-            if(firstBloodOrDoubleKill)
-                message += " for scoring a doubleKill.";
-            else
-                message += " from the killshot track.";
-        }
-        else if (firstBloodOrDoubleKill)
-            message += " for drawing first blood on " + source + ".";
-        else
-            message += " for damaging " + source + ".";
-        deliverable.overwriteMessage(message);
         broadcast(deliverable);
     }
 

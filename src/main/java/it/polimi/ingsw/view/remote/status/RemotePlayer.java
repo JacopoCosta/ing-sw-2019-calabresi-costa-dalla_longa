@@ -14,7 +14,9 @@ public class RemotePlayer {
     private int yellowAmmo;
     private int blueAmmo;
 
-    private PlayerColor playerColor;    //determines what physical token the player is using
+    private boolean isConnected;    //TODO
+
+    private PlayerColor playerColor;    //determines what physical token the player is using (nice for GUI)
 
     private List<RemoteWeapon> weapons;     //weapons owned by this player (both loaded and unloaded)
     private List<RemotePowerUp> powerUps;   //powerups owned by this player
@@ -60,6 +62,10 @@ public class RemotePlayer {
 
     public List<RemotePowerUp> getPowerUps() {
         return powerUps;
+    }
+
+    public boolean isConnected() {
+        return isConnected;
     }
 
     public PlayerColor getPlayerColor() {
@@ -114,4 +120,7 @@ public class RemotePlayer {
         this.powerUps = powerUps;
     }
 
+    public void setConnected(boolean connected) {
+        isConnected = connected;
+    }
 }
