@@ -31,7 +31,7 @@ public class CountDownTimer implements Observable {
 
     private TimerState timerState; //the current state of the timer
 
-    private static final int INITIAL_DELAY = 0; //delay in seconds before task is to be executed the first time
+    private static final int INITIAL_DELAY = 1; //delay in seconds before task is to be executed the first time
     private static final int PERIOD = 1; //time in seconds between successive task executions
 
     private final int statingSeconds; //time to start counting from in seconds
@@ -41,16 +41,14 @@ public class CountDownTimer implements Observable {
     private ScheduledFuture<?> future;
 
     private Runnable tick = () -> { //the task to execute every PERIOD seconds
-        if (currentSeconds.decrementAndGet() < 0) {
+        if (currentSeconds.decrementAndGet() == 0) {
             try {
                 Thread.sleep(1);
             } catch (InterruptedException ignored) {
             }
-            synchronized (this) {
-                timerState = TimerState.EXPIRED;
-                stop();
-                notifyObservers();
-            }
+            timerState = TimerState.EXPIRED;
+            stop();
+            notifyObservers();
         }
     };
 

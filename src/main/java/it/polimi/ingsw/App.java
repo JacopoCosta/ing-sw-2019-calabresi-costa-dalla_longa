@@ -243,6 +243,5 @@ public class App {
             task = new Client(ipAddress, port, communicationInterface, graphicalInterface);
         }
         executor.execute(task);
-
     }
 }
