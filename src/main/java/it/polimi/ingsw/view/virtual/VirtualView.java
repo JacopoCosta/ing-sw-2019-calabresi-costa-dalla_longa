@@ -197,8 +197,8 @@ public class VirtualView {
             for(Player player: game.getParticipants()) {
                 sendUpdateScore(player, null, 0, false);    //the important part is amount set to 0
                 sendUpdateDamage(player, null, 0);  //the important part is author set to null
-                sendUpdateMarking(player, null, 0);
-                sendUpdateMove(player, null, null);
+                sendUpdateMarking(player, null, 0); //the important part is author set to null
+                sendUpdateMove(player, null, null); //the important part is destination set to null
                 sendUpdatePlayerDeathCount(player);
                 sendUpdateInventory(player);
             }
@@ -307,7 +307,7 @@ public class VirtualView {
 
         List<Integer> content = new ArrayList<>();
 
-        content.add(creditor.getId()); // FIXME tests give NullPointerException
+        content.add(creditor.getId());
         content.add(creditor.getScore());
 
         Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_SCORE, content);
