@@ -286,6 +286,9 @@ public class GraphicsEventHandler {
             case STATUS_UPDATE:
                 CLI.printBoardStatus();
                 CLI.printBoard();
+                for(int i=0; i<RemoteBoard.getParticipants().size(); i++) {
+                    CLI.printPlayerStatus(RemoteBoard.getParticipants().get(i), i == RemoteBoard.getIndexOfUserCharacter());    //TODO: this can be improved
+                }
                 break;
 
         }

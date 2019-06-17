@@ -8,6 +8,10 @@ import java.util.List;
 public abstract class RemoteBoard {
 
     private static List<RemotePlayer> participants;
+
+    private static int indexOfUserCharacter;    //participants.get(indexOfUserCharacter) is the user's token. Can be used for better and more specific visualization
+                                                //of power-ups, weapons and so on. TODO: modify virtualView, CLI or whatever to set it correctly
+
     private static List<String> killers;
     private static List<String> doubleKillers;
 
@@ -44,6 +48,14 @@ public abstract class RemoteBoard {
 
     public static List<ContentType> getMorphology() {
         return morphology;
+    }
+
+    public static int getIndexOfUserCharacter() {
+        return indexOfUserCharacter;
+    }
+
+    public static void setIndexOfUserCharacter(int indexOfUserCharacter) {
+        RemoteBoard.indexOfUserCharacter = indexOfUserCharacter;
     }
 
     public static void setCells(List<RemoteCell> cells) {
@@ -86,6 +98,8 @@ public abstract class RemoteBoard {
                 cells.add(null);
             }
         }
+
+        RemoteBoard.cells = cells;
     }
 
     public static void updatePlayersPosition() {
@@ -97,7 +111,7 @@ public abstract class RemoteBoard {
                 if(p.getPosition() == i)
                     playersInThisCell.add(p.getName());
             }
-            RemoteBoard.getCells().get(i).setPlayers(playersInThisCell);
+            RemoteBoard.cells.get(i).setPlayers(playersInThisCell);
         }
     }
 

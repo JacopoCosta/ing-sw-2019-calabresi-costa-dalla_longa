@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.remote;
 
 import it.polimi.ingsw.view.remote.status.RemoteBoard;
 import it.polimi.ingsw.view.remote.status.RemotePlayer;
+import it.polimi.ingsw.view.remote.status.RemotePowerUp;
 import it.polimi.ingsw.view.remote.status.RemoteWeapon;
 
 import java.util.List;
@@ -25,7 +26,8 @@ public class CLI extends View {
 
         List<ContentType> morphology = RemoteBoard.getMorphology(); //shorthand
 
-        RemoteBoard.updatePlayersPosition();
+        RemoteBoard.generateCellScheme();       //refresh for cell scheme. TODO: it's usually redundant, unless morphology has changed (which definitely SHOULDN'T)
+        RemoteBoard.updatePlayersPosition();    //refresh for players' position on the cell scheme (needed for a correct visualization)
 
         for(int h=0; h<schemeHeight; h++) { //cycling on every row
 
@@ -92,7 +94,7 @@ public class CLI extends View {
         //TODO: improve it with the right method
     }
 
-    public static void printPlayerStatus(RemotePlayer player) {
+    public static void printPlayerStatus(RemotePlayer player, boolean isSelf) { //isSelf is true when the player is the user's one
 
         //given a player, it displays damageboard, list of weapon, owned ammocubes and so on.
         CLI.println("Player: " + player.getName());
@@ -124,6 +126,19 @@ public class CLI extends View {
             CLI.println("\t" + author);
 
         CLI.println("\nDead " + player.getDeathCount() + " times");
+
+        if(isSelf) {
+            CLI.println("\nOwned power-ups:");
+
+            if(player.getPowerUps().size() > 0)
+                for(RemotePowerUp pUp : player.getPowerUps()) {
+                    CLI.println("\t" + pUp.getType() + " ~ " + pUp.getColorCube());
+                }
+            else
+                CLI.println("\t[none]");
+        }
+        else
+            CLI.println("\nThis player owns " + player.getPowerUps().size() + " power-ups");
 
         CLI.printDamageBoard(player);
     }
