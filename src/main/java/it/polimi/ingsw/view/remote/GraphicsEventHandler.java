@@ -283,6 +283,10 @@ public class GraphicsEventHandler {
 
                 BoardInitializer(bulk);
                 break;
+            case STATUS_UPDATE:
+                CLI.printBoardStatus();
+                CLI.printBoard();
+                break;
 
         }
     }

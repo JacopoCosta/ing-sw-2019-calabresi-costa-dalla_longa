@@ -433,11 +433,12 @@ public class VirtualView {
     }
 
     private void sendStatusUpdate(Player subject) throws AbortedTurnException {
-        if(offlineMode) {
-            Deliverable deliverable = new Bulk(DeliverableEvent.STATUS_UPDATE, null);
+
+        Deliverable deliverable = new Bulk(DeliverableEvent.STATUS_UPDATE, null);
+        if(offlineMode)
             deliverable.overwriteMessage(game.toString());
-            send(subject, deliverable);
-        }
+
+        send(subject, deliverable);
     }
 
     public void spawn(Player subject) throws AbortedTurnException {

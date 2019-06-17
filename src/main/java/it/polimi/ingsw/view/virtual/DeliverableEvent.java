@@ -50,7 +50,8 @@ public enum DeliverableEvent {
     RESPONSE(""),           //This is the only deliverable sent by client to server
     BOARD_INIT(""),         //Bulk, initialises the RemoteBoard in most of its variables
     UPDATE_CELL(""),        //Bulk, updates the content of a cell
-    STATUS_UPDATE("");      //Info, it asks the client to refresh its CLI for the user
+    STATUS_UPDATE("");      //Bulk, it asks the client to refresh its CLI for the user
+                                     //It could be an info, but we made it bulk so that it can be handled by GraphicsEventHandler.CLIBulkHandler
 
     public final String message;
     DeliverableEvent(String message) {
