@@ -4,7 +4,7 @@ import it.polimi.ingsw.view.virtual.Deliverable;
 
 /**
  * This class stores simplified information about any weapon. Such info is used by CLI-using clients in order to get the player know about the related weapon.
- * The gathered info is completely received from the server via {@link Deliverable}s communication with no further elaboration (every data here is for player acknowledgment only).
+ * The gathered info is completely received from the server via {@link Deliverable} communication with no further elaboration (every data here is for player acknowledgment only).
  * There isn't any setter method, as elaborating data and manage players choices is up to the server, that's not the purpose of this client.
  */
 public class RemoteWeapon {

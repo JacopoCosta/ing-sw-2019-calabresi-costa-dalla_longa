@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * This class stores simplified information about any cell on the board. Such info is used by clients in order to get the player know about the related cell.
- * The gathered info is completely received from the server via {@link Deliverable}s communication with no further elaboration (every data here is for player acknowledgment only).
+ * The gathered info is completely received from the server via {@link Deliverable} communication with no further elaboration (every data here is for player acknowledgment only).
  * There's no custom constructor, for the cell is declared as general as possible and often modified in most of its attributes.
  */
 public class RemoteCell {

@@ -1,91 +1,188 @@
 package it.polimi.ingsw.view.remote.status;
 
 import it.polimi.ingsw.view.remote.ContentType;
+import it.polimi.ingsw.view.virtual.Deliverable;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class stores simplified information about game global properties and board settings. Such info is used by clients in order to get the player know about the game.
+ * The gathered info is completely received from the server via {@link Deliverable} communication.
+ * This class is abstract, as there's no need for a client to instantiate a RemoteBoard object because every client is playing to at most one game, while for a server this
+ * entire class is useless, for its purpose is client visualization only.
+ */
 public abstract class RemoteBoard {
 
+    /**
+     * The list of participants for the current game, codified as {@link RemotePlayer}.
+     */
     private static List<RemotePlayer> participants;
 
+    /**
+     * The index for the user's token in {@link this.participants} list.
+     * Such information about which participant is the user's one is useful for better and more specific visualization methods for {@link RemoteWeapon} and {@link RemotePowerUp}.
+     */
     private static int indexOfUserCharacter;    //participants.get(indexOfUserCharacter) is the user's token. Can be used for better and more specific visualization
                                                 //of power-ups, weapons and so on. TODO: modify virtualView, CLI or whatever to set it correctly
 
+    /**
+     * A list of names of players who has killed somebody since the beginning of the game.
+     * It's codified as String, as there's no need of more detailed info about killers.
+     * Some of its element can be {@code null}, in order to represent an overkill: in that case, any name followed by a {@code null} string means that such player
+     * has performed an overkill in that situation.
+     */
     private static List<String> killers;
+    /**
+     * A list of names of players who has achieved a double-kill since the beginning of the game.
+     * It's codified as String, as there's no need of more detailed info about killers.
+     */
     private static List<String> doubleKillers;
 
+    /**
+     * The horizontal number of cells in this board map. In standard game maps, its value is 4.
+     */
     private static int width;
+    /**
+     * The vertical number of cells in this board map. In standard game maps, its value is 3.
+     */
     private static int height;
 
+    /**
+     * A sorted list of {@link ContentType} used to represent board map composition in its extremely basic components.
+     */
     private static List<ContentType> morphology;
 
+    /**
+     * A sorted list of {@link RemoteCell} containing cells that compose the board map.
+     */
     private static List<RemoteCell> cells;
 
+    /**
+     * Getter method for {@link this.width}.
+     * @return the horizontal number of cells in this board map.
+     */
     public static int getWidth() {
         return width;
     }
-
+    /**
+     * Getter method for {@link this.height}.
+     * @return the vertical number of cells in this board map.
+     */
     public static int getHeight() {
         return height;
     }
 
+    /**
+     * Getter method for {@link this.participants}.
+     * @return the list of participants in this game.
+     */
     public static List<RemotePlayer> getParticipants() {
         return participants;
     }
 
+    /**
+     * Getter method for {@link this.killers}.
+     * @return the authors names of every kill since the beginning of the game.
+     */
     public static List<String> getKillers() {
         return killers;
     }
-
+    /**
+     * Getter method for {@link this.doubleKillers}.
+     * @return the authors names of every double kill since the beginning of the game.
+     */
     public static List<String> getDoubleKillers() {
         return doubleKillers;
     }
 
-    public static List<RemoteCell> getCells() {
-        return cells;
-    }
-
+    /**
+     * Getter method for {@link this.morphology}.
+     * @return the morphology of this board map, i.e. a sorted list of extremely basic components of this board map.
+     */
     public static List<ContentType> getMorphology() {
         return morphology;
     }
 
+    /**
+     * Getter method for {@link this.cells}.
+     * @return the sorted list of cells composing this board map.
+     */
+    public static List<RemoteCell> getCells() {
+        return cells;
+    }
+
+    /**
+     * Getter method for {@link this.indexOfUserCharacter}.
+     * @return the index for the user's token in {@link this.participants} list.
+     */
     public static int getIndexOfUserCharacter() {
         return indexOfUserCharacter;
     }
 
+    /**
+     * Setter method for {@link this.indexOfUserCharacter}.
+     * @param indexOfUserCharacter the index for the user's token in {@link this.participants} list.
+     */
     public static void setIndexOfUserCharacter(int indexOfUserCharacter) {
         RemoteBoard.indexOfUserCharacter = indexOfUserCharacter;
     }
 
-    public static void setCells(List<RemoteCell> cells) {
-        RemoteBoard.cells = cells;
+    /**
+     * Getter method for {@link this.killers}.
+     * @param killers the authors names of every kill since the beginning of the game.
+     */
+    public static void setKillers(List<String> killers) {
+        RemoteBoard.killers = killers;
     }
-
+    /**
+     * Getter method for {@link this.doubleKillers}.
+     * @param doubleKillers the authors names of every double kill since the beginning of the game.
+     */
     public static void setDoubleKillers(List<String> doubleKillers) {
         RemoteBoard.doubleKillers = doubleKillers;
     }
 
-    public static void setKillers(List<String> killers) {
-        RemoteBoard.killers = killers;
-    }
-
+    /**
+     * Setter method for {@link this.participants}.
+     * @param participants a list of participants for the current game, codified as {@link RemotePlayer}.
+     */
     public static void setParticipants(List<RemotePlayer> participants) {
         RemoteBoard.participants = participants;
     }
 
+    /**
+     * Setter method for {@link this.width}.
+     * @param width the width of the board.
+     */
     public static void setWidth(int width) {
         RemoteBoard.width = width;
     }
-
+    /**
+     * Setter method for {@link this.height}.
+     * @param height the height of the board.
+     */
     public static void setHeight(int height) {
         RemoteBoard.height = height;
     }
 
+    /**
+     * Setter method for {@link this.morphology}.
+     * @param morphology the morphology of this board map, i.e. a sorted list of extremely basic components of this board map.
+     */
     public static void setMorphology(List<ContentType> morphology) {
         RemoteBoard.morphology = morphology;
     }
 
+    /**
+     * This method initialises the list {@link this.cells}. This is done by iterating through every element of {@link this.morphology}
+     * completely ignoring {@link ContentType} walls and angles and focusing on CELL and NONE elements.
+     * CELL refers to an existing cell, which can be either an ammo cell or a shop cell (in this case, a new cell will be created and added to cell list),
+     * while NONE refers to a hole in the map, with no cell associated (in which case, {@code null} will be added instead).
+     * After this operation, the RemoteBoard will be ready to receive more specific info about every single cell by the server.
+     * NOTE: the cell scheme will never be changed after its generation, so this method make a setter method for {@link this.cell} completely useless.
+     * Also, this method will be called exactly once per game.
+     */
     public static void generateCellScheme() {
 
         List<RemoteCell> cells = new ArrayList<>();
@@ -102,6 +199,12 @@ public abstract class RemoteBoard {
         RemoteBoard.cells = cells;
     }
 
+    /**
+     * This method refreshes the list of participants in every {@link RemoteCell}. Since {@code RemoteCell.setParticipants} requires a whole list of participants as argument,
+     * this method iterates through every RemoteCell contained in {@link this.cells}, then iterates on every {@link RemotePlayer} in {@link this.participants} in order
+     * to acknowledge which of them are currently located in the current cell, then the name list of players on that cell is used as argument for {@code RemoteCell.setPlayers}.
+     * Given k players and n cells, the complexity of this algorithm is O(k*n).
+     */
     public static void updatePlayersPosition() {
         for(int i=0; i<getCells().size(); i++) {
 

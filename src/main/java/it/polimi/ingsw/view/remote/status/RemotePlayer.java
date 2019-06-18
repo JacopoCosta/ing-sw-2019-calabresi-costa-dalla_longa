@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * This class stores simplified information about any weapon. Such info is used by CLI-using clients in order to get the player know about the related weapon.
- * The gathered info is completely received from the server via {@link Deliverable}s communication with no further elaboration (every data here is for player acknowledgment only).
+ * The gathered info is completely received from the server via {@link Deliverable} communication with no further elaboration (every data here is for player acknowledgment only).
  * The only constructor here (i.e. {@link this.RemotePlayer}) is used to create a new player, which will be modified but never re-constructed until the end of the game.
  */
 public class RemotePlayer {
