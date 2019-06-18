@@ -49,7 +49,7 @@ public class Palette {
         alert.setTitle(title);
         alert.setHeaderText(headerText);
         alert.setContentText(contentText);
-        alert.setResizable(false);
+        alert.setResizable(true);
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initOwner(owner);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
