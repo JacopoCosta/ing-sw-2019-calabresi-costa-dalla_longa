@@ -62,6 +62,14 @@ public class CountDownTimer implements Observable {
         observers = new ArrayList<>();
     }
 
+    public int getTime() {
+        return currentSeconds.get();
+    }
+
+    public void setTime(int seconds) {
+        currentSeconds.set(seconds);
+    }
+
     /*
      * starts the countdown from this.startingSeconds to 0
      * throws IllegalStateException if timer was already started

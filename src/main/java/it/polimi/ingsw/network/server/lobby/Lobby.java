@@ -22,11 +22,26 @@ class Lobby implements Observer {
      * The maximum number of {@link Player}s a {@code Lobby} can contain.
      */
     private final int MAX_PLAYERS = 5;
+
     /**
      * The number of {@link Player}s currently logged into the {@code Lobby}.
-     * This value must always be less or equal than {@link #MAX_PLAYERS}.
+     * This value must always be lesser than or equal to {@link #MAX_PLAYERS}.
      */
     private int currentPlayers;
+
+    /**
+     * The number of {@link Player}s logged into the {@code Lobby} before the last update to {@link #currentPlayers}.
+     * This value must always be lesser than or equal to {@link #MAX_PLAYERS}.
+     */
+    private int previousPlayers;
+
+    /**
+     * The duration, in seconds, of a short interval of time given to a {@code Lobby} before starting the game, and
+     * the amount by which the {@link #timer} gets delayed when the amount of {@link #currentPlayers} drops to the minimum
+     * allowed for the lobby, i.e. {@link #PLAYERS_THRESHOLD};
+     */
+    private int timeMargin;
+
     /**
      * The {@link List} containing all of the {@link Player}s currently logged into the {@code Lobby}. Each of them
      * has a different {@link Player#getName()} indicating that each one is a different {@link Player}.
@@ -52,11 +67,24 @@ class Lobby implements Observer {
      * @see it.polimi.ingsw.model.Game
      * @see #adjustTimer()
      */
-    private final int WAITING_TIME = 5; //time in seconds the timer starts from
+    private final int WAITING_TIME_FULL = 30; //time in seconds the timer starts from
+
+    /**
+     * The cap to the waiting time, in seconds, after the {@code Lobby} reached it maximum capacity at least once.
+     * @see #MAX_PLAYERS
+     */
+    private final int WAITING_TIME_REDUCED = 15;
+
+    /**
+     * The initial value of {@link #timeMargin}.
+     */
+    private final int WAITING_TIME_MARGIN = 5;
+
     /**
      * The minimum number of {@link Player}s to reach before the {@link CountDownTimer} begins the countdown
      */
     private final int PLAYERS_THRESHOLD = 3;
+
     /**
      * The timer responsible for the countdown before the game starts.
      * Calling {@link CountDownTimer} should be performed only in {@link #adjustTimer()}.
@@ -77,9 +105,11 @@ class Lobby implements Observer {
         this.password = password;
 
         currentPlayers = 0;
+        previousPlayers = 0;
+        timeMargin = WAITING_TIME_MARGIN;
         players = new ArrayList<>(MAX_PLAYERS);
 
-        timer = new CountDownTimer(WAITING_TIME);
+        timer = new CountDownTimer(WAITING_TIME_FULL);
         timer.addObserver(this);
     }
 
@@ -229,9 +259,40 @@ class Lobby implements Observer {
          *  quando un player viene aggiunto controlla se non sia lo stesso nel metodo add
          * */
 
-        if (currentPlayers == 3) {
-            timer.start();
+        // When the capacity limit is reached, drop the waiting time by WAITING_TIME_REDUCED, but not below timeMargin
+        if(currentPlayers == MAX_PLAYERS) {
+            int time = timer.getTime();
+            int newTime = Math.max(time - WAITING_TIME_REDUCED, timeMargin);
+            timer.setTime(newTime);
         }
+
+        // When there is the bare minimum amount of players
+        else if(currentPlayers == PLAYERS_THRESHOLD) {
+
+            // if there was an additional player who left, increase the time by timeMargin, but not above WAITING_TIME_REDUCED
+            // any subsequent take of this branch will decrease the effect of timeMargin, as it decrements each time
+            // this branch is entered (lower bound is 1);
+            if (previousPlayers > PLAYERS_THRESHOLD) {
+                int time = timer.getTime();
+                int newTime = Math.min(time + timeMargin, WAITING_TIME_REDUCED);
+                timeMargin = Math.max(1, timeMargin - 1);
+                timer.setTime(newTime);
+            }
+            // if, instead, there were only 2 players, there are now enough players for a game, so the timer shall start.
+            else {
+                timer.start();
+            }
+        }
+
+        // When the number of players drops just below the threshold, stop the timer and reset it to the maximum value
+        // Note that this does not reset timeMargin
+        else if(currentPlayers < PLAYERS_THRESHOLD && previousPlayers >= PLAYERS_THRESHOLD) {
+            timer.stop();
+            timer.setTime(WAITING_TIME_FULL);
+        }
+
+        // update the value for previousPlayers
+        previousPlayers = currentPlayers;
     }
 
     /**
