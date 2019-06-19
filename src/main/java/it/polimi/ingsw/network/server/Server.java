@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.network.common.util.Console;
+import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.network.server.executable.RMIServer;
 import it.polimi.ingsw.network.server.executable.SocketServer;
 
@@ -19,22 +19,22 @@ public class Server implements Runnable {
         this.ipAddress = ipAddress;
         this.port = port;
 
-        console = Console.getInstance();
-        executor = Executors.newFixedThreadPool(2);
+        this.console = Console.getInstance();
+        this.executor = Executors.newFixedThreadPool(2);
     }
 
     @Override
     public void run() {
-        int socketPort = port;
+        int socketPort = this.port;
         int rmiPort = Registry.REGISTRY_PORT;
 
-        SocketServer socketServer = new SocketServer(ipAddress, socketPort);
-        RMIServer rmiServer = new RMIServer(ipAddress, rmiPort);
+        SocketServer socketServer = new SocketServer(this.ipAddress, socketPort);
+        RMIServer rmiServer = new RMIServer(this.ipAddress, rmiPort);
 
-        console.clear();
-        console.stat("Running on " + console.getOsName() + "...");
+        this.console.clear();
+        this.console.stat("Running on " + this.console.getOsName() + "...");
 
-        executor.execute(socketServer);
-        executor.execute(rmiServer);
+        this.executor.execute(socketServer);
+        this.executor.execute(rmiServer);
     }
 }

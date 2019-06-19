@@ -2,6 +2,9 @@ package it.polimi.ingsw.network.server.lobby;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.*;
+import it.polimi.ingsw.network.common.util.console.Console;
+import it.polimi.ingsw.network.common.util.property.GameProperty;
+import it.polimi.ingsw.network.common.util.property.GamePropertyLoader;
 
 import java.util.Map;
 import java.util.Queue;
@@ -9,9 +12,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 /**
- * A wrapper for the {@link Lobby} class. It manages the creation, modification and deletion of all the {@link Lobby}es.
+ * A wrapper for the {@link Lobby} class. It manages the creation, modification and deletion of all the {@link Lobby}.
  * A {@link Lobby} should only be created by instantiating a {@code LobbyManager} ad calling it's methods.
- * Different {@link Lobby}es should be distinguishable throughout a unique value and should never be possible to have
+ * Different {@link Lobby} should be distinguishable throughout a unique value and should never be possible to have
  * more than one {@link Lobby} with the same distinctive value at the same time.
  *
  * @see Lobby
@@ -19,15 +22,36 @@ import java.util.stream.Collectors;
 
 public class LobbyManager {
     /**
-     * The {@link Queue} containing all the {@link Lobby}es.
+     * The {@link Queue} containing all the {@link Lobby}.
      */
     private final Queue<Lobby> lobbies; //all Lobbies located on the Server
 
     /**
-     * This is the only constructor. It creates a {@code LobbyManager} to handle the {@link Lobby}es lifecycle.
+     * The {@link Console} used to display notification messages on the server {@code CLI}.
+     */
+    private final Console console;
+
+    /**
+     * The properties used by all the {@code Lobby}.
+     * These properties are loaded once from a configuration file by the {@link GamePropertyLoader} and will be the
+     * same for all of the {@code Lobby}.
+     */
+    private GameProperty gameProperty;
+
+    /**
+     * This is the only constructor. It creates a {@code LobbyManager} to handle the {@link Lobby} lifecycle.
      */
     public LobbyManager() {
-        lobbies = new ConcurrentLinkedQueue<>();
+        this.lobbies = new ConcurrentLinkedQueue<>();
+        this.console = Console.getInstance();
+
+        GamePropertyLoader loader = new GamePropertyLoader();
+        try {
+            this.gameProperty = loader.readGameProperties();
+        } catch (InvalidPropertyException e) {
+            console.err(e.getMessage());
+            System.exit(-1);
+        }
     }
 
     /**
@@ -38,7 +62,7 @@ public class LobbyManager {
      * @throws LobbyNotFoundException if no {@link Lobby} can be found with the given {@code lobbyName}.
      */
     private Lobby getLobbyByName(String name) throws LobbyNotFoundException {
-        for (Lobby lobby : lobbies)
+        for (Lobby lobby : this.lobbies)
             if (lobby.getName().equals(name))
                 return lobby;
         throw new LobbyNotFoundException("Lobby \"" + name + "\" not found");
@@ -64,7 +88,9 @@ public class LobbyManager {
         } catch (LobbyNotFoundException ignored) {
         }
 
-        lobbies.add(new Lobby(lobbyName, password));
+        Lobby lobby = new Lobby(lobbyName, password);
+        lobby.setGameProperty(this.gameProperty);
+        this.lobbies.add(lobby);
     }
 
     /**
@@ -79,7 +105,7 @@ public class LobbyManager {
      * @throws InvalidPasswordException    if the given {@code password} does not correspond to the password for the chosen {@link Lobby}.
      */
     public synchronized void add(String lobbyName, Player player, String password)
-            throws LobbyNotFoundException, LobbyFullException, PlayerAlreadyAddedException, InvalidPasswordException {
+            throws LobbyNotFoundException, LobbyFullException, PlayerAlreadyAddedException, InvalidPasswordException, GameAlreadyStartedException {
         if (lobbyName == null)
             throw new NullPointerException("Lobby name is null");
 
@@ -108,8 +134,8 @@ public class LobbyManager {
 
         lobby.remove(player);
         if (lobby.getCurrentPlayers() == 0) {
-            synchronized (lobbies) {
-                lobbies.remove(lobby);
+            synchronized (this.lobbies) {
+                this.lobbies.remove(lobby);
             }
         }
     }
@@ -122,7 +148,7 @@ public class LobbyManager {
      * @throws PlayerNotFoundException if the given {@link Player} can't be found into the chosen {@link Lobby}.
      */
     public synchronized String getLobbyNameByPlayer(Player player) throws PlayerNotFoundException {
-        for (Lobby lobby : lobbies)
+        for (Lobby lobby : this.lobbies)
             if (lobby.contains(player))
                 return lobby.getName();
         throw new PlayerNotFoundException("Player \"" + player.getName() + "\" not found in any Lobby");
@@ -136,7 +162,7 @@ public class LobbyManager {
      * @see Lobby#getStatus()
      */
     public Map<String, String> getLobbiesStatus() {
-        return lobbies
+        return this.lobbies
                 .stream()
                 .map(Lobby::getStatus)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

@@ -38,7 +38,7 @@ public class RMIClientCommunicationInterface implements ClientCommunicationInter
     @Override
     public void sendMessage(NetworkMessage message) throws ConnectionException {
         try {
-            clientController.notifyMessageReceived(message);
+            this.clientController.notifyMessageReceived(message);
         } catch (RemoteException e) {
             throw new ConnectionException(e);
         }

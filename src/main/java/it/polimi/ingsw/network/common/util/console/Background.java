@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.common.util;
+package it.polimi.ingsw.network.common.util.console;
 
 public class Background {
     public static final String ANSI_RESET = "\u001B[0m";

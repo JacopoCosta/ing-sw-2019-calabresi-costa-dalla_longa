@@ -3,7 +3,7 @@ package it.polimi.ingsw.network.server.communication.socket;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
-import it.polimi.ingsw.network.common.util.Console;
+import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.network.server.communication.ClientCommunicationInterface;
 import it.polimi.ingsw.network.server.communication.CommunicationHub;
 
@@ -63,16 +63,16 @@ public class ClientHandler implements Runnable {
      * @param socket the {@link Socket} object needed to instantiate the bi-directional communication.
      */
     public ClientHandler(Socket socket) {
-        communicationHub = CommunicationHub.getInstance();
+        this.communicationHub = CommunicationHub.getInstance();
         this.socket = socket;
 
         console = Console.getInstance();
 
         try {
-            out = new ObjectOutputStream(socket.getOutputStream());
-            in = new ObjectInputStream(socket.getInputStream());
+            this.out = new ObjectOutputStream(socket.getOutputStream());
+            this.in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            console.err(e.getClass() + ": " + e.getMessage());
+            this.console.err(e.getClass() + ": " + e.getMessage());
             closeConnection();
         }
     }
@@ -84,26 +84,26 @@ public class ClientHandler implements Runnable {
      * to the client-side application is needed.
      */
     private void closeConnection() {
-        if (in != null) {
+        if (this.in != null) {
             try {
-                in.close();
+                this.in.close();
             } catch (IOException e) {
-                console.err(e.getClass() + ": " + e.getMessage());
+                this.console.err(e.getClass() + ": " + e.getMessage());
             }
         }
 
-        if (out != null) {
+        if (this.out != null) {
             try {
-                out.close();
+                this.out.close();
             } catch (IOException e) {
-                console.err(e.getClass() + ": " + e.getMessage());
+                this.console.err(e.getClass() + ": " + e.getMessage());
             }
         }
 
         try {
-            socket.close();
+            this.socket.close();
         } catch (IOException e) {
-            console.err(e.getClass() + ": " + e.getMessage());
+            this.console.err(e.getClass() + ": " + e.getMessage());
         }
     }
 
@@ -118,7 +118,7 @@ public class ClientHandler implements Runnable {
         NetworkMessage message;
         try {
             do {
-                message = (NetworkMessage) in.readObject();
+                message = (NetworkMessage) this.in.readObject();
 
                 if (message.getType().equals(MessageType.REGISTER_REQUEST)) {
                     //reformat the message to add the proper information before forwarding it to the communicationHub
@@ -130,12 +130,12 @@ public class ClientHandler implements Runnable {
                     message = NetworkMessage.completeClientMessage(message.getAuthor(), message.getType(), player);
                 }
 
-                communicationHub.handleMessage(message);
+                this.communicationHub.handleMessage(message);
             } while (!message.getType().equals(MessageType.UNREGISTER_REQUEST));
         } catch (SocketException | EOFException e) {
             //Client unexpectedly quit: the ClientHandler.connectionChecker will unregister it
         } catch (IOException | ClassNotFoundException e) {
-            console.err(e.getClass() + ": " + e.getMessage());
+            this.console.err(e.getClass() + ": " + e.getMessage());
         } finally {
             closeConnection();
         }

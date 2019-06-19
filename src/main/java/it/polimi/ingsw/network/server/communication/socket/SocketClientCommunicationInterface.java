@@ -38,7 +38,7 @@ public class SocketClientCommunicationInterface implements ClientCommunicationIn
     @Override
     public void sendMessage(NetworkMessage message) throws ConnectionException {
         try {
-            out.writeObject(message);
+            this.out.writeObject(message);
         } catch (IOException e) {
             throw new ConnectionException(e);
         }

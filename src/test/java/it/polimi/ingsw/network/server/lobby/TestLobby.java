@@ -34,7 +34,7 @@ public class TestLobby {
             lobby1.add(p4, lobby1Password);
             lobby1.add(p5, lobby1Password);
             catchTaken = false;
-        } catch (InvalidPasswordException | LobbyFullException | PlayerAlreadyAddedException ignored) {
+        } catch (InvalidPasswordException | LobbyFullException | PlayerAlreadyAddedException | GameAlreadyStartedException ignored) {
             catchTaken = true;
         }
         assertFalse(catchTaken);
@@ -45,16 +45,16 @@ public class TestLobby {
             catchTaken = false;
         } catch (InvalidPasswordException ignored) {
             catchTaken = true;
-        } catch (LobbyFullException | PlayerAlreadyAddedException ignored) {
+        } catch (LobbyFullException | PlayerAlreadyAddedException | GameAlreadyStartedException ignored) {
             catchTaken = false;
         }
         assertTrue(catchTaken);
 
-        //add the same pser: KO
+        //add the same Player: KO
         try {
             lobby1.add(p1, lobby1Password);
             catchTaken = false;
-        } catch (InvalidPasswordException | LobbyFullException ignored) {
+        } catch (InvalidPasswordException | LobbyFullException | GameAlreadyStartedException ignored) {
             catchTaken = false;
         } catch (PlayerAlreadyAddedException ignored) {
             catchTaken = true;
@@ -65,7 +65,7 @@ public class TestLobby {
         try {
             lobby1.add(p2, lobby1Password);
             catchTaken = false;
-        } catch (InvalidPasswordException | LobbyFullException ignored) {
+        } catch (InvalidPasswordException | LobbyFullException | GameAlreadyStartedException ignored) {
             catchTaken = false;
         } catch (PlayerAlreadyAddedException ignored) {
             catchTaken = true;
@@ -76,7 +76,7 @@ public class TestLobby {
         try {
             lobby1.add(p6, lobby1Password);
             catchTaken = false;
-        } catch (InvalidPasswordException | PlayerAlreadyAddedException | LobbyFullException ignored) {
+        } catch (InvalidPasswordException | PlayerAlreadyAddedException | LobbyFullException | GameAlreadyStartedException ignored) {
             catchTaken = true;
         }
         assertFalse(catchTaken);
@@ -85,7 +85,7 @@ public class TestLobby {
         try {
             lobby1.add(p7, lobby1Password);
             catchTaken = false;
-        } catch (InvalidPasswordException | PlayerAlreadyAddedException ignored) {
+        } catch (InvalidPasswordException | PlayerAlreadyAddedException | GameAlreadyStartedException ignored) {
             catchTaken = false;
         } catch (LobbyFullException ignored) {
             catchTaken = true;
@@ -100,7 +100,7 @@ public class TestLobby {
         try {
             lobby2.add(p1, null);
             catchTaken = false;
-        } catch (InvalidPasswordException | LobbyFullException | PlayerAlreadyAddedException ignored) {
+        } catch (InvalidPasswordException | LobbyFullException | PlayerAlreadyAddedException | GameAlreadyStartedException ignored) {
             catchTaken = true;
         }
         assertFalse(catchTaken);
@@ -114,7 +114,7 @@ public class TestLobby {
         try {
             lobby3.add(p1, lobby3Password);
             catchTaken = false;
-        } catch (InvalidPasswordException | LobbyFullException | PlayerAlreadyAddedException ignored) {
+        } catch (InvalidPasswordException | LobbyFullException | PlayerAlreadyAddedException | GameAlreadyStartedException ignored) {
             catchTaken = true;
         }
         assertFalse(catchTaken);
@@ -148,7 +148,7 @@ public class TestLobby {
         try {
             lobby.add(p1, lobbyPassword);
             catchTaken = false;
-        } catch (InvalidPasswordException | LobbyFullException | PlayerAlreadyAddedException e) {
+        } catch (InvalidPasswordException | LobbyFullException | PlayerAlreadyAddedException | GameAlreadyStartedException e) {
             catchTaken = true;
         }
         assertFalse(catchTaken);
@@ -177,7 +177,7 @@ public class TestLobby {
         try {
             lobby.add(p1, lobbyPassword);
             catchTaken = false;
-        } catch (InvalidPasswordException | LobbyFullException | PlayerAlreadyAddedException ignored) {
+        } catch (InvalidPasswordException | LobbyFullException | PlayerAlreadyAddedException | GameAlreadyStartedException ignored) {
             catchTaken = true;
         }
         assertFalse(catchTaken);

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server.executable;
 
-import it.polimi.ingsw.network.common.util.Console;
+import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.network.server.communication.rmi.ServerController;
 
 import java.rmi.RemoteException;
@@ -35,7 +35,7 @@ public class RMIServer implements Runnable {
         console.log("starting RMI registry...");
         final Registry registry;
         try {
-            registry = LocateRegistry.createRegistry(port);
+            registry = LocateRegistry.createRegistry(this.port);
             console.log("RMI registry started");
         } catch (RemoteException e) {
             console.err(e.getClass() + ": " + e.getMessage());
@@ -44,7 +44,7 @@ public class RMIServer implements Runnable {
         }
 
         console.log("binding RMI protocol implementation to registry...");
-        String bindingName = "rmi://" + ipAddress + ":" + port + "/RMIController";
+        String bindingName = "rmi://" + this.ipAddress + ":" + this.port + "/RMIController";
         try {
             registry.rebind(bindingName, serverController);
         } catch (RemoteException e) {
@@ -52,7 +52,7 @@ public class RMIServer implements Runnable {
             System.exit(-1);
         }
         console.log("RMI done binding");
-        console.log("RMI started on " + ipAddress + ":" + port);
+        console.log("RMI started on " + this.ipAddress + ":" + this.port);
         console.stat("RMI server is running...");
     }
 }

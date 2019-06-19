@@ -39,6 +39,8 @@ public class Game {
     private Board board;
     private VirtualView virtualView;
 
+    private boolean started;
+
     private Game(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {
         this.finalFrenzy = finalFrenzy;
         this.roundsLeft = roundsToPlay;
@@ -48,6 +50,7 @@ public class Game {
         this.boardType = boardType;
         this.board = Board.generate(this, boardType);
         this.virtualView = new VirtualView(this);
+        this.started = false;
     }
 
     public static Game create(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {
@@ -66,6 +69,10 @@ public class Game {
 
     public VirtualView getVirtualView() {
         return virtualView;
+    }
+
+    public boolean isStarted() {
+        return this.started;
     }
 
     private void playTurn() {
@@ -233,9 +240,13 @@ public class Game {
     }
 
     public void play() {
+        this.started = true;
+
         while (!gameOver)
             this.playTurn();
         board.scoreUponGameOver();
+
+        this.started = false;
 
         // now to declare the winner
         List<Player> ranking = participants.stream()
@@ -759,8 +770,7 @@ public class Game {
     public String toString() {
         final int edge = 160;
         StringBuilder s = new StringBuilder("\n\n\n");
-        for (int i = 0; i < edge; i++)
-            s.append("~");
+        s.append("~".repeat(edge));
         s.append("\n\nGame status:");
         s.append(" finalFrenzy: ").append(finalFrenzy);
         s.append(", roundsLeft: ").append(roundsLeft);
@@ -812,8 +822,7 @@ public class Game {
                 participants.stream().map(p -> "| " + (p.isOnFrenzy() ? "onFrenzy" : "standard") + (p.causedFrenzy() ? "(C)" : "--")).collect(Collectors.toList())
         ));
         s.append("\n");
-        for (int i = 0; i < edge; i++)
-            s.append("~");
+        s.append("~".repeat(edge));
         s.append("\n");
         return s.toString();
     }

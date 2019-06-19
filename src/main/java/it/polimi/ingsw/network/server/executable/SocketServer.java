@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server.executable;
 
-import it.polimi.ingsw.network.common.util.Console;
+import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.network.server.communication.socket.ClientHandler;
 
 import java.io.IOException;
@@ -22,8 +22,8 @@ public class SocketServer implements Runnable {
     public void run() {
         Console console = Console.getInstance();
 
-        try (ServerSocket socket = new ServerSocket(port, 0, InetAddress.getByName(ipAddress))) {
-            console.log("socket server configured on " + ipAddress + ":" + port);
+        try (ServerSocket socket = new ServerSocket(this.port, 0, InetAddress.getByName(this.ipAddress))) {
+            console.log("socket server configured on " + this.ipAddress + ":" + this.port);
             console.log("socket server bounded on " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
             console.stat("socket server running...");
             ExecutorService executor = Executors.newCachedThreadPool();

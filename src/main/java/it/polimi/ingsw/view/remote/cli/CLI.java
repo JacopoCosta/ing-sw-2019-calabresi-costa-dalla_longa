@@ -2,7 +2,7 @@ package it.polimi.ingsw.view.remote.cli;
 
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.*;
-import it.polimi.ingsw.network.common.util.Console;
+import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.view.remote.GraphicalInterface;
 
 import java.util.*;
@@ -170,6 +170,9 @@ public class CLI implements GraphicalInterface {
             System.exit(-1);
         } catch (LobbyNotFoundException | LobbyFullException | InvalidPasswordException e) {
             console.err(e.getMessage());
+            System.exit(-1);
+        } catch (GameAlreadyStartedException e){
+            console.err("can't login, game already started");
             System.exit(-1);
         }
     }

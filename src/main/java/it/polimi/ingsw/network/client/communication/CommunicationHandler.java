@@ -160,7 +160,7 @@ public class CommunicationHandler {
     }
 
     public void login(String lobbyName, String lobbyPassword)
-            throws ConnectionException, LobbyNotFoundException, LobbyFullException, InvalidPasswordException {
+            throws ConnectionException, LobbyNotFoundException, LobbyFullException, InvalidPasswordException, GameAlreadyStartedException {
         String[] lobbyInfo = {lobbyName, lobbyPassword};
         NetworkMessage message = NetworkMessage.completeClientMessage(username, MessageType.LOBBY_LOGIN_REQUEST, lobbyInfo);
 
@@ -181,6 +181,8 @@ public class CommunicationHandler {
                 throw new ConnectionException("Player \"" + username + "\" already added to Lobby \"" + lobbyName + "\"");
             case PASSWORD_NOT_VALID_ERROR:
                 throw new InvalidPasswordException("Password \"" + lobbyPassword + "\" not valid for Lobby \"" + lobbyName + "\"");
+            case GAME_ALREADY_STARTED_ERROR:
+                throw new GameAlreadyStartedException();
         }
     }
 

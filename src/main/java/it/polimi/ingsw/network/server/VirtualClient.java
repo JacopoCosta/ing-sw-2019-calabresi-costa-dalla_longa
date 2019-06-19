@@ -52,6 +52,14 @@ public abstract class VirtualClient extends MessageController {
     }
 
     /**
+     * Returns the {@code VirtualClient} current {@link ClientCommunicationInterface}.
+     * @return the {@code VirtualClient} {@link ClientCommunicationInterface}.
+     */
+    public ClientCommunicationInterface getCommunicationInterface(){
+        return this.communicationInterface;
+    }
+
+    /**
      * Returns the current {@code name} of this {@code VirtualClient}.
      *
      * @return the {@code VirtualClient} name.
@@ -67,10 +75,10 @@ public abstract class VirtualClient extends MessageController {
      * @throws ConnectionException if any exception is thrown at a lower level.
      */
     public void sendMessage(NetworkMessage message) throws ConnectionException {
-        if (communicationInterface == null)
+        if (this.communicationInterface == null)
             throw new NullPointerException("ClientCommunicationInterface is null");
 
-        communicationInterface.sendMessage(message);
+        this.communicationInterface.sendMessage(message);
     }
 
     /**
@@ -107,6 +115,6 @@ public abstract class VirtualClient extends MessageController {
             return false;
         if (!(object instanceof VirtualClient))
             return false;
-        return ((VirtualClient) object).getName().equals(name);
+        return ((VirtualClient) object).getName().equals(this.name);
     }
 }

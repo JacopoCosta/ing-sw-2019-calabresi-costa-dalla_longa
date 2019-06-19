@@ -30,6 +30,7 @@ public enum MessageType {
     LOBBY_LOGIN_SUCCESS,
     PLAYER_ALREADY_ADDED_ERROR,
     PASSWORD_NOT_VALID_ERROR,
+    GAME_ALREADY_STARTED_ERROR,
 
     //logout from lobby
     LOBBY_LOGOUT_REQUEST,

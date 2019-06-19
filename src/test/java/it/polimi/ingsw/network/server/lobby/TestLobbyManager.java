@@ -59,7 +59,7 @@ public class TestLobbyManager {
         try {
             manager.add(lobby1Name, player, null);
             catchTaken = false;
-        } catch (LobbyNotFoundException | InvalidPasswordException | PlayerAlreadyAddedException | LobbyFullException e) {
+        } catch (LobbyNotFoundException | InvalidPasswordException | PlayerAlreadyAddedException | LobbyFullException | GameAlreadyStartedException e) {
             catchTaken = true;
             e.printStackTrace();
         }
@@ -71,7 +71,7 @@ public class TestLobbyManager {
             catchTaken = false;
         } catch (LobbyNotFoundException ignored) {
             catchTaken = true;
-        } catch (LobbyFullException | InvalidPasswordException | PlayerAlreadyAddedException ignored) {
+        } catch (LobbyFullException | InvalidPasswordException | PlayerAlreadyAddedException | GameAlreadyStartedException ignored) {
             catchTaken = false;
         }
         assertTrue(catchTaken);
@@ -98,7 +98,7 @@ public class TestLobbyManager {
         //add a Player to an existing Lobby
         try {
             manager.add(lobby1Name, player, null);
-        } catch (LobbyNotFoundException | InvalidPasswordException | PlayerAlreadyAddedException | LobbyFullException ignored) {
+        } catch (LobbyNotFoundException | InvalidPasswordException | PlayerAlreadyAddedException | LobbyFullException | GameAlreadyStartedException ignored) {
         }
 
         //remove a player from an existing Lobby: OK

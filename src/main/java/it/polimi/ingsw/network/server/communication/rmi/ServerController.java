@@ -30,7 +30,7 @@ public class ServerController extends UnicastRemoteObject implements RMIControll
      * @throws RemoteException if any exception is thrown at a lower level.
      */
     public ServerController() throws RemoteException {
-        communicationHub = CommunicationHub.getInstance();
+        this.communicationHub = CommunicationHub.getInstance();
     }
 
     /**
@@ -53,6 +53,6 @@ public class ServerController extends UnicastRemoteObject implements RMIControll
             message = NetworkMessage.completeClientMessage(message.getAuthor(), MessageType.REGISTER_REQUEST, player);
         }
 
-        communicationHub.handleMessage(message);
+        this.communicationHub.handleMessage(message);
     }
 }

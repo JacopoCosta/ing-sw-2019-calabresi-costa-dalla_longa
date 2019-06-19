@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.common.util;
+package it.polimi.ingsw.network.common.util.console;
 
 import java.io.IOException;
 

@@ -6,7 +6,7 @@ import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.common.observer.Observer;
 import it.polimi.ingsw.network.common.timer.CountDownTimer;
-import it.polimi.ingsw.network.common.util.Console;
+import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.network.server.lobby.LobbyManager;
 
 import java.util.Queue;
@@ -21,17 +21,17 @@ public class ConnectionChecker implements Runnable, Observer {
     private final CountDownTimer timer;
     private final int CLIENT_RESPONSE_TIMEOUT = 3;
 
-    private Player current;
+    private Player currentPlayer;
 
     public ConnectionChecker(Queue<Player> players, LobbyManager lobbyManager, CommunicationHub communicationHub) {
-        console = Console.getInstance();
+        this.console = Console.getInstance();
 
         this.players = players;
         this.lobbyManager = lobbyManager;
         this.communicationHub = communicationHub;
 
-        timer = new CountDownTimer(CLIENT_RESPONSE_TIMEOUT);
-        timer.addObserver(this);
+        this.timer = new CountDownTimer(CLIENT_RESPONSE_TIMEOUT);
+        this.timer.addObserver(this);
     }
 
 
@@ -45,41 +45,41 @@ public class ConnectionChecker implements Runnable, Observer {
     public void run() {
         NetworkMessage ping = NetworkMessage.simpleServerMessage(MessageType.PING_MESSAGE);
 
-        for (Player player : players) {
-            current = player;
+        for (Player player : this.players) {
+            this.currentPlayer = player;
 
             try {
-                timer.start();
-                console.mexS(("message " + ping.getType().toString() + " sent to Client \"" + current.getName() + "\""));
-                current.sendMessage(ping);
+                this.timer.start();
+                this.console.mexS(("message " + ping.getType().toString() + " sent to Client \"" + this.currentPlayer.getName() + "\""));
+                this.currentPlayer.sendMessage(ping);
             } catch (ConnectionException e) {
                 e.printStackTrace();
                 removeCurrent();
             } finally {
-                timer.stop();
+                this.timer.stop();
             }
         }
     }
 
     private void removeCurrent() {
-        console.err("Client \"" + current.getName() + "\" lost connection, logging out from his lobby...");
+        this.console.err("Client \"" + this.currentPlayer.getName() + "\" lost connection, logging out from his lobby...");
         try {
             try {
-                String lobbyName = lobbyManager.getLobbyNameByPlayer(current);
-                lobbyManager.remove(lobbyName, current);
-                console.log("Player \"" + current.getName() + "\" successfully logged out from Lobby \"" + lobbyName + "\"");
+                String lobbyName = this.lobbyManager.getLobbyNameByPlayer(currentPlayer);
+                this.lobbyManager.remove(lobbyName, currentPlayer);
+                this.console.log("Player \"" + this.currentPlayer.getName() + "\" successfully logged out from Lobby \"" + lobbyName + "\"");
             } catch (LobbyNotFoundException e) {
-                console.log(e.getMessage());
+                this.console.log(e.getMessage());
             } catch (PlayerNotFoundException | LobbyEmptyException e) {
-                console.err(e.getMessage());
+                this.console.err(e.getMessage());
             }
-            console.log("unregistering Client \"" + current.getName() + "\"...");
-            communicationHub.unregister(current);
+            this.console.log("unregistering Client \"" + this.currentPlayer.getName() + "\"...");
+            this.communicationHub.unregister(currentPlayer);
 
         } catch (ClientNotRegisteredException e) {
-            console.err(e.getMessage());
+            this.console.err(e.getMessage());
         }
-        console.log("Client \"" + current.getName() + "\" successfully unregistered");
+        this.console.log("Client \"" + this.currentPlayer.getName() + "\" successfully unregistered");
     }
 }
 
