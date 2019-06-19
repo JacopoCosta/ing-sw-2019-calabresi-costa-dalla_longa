@@ -363,6 +363,4 @@ public class TestMorphology {
         }
     }
 
-    //TODO: test it for a custom cells configuration
-
 }

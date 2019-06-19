@@ -225,7 +225,7 @@ public class GUI extends Application implements GraphicalInterface {
         String stageTitle = "Adrenaline: the game!";
 
         Scene scene = new Scene(createLoginLayout());
-        scene.addEventHandler(KeyEvent.KEY_PRESSED, t -> { //set the ESC button to exit the program
+        scene.addEventHandler(KeyEvent.KEY_RELEASED, t -> { //set the ESC button to exit the program
             if (t.getCode() == KeyCode.ESCAPE) {
                 exitRoutine();
             }

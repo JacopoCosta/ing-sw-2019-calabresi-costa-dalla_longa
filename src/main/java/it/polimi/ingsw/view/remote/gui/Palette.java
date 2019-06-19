@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.remote.gui;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -49,10 +50,11 @@ public class Palette {
         alert.setTitle(title);
         alert.setHeaderText(headerText);
         alert.setContentText(contentText);
-        alert.setResizable(true);
+        alert.setResizable(false);
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initOwner(owner);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        Platform.runLater(() -> alert.getDialogPane().getScene().getWindow().sizeToScene());
         return alert;
     }
 
