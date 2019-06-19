@@ -101,6 +101,7 @@ public class CLI implements GraphicalInterface {
             communicationHandler.unregister();
         } catch (ConnectionException | ClientNotRegisteredException e) {
             console.err("connection to the server is lost, cause: " + e.getMessage());
+            e.printStackTrace();
             System.exit(-1);
         }
         System.exit(0);
@@ -179,6 +180,7 @@ public class CLI implements GraphicalInterface {
             console.tinyPrintln("Lobby logout success!");
         } catch (ConnectionException e) {
             console.err("connection to the server is lost, cause: " + e.getMessage());
+            e.printStackTrace();
             System.exit(-1);
         }
     }

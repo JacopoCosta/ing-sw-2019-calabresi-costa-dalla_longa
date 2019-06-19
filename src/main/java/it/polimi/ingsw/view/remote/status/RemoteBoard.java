@@ -175,7 +175,7 @@ public abstract class RemoteBoard {
     }
 
     /**
-     * This method initialises the list {@link this.cells}. This is done by iterating through every element of {@link this.morphology}
+     * This method initialises the list {@link #cells}. This is done by iterating through every element of {@link #morphology}
      * completely ignoring {@link ContentType} walls and angles and focusing on CELL and NONE elements.
      * CELL refers to an existing cell, which can be either an ammo cell or a shop cell (in this case, a new cell will be created and added to cell list),
      * while NONE refers to a hole in the map, with no cell associated (in which case, {@code null} will be added instead).
@@ -200,8 +200,8 @@ public abstract class RemoteBoard {
     }
 
     /**
-     * This method refreshes the list of participants in every {@link RemoteCell}. Since {@code RemoteCell.setParticipants} requires a whole list of participants as argument,
-     * this method iterates through every RemoteCell contained in {@link this.cells}, then iterates on every {@link RemotePlayer} in {@link this.participants} in order
+     * This method refreshes the list of participants in every {@link RemoteCell}. Since {@link RemoteCell#setPlayers(List)} requires a whole list of participants as argument,
+     * this method iterates through every RemoteCell contained in {@link this.cells}, then iterates on every {@link RemotePlayer} in {@link #participants} in order
      * to acknowledge which of them are currently located in the current cell, then the name list of players on that cell is used as argument for {@code RemoteCell.setPlayers}.
      * Given k players and n cells, the complexity of this algorithm is O(k*n).
      */

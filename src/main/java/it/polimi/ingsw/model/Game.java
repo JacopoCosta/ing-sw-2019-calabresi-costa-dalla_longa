@@ -232,7 +232,7 @@ public class Game {
         save(); // save the game state at the end of each turn
     }
 
-    void play() {
+    public void play() {
         while (!gameOver)
             this.playTurn();
         board.scoreUponGameOver();

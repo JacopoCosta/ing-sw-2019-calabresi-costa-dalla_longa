@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.server.lobby;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.util.Table;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.observer.Observer;
 import it.polimi.ingsw.network.common.timer.CountDownTimer;
@@ -223,7 +224,14 @@ class Lobby implements Observer {
          *  CountdownTimer.TimerState.STARTED
          *  CountdownTimer.TimerState.STOPPED
          *  CountdownTimer.TimerState.EXPIRED
+         *  -
+         *  Add a counter for previous currentPlayers value
+         *  quando un player viene aggiunto controlla se non sia lo stesso nel metodo add
          * */
+
+        if (currentPlayers == 3) {
+            timer.start();
+        }
     }
 
     /**
@@ -234,7 +242,20 @@ class Lobby implements Observer {
      */
     @Override
     public void onEvent() {
-        //TODO: start a new Game in a separate thread
         timer.removeObserver(this);
+
+        //TODO: read these from outside
+        boolean finalFrenzy = true;
+        int roundToPlay = 8;
+        int boardType = 2;
+        Game game = Game.create(finalFrenzy, roundToPlay, boardType, players);
+
+        new Thread(game::play).start();
+        System.out.println("Started a new game with " + Table.list(players));
     }
+
+    /*TODO:
+        sincronizza metodo setCommunicationInterface con lock interno;
+
+     */
 }
