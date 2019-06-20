@@ -5,7 +5,7 @@ import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.common.observer.Observer;
-import it.polimi.ingsw.network.common.timer.CountDownTimer;
+import it.polimi.ingsw.network.common.util.timer.CountDownTimer;
 import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.network.server.lobby.LobbyManager;
 

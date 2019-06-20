@@ -20,14 +20,14 @@ import java.net.SocketException;
  * Virtually a {@code ClientHandler} intercepts all the {@link NetworkMessage}s sent from the client-side application and
  * forwards them to the {@link CommunicationHub}; they are then interpreted decisions can be made according to the
  * message content.
- * <p>
- * To achieve this goal a bi-directional channel is needed in order to make
+ *
+ * <p>To achieve this goal a bi-directional channel is needed in order to make
  * the communication possible.
  * At the beginning of the communication process an {@link ObjectOutputStream} is created to send {@link NetworkMessage}
  * to the remote client-side application.
  * An {@link ObjectInputStream} is then created to allow messages to be received.
- * <p>
- * Before the communication can end, a call to {@link #closeConnection()} must be performed in order to safely interrupt
+ *
+ * <p>Before the communication can end, a call to {@link #closeConnection()} must be performed in order to safely interrupt
  * the connection and notify the client-side application in the proper way.
  */
 public class ClientHandler implements Runnable {

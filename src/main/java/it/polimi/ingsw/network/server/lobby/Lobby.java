@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.observer.Observer;
-import it.polimi.ingsw.network.common.timer.CountDownTimer;
+import it.polimi.ingsw.network.common.util.timer.CountDownTimer;
 import it.polimi.ingsw.network.common.util.property.GameProperty;
 
 import java.util.AbstractMap;
@@ -76,14 +76,12 @@ class Lobby implements Observer {
     private final List<Player> previousPlayers;
 
     /**
-     * <p>
      * This value is updated together with {@link #players#size()} whenever a {@link Player} is added or removed from the
      * {@code Lobby}. This variable stores the value hold by {@link #players#size()} immediately before the {@link #add(Player, String)}
      * or {@link #remove(Player)} operation is performed.
      * Ideally this value represents the number of {@link Player}s found into the {@code Lobby} at the previous step,
      * when the new one was not yet added or the old one was not yet removed.
-     * </p>
-     * NOTE: this value is not related in any way to {@link #previousPlayers} size.
+     * <p>NOTE: this value is not related in any way to {@link #previousPlayers} size.
      */
     private int previousPlayersAmount;
 
@@ -185,12 +183,10 @@ class Lobby implements Observer {
     }
 
     /**
-     * <p>
      * Insert the given {@code player} into this {@code Lobby} if some criteria are satisfied. Then call {@link #adjustTimer()}
      * to adjust the timer countdown.
-     * </p>
-     * <p>
-     * 1 - there must be a space left in the {@code Lobby}. This is true if {@code players.size()} is less than
+     *
+     * <p>1 - there must be a space left in the {@code Lobby}. This is true if {@code players.size()} is less than
      * {@link #MAX_PLAYERS}.
      * 2 - the {@code player} can't be {@code null}.
      * 3 - the {@code Lobby} can't contain another instance of {@link Player} {@code p}, so that {@code player.equals(p)}.
@@ -200,7 +196,6 @@ class Lobby implements Observer {
      *      b - both the given {@code password} and {@code this.password} must be null simultaneously.
      *      c - {@code this.password} must be either {@code null} or such that {@code this.password.isEmpty()} and
      *          {@code password } must be either {@code null} or such that {@code password.isBlank()}.
-     *</p>
      *
      * @param player   the {@link Player} to insert into the {@code Lobby}.
      * @param password the authentication password to allow {@code player} to be inserted into this {@code Lobby}.
@@ -251,7 +246,7 @@ class Lobby implements Observer {
      * 3 - the {@code Lobby} must contain an instance of the given {@code player} {@code p}, so that {@code p.equals(player)}.
      *
      * @param player the {@link Player} to be removed.
-     * @throws LobbyEmptyException     if the {@code Lobby} does not contain any {@link Player}
+     * @throws LobbyEmptyException     if the {@code Lobby} does not contain any {@link Player}.
      * @throws PlayerNotFoundException if the {@link Player} passed as parameter is not contained into the {@code Lobby}.
      * @see #adjustTimer()
      */
