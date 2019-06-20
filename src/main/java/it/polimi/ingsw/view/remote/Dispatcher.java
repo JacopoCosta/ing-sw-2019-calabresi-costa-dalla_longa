@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view.remote;
 
+import it.polimi.ingsw.network.common.util.console.Console;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,9 +12,11 @@ import java.util.List;
 // used to request values for setup, settings, game choices, and updates about the game status
 public abstract class Dispatcher {
 
+    private static Console console = Console.getInstance();
+
     // outputs a string
     public static void sendMessage(String message) {
-        CLI.print(message);
+        console.tinyPrint(message);
     }
 
     // prints a request string and returns the response inserted via System.in (terminal)

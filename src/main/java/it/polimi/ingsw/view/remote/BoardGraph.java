@@ -1,35 +1,175 @@
 package it.polimi.ingsw.view.remote;
 
-import it.polimi.ingsw.view.remote.status.RemoteBoard;
-import it.polimi.ingsw.view.remote.status.RemoteCell;
-import it.polimi.ingsw.view.remote.status.RemotePlayer;
+import it.polimi.ingsw.network.common.util.console.Console;
+import it.polimi.ingsw.view.remote.status.*;
+
+import java.util.List;
 
 import static it.polimi.ingsw.view.remote.ContentType.*;
 
 public abstract class BoardGraph {
 
+    private static final int internalWidth = 28;    //at least 14, for now
+    
+    private static Console console = Console.getInstance();
+
+    public static void printBoard() {
+
+        int schemeWidth = RemoteBoard.getWidth()*2 + 1;     //width of the morphology
+        int schemeHeight = RemoteBoard.getHeight()*2 + 1;   //height of the morphology
+
+        List<ContentType> morphology = RemoteBoard.getMorphology(); //shorthand
+
+        RemoteBoard.updatePlayersPosition();    //refresh for players' position on the cell scheme (needed for a correct visualization)
+
+        for(int h=0; h<schemeHeight; h++) { //cycling on every row
+
+            if(h%2 == 0) {  //the current row is made of angles and HOR_walls only
+
+                for (int w = 0; w < schemeWidth; w++) { //cycling on every element of a row
+                    BoardGraph.printWall(morphology.get(h*schemeHeight + w), internalWidth);
+
+                    if(w == schemeWidth-1)  //prints a new line when the last element has just been printed
+                        console.tinyPrint("\n");
+                }
+            } //end if (h is even)
+
+            else {  //there are cells and VER_walls on this row
+
+                for (int w = 0; w < schemeWidth; w++) { //cycling on every element of a row
+                    BoardGraph.printFirstLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printSecondLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printThirdLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printFourthLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printFifthLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printSixthLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printSeventhLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printEigthLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printNinthLine(h*schemeHeight + w, internalWidth);
+                    BoardGraph.printTenthLine(h*schemeHeight + w, internalWidth);
+                }
+            } //end else (h is odd)
+        }
+
+    }
+
+    //prints killers (being normal or overkill) and doublekillers
+    public static void printBoardStatus() {
+
+        //print Kills list
+        boolean emptyList = true;
+        console.tinyPrintln("\nKills list:");
+        for(String killerName: RemoteBoard.getKillers()) {
+            if(killerName != null) {
+                if(RemoteBoard.getKillers().get(RemoteBoard.getKillers().indexOf(killerName) + 1) == null) {
+                    console.tinyPrintln("\t" + killerName + " (Overkill!) ");
+                }
+                else {
+                    emptyList = false;
+                    console.tinyPrintln("\t" + killerName);
+                }
+            }
+        }
+        if(emptyList)
+            console.tinyPrintln("\t<No kills yet>");
+        
+        emptyList = true;
+        console.tinyPrintln("\nDouble kills list:");
+        for(String doubleKillerName: RemoteBoard.getDoubleKillers()) {
+            emptyList = false;
+            console.tinyPrintln("\t" + doubleKillerName);
+        }
+        if(emptyList)
+            console.tinyPrintln("\t<No doublekills yet>");
+    }
+
+    public static void printWeaponInfo(RemoteWeapon weapon) {
+        //TODO: improve it with the right method
+    }
+
+    public static void printPlayerStatus(RemotePlayer player, boolean isSelf) { //isSelf is true when the player is the user's one
+
+        //given a player, it displays damageboard, list of weapon, owned ammocubes and so on.
+        console.tinyPrintln("Player: " + player.getName());
+        //printing weapons
+        if(player.getWeapons().size() == 0) {
+            console.tinyPrintln("This player has no weapons!");
+        }
+        else {
+            int index=1;
+            console.tinyPrintln("Owned weapons:");
+            for(RemoteWeapon w: player.getWeapons()) {
+                console.tinyPrintln(((char) index) + ". " + w.getName());
+
+                if(w.isLoaded())
+                    console.tinyPrintln("\tReady to fire!");
+                else
+                    console.tinyPrintln("\tUnloaded");
+                index++;
+            } //end for
+        } //end else
+
+        //printing damageboard:
+        console.tinyPrintln("Damage taken:");
+        for(String author: player.getDamage())
+            console.tinyPrintln("\t" + author);
+
+        console.tinyPrintln("\nMarkers taken:");
+        for(String author: player.getMarkings())
+            console.tinyPrintln("\t" + author);
+
+        console.tinyPrintln("\nDead " + player.getDeathCount() + " times");
+
+        if(isSelf) {
+            console.tinyPrintln("\nOwned power-ups:");
+
+            if(player.getPowerUps().size() > 0)
+                for(RemotePowerUp pUp : player.getPowerUps()) {
+                    console.tinyPrintln("\t" + pUp.getType() + " ~ " + pUp.getColorCube());
+                }
+            else
+                console.tinyPrintln("\t[none]");
+        }
+        else
+            console.tinyPrintln("\nThis player owns " + player.getPowerUps().size() + " power-ups");
+
+        BoardGraph.printDamageBoard(player);
+    }
+
+    private static void printDamageBoard(RemotePlayer player) {
+
+        int index = player.getDamage().size();
+        //TODO: finish this. Use abstract class scorelist
+
+    }
+
+
+    public static void printPowerUps(RemotePlayer player) {
+        console.tinyPrintln(player.getName() + " has " + player.getPowerUps().size() + " power ups");
+    }
+
     public static void printWall(ContentType wall, int internalWidth) {
         switch (wall) {
             case VER_FULL:
-                CLI.print("┃");
+                console.tinyPrint("┃");
                 break;
             case HOR_FULL:
-                CLI.print(fillWith(internalWidth, "━"));
+                console.tinyPrint(fillWith(internalWidth, "━"));
                 break;
             case VER_DOOR:
-                CLI.print("┆");
+                console.tinyPrint("┆");
                 break;
             case HOR_DOOR:
-                CLI.print(fillWith(internalWidth, "╌"));
+                console.tinyPrint(fillWith(internalWidth, "╌"));
                 break;
             case VER_VOID:
-                CLI.print(" ");
+                console.tinyPrint(" ");
                 break;
             case HOR_VOID:
-                CLI.print(fillWith(internalWidth, " "));
+                console.tinyPrint(fillWith(internalWidth, " "));
                 break;
             case ANGLE:
-                CLI.print("╋");
+                console.tinyPrint("╋");
                 break;
             default:
                 break;
@@ -42,7 +182,7 @@ public abstract class BoardGraph {
             printWall(RemoteBoard.getMorphology().get(index), internalWidth);
 
             if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
-                CLI.print("\n");
+                console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         }
         else {
@@ -51,11 +191,11 @@ public abstract class BoardGraph {
 
             if (cell != null)   //cell is actually an existing cell
                 if (cellIndex + 1 < 10)
-                    CLI.print(" <" + (cellIndex+1) + ">" + fillWith(internalWidth - 4, " "));   //single digit cell ID
+                    console.tinyPrint(" <" + (cellIndex+1) + ">" + fillWith(internalWidth - 4, " "));   //single digit cell ID
                 else
-                    CLI.print(" <" + (cellIndex+1) + ">" + fillWith(internalWidth - 5, " "));    //double digit cell ID
+                    console.tinyPrint(" <" + (cellIndex+1) + ">" + fillWith(internalWidth - 5, " "));    //double digit cell ID
             else    //cell is referring to a void cell
-                CLI.print(fillWith(internalWidth, " "));   //just spaces
+                console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
         }
     }
 
@@ -65,7 +205,7 @@ public abstract class BoardGraph {
             printWall(RemoteBoard.getMorphology().get(index), internalWidth);
 
             if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
-                CLI.print("\n");
+                console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
@@ -75,28 +215,28 @@ public abstract class BoardGraph {
             if (cell != null) { //cell is actually an existing cell
                 if(cell.isAmmoCell()) {
                     if (cell.getRed() > 0)
-                        CLI.print(" RED: " + cell.getRed() + fillWith(internalWidth - 7, " "));
+                        console.tinyPrint(" RED: " + cell.getRed() + fillWith(internalWidth - 7, " "));
 
                     else if (cell.getYellow() > 0)
-                        CLI.print(" YELLOW: " + cell.getYellow() + fillWith(internalWidth - 10, " "));
+                        console.tinyPrint(" YELLOW: " + cell.getYellow() + fillWith(internalWidth - 10, " "));
 
                     else if (cell.getBlue() > 0)
-                        CLI.print(" BLUE: " + cell.getBlue() + fillWith(internalWidth - 8, " "));
+                        console.tinyPrint(" BLUE: " + cell.getBlue() + fillWith(internalWidth - 8, " "));
 
                     else    //the cell has no ammo; it happens when an ammo has just been picked up, so there are no ammo here until the cell is refreshed
-                        CLI.print(fillWith(internalWidth, " "));
+                        console.tinyPrint(fillWith(internalWidth, " "));
                 }
                 else {  //cell is a spawn/shop cell
                     if(cell.getRed() > 0)
-                        CLI.print(" ~RED SHOP~" + fillWith(internalWidth - 11, " "));
+                        console.tinyPrint(" ~RED SHOP~" + fillWith(internalWidth - 11, " "));
                     else if(cell.getYellow() > 0)
-                        CLI.print(" ~YELLOW SHOP~" + fillWith(internalWidth - 14, " "));
+                        console.tinyPrint(" ~YELLOW SHOP~" + fillWith(internalWidth - 14, " "));
                     else
-                        CLI.print(" ~BLUE SHOP~" + fillWith(internalWidth - 12, " "));
+                        console.tinyPrint(" ~BLUE SHOP~" + fillWith(internalWidth - 12, " "));
                 }
             }
             else    //cell is referring to a void cell
-                CLI.print(fillWith(internalWidth, " "));   //just spaces
+                console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
         } //end else (it's a cell)
     }
 
@@ -106,7 +246,7 @@ public abstract class BoardGraph {
             printWall(RemoteBoard.getMorphology().get(index), internalWidth);
 
             if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
-                CLI.print("\n");
+                console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
@@ -117,33 +257,33 @@ public abstract class BoardGraph {
                 if(cell.isAmmoCell()) {
                     if (cell.getRed() > 0) {
                         if(cell.getBlue() > 0)              //red ammo were already printed by printSecondLine, so blue ammo or yellow ones are next
-                            CLI.print(" BLUE: " + cell.getBlue() + fillWith(internalWidth - 8, " "));
+                            console.tinyPrint(" BLUE: " + cell.getBlue() + fillWith(internalWidth - 8, " "));
                         else if(cell.getYellow() > 0)       //same, but there aren't blue ammo, so yellow ones are printed instead
-                            CLI.print(" YELLOW: " + cell.getYellow() + fillWith(internalWidth - 10, " "));
+                            console.tinyPrint(" YELLOW: " + cell.getYellow() + fillWith(internalWidth - 10, " "));
                         else if (cell.includesPowerUp())    //the ammo tile is made of red ammo and a powerup
-                            CLI.print(" *POWER UP*" + fillWith(internalWidth - 11, " "));
+                            console.tinyPrint(" *POWER UP*" + fillWith(internalWidth - 11, " "));
                     }
                     else {  //there were no red ammo, so blue or yellow must have been printed instead
                         if(cell.getBlue() > 0) {        //blue ammo were already printed by printSecondLine
                             if (cell.getYellow() > 0)
-                                CLI.print(" YELLOW: " + cell.getYellow() + fillWith(internalWidth - 10, " "));
+                                console.tinyPrint(" YELLOW: " + cell.getYellow() + fillWith(internalWidth - 10, " "));
                             else if (cell.includesPowerUp())
-                                CLI.print(" *POWER UP*" + fillWith(internalWidth - 11, " "));
+                                console.tinyPrint(" *POWER UP*" + fillWith(internalWidth - 11, " "));
                         }
                         else {  //the cell has just yellow ammo AND a powerup, and the yellow ammo was printed by printSecondLine
-                            CLI.print(" *POWER UP*" + fillWith(internalWidth - 11, " "));
+                            console.tinyPrint(" *POWER UP*" + fillWith(internalWidth - 11, " "));
                         }
                     }
                 }
                 else {  //cell is a spawn/shop cell, so its shop needs be printed
                     if(cell.getShop().size() >= 1)
-                        CLI.print(truncate(cell.getShop().get(0).getName() + fillWith(internalWidth, " "), internalWidth));
+                        console.tinyPrint(truncate(cell.getShop().get(0).getName() + fillWith(internalWidth, " "), internalWidth));
                     else
-                        CLI.print(fillWith(internalWidth, " "));
+                        console.tinyPrint(fillWith(internalWidth, " "));
                 }
             }
             else    //cell is referring to a void cell
-                CLI.print(fillWith(internalWidth, " "));   //just spaces
+                console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
         }
 
         //TODO: this method isn't very robust, can be improved using a List containing all the possible ammo configurations.
@@ -156,7 +296,7 @@ public abstract class BoardGraph {
             printWall(RemoteBoard.getMorphology().get(index), internalWidth);
 
             if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
-                CLI.print("\n");
+                console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
@@ -166,16 +306,16 @@ public abstract class BoardGraph {
 
             if (cell != null) { //cell is actually an existing cell
                 if(cell.isAmmoCell())   //there are no more ammo to print, so a blank line will be printed instead
-                    CLI.print(fillWith(internalWidth, " "));    //just spaces
+                    console.tinyPrint(fillWith(internalWidth, " "));    //just spaces
                 else {                  //there's a shop, so the second weapon, if existing, will be printed
                     if(cell.getShop().size() >= 2)
-                        CLI.print(truncate(cell.getShop().get(1).getName() + fillWith(internalWidth, " "), internalWidth));
+                        console.tinyPrint(truncate(cell.getShop().get(1).getName() + fillWith(internalWidth, " "), internalWidth));
                     else                //there aren't enough weapons to display
-                        CLI.print(fillWith(internalWidth, " "));
+                        console.tinyPrint(fillWith(internalWidth, " "));
                 }
             }
             else    //cell is referring to a void cell
-                CLI.print(fillWith(internalWidth, " "));   //just spaces
+                console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
         }
     }
 
@@ -185,7 +325,7 @@ public abstract class BoardGraph {
             printWall(RemoteBoard.getMorphology().get(index), internalWidth);
 
             if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
-                CLI.print("\n");
+                console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
@@ -195,16 +335,16 @@ public abstract class BoardGraph {
 
             if (cell != null) { //cell is actually an existing cell
                 if(cell.isAmmoCell())   //there are no more ammo to print, so a blank line will be printed instead
-                    CLI.print(fillWith(internalWidth, " "));    //just spaces
+                    console.tinyPrint(fillWith(internalWidth, " "));    //just spaces
                 else {                  //there's a shop, so the second weapon, if existing, will be printed
                     if(cell.getShop().size() >= 3)
-                        CLI.print(truncate(cell.getShop().get(2).getName() + fillWith(internalWidth, " "), internalWidth));
+                        console.tinyPrint(truncate(cell.getShop().get(2).getName() + fillWith(internalWidth, " "), internalWidth));
                     else                //there aren't enough weapons to display
-                        CLI.print(fillWith(internalWidth, " "));
+                        console.tinyPrint(fillWith(internalWidth, " "));
                 }
             }
             else    //cell is referring to a void cell
-                CLI.print(fillWith(internalWidth, " "));   //just spaces
+                console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
         }
     }
 
@@ -215,7 +355,7 @@ public abstract class BoardGraph {
             printWall(RemoteBoard.getMorphology().get(index), internalWidth);
 
             if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
-                CLI.print("\n");
+                console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
@@ -230,15 +370,15 @@ public abstract class BoardGraph {
                     case 2:
                     case 3:
                     case 4:
-                        CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
                         break;
                     case 5:
-                        CLI.print(truncate(cell.getPlayers().get(0) + fillWith(internalWidth, " "), internalWidth));
+                        console.tinyPrint(truncate(cell.getPlayers().get(0) + fillWith(internalWidth, " "), internalWidth));
                         break;
                 }
             }
             else    //cell is referring to a void cell
-                CLI.print(fillWith(internalWidth, " "));   //just spaces
+                console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
         }
     }
 
@@ -248,7 +388,7 @@ public abstract class BoardGraph {
             printWall(RemoteBoard.getMorphology().get(index), internalWidth);
 
             if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
-                CLI.print("\n");
+                console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
@@ -260,19 +400,19 @@ public abstract class BoardGraph {
                 switch (cell.getPlayers().size()) {
                     case 0:
                     case 1:
-                        CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
                         break;
                     case 2:
                     case 3:
                     case 4:
-                        CLI.print(truncate(cell.getPlayers().get(0) + fillWith(internalWidth, " "), internalWidth));
+                        console.tinyPrint(truncate(cell.getPlayers().get(0) + fillWith(internalWidth, " "), internalWidth));
                     case 5:
-                        CLI.print(truncate(cell.getPlayers().get(1) + fillWith(internalWidth, " "), internalWidth));
+                        console.tinyPrint(truncate(cell.getPlayers().get(1) + fillWith(internalWidth, " "), internalWidth));
                         break;
                 }
             }
             else    //cell is referring to a void cell
-                CLI.print(fillWith(internalWidth, " "));   //just spaces
+                console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
         }
     }
 
@@ -282,7 +422,7 @@ public abstract class BoardGraph {
             printWall(RemoteBoard.getMorphology().get(index), internalWidth);
 
             if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
-                CLI.print("\n");
+                console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
@@ -293,23 +433,23 @@ public abstract class BoardGraph {
             if (cell != null) { //cell is actually an existing cell
                 switch (cell.getPlayers().size()) {
                     case 1:
-                        CLI.print(truncate(cell.getPlayers().get(0) + fillWith(internalWidth, " "), internalWidth));
+                        console.tinyPrint(truncate(cell.getPlayers().get(0) + fillWith(internalWidth, " "), internalWidth));
                         break;
                     case 0:
                     case 2:
-                        CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
                         break;
                     case 3:
                     case 4:
-                        CLI.print(truncate(cell.getPlayers().get(1) + fillWith(internalWidth, " "), internalWidth));
+                        console.tinyPrint(truncate(cell.getPlayers().get(1) + fillWith(internalWidth, " "), internalWidth));
                         break;
                     case 5:
-                        CLI.print(truncate(cell.getPlayers().get(2) + fillWith(internalWidth, " "), internalWidth));
+                        console.tinyPrint(truncate(cell.getPlayers().get(2) + fillWith(internalWidth, " "), internalWidth));
                         break;
                 }
             }
             else    //cell is referring to a void cell
-                CLI.print(fillWith(internalWidth, " "));   //just spaces
+                console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
         }
     }
 
@@ -319,7 +459,7 @@ public abstract class BoardGraph {
             printWall(RemoteBoard.getMorphology().get(index), internalWidth);
 
             if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
-                CLI.print("\n");
+                console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
@@ -331,21 +471,21 @@ public abstract class BoardGraph {
                 switch (cell.getPlayers().size()) {
                     case 0:
                     case 1:
-                        CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
                         break;
                     case 2:
-                        CLI.print(truncate(cell.getPlayers().get(1) + fillWith(internalWidth, " "), internalWidth));
+                        console.tinyPrint(truncate(cell.getPlayers().get(1) + fillWith(internalWidth, " "), internalWidth));
                         break;
                     case 3:
                     case 4:
-                        CLI.print(truncate(cell.getPlayers().get(2) + fillWith(internalWidth, " "), internalWidth));
+                        console.tinyPrint(truncate(cell.getPlayers().get(2) + fillWith(internalWidth, " "), internalWidth));
                     case 5:
-                        CLI.print(truncate(cell.getPlayers().get(3) + fillWith(internalWidth, " "), internalWidth));   //just spaces
+                        console.tinyPrint(truncate(cell.getPlayers().get(3) + fillWith(internalWidth, " "), internalWidth));   //just spaces
                         break;
                 }
             }
             else    //cell is referring to a void cell
-                CLI.print(fillWith(internalWidth, " "));   //just spaces
+                console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
         }
     }
 
@@ -355,7 +495,7 @@ public abstract class BoardGraph {
             printWall(RemoteBoard.getMorphology().get(index), internalWidth);
 
             if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
-                CLI.print("\n");
+                console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
@@ -369,18 +509,18 @@ public abstract class BoardGraph {
                     case 1:
                     case 2:
                     case 3:
-                        CLI.print(fillWith(internalWidth, " "));   //just spaces
+                        console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
                         break;
                     case 4:
-                        CLI.print(truncate(cell.getPlayers().get(3) + fillWith(internalWidth, " "), internalWidth));
+                        console.tinyPrint(truncate(cell.getPlayers().get(3) + fillWith(internalWidth, " "), internalWidth));
                         break;
                     case 5:
-                        CLI.print(truncate(cell.getPlayers().get(4) + fillWith(internalWidth, " "), internalWidth));   //just spaces
+                        console.tinyPrint(truncate(cell.getPlayers().get(4) + fillWith(internalWidth, " "), internalWidth));   //just spaces
                         break;
                 }
             }
             else    //cell is referring to a void cell
-                CLI.print(fillWith(internalWidth, " "));   //just spaces
+                console.tinyPrint(fillWith(internalWidth, " "));   //just spaces
         }
     }
 
@@ -396,7 +536,7 @@ public abstract class BoardGraph {
     private static String truncate (String s, int size) {
         return s.substring(0, s.length() < size ? s.length() : size);
 
-        //TODO: find an elegant way to incorporate this method in CLI.print for code readability
+        //TODO: find an elegant way to incorporate this method in console.tinyPrint for code readability
     }
 
     //TODO: rewrite some methods so that players names are shown when in a cell, instead of just their number

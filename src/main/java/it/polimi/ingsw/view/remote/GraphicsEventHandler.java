@@ -1,8 +1,10 @@
 package it.polimi.ingsw.view.remote;
 
+import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.powerups.PowerUpType;
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
+import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.view.remote.status.*;
 import it.polimi.ingsw.view.virtual.*;
 
@@ -13,6 +15,8 @@ public class GraphicsEventHandler {
 
     private boolean usesGUI;
     private CommunicationHandler communicationHandler;
+
+    private static Console console = Console.getInstance();
 
     public GraphicsEventHandler(boolean usesGUI, CommunicationHandler communicationHandler) {
         this.usesGUI = usesGUI;
@@ -149,7 +153,7 @@ public class GraphicsEventHandler {
     }
 
     private void CLIInfoHandler(Deliverable deliverable) {
-        CLI.println(deliverable.getMessage());
+        console.tinyPrintln(deliverable.getMessage());
     }
 
     private void CLIDualHandler(Deliverable deliverable) throws ConnectionException {
@@ -284,10 +288,10 @@ public class GraphicsEventHandler {
                 BoardInitializer(bulk);
                 break;
             case STATUS_UPDATE:
-                CLI.printBoardStatus();
-                CLI.printBoard();
+                BoardGraph.printBoardStatus();
+                BoardGraph.printBoard();
                 for(int i=0; i<RemoteBoard.getParticipants().size(); i++) {
-                    CLI.printPlayerStatus(RemoteBoard.getParticipants().get(i), i == RemoteBoard.getIndexOfUserCharacter());    //TODO: this can be improved
+                    BoardGraph.printPlayerStatus(RemoteBoard.getParticipants().get(i), i == RemoteBoard.getIndexOfUserCharacter());    //TODO: this can be improved
                 }
                 break;
 
@@ -357,6 +361,7 @@ public class GraphicsEventHandler {
         //extracts board morphology (sent as List<ContentType>)
         List<ContentType> morphology = (List<ContentType>) ((List<Object>) bulk).get(2);
         RemoteBoard.setMorphology(morphology);
+        RemoteBoard.generateCellScheme();
 
         //extracts info about participants, adding them to the RemoteBoard
         List<String> playerNames = (List<String>) ((List<Object>) bulk).get(3);

@@ -25,6 +25,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 //quando premo esc, se sono in selectLobbyLayout devo sloggare l'utente prima di procedere. ENUM di layout in cui l'app si può trovare
@@ -35,6 +38,8 @@ public class GUI extends Application implements GraphicalInterface {
         LOGIN_LAYOUT,
         LOBBY_SELECTION_LAYOUT
     }
+
+    private final List<String> lobbies = Collections.synchronizedList(new ArrayList<>());
 
     private Layout currentLayout;
 
@@ -162,16 +167,20 @@ public class GUI extends Application implements GraphicalInterface {
         baseLayout.setBackground(createLobbySelectionBackground());
         baseLayout.getChildren().remove(loginVBox);
 
-        /*lobbyStatus = new ListView<>();
-        lobbyStatus.getItems().addAll("a", "b", "c", "d", "e", "f", "g", "h", "i", "j");
+        lobbyStatus = new ListView<>();
+
+        //this doesn't work -_-
+        lobbyStatus.getItems().addAll("lobby_1", "lobby_2", "lobby_3");
+
         lobbyStatus.setOrientation(Orientation.VERTICAL);
-        lobbyStatus.setPrefSize(120, 100);
+        lobbyStatus.setPrefWidth(400);
+        //lobbyStatus.setPrefHeight(100);
 
         lobbyBox = new HBox(lobbyStatus);
         lobbyBox.setSpacing(10);
         lobbyBox.setAlignment(Pos.CENTER);
 
-        baseLayout.getChildren().add(lobbyBox);*/
+        baseLayout.getChildren().add(lobbyBox);
         return baseLayout;
     }
 
