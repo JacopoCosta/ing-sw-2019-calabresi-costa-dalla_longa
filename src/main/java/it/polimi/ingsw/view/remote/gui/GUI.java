@@ -8,11 +8,9 @@ import it.polimi.ingsw.view.remote.GraphicalInterface;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
-import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -23,7 +21,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -33,6 +30,8 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class GUI extends Application implements GraphicalInterface {
+    static CommunicationHandler communicationHandler;
+
     private enum Layout {
         LOGIN_LAYOUT,
         LOBBY_SELECTION_LAYOUT
@@ -51,9 +50,9 @@ public class GUI extends Application implements GraphicalInterface {
 
     private ObservableList<String> lobbies = FXCollections.observableList(FXCollections.observableArrayList());
 
-    private static CommunicationHandler communicationHandler;
     private ScheduledFuture<?> futureUpdate;
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private static final int UPDATE_REQUEST_PERIOD = 5;
 
     public GUI() {
     }
@@ -71,7 +70,7 @@ public class GUI extends Application implements GraphicalInterface {
     private void register(String username) {
         try {
             GUI.communicationHandler.register(username);
-            //startLobbyUpdate();
+            startLobbyUpdate();
             stage.getScene().setRoot(createLobbySelectLayout());
         } catch (ConnectionException e) {
             fatalErrorRoutine(e.getMessage());
@@ -81,19 +80,15 @@ public class GUI extends Application implements GraphicalInterface {
     }
 
     private void handleRegistering(String nickname) {
-        String errorMessage = "Invalid nickname";
-
         if (nickname == null || nickname.isEmpty() || nickname.isBlank()) {
             nicknameTextField.setText(null);
-            errorLabelRoutine(errorMessage);
+            errorLabelRoutine(Palette.INVALID_NICKNAME_TEXT);
         } else
             register(nickname);
     }
 
     //update the Lobby list and print them
     private void startLobbyUpdate() {
-        final int UPDATE_REQUEST_PERIOD = 5;
-
         Runnable updateTask = () -> {
 
             Map<String, String> lobbyInfo;
@@ -122,14 +117,11 @@ public class GUI extends Application implements GraphicalInterface {
     }
 
     private HBox createLoginForeground() {
-        String loginButtonText = "LOGIN";
-        String nicknameTextFieldHint = "Choose a nickname";
-
-        double loginBoxSpacing = 10;
 
         //TextField to input the username
         nicknameTextField = new TextField();
-        nicknameTextField.setPromptText(nicknameTextFieldHint);
+        nicknameTextField.getStylesheets().add(Palette.TEXT_FIELD_STYLESHEET);
+        nicknameTextField.setPromptText(Palette.CHOOSE_NICKNAME_TEXT);
         nicknameTextField.setFocusTraversable(false);
         nicknameTextField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -140,8 +132,8 @@ public class GUI extends Application implements GraphicalInterface {
         });
 
         //login Button
-        Button loginButton = new Button(loginButtonText);
-        loginButton.getStylesheets().add("/css/button.css");
+        Button loginButton = new Button(Palette.LOGIN_TEXT);
+        loginButton.getStylesheets().add(Palette.BUTTON_STYLESHEET);
         loginButton.setOnAction(actionEvent -> {
             String nickname = nicknameTextField.getText();
             handleRegistering(nickname);
@@ -150,39 +142,22 @@ public class GUI extends Application implements GraphicalInterface {
 
         //foreground HBox
         HBox loginBox = new HBox();
-        loginBox.setSpacing(loginBoxSpacing);
+        loginBox.setSpacing(Palette.DEFAULT_SPACING);
         loginBox.setAlignment(Pos.CENTER);
         loginBox.getChildren().addAll(nicknameTextField, loginButton);
 
         return loginBox;
     }
 
-    private HBox createExitForeground() {
-        String exitHint = "[ESC] quit";
-        double hintFontSize = 20;
-        double hintPadding = 10;
-        double hintMargin = 10;
-
-        return Palette.labelBox(exitHint, Palette.OPTION_TEXT_COLOR, Palette.LABEL_BACKGROUND, hintFontSize, hintPadding, hintMargin, Pos.BOTTOM_LEFT);
-    }
-
-    private Background createLoginBackground() {
-        String backgroundImagePath = "/png/backgrounds/login_bg.png";
-        return Palette.background(backgroundImagePath);
-    }
-
-    private Background createLobbySelectionBackground() {
-        String backgroundImagePath = "/png/backgrounds/lobby_selection_bg.png";
-        return Palette.background(backgroundImagePath);
+    private HBox createExitHBox() {
+        return Palette.labelBox(Palette.QUIT_TEXT, Palette.ADRENALINE_ORANGE, Palette.ADRENALINE_DARK_GRAY,
+                Palette.DEFAULT_FONT, Palette.DEFAULT_PADDING, Palette.DEFAULT_MARGIN, Pos.BOTTOM_LEFT);
     }
 
     //creates a hidden error labelBox
     private HBox createLoginErrorHBox() {
-        double errorTextFontSize = 20;
-        double errorTextPadding = 10;
-        double errorLabelMargin = 10;
-
-        HBox hBox = Palette.labelBox(null, Palette.ERROR_TEXT_COLOR, Palette.LABEL_BACKGROUND, errorTextFontSize, errorTextPadding, errorLabelMargin, Pos.CENTER);
+        HBox hBox = Palette.labelBox(null, Palette.ADRENALINE_RED, Palette.ADRENALINE_DARK_GRAY,
+                Palette.DEFAULT_FONT, Palette.DEFAULT_PADDING, Palette.DEFAULT_MARGIN, Pos.CENTER);
         hBox.setVisible(false);
         return hBox;
     }
@@ -191,14 +166,14 @@ public class GUI extends Application implements GraphicalInterface {
         currentLayout = Layout.LOGIN_LAYOUT;
 
         HBox loginHBox = createLoginForeground();
-        HBox exitHintHBox = createExitForeground();
+        HBox exitHintHBox = createExitHBox();
         errorLabelBox = createLoginErrorHBox();
 
         loginVBox = new VBox();
         loginVBox.setAlignment(Pos.CENTER);
-        loginVBox.getChildren().addAll(loginHBox, errorLabelBox);
+        loginVBox.getChildren().addAll(loginHBox, errorLabelBox, exitHintHBox);
 
-        baseLayout.setBackground(createLoginBackground());
+        baseLayout.setBackground(Palette.background(Palette.LOGIN_BACKGROUND_IMAGEPATH));
         baseLayout.getChildren().addAll(exitHintHBox, loginVBox);
         return baseLayout;
     }
@@ -206,32 +181,29 @@ public class GUI extends Application implements GraphicalInterface {
     private Parent createLobbySelectLayout() {
         currentLayout = Layout.LOBBY_SELECTION_LAYOUT;
 
-        baseLayout.setBackground(createLobbySelectionBackground());
+        baseLayout.setBackground(Palette.background(Palette.LOBBY_SELECTION_BACKGROUND_IMAGEPATH));
         baseLayout.getChildren().remove(loginVBox);
-
 
         //lobby selection components
         ListView<String> lobbyStatusListView = new ListView<>(lobbies);
         lobbyStatusListView.setOrientation(Orientation.VERTICAL);
         lobbyStatusListView.setCellFactory(param -> new LobbyCell());
         lobbyStatusListView.prefHeightProperty().bind(stage.heightProperty());
-        Image image = new Image("/png/backgrounds/list_item_bg.png");
-        lobbyStatusListView.setPrefWidth(image.getWidth() / 2 + 2);
-        lobbyStatusListView.getStylesheets().add("/css/list_view_bg.css");
+        lobbyStatusListView.setPrefWidth(Palette.LIST_VIEW_ITEM_WIDTH / 2 + 2);
+        lobbyStatusListView.getStylesheets().add(Palette.LIST_VIEW_STYLESHEET);
 
-        Button addButton = new Button("Add");
+        /*Button addButton = new Button("Add");
         addButton.setOnAction(actionEvent -> {
-            lobbies.add("test lobby cell");
+            lobbies.add("[1/5] test lobby cell");
             actionEvent.consume();
-        });
+        });*/
         VBox vBox = new VBox();
         vBox.getChildren().add(lobbyStatusListView);
 
-
         BorderPane borderPane = new BorderPane();
-        borderPane.setLeft(addButton);
+        //borderPane.setLeft(addButton);
         borderPane.setRight(vBox);
-        borderPane.setPadding(new Insets(20));
+        borderPane.setPadding(Palette.ENLARGED_PADDING);
 
         baseLayout.getChildren().add(borderPane);
         StackPane.setAlignment(borderPane, Pos.CENTER);
@@ -240,33 +212,26 @@ public class GUI extends Application implements GraphicalInterface {
     }
 
     private void fatalErrorRoutine(String errorMessage) {
-        String errorTitle = "Error";
-
-        Palette.errorAlert(errorTitle, null, errorMessage, stage).showAndWait();
+        Palette.errorAlert(Palette.ERROR_TITLE_TEXT, null, errorMessage, stage).showAndWait();
         stage.close();
         System.exit(-1);
     }
 
     private void errorLabelRoutine(String errorMessage) {
-        int fadeInTimeout = 3;
-
         ((Label) errorLabelBox.getChildren().get(0)).setText(errorMessage);
         errorLabelBox.setVisible(true);
 
-        PauseTransition visiblePause = new PauseTransition(Duration.seconds(fadeInTimeout));
+        PauseTransition visiblePause = new PauseTransition(Duration.seconds(Palette.DEFAULT_TIMEOUT));
         visiblePause.setOnFinished(event -> errorLabelBox.setVisible(false));
         Platform.runLater(visiblePause::play);
     }
 
     private void exitRoutine() {
-        String exitAlertTitle = "Adrenaline: the game!";
-        String exitMessage = "Exit Adrenaline?";
+        Optional<ButtonType> result = Palette.confirmationDialog(Palette.TITLE_TEXT, null, Palette.EXIT_MESSAGE_TEXT, stage).showAndWait();
 
-        Optional<ButtonType> result = Palette.confirmationAlert(exitAlertTitle, null, exitMessage, stage).showAndWait();
-
-        if (result.isPresent() && result.get().equals(ButtonType.OK)) {
+        if (result.isPresent() && result.get().getButtonData().equals(ButtonType.OK.getButtonData())) {
             if (currentLayout.equals(Layout.LOBBY_SELECTION_LAYOUT)) {
-                //stopLobbyUpdate();
+                stopLobbyUpdate();
                 try {
                     communicationHandler.unregister();
                 } catch (ConnectionException | ClientNotRegisteredException e) {
@@ -278,19 +243,10 @@ public class GUI extends Application implements GraphicalInterface {
         }
     }
 
-    private Image createStageIcon() {
-        String logoImagePath = "/png/logo/logo.png";
-        return new Image(logoImagePath);
-    }
-
     @Override
     public void start(Stage primaryStage) {
         stage = primaryStage;
         baseLayout = new StackPane();
-
-        String stageTitle = "Adrenaline: the game!";
-
-        Font.loadFont(GUI.class.getResource("/fonts/Gravedigger.otf").toExternalForm(), 10);
 
         Scene scene = new Scene(createLoginLayout());
         scene.addEventHandler(KeyEvent.KEY_RELEASED, t -> { //set the ESC button to exit the program
@@ -300,12 +256,12 @@ public class GUI extends Application implements GraphicalInterface {
         });
 
         stage.setScene(scene);
-        stage.setTitle(stageTitle);
+        stage.setTitle(Palette.TITLE_TEXT);
         stage.setResizable(false);
         stage.setFullScreen(true);
         stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         stage.setOnCloseRequest(Event::consume);
-        stage.getIcons().add(createStageIcon());
+        stage.getIcons().add(new Image(Palette.ADRENALINE_LOGO_IMAGEPATH));
 
         stage.show();
     }
