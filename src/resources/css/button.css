@@ -1,0 +1,13 @@
+.button {
+  -fx-background-color: #222A2BE6;
+  -fx-text-fill: BD6738FF;
+  -fx-font: 20 Gravedigger;
+  -fx-background-radius: 0px;
+}
+
+.button:hover{
+    -fx-background-color: BD6738E6;
+    -fx-text-fill: #222A2BFF;
+    -fx-font: 20 Gravedigger;
+    -fx-background-radius: 0px;
+}

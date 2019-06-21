@@ -12,12 +12,12 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class Palette {
-    public static final Color LABEL_BACKGROUND = new Color(34.0 / 255, 32.0 / 255, 43.0 / 255, 0.8);
-    public static final Color OPTION_TEXT_COLOR = new Color(189.0 / 255, 103.0 / 255, 56.0 / 255, 1);
-    public static final Color ERROR_TEXT_COLOR = new Color(208.0 / 255, 81.0 / 255, 67.0 / 255, 1);
+class Palette {
+    static final Color LABEL_BACKGROUND = new Color(34.0 / 255, 32.0 / 255, 43.0 / 255, 0.8);
+    static final Color OPTION_TEXT_COLOR = new Color(189.0 / 255, 103.0 / 255, 56.0 / 255, 1);
+    static final Color ERROR_TEXT_COLOR = new Color(208.0 / 255, 81.0 / 255, 67.0 / 255, 1);
 
-    public static HBox labelBox(String text, Color textColor, Color backgroundColor, double fontSize, double padding, double margin, Pos alignment) {
+    static HBox labelBox(String text, Color textColor, Color backgroundColor, double fontSize, double padding, double margin, Pos alignment) {
         //quit hint labelBox
         Label label = new Label(text);
 
@@ -33,19 +33,19 @@ public class Palette {
         if (backgroundColor != null)
             label.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        HBox exitHintHBox = new HBox();
+        HBox hbox = new HBox();
 
         if (margin >= 0D)
             HBox.setMargin(label, new Insets(margin));
 
-        exitHintHBox.getChildren().addAll(label);
+        hbox.getChildren().add(label);
 
         if (alignment != null)
-            exitHintHBox.setAlignment(alignment);
-        return exitHintHBox;
+            hbox.setAlignment(alignment);
+        return hbox;
     }
 
-    public static Alert confirmationAlert(String title, String headerText, String contentText, Stage owner) {
+    static Alert confirmationAlert(String title, String headerText, String contentText, Stage owner) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
         alert.setHeaderText(headerText);
@@ -58,7 +58,7 @@ public class Palette {
         return alert;
     }
 
-    public static Alert errorAlert(String title, String headerText, String contentText, Stage owner) {
+    static Alert errorAlert(String title, String headerText, String contentText, Stage owner) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(headerText);
@@ -70,9 +70,17 @@ public class Palette {
         return alert;
     }
 
-    public static Background background(String imagePath) {
+    static Background background(String imagePath) {
         Image image = new Image(imagePath);
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, false, true);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        return new Background(backgroundImage);
+    }
+
+    static Background backgroundImage(String imagePath) {
+        Image image = new Image(imagePath);
+        BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         return new Background(backgroundImage);
