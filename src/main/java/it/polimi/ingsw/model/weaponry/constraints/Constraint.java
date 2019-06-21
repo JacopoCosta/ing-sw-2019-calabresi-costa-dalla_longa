@@ -27,12 +27,12 @@ import java.util.stream.Collectors;
  * the predicate is ambiguous and cannot therefore be verified.<br>
  * Binary constraints always include:<br>
  * <ul>
- *     <li><b>Source</b>: the first actor of the predicate, or the "subject".</li>
- *     <li><b>Drain</b>: the last actor of the predicate, or the "object".</li>
+ *     <li><b>{@code Source}</b>: the first actor of the predicate, or the "subject".</li>
+ *     <li><b>{@code Drain}</b>: the last actor of the predicate, or the "object".</li>
  * </ul>
  * There are also ternary constraints, that make a statement about three entities, and also include:<br>
  * <ul>
- *     <li><b>Gate</b>: the middle actor of the predicate, or the "intermediary".</li>
+ *     <li><b>{@code Gate}</b>: the middle actor of the predicate, or the "intermediary".</li>
  * </ul>
  * <br>
  * When constraints are evaluated, their subjects, objects and/or intermediaries often need to
@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  *          This is possible because constraints are limited to one {@link AttackPattern}, making it
  *          unambiguous which {@link AttackModule} the id refers to.</li>
  *     <li>A {@link Target} id: used to identify the {@link Target} inside the {@link AttackModule} that refers to
- *          the entity of interest, whether it be a cell, a {@link Room} or a player.</li>
+ *          the entity of interest, whether it be a {@link Cell}, a {@link Room} or a {@link Player}.</li>
  * </ul>
  * This indexed access algorithm makes it impossible to reference {@link Target}s defined in a
  * future moment with respect to the moment in which a constraint attempts to reference
@@ -56,15 +56,15 @@ import java.util.stream.Collectors;
  * <ul>
  *     <li><b>Any non-negative integer</b>: simply refers to the index of the {@link AttackModule} inside
  *          the context, or to the index of the {@link Target} inside the {@link AttackModule}, as described above.</li>
- *     <li><b>-1</b>: Refers to the attacker (always known from within the context, as an {@link AttackPattern}
- *          cannot be used until it has been signed by a player as its author).</li>
- *     <li><b>-2</b>: Refers to the attacker, but in the position they had before the beginning of the
+ *     <li><b>{@code -1}</b>: Refers to the attacker (always known from within the context, as an {@link AttackPattern}
+ *          cannot be used until it has been signed by a {@link Player} as its author).</li>
+ *     <li><b>{@code -2}</b>: Refers to the attacker, but in the position they had before the beginning of the
  *          current {@link AttackPattern}.</li>
- *     <li><b>-3</b>: Refers to anyone, much like the "for all" operator in the monadic first order logic.
+ *     <li><b>{@code -3}</b>: Refers to anyone, much like the "for all" operator in the monadic first order logic.
  *          This value is very important when generating lists of entities that make the constraint evaluate
- *          to "true": each entity is given the role the -3 is found in, and gets replaced by the following entity
- *          for elaborating the truth table. All entities that make the constraint evaluate to "true"
- *          are considered eligible for a choice of the player, when they'll be presented with a question.</li>
+ *          to {@code true}: each entity is given the role the {@code -3} is found in, and gets replaced by the following entity
+ *          for elaborating the truth table. All entities that make the constraint evaluate to {@code true}
+ *          are considered eligible for a choice of the {@link Player}, when they'll be presented with a question.</li>
  * </ul>
  */
 public abstract class Constraint {
