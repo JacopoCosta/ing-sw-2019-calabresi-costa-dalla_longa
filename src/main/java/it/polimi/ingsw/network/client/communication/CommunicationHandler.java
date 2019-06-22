@@ -24,28 +24,12 @@ public class CommunicationHandler {
         username = null;
         lobbyName = null;
 
-        int socketPort = port;
-        int rmiPort;
-
-        if (socketPort == 65535)
-            rmiPort = socketPort - 1;
-        else
-            rmiPort = socketPort + 1;
-
         switch (interfaceType) {
             case SOCKET_INTERFACE:
-                try {
-                    this.communicationInterface = new SocketServerCommunicationInterface(hostAddress, socketPort);
-                } catch (ConnectionException e) {
-                    throw new ConnectionException(e);
-                }
+                this.communicationInterface = new SocketServerCommunicationInterface(hostAddress, port);
                 break;
             case RMI_INTERFACE:
-                try {
-                    this.communicationInterface = new RMIServerCommunicationInterface(hostAddress, rmiPort);
-                } catch (ConnectionException e) {
-                    throw new ConnectionException(e);
-                }
+                this.communicationInterface = new RMIServerCommunicationInterface(hostAddress, port);
                 break;
             default:
                 throw new ConnectionException("Interface must be of type SOCKET_INTERFACE or RMI_INTERFACE");
@@ -160,7 +144,8 @@ public class CommunicationHandler {
     }
 
     public void login(String lobbyName, String lobbyPassword)
-            throws ConnectionException, LobbyNotFoundException, LobbyFullException, InvalidPasswordException, GameAlreadyStartedException {
+            throws ConnectionException, LobbyNotFoundException, LobbyFullException, InvalidPasswordException,
+            GameAlreadyStartedException, PlayerAlreadyAddedException {
         String[] lobbyInfo = {lobbyName, lobbyPassword};
         NetworkMessage message = NetworkMessage.completeClientMessage(username, MessageType.LOBBY_LOGIN_REQUEST, lobbyInfo);
 
@@ -178,7 +163,7 @@ public class CommunicationHandler {
             case LOBBY_FULL_ERROR:
                 throw new LobbyFullException("Lobby \"" + lobbyName + "\" is full");
             case PLAYER_ALREADY_ADDED_ERROR:
-                throw new ConnectionException("Player \"" + username + "\" already added to Lobby \"" + lobbyName + "\"");
+                throw new PlayerAlreadyAddedException("Player \"" + username + "\" already added to Lobby \"" + lobbyName + "\"");
             case PASSWORD_NOT_VALID_ERROR:
                 throw new InvalidPasswordException("Password \"" + lobbyPassword + "\" not valid for Lobby \"" + lobbyName + "\"");
             case GAME_ALREADY_STARTED_ERROR:

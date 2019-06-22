@@ -4,10 +4,7 @@ import it.polimi.ingsw.network.common.exceptions.*;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
@@ -18,7 +15,7 @@ public class LobbyCell extends ListCell<String> {
 
     //item components
     private Stage parentStage;
-    private Stage passwordSelectionStage;
+    private Stage passwordChoiceStage;
     private Label label;
     private HBox itemBox;
 
@@ -61,8 +58,9 @@ public class LobbyCell extends ListCell<String> {
     }
 
     private void fatalErrorRoutine(String errorMessage, boolean terminate) {
-        if (passwordSelectionStage != null)
-            passwordSelectionStage.close();
+        if (passwordChoiceStage != null)
+            passwordChoiceStage.close();
+
         Palette.errorAlert(Palette.ERROR_TITLE_TEXT, null, errorMessage, parentStage).showAndWait();
 
         if (terminate) {
@@ -79,6 +77,7 @@ public class LobbyCell extends ListCell<String> {
         visiblePause.setOnFinished(event -> errorLabelBox.setVisible(false));
         Platform.runLater(visiblePause::play);
     }
+
 
     private void passwordChoiceRoutine() {
         //error label
@@ -99,30 +98,23 @@ public class LobbyCell extends ListCell<String> {
         //cancel button
         Button cancelButton = new Button(Palette.CANCEL_TEXT);
         cancelButton.getStylesheets().add(Palette.BUTTON_ALT_STYLESHEET);
-        cancelButton.setOnAction(event -> {
-            event.consume();
-            passwordSelectionStage.close();
+        cancelButton.setOnAction(actionEvent -> {
+            actionEvent.consume();
+            passwordChoiceStage.close();
         });
 
-        passwordSelectionStage = Palette.passwordChoiceStage(parentStage, joinButton, cancelButton, inputPassword, errorLabelBox);
-        passwordSelectionStage.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                event.consume();
-                handleLobbyLogin(lobbyName, inputPassword.getText());
-            }
-        });
-        passwordSelectionStage.show();
+        passwordChoiceStage = Palette.passwordChoiceStage(parentStage, joinButton, cancelButton, inputPassword, errorLabelBox);
+        passwordChoiceStage.showAndWait();
     }
 
     private void handleLobbyLogin(String lobbyName, String lobbyPassword) {
         try {
             GUI.communicationHandler.login(lobbyName, lobbyPassword);
             errorRoutine("LOGIN SUCCESS !!!");
-        } catch (ConnectionException e) {
+        } catch (ConnectionException | PlayerAlreadyAddedException e) {
             fatalErrorRoutine(e.getMessage(), true);
         } catch (LobbyFullException | GameAlreadyStartedException | LobbyNotFoundException e) {
             fatalErrorRoutine(e.getMessage(), false);
-
         } catch (InvalidPasswordException e) {
             errorRoutine(e.getMessage());
         }

@@ -8,8 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -71,6 +69,7 @@ class Palette {
     static final Insets DEFAULT_MARGIN = new Insets(SIZE_DEFAULT);
     static final Insets MEDIUM_LEFT_MARGIN = new Insets(SIZE_NONE, SIZE_NONE, SIZE_NONE, SIZE_MEDIUM);
     static final Insets MEDIUM_RIGHT_MARGIN = new Insets(SIZE_NONE, SIZE_MEDIUM, SIZE_NONE, SIZE_NONE);
+    static final Insets MEDIUM_MARGIN = new Insets(SIZE_MEDIUM);
     static final Insets LARGE_RIGHT_MARGIN = new Insets(SIZE_NONE, SIZE_LARGE, SIZE_NONE, SIZE_NONE);
     static final Insets LARGE_VERTICAL_MARGIN = new Insets(SIZE_LARGE, SIZE_NONE, SIZE_NONE, SIZE_LARGE);
 
@@ -152,7 +151,7 @@ class Palette {
 
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initStyle(StageStyle.UNDECORATED);
-        enableDragAndDrop(dialog.getDialogPane().getScene(), (Stage) dialog.getDialogPane().getScene().getWindow());
+        enableDragAndDrop(dialog.getDialogPane().getScene(), owner);
 
         dialog.getDialogPane().getStylesheets().add(DIALOG_STYLESHEET);
 
@@ -184,7 +183,7 @@ class Palette {
 
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initStyle(StageStyle.UNDECORATED);
-        enableDragAndDrop(alert.getDialogPane().getScene(), (Stage) alert.getDialogPane().getScene().getWindow());
+        enableDragAndDrop(alert.getDialogPane().getScene(), owner);
 
         alert.getDialogPane().getStylesheets().add(DIALOG_STYLESHEET);
 
@@ -198,9 +197,6 @@ class Palette {
     }
 
     static Stage passwordChoiceStage(Stage owner, Button joinButton, Button cancelButton, TextField inputPassword, HBox errorLabelBox) {
-        Stage stage = new Stage();
-        Scene scene;
-
         //label
         Label passwordLabel = new Label(Palette.PASSWORD_TEXT);
         passwordLabel.getStylesheets().add(Palette.LABEL_STYLESHEET);
@@ -234,22 +230,15 @@ class Palette {
         basePane.setBackground(new Background(new BackgroundFill(Palette.ADRENALINE_DARK_GRAY_FILL, CornerRadii.EMPTY, Insets.EMPTY)));
 
         //scene
-        scene = new Scene(basePane);
-        scene.addEventHandler(KeyEvent.KEY_RELEASED, t -> { //set the ESC button to exit the dialog
-            if (t.getCode() == KeyCode.ESCAPE) {
-                t.consume();
-                stage.close();
-            }
-        });
+        Scene scene = new Scene(basePane);
 
         //stage
+        Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initOwner(owner);
         stage.setResizable(false);
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
-
-        enableDragAndDrop(scene, owner);
         return stage;
     }
 

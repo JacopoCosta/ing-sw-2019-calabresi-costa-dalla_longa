@@ -165,7 +165,7 @@ public class CLI implements GraphicalInterface {
         try {
             communicationHandler.login(lobbyName, lobbyPassword);
             console.tinyPrintln("Lobby login success!");
-        } catch (ConnectionException e) {
+        } catch (ConnectionException | PlayerAlreadyAddedException e) {
             console.err("connection to the server is lost, cause: " + e.getMessage());
             System.exit(-1);
         } catch (LobbyNotFoundException | LobbyFullException | InvalidPasswordException e) {

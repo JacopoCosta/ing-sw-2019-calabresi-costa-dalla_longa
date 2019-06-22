@@ -101,7 +101,8 @@ public class LoginManagement {
 
                 try {
                     communicationHandler.login(lobbyName, lobbyPassword);
-                } catch (ConnectionException | LobbyNotFoundException | LobbyFullException | InvalidPasswordException | GameAlreadyStartedException e) {
+                } catch (ConnectionException | LobbyNotFoundException | LobbyFullException | InvalidPasswordException
+                        | GameAlreadyStartedException | PlayerAlreadyAddedException e) {
                     System.exit(-1);
                 }
             }

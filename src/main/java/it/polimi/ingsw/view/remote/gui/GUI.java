@@ -36,29 +36,25 @@ public class GUI extends Application implements GraphicalInterface {
         LOBBY_SELECTION_LAYOUT
     }
 
-    private Layout currentLayout;
+    private static Layout currentLayout;
 
     //base components
     private Stage stage;
+    private BorderPane foregroundLayout;
     private StackPane baseLayout;
-
-    //exit routine components
-    private boolean exitMessageDisplayed;
-    private Dialog<ButtonType> exitDialog;
 
     //login components
     private VBox loginVBox;
     private HBox errorLabelBox;
     private TextField nicknameTextField;
 
-    private ObservableList<String> lobbies = FXCollections.observableList(FXCollections.observableArrayList());
+    private static ObservableList<String> lobbies = FXCollections.observableList(FXCollections.observableArrayList());
 
-    private ScheduledFuture<?> futureUpdate;
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private static ScheduledFuture<?> futureUpdate;
+    private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     private static final int UPDATE_REQUEST_PERIOD = 5;
 
     public GUI() {
-        exitMessageDisplayed = false;
     }
 
     @Override
@@ -75,7 +71,7 @@ public class GUI extends Application implements GraphicalInterface {
         try {
             GUI.communicationHandler.register(username);
             startLobbyUpdate();
-            stage.getScene().setRoot(createLobbySelectLayout());
+            createLobbySelectLayout();
         } catch (ConnectionException e) {
             fatalErrorRoutine(e.getMessage());
         } catch (ClientAlreadyRegisteredException e) {
@@ -153,9 +149,16 @@ public class GUI extends Application implements GraphicalInterface {
         return loginBox;
     }
 
-    private HBox createExitHBox() {
-        return Palette.labelBox(Palette.QUIT_TEXT, Palette.ADRENALINE_ORANGE, Palette.ADRENALINE_DARK_GRAY_TRANSPARENT,
-                Palette.DEFAULT_FONT, Palette.DEFAULT_SQUARED_PADDING, Palette.DEFAULT_MARGIN, Pos.BOTTOM_LEFT);
+    private HBox createExitButtonBox() {
+        Button exitButton = new Button("QUIT");
+        exitButton.getStylesheets().add(Palette.BUTTON_STYLESHEET);
+        exitButton.setOnAction(event -> exitRoutine());
+
+        HBox exitHBox = new HBox(exitButton);
+        HBox.setMargin(exitButton, Palette.MEDIUM_MARGIN);
+        exitHBox.setAlignment(Pos.BOTTOM_LEFT);
+
+        return exitHBox;
     }
 
     //creates a hidden error labelBox
@@ -170,23 +173,27 @@ public class GUI extends Application implements GraphicalInterface {
         currentLayout = Layout.LOGIN_LAYOUT;
 
         HBox loginHBox = createLoginForeground();
-        HBox exitHintHBox = createExitHBox();
+        HBox exitButtonBox = createExitButtonBox();
         errorLabelBox = createLoginErrorHBox();
 
         loginVBox = new VBox();
         loginVBox.setAlignment(Pos.CENTER);
-        loginVBox.getChildren().addAll(loginHBox, errorLabelBox, exitHintHBox);
+        loginVBox.getChildren().addAll(loginHBox, errorLabelBox, exitButtonBox);
 
+        foregroundLayout = new BorderPane();
+        foregroundLayout.setCenter(loginVBox);
+        foregroundLayout.setBottom(exitButtonBox);
+
+        baseLayout = new StackPane(foregroundLayout);
         baseLayout.setBackground(Palette.background(Palette.LOGIN_BACKGROUND_IMAGE));
-        baseLayout.getChildren().addAll(exitHintHBox, loginVBox);
         return baseLayout;
     }
 
-    private Parent createLobbySelectLayout() {
+    private void createLobbySelectLayout() {
         currentLayout = Layout.LOBBY_SELECTION_LAYOUT;
 
         baseLayout.setBackground(Palette.background(Palette.LOBBY_SELECTION_BACKGROUND_IMAGE));
-        baseLayout.getChildren().remove(loginVBox);
+        foregroundLayout.getChildren().remove(loginVBox);
 
         //lobby selection components
         ListView<String> lobbyStatusListView = new ListView<>(lobbies);
@@ -199,6 +206,10 @@ public class GUI extends Application implements GraphicalInterface {
         VBox vBox = new VBox();
         vBox.getChildren().add(lobbyStatusListView);
 
+        BorderPane borderPane = new BorderPane();
+        borderPane.setRight(vBox);
+        borderPane.setPadding(Palette.MEDIUM_SQUARED_PADDING);
+
         /*Button addButton = new Button("Add");
         addButton.setOnAction(actionEvent -> {
             lobbies.add("[1/5] test lobby cell");
@@ -206,14 +217,7 @@ public class GUI extends Application implements GraphicalInterface {
         });
         borderPane.setLeft(addButton);*/
 
-        BorderPane borderPane = new BorderPane();
-        borderPane.setRight(vBox);
-        borderPane.setPadding(Palette.MEDIUM_SQUARED_PADDING);
-
-        baseLayout.getChildren().add(borderPane);
-        StackPane.setAlignment(borderPane, Pos.CENTER);
-        baseLayout.requestFocus();
-        return baseLayout;
+        foregroundLayout.setCenter(borderPane);
     }
 
     private void fatalErrorRoutine(String errorMessage) {
@@ -232,9 +236,9 @@ public class GUI extends Application implements GraphicalInterface {
     }
 
     private void exitRoutine() {
-        exitDialog = Palette.confirmationDialog(Palette.TITLE_TEXT, null, Palette.EXIT_MESSAGE_TEXT, stage);
+        //exit routine components
+        Dialog<ButtonType> exitDialog = Palette.confirmationDialog(Palette.TITLE_TEXT, null, Palette.EXIT_MESSAGE_TEXT, stage);
         Optional<ButtonType> result = exitDialog.showAndWait();
-        exitMessageDisplayed = false;
 
         if (result.isPresent() && result.get().getButtonData().equals(ButtonType.OK.getButtonData())) {
             if (currentLayout.equals(Layout.LOBBY_SELECTION_LAYOUT)) {
@@ -252,22 +256,9 @@ public class GUI extends Application implements GraphicalInterface {
 
     @Override
     public void start(Stage primaryStage) {
-        stage = primaryStage;
-        baseLayout = new StackPane();
-
         Scene scene = new Scene(createLoginLayout());
-        scene.addEventHandler(KeyEvent.KEY_PRESSED, t -> { //set the ESC button to exit the program
-            if (t.getCode() == KeyCode.ESCAPE) {
-                if(!exitMessageDisplayed) {
-                    exitMessageDisplayed = true;
-                    exitRoutine();
-                } else {
-                    exitDialog.close();
-                    exitMessageDisplayed = false;
-                }
-            }
-        });
 
+        stage = primaryStage;
         stage.setScene(scene);
         stage.setTitle(Palette.TITLE_TEXT);
         stage.setResizable(false);
@@ -275,7 +266,6 @@ public class GUI extends Application implements GraphicalInterface {
         stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         stage.setOnCloseRequest(Event::consume);
         stage.getIcons().add(Palette.ADRENALINE_LOGO_IMAGE.getImage());
-
         stage.show();
     }
 }
