@@ -16,7 +16,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
@@ -178,7 +177,7 @@ public class GUI extends Application implements GraphicalInterface {
         loginVBox.setAlignment(Pos.CENTER);
         loginVBox.getChildren().addAll(loginHBox, errorLabelBox, exitHintHBox);
 
-        baseLayout.setBackground(Palette.background(Palette.LOGIN_BACKGROUND_IMAGEPATH));
+        baseLayout.setBackground(Palette.background(Palette.LOGIN_BACKGROUND_IMAGE));
         baseLayout.getChildren().addAll(exitHintHBox, loginVBox);
         return baseLayout;
     }
@@ -186,7 +185,7 @@ public class GUI extends Application implements GraphicalInterface {
     private Parent createLobbySelectLayout() {
         currentLayout = Layout.LOBBY_SELECTION_LAYOUT;
 
-        baseLayout.setBackground(Palette.background(Palette.LOBBY_SELECTION_BACKGROUND_IMAGEPATH));
+        baseLayout.setBackground(Palette.background(Palette.LOBBY_SELECTION_BACKGROUND_IMAGE));
         baseLayout.getChildren().remove(loginVBox);
 
         //lobby selection components
@@ -197,16 +196,17 @@ public class GUI extends Application implements GraphicalInterface {
         lobbyStatusListView.setPrefWidth(Palette.LIST_VIEW_ITEM_WIDTH / 2 + Palette.MEDIUM_SPACING);
         lobbyStatusListView.getStylesheets().add(Palette.LIST_VIEW_STYLESHEET);
 
+        VBox vBox = new VBox();
+        vBox.getChildren().add(lobbyStatusListView);
+
         /*Button addButton = new Button("Add");
         addButton.setOnAction(actionEvent -> {
             lobbies.add("[1/5] test lobby cell");
             actionEvent.consume();
-        });*/
-        VBox vBox = new VBox();
-        vBox.getChildren().add(lobbyStatusListView);
+        });
+        borderPane.setLeft(addButton);*/
 
         BorderPane borderPane = new BorderPane();
-        //borderPane.setLeft(addButton);
         borderPane.setRight(vBox);
         borderPane.setPadding(Palette.MEDIUM_SQUARED_PADDING);
 
@@ -274,7 +274,7 @@ public class GUI extends Application implements GraphicalInterface {
         stage.setFullScreen(true);
         stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         stage.setOnCloseRequest(Event::consume);
-        stage.getIcons().add(new Image(Palette.ADRENALINE_LOGO_IMAGEPATH));
+        stage.getIcons().add(Palette.ADRENALINE_LOGO_IMAGE.getImage());
 
         stage.show();
     }

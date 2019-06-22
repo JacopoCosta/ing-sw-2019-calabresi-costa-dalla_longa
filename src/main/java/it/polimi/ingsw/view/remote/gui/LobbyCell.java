@@ -8,8 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
@@ -31,7 +29,7 @@ public class LobbyCell extends ListCell<String> {
         super();
         Platform.runLater(() -> parentStage = (Stage) getScene().getWindow());
 
-        setBackground(Palette.backgroundImage(Palette.LIST_ITEM_BACKGROUND_IMAGEPATH));
+        setBackground(Palette.backgroundImage(Palette.LIST_ITEM_BACKGROUND_IMAGE));
 
         //participants and lobby name label
         label = new Label();

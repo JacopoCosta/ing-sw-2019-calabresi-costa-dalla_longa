@@ -24,12 +24,19 @@ class Palette {
     static final Color ADRENALINE_ORANGE = Color.rgb(189, 103, 56, 1);
     static final Color ADRENALINE_RED = Color.rgb(208, 81, 67, 1);
 
-    //images
-    static final String LIST_ITEM_BACKGROUND_IMAGEPATH = "/gui/png/backgrounds/list_item_bg.png";
-    static final String LOGIN_BACKGROUND_IMAGEPATH = "/gui/png/backgrounds/login_bg.png";
-    static final String LOBBY_SELECTION_BACKGROUND_IMAGEPATH = "/gui/png/backgrounds/lobby_selection_bg.png";
-    static final String ADRENALINE_LOGO_IMAGEPATH = "/gui/png/logo/logo.png";
-    static final String ERROR_ICON = "/gui/png/error/error.png";
+    //image paths
+    private static final String LIST_ITEM_BACKGROUND_IMAGE_PATH = "/gui/png/backgrounds/list_item_bg.png";
+    private static final String LOGIN_BACKGROUND_IMAGE_PATH = "/gui/png/backgrounds/login_bg.png";
+    private static final String LOBBY_SELECTION_BACKGROUND_IMAGE_PATH = "/gui/png/backgrounds/lobby_selection_bg.png";
+    private static final String ADRENALINE_LOGO_IMAGE_PATH = "/gui/png/logo/logo.png";
+    private static final String ERROR_ICON_PATH = "/gui/png/error/error.png";
+
+    //image views
+    static final ImageView LIST_ITEM_BACKGROUND_IMAGE = new ImageView(new Image(LIST_ITEM_BACKGROUND_IMAGE_PATH));
+    static final ImageView LOGIN_BACKGROUND_IMAGE = new ImageView(new Image(LOGIN_BACKGROUND_IMAGE_PATH));
+    static final ImageView LOBBY_SELECTION_BACKGROUND_IMAGE = new ImageView(new Image(LOBBY_SELECTION_BACKGROUND_IMAGE_PATH));
+    static final ImageView ADRENALINE_LOGO_IMAGE = new ImageView(new Image(ADRENALINE_LOGO_IMAGE_PATH));
+    static final ImageView ERROR_ICON = new ImageView(new Image(ERROR_ICON_PATH));
 
     //css stylesheets
     static final String BUTTON_STYLESHEET = "/gui/css/button.css";
@@ -68,8 +75,8 @@ class Palette {
     static final Insets LARGE_VERTICAL_MARGIN = new Insets(SIZE_LARGE, SIZE_NONE, SIZE_NONE, SIZE_LARGE);
 
     //dimensions
-    static final double LIST_VIEW_ITEM_HEIGHT = new Image(LIST_ITEM_BACKGROUND_IMAGEPATH).getHeight();
-    static final double LIST_VIEW_ITEM_WIDTH = new Image(LIST_ITEM_BACKGROUND_IMAGEPATH).getWidth();
+    static final double LIST_VIEW_ITEM_HEIGHT = LIST_ITEM_BACKGROUND_IMAGE.getImage().getHeight();
+    static final double LIST_VIEW_ITEM_WIDTH = LIST_ITEM_BACKGROUND_IMAGE.getImage().getWidth();
     static final double ICON_FIT_WIDTH = 64.0;
     static final double ICON_FIT_HEIGHT = 64.0;
 
@@ -181,8 +188,7 @@ class Palette {
 
         alert.getDialogPane().getStylesheets().add(DIALOG_STYLESHEET);
 
-        Image errorImage = new Image(ERROR_ICON);
-        ImageView errorImageView = new ImageView(errorImage);
+        ImageView errorImageView = ERROR_ICON;
         errorImageView.setFitWidth(ICON_FIT_WIDTH);
         errorImageView.setFitHeight(ICON_FIT_HEIGHT);
         alert.setGraphic(errorImageView);
@@ -247,16 +253,15 @@ class Palette {
         return stage;
     }
 
-    static Background background(String imagePath) {
-        return createBackground(imagePath, false, true);
+    static Background background(ImageView imageview) {
+        return createBackground(imageview.getImage(), false, true);
     }
 
-    static Background backgroundImage(String imagePath) {
-        return createBackground(imagePath, true, false);
+    static Background backgroundImage(ImageView imageview) {
+        return createBackground(imageview.getImage(), true, false);
     }
 
-    private static Background createBackground(String imagePath, boolean contain, boolean cover) {
-        Image image = new Image(imagePath);
+    private static Background createBackground(Image image, boolean contain, boolean cover) {
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, contain, cover);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
