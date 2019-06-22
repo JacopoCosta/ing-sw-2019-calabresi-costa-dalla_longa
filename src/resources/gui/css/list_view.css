@@ -1,3 +1,35 @@
 .list-view {
     -fx-background-color: transparent;
 }
+
+.list-view .scroll-bar:horizontal ,
+.list-view .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.list-view .increment-button ,
+.list-view .decrement-button {
+    -fx-background-color: transparent;
+    -fx-scale-x: 0;
+    -fx-scale-y: 0;
+}
+
+.list-view .scroll-bar:horizontal .track ,
+.list-view .scroll-bar:vertical .track {
+     -fx-background-color: transparent;
+	 -fx-border-color: transparent;
+	 -fx-background-radius: 0em;
+}
+
+.list-view .scroll-bar:horizontal .thumb,
+.list-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #222A2BE6;
+	-fx-background-insets: 0, 0, 0;
+	-fx-background-radius: 0em;
+
+}
+
+.list-view .scroll-bar .thumb:hover,
+.list-view .scroll-bar .thumb:pressed{
+    -fx-background-color: #BD6738E6;
+}

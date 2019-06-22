@@ -1,0 +1,13 @@
+@import url("text_field.css");
+
+.text-field {
+    -fx-text-fill: #BD6738E6;
+    -fx-border-color: #FFFFFFFF;
+    -fx-border-width: 0 0 2 0; /* top, right, bottom, left */
+    -fx-background-color: transparent;
+}
+.text-field:focused {
+    -fx-border-color: #FFFFFFFF;
+    -fx-border-width: 0 0 2 0; /* top, right, bottom, left */
+    -fx-background-color: transparent;
+}

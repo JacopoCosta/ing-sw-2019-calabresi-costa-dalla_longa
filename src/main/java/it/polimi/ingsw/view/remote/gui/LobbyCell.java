@@ -4,18 +4,23 @@ import it.polimi.ingsw.network.common.exceptions.*;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.util.Optional;
 
 public class LobbyCell extends ListCell<String> {
     private String lobbyName;
 
     //item components
-    private Stage stage;
+    private Stage parentStage;
+    private Stage passwordSelectionStage;
     private Label label;
     private HBox itemBox;
 
@@ -24,7 +29,7 @@ public class LobbyCell extends ListCell<String> {
 
     LobbyCell() {
         super();
-        Platform.runLater(() -> stage = (Stage) getScene().getWindow());
+        Platform.runLater(() -> parentStage = (Stage) getScene().getWindow());
 
         setBackground(Palette.backgroundImage(Palette.LIST_ITEM_BACKGROUND_IMAGEPATH));
 
@@ -32,16 +37,16 @@ public class LobbyCell extends ListCell<String> {
         label = new Label();
         label.setFont(Palette.DEFAULT_FONT);
         label.setTextFill(Palette.ADRENALINE_ORANGE);
-        label.setPadding(Palette.DEFAULT_PADDING);
+        label.setPadding(Palette.DEFAULT_SQUARED_PADDING);
 
         //join button
         Button joinButton = new Button(Palette.JOIN_TEXT);
         joinButton.setMinSize(Button.USE_PREF_SIZE, Button.USE_PREF_SIZE);
-        joinButton.getStylesheets().add(Palette.BUTTON_REVERSE_STYLESHEET);
+        joinButton.getStylesheets().add(Palette.BUTTON_ALT_STYLESHEET);
         joinButton.setOnAction(event -> {
             event.consume();
             if (GUI.communicationHandler == null)
-                fatalErrorRoutine(Palette.GENERIC_ERROR_TEXT);
+                fatalErrorRoutine(Palette.GENERIC_ERROR_TEXT, true);
             passwordChoiceRoutine();
         });
 
@@ -51,16 +56,21 @@ public class LobbyCell extends ListCell<String> {
         HBox.setHgrow(joinButton, Priority.ALWAYS);
 
         //cell
-        HBox.setMargin(joinButton, Palette.LARGE_STRETCH_MARGIN);
-        HBox.setMargin(label, Palette.MEDIUM_STRETCH_MARGIN);
+        HBox.setMargin(joinButton, Palette.LARGE_RIGHT_MARGIN);
+        HBox.setMargin(label, Palette.MEDIUM_LEFT_MARGIN);
         itemBox = new HBox(label, spacer, joinButton);
         itemBox.setAlignment(Pos.CENTER_LEFT);
     }
 
-    private void fatalErrorRoutine(String message) {
-        Palette.errorAlert(Palette.ERROR_TITLE_TEXT, null, message, stage).showAndWait();
-        //stage.close();
-        //System.exit(-1);
+    private void fatalErrorRoutine(String errorMessage, boolean terminate) {
+        if (passwordSelectionStage != null)
+            passwordSelectionStage.close();
+        Palette.errorAlert(Palette.ERROR_TITLE_TEXT, null, errorMessage, parentStage).showAndWait();
+
+        if (terminate) {
+            parentStage.close();
+            System.exit(-1);
+        }
     }
 
     private void errorRoutine(String errorMessage) {
@@ -72,55 +82,51 @@ public class LobbyCell extends ListCell<String> {
         Platform.runLater(visiblePause::play);
     }
 
-    //TODO: change from Dialog to separate pane
-    private Dialog<String> createPasswordDialog() {
-        Dialog<String> passwordDialog = Palette.passwordDialog(Palette.TITLE_TEXT, null, Palette.PASSWORD_TEXT, stage);
-
-        errorLabelBox = Palette.labelBox(null, Palette.ADRENALINE_RED, Palette.ADRENALINE_DARK_GRAY,
-                Palette.DEFAULT_FONT, Palette.DEFAULT_PADDING, Palette.DEFAULT_MARGIN, Pos.CENTER);
+    private void passwordChoiceRoutine() {
+        //error label
+        errorLabelBox = Palette.labelBox(null, Palette.ADRENALINE_RED, Palette.ADRENALINE_DARK_GRAY_TRANSPARENT,
+                Palette.DEFAULT_FONT, Palette.DEFAULT_SQUARED_PADDING, Palette.DEFAULT_MARGIN, Pos.CENTER);
         errorLabelBox.setVisible(false);
 
-        Label passwordLabel = new Label(Palette.PASSWORD_TEXT);
-
+        //input password text field
         TextField inputPassword = new TextField();
+        inputPassword.getStylesheets().add(Palette.TEXT_FIELD_ALT_STYLESHEET);
         Platform.runLater(inputPassword::requestFocus);
-        inputPassword.getStylesheets().add(Palette.TEXT_FIELD_STYLESHEET);
-        //TODO add ENTER key event filter
-        /*inputPassword.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+
+        //join button
+        Button joinButton = new Button(Palette.JOIN_TEXT);
+        joinButton.getStylesheets().add(Palette.BUTTON_ALT_STYLESHEET);
+        joinButton.setOnAction(event -> handleLobbyLogin(lobbyName, inputPassword.getText()));
+
+        //cancel button
+        Button cancelButton = new Button(Palette.CANCEL_TEXT);
+        cancelButton.getStylesheets().add(Palette.BUTTON_ALT_STYLESHEET);
+        cancelButton.setOnAction(event -> {
+            event.consume();
+            passwordSelectionStage.close();
+        });
+
+        passwordSelectionStage = Palette.passwordChoiceStage(parentStage, joinButton, cancelButton, inputPassword, errorLabelBox);
+        passwordSelectionStage.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 event.consume();
-                String lobbyPassword = inputPassword.getText();
-                handleLobbyLogin(lobbyName, lobbyPassword);
+                handleLobbyLogin(lobbyName, inputPassword.getText());
             }
-        });*/
-
-        HBox passwordBox = new HBox();
-        passwordBox.getChildren().addAll(passwordLabel, inputPassword);
-
-        VBox base = new VBox();
-        base.getChildren().addAll(passwordBox, errorLabelBox);
-
-        passwordDialog.setGraphic(base);
-        passwordDialog.setResultConverter(dialogButton -> {
-            if (dialogButton.getButtonData().equals(ButtonType.OK.getButtonData())) {
-                return inputPassword.getText();
-            }
-            return null;
         });
-        return passwordDialog;
-    }
-
-    private void passwordChoiceRoutine() {
-        Optional<String> lobbyPassword = createPasswordDialog().showAndWait();
-        lobbyPassword.ifPresent(password -> handleLobbyLogin(lobbyName, password));
+        passwordSelectionStage.show();
     }
 
     private void handleLobbyLogin(String lobbyName, String lobbyPassword) {
         try {
             GUI.communicationHandler.login(lobbyName, lobbyPassword);
-            fatalErrorRoutine("LOGIN SUCCESS !!!");
-        } catch (ConnectionException | LobbyFullException | InvalidPasswordException | GameAlreadyStartedException | LobbyNotFoundException e) {
-            fatalErrorRoutine(e.getMessage());
+            errorRoutine("LOGIN SUCCESS !!!");
+        } catch (ConnectionException e) {
+            fatalErrorRoutine(e.getMessage(), true);
+        } catch (LobbyFullException | GameAlreadyStartedException | LobbyNotFoundException e) {
+            fatalErrorRoutine(e.getMessage(), false);
+
+        } catch (InvalidPasswordException e) {
+            errorRoutine(e.getMessage());
         }
     }
 

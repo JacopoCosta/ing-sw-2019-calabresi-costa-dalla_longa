@@ -1,32 +1,19 @@
+@import url("button_alt.css");
+@import url("label.css");
+
 .dialog-pane {
     -fx-border-color: #222A2BFF;
     -fx-background-color: #222A2BFF;
 }
 
 .dialog-pane > .button-bar > .container {
-    -fx-background-color: #222A2BFF;
+    -fx-background-color: transparent;
 }
 
 .dialog-pane:header .header-panel {
-  -fx-background-color: #222A2BFF;
+  -fx-background-color: transparent;
 }
 
 .dialog-pane > .content.label {
-     -fx-background-color: #222A2BFF;
-     -fx-text-fill: #FFFFFFFF;
-     -fx-font: 13 orbitron;
-}
-
-.dialog-pane .button{
-    -fx-background-color: #97522DFF;
-    -fx-text-fill: #222A2BFF;
-    -fx-font: 13 orbitron;
-    -fx-background-radius: 0px;
-}
-
-.dialog-pane .button:hover{
-    -fx-background-color: #BD6738FF;
-    -fx-text-fill: #222A2BFF;
-    -fx-font: 13 orbitron;
-    -fx-background-radius: 0px;
+     -fx-background-color: transparent;
 }

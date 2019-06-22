@@ -43,6 +43,10 @@ public class GUI extends Application implements GraphicalInterface {
     private Stage stage;
     private StackPane baseLayout;
 
+    //exit routine components
+    private boolean exitMessageDisplayed;
+    private Dialog<ButtonType> exitDialog;
+
     //login components
     private VBox loginVBox;
     private HBox errorLabelBox;
@@ -55,6 +59,7 @@ public class GUI extends Application implements GraphicalInterface {
     private static final int UPDATE_REQUEST_PERIOD = 5;
 
     public GUI() {
+        exitMessageDisplayed = false;
     }
 
     @Override
@@ -125,9 +130,9 @@ public class GUI extends Application implements GraphicalInterface {
         nicknameTextField.setFocusTraversable(false);
         nicknameTextField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
+                event.consume();
                 String nickname = nicknameTextField.getText();
                 handleRegistering(nickname);
-                event.consume();
             }
         });
 
@@ -135,9 +140,9 @@ public class GUI extends Application implements GraphicalInterface {
         Button loginButton = new Button(Palette.LOGIN_TEXT);
         loginButton.getStylesheets().add(Palette.BUTTON_STYLESHEET);
         loginButton.setOnAction(actionEvent -> {
+            actionEvent.consume();
             String nickname = nicknameTextField.getText();
             handleRegistering(nickname);
-            actionEvent.consume();
         });
 
         //foreground HBox
@@ -150,14 +155,14 @@ public class GUI extends Application implements GraphicalInterface {
     }
 
     private HBox createExitHBox() {
-        return Palette.labelBox(Palette.QUIT_TEXT, Palette.ADRENALINE_ORANGE, Palette.ADRENALINE_DARK_GRAY,
-                Palette.DEFAULT_FONT, Palette.DEFAULT_PADDING, Palette.DEFAULT_MARGIN, Pos.BOTTOM_LEFT);
+        return Palette.labelBox(Palette.QUIT_TEXT, Palette.ADRENALINE_ORANGE, Palette.ADRENALINE_DARK_GRAY_TRANSPARENT,
+                Palette.DEFAULT_FONT, Palette.DEFAULT_SQUARED_PADDING, Palette.DEFAULT_MARGIN, Pos.BOTTOM_LEFT);
     }
 
     //creates a hidden error labelBox
     private HBox createLoginErrorHBox() {
-        HBox hBox = Palette.labelBox(null, Palette.ADRENALINE_RED, Palette.ADRENALINE_DARK_GRAY,
-                Palette.DEFAULT_FONT, Palette.DEFAULT_PADDING, Palette.DEFAULT_MARGIN, Pos.CENTER);
+        HBox hBox = Palette.labelBox(null, Palette.ADRENALINE_RED, Palette.ADRENALINE_DARK_GRAY_TRANSPARENT,
+                Palette.DEFAULT_FONT, Palette.DEFAULT_SQUARED_PADDING, Palette.DEFAULT_MARGIN, Pos.CENTER);
         hBox.setVisible(false);
         return hBox;
     }
@@ -189,7 +194,7 @@ public class GUI extends Application implements GraphicalInterface {
         lobbyStatusListView.setOrientation(Orientation.VERTICAL);
         lobbyStatusListView.setCellFactory(param -> new LobbyCell());
         lobbyStatusListView.prefHeightProperty().bind(stage.heightProperty());
-        lobbyStatusListView.setPrefWidth(Palette.LIST_VIEW_ITEM_WIDTH / 2 + 2);
+        lobbyStatusListView.setPrefWidth(Palette.LIST_VIEW_ITEM_WIDTH / 2 + Palette.MEDIUM_SPACING);
         lobbyStatusListView.getStylesheets().add(Palette.LIST_VIEW_STYLESHEET);
 
         /*Button addButton = new Button("Add");
@@ -203,7 +208,7 @@ public class GUI extends Application implements GraphicalInterface {
         BorderPane borderPane = new BorderPane();
         //borderPane.setLeft(addButton);
         borderPane.setRight(vBox);
-        borderPane.setPadding(Palette.ENLARGED_PADDING);
+        borderPane.setPadding(Palette.MEDIUM_SQUARED_PADDING);
 
         baseLayout.getChildren().add(borderPane);
         StackPane.setAlignment(borderPane, Pos.CENTER);
@@ -227,7 +232,9 @@ public class GUI extends Application implements GraphicalInterface {
     }
 
     private void exitRoutine() {
-        Optional<ButtonType> result = Palette.confirmationDialog(Palette.TITLE_TEXT, null, Palette.EXIT_MESSAGE_TEXT, stage).showAndWait();
+        exitDialog = Palette.confirmationDialog(Palette.TITLE_TEXT, null, Palette.EXIT_MESSAGE_TEXT, stage);
+        Optional<ButtonType> result = exitDialog.showAndWait();
+        exitMessageDisplayed = false;
 
         if (result.isPresent() && result.get().getButtonData().equals(ButtonType.OK.getButtonData())) {
             if (currentLayout.equals(Layout.LOBBY_SELECTION_LAYOUT)) {
@@ -249,9 +256,15 @@ public class GUI extends Application implements GraphicalInterface {
         baseLayout = new StackPane();
 
         Scene scene = new Scene(createLoginLayout());
-        scene.addEventHandler(KeyEvent.KEY_RELEASED, t -> { //set the ESC button to exit the program
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, t -> { //set the ESC button to exit the program
             if (t.getCode() == KeyCode.ESCAPE) {
-                exitRoutine();
+                if(!exitMessageDisplayed) {
+                    exitMessageDisplayed = true;
+                    exitRoutine();
+                } else {
+                    exitDialog.close();
+                    exitMessageDisplayed = false;
+                }
             }
         });
 
