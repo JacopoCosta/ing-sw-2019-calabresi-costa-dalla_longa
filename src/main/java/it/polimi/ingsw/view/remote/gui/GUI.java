@@ -4,14 +4,15 @@ import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ClientAlreadyRegisteredException;
 import it.polimi.ingsw.network.common.exceptions.ClientNotRegisteredException;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
+import it.polimi.ingsw.network.common.exceptions.LobbyAlreadyExistsException;
 import it.polimi.ingsw.view.remote.GraphicalInterface;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -20,6 +21,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -31,27 +33,31 @@ import java.util.stream.Collectors;
 public class GUI extends Application implements GraphicalInterface {
     static CommunicationHandler communicationHandler;
 
-    private enum Layout {
+    enum Layout {
         LOGIN_LAYOUT,
-        LOBBY_SELECTION_LAYOUT
+        LOBBY_SELECTION_LAYOUT,
+        GAME_STAGE_LAYOUT
     }
 
-    private static Layout currentLayout;
+    static Layout currentLayout;
 
     //base components
     private Stage stage;
-    private BorderPane foregroundLayout;
-    private StackPane baseLayout;
+    static BorderPane foregroundLayout;
+    static StackPane baseLayout;
 
     //login components
     private VBox loginVBox;
     private HBox errorLabelBox;
-    private TextField nicknameTextField;
+
+    //lobby creation components
+    private Button createLobbyButton;
+    static BorderPane lobbySelectionLayout;
 
     private static ObservableList<String> lobbies = FXCollections.observableList(FXCollections.observableArrayList());
 
-    private static ScheduledFuture<?> futureUpdate;
-    private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    static ScheduledFuture<?> futureUpdate;
+    static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     private static final int UPDATE_REQUEST_PERIOD = 5;
 
     public GUI() {
@@ -67,11 +73,15 @@ public class GUI extends Application implements GraphicalInterface {
         launch((String[]) null);
     }
 
+    private boolean isInvalid(String string) {
+        return string == null || string.isEmpty() || string.isBlank();
+    }
+
     private void register(String username) {
         try {
             GUI.communicationHandler.register(username);
             startLobbyUpdate();
-            createLobbySelectLayout();
+            createLobbySelectionLayout();
         } catch (ConnectionException e) {
             fatalErrorRoutine(e.getMessage());
         } catch (ClientAlreadyRegisteredException e) {
@@ -79,12 +89,29 @@ public class GUI extends Application implements GraphicalInterface {
         }
     }
 
+    private void createLobby(String lobbyName, String password) {
+        try {
+            GUI.communicationHandler.initLobby(lobbyName, password);
+            createGameLayout();
+        } catch (ConnectionException e) {
+            fatalErrorRoutine(e.getMessage());
+        } catch (LobbyAlreadyExistsException e) {
+            errorLabelRoutine(e.getMessage());
+        }
+    }
+
     private void handleRegistering(String nickname) {
-        if (nickname == null || nickname.isEmpty() || nickname.isBlank()) {
-            nicknameTextField.setText(null);
+        if (isInvalid(nickname)) {
             errorLabelRoutine(Palette.INVALID_NICKNAME_TEXT);
         } else
             register(nickname);
+    }
+
+    private void handleLobbyCreation(String lobbyName, String lobbyPassword) {
+        if (isInvalid(lobbyName))
+            errorLabelRoutine("invalid lobby name");
+        else
+            createLobby(lobbyName, lobbyPassword);
     }
 
     //update the Lobby list and print them
@@ -119,43 +146,46 @@ public class GUI extends Application implements GraphicalInterface {
     private HBox createLoginForeground() {
 
         //TextField to input the username
-        nicknameTextField = new TextField();
-        nicknameTextField.getStylesheets().add(Palette.TEXT_FIELD_STYLESHEET);
+        TextField nicknameTextField = Palette.textField();
         nicknameTextField.setPromptText(Palette.CHOOSE_NICKNAME_TEXT);
         nicknameTextField.setFocusTraversable(false);
         nicknameTextField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 event.consume();
-                String nickname = nicknameTextField.getText();
-                handleRegistering(nickname);
+                if (currentLayout.equals(Layout.LOGIN_LAYOUT)) {
+                    String nickname = nicknameTextField.getText();
+                    handleRegistering(nickname);
+                }
             }
         });
 
         //login Button
-        Button loginButton = new Button(Palette.LOGIN_TEXT);
-        loginButton.getStylesheets().add(Palette.BUTTON_STYLESHEET);
+        Button loginButton = Palette.button(Palette.LOGIN_TEXT);
+        //disable login button until user inputs something
+        loginButton.disableProperty().bind(Bindings.isEmpty(nicknameTextField.textProperty()));
         loginButton.setOnAction(actionEvent -> {
             actionEvent.consume();
             String nickname = nicknameTextField.getText();
+            nicknameTextField.clear();
+            Platform.runLater(nicknameTextField::requestFocus);
             handleRegistering(nickname);
         });
 
         //foreground HBox
-        HBox loginBox = new HBox();
-        loginBox.setSpacing(Palette.DEFAULT_SPACING);
-        loginBox.setAlignment(Pos.CENTER);
-        loginBox.getChildren().addAll(nicknameTextField, loginButton);
+        HBox loginHBox = new HBox();
+        loginHBox.setSpacing(Palette.DEFAULT_SPACING);
+        loginHBox.setAlignment(Pos.CENTER);
+        loginHBox.getChildren().addAll(nicknameTextField, loginButton);
 
-        return loginBox;
+        return loginHBox;
     }
 
     private HBox createExitButtonBox() {
-        Button exitButton = new Button("QUIT");
-        exitButton.getStylesheets().add(Palette.BUTTON_STYLESHEET);
+        Button exitButton = Palette.button(Palette.QUIT_TEXT);
         exitButton.setOnAction(event -> exitRoutine());
 
         HBox exitHBox = new HBox(exitButton);
-        HBox.setMargin(exitButton, Palette.MEDIUM_MARGIN);
+        HBox.setMargin(exitButton, Palette.MEDIUM_SQUARED_MARGIN);
         exitHBox.setAlignment(Pos.BOTTOM_LEFT);
 
         return exitHBox;
@@ -163,8 +193,7 @@ public class GUI extends Application implements GraphicalInterface {
 
     //creates a hidden error labelBox
     private HBox createLoginErrorHBox() {
-        HBox hBox = Palette.labelBox(null, Palette.ADRENALINE_RED, Palette.ADRENALINE_DARK_GRAY_TRANSPARENT,
-                Palette.DEFAULT_FONT, Palette.DEFAULT_SQUARED_PADDING, Palette.DEFAULT_MARGIN, Pos.CENTER);
+        HBox hBox = Palette.labelBox(null, Palette.ADRENALINE_RED);
         hBox.setVisible(false);
         return hBox;
     }
@@ -186,38 +215,128 @@ public class GUI extends Application implements GraphicalInterface {
 
         baseLayout = new StackPane(foregroundLayout);
         baseLayout.setBackground(Palette.background(Palette.LOGIN_BACKGROUND_IMAGE));
+
+        Platform.runLater(() -> baseLayout.requestFocus());
         return baseLayout;
     }
 
-    private void createLobbySelectLayout() {
+    private GridPane createLobbyCreationContainer() {
+        GridPane lobbyCreationContainer = new GridPane();
+
+        //name label
+        Label lobbyNameLabel = Palette.label(Palette.NAME_TEXT, Color.WHITE, Color.TRANSPARENT);
+
+        //password label
+        Label passwordLabel = Palette.label(Palette.PASSWORD_TEXT, Color.WHITE, Color.TRANSPARENT);
+
+        //name text field
+        TextField inputLobbyName = Palette.textFieldAlt();
+
+        //password text field
+        TextField inputLobbyPassword = Palette.textFieldAlt();
+
+        //create & join button
+        Button createAndJoinButton = Palette.buttonAlt(Palette.CREATE_JOIN_TEXT);
+        createAndJoinButton.setOnAction(event -> {
+            String lobbyName = inputLobbyName.getText();
+            String lobbyPassword = inputLobbyPassword.getText();
+
+            inputLobbyName.clear();
+            inputLobbyPassword.clear();
+            Platform.runLater(inputLobbyName::requestFocus);
+
+            handleLobbyCreation(lobbyName, lobbyPassword);
+        });
+        createAndJoinButton.disableProperty().bind(Bindings.isEmpty(inputLobbyName.textProperty()));
+
+        //cancel button
+        Button cancelButton = Palette.buttonAlt(Palette.CANCEL_TEXT);
+        cancelButton.setOnAction(event -> {
+            lobbyCreationContainer.setVisible(false);
+            inputLobbyName.clear();
+            inputLobbyPassword.clear();
+            createLobbyButton.setDisable(false);
+        });
+
+        //error label box
+        errorLabelBox.setVisible(false);
+        ((Label) errorLabelBox.getChildren().get(0)).setBackground(Palette.backgroundColor(Color.TRANSPARENT));
+
+        //base container layout
+        GridPane.setMargin(createAndJoinButton, Palette.LARGE_TOP_RIGHT_MARGIN);
+        GridPane.setMargin(cancelButton, Palette.LARGE_TOP_RIGHT_MARGIN);
+        GridPane.setMargin(errorLabelBox, Palette.LARGE_TOP_RIGHT_MARGIN);
+        lobbyCreationContainer.addRow(0, lobbyNameLabel, inputLobbyName);
+        lobbyCreationContainer.addRow(1, passwordLabel, inputLobbyPassword);
+        lobbyCreationContainer.add(errorLabelBox, 1, 2);
+        lobbyCreationContainer.addRow(3, createAndJoinButton, cancelButton);
+        lobbyCreationContainer.setHgap(Palette.DEFAULT_SPACING);
+        lobbyCreationContainer.setVgap(Palette.DEFAULT_SPACING);
+        lobbyCreationContainer.setBackground(Palette.backgroundColor(Palette.ADRENALINE_DARK_GRAY_FILL));
+        lobbyCreationContainer.setPadding(Palette.DEFAULT_SQUARED_PADDING);
+        lobbyCreationContainer.setVisible(false);
+
+        return lobbyCreationContainer;
+    }
+
+    private ListView<String> createLobbyListView() {
+        ListView<String> listView = Palette.listView(lobbies);
+        listView.setCellFactory(param -> new LobbyCell());
+        listView.prefHeightProperty().bind(stage.heightProperty());
+        return listView;
+    }
+
+    private void createLobbySelectionLayout() {
         currentLayout = Layout.LOBBY_SELECTION_LAYOUT;
+        GridPane lobbyCreationContainer = createLobbyCreationContainer();
 
         baseLayout.setBackground(Palette.background(Palette.LOBBY_SELECTION_BACKGROUND_IMAGE));
         foregroundLayout.getChildren().remove(loginVBox);
 
-        //lobby selection components
-        ListView<String> lobbyStatusListView = new ListView<>(lobbies);
-        lobbyStatusListView.setOrientation(Orientation.VERTICAL);
-        lobbyStatusListView.setCellFactory(param -> new LobbyCell());
-        lobbyStatusListView.prefHeightProperty().bind(stage.heightProperty());
-        lobbyStatusListView.setPrefWidth(Palette.LIST_VIEW_ITEM_WIDTH / 2 + Palette.MEDIUM_SPACING);
-        lobbyStatusListView.getStylesheets().add(Palette.LIST_VIEW_STYLESHEET);
+        //available lobbies list
+        ListView<String> lobbyStatusListView = createLobbyListView();
 
-        VBox vBox = new VBox();
-        vBox.getChildren().add(lobbyStatusListView);
+        //lobbies list container
+        VBox lobbyListVBox = new VBox();
+        lobbyListVBox.getChildren().add(lobbyStatusListView);
 
-        BorderPane borderPane = new BorderPane();
-        borderPane.setRight(vBox);
-        borderPane.setPadding(Palette.MEDIUM_SQUARED_PADDING);
-
-        /*Button addButton = new Button("Add");
-        addButton.setOnAction(actionEvent -> {
-            lobbies.add("[1/5] test lobby cell");
-            actionEvent.consume();
+        //lobby creation button
+        createLobbyButton = Palette.buttonAlt(Palette.CREATE_LOBBY_TEXT);
+        createLobbyButton.setOnAction(event -> {
+            lobbyCreationContainer.setVisible(true);
+            createLobbyButton.setDisable(true);
         });
-        borderPane.setLeft(addButton);*/
 
-        foregroundLayout.setCenter(borderPane);
+        //welcome text
+        Label welcomeLabel = Palette.label(Palette.WELCOME_TEXT, Palette.ADRENALINE_DARK_GRAY_FILL, Color.TRANSPARENT);
+
+        //username label text
+        Label usernameLabel = Palette.label(communicationHandler.getUsername(), Palette.ADRENALINE_ORANGE, Color.TRANSPARENT);
+
+        //welcome text container
+        HBox welcomeHBox = new HBox();
+        welcomeHBox.getChildren().addAll(welcomeLabel, usernameLabel);
+
+        //left box container
+        VBox leftVBox = new VBox();
+        leftVBox.getChildren().addAll(welcomeHBox, createLobbyButton, lobbyCreationContainer);
+        VBox.setMargin(welcomeHBox, Palette.MEDIUM_SQUARED_MARGIN);
+        VBox.setMargin(createLobbyButton, Palette.MEDIUM_SQUARED_MARGIN);
+
+        //foreground pane
+        lobbySelectionLayout = new BorderPane();
+        lobbySelectionLayout.setRight(lobbyListVBox);
+        lobbySelectionLayout.setLeft(leftVBox);
+        lobbySelectionLayout.setPadding(Palette.MEDIUM_SQUARED_PADDING);
+
+        foregroundLayout.setCenter(lobbySelectionLayout);
+        Platform.runLater(() -> baseLayout.requestFocus());
+    }
+
+    private void createGameLayout() {
+        foregroundLayout.getChildren().remove(lobbySelectionLayout);
+        GameStage gameStage = new GameStage(baseLayout, foregroundLayout, communicationHandler);
+        gameStage.display();
     }
 
     private void fatalErrorRoutine(String errorMessage) {
@@ -236,9 +355,7 @@ public class GUI extends Application implements GraphicalInterface {
     }
 
     private void exitRoutine() {
-        //exit routine components
-        Dialog<ButtonType> exitDialog = Palette.confirmationDialog(Palette.TITLE_TEXT, null, Palette.EXIT_MESSAGE_TEXT, stage);
-        Optional<ButtonType> result = exitDialog.showAndWait();
+        Optional<ButtonType> result = Palette.confirmationDialog(Palette.TITLE_TEXT, null, Palette.EXIT_MESSAGE_TEXT, stage).showAndWait();
 
         if (result.isPresent() && result.get().getButtonData().equals(ButtonType.OK.getButtonData())) {
             if (currentLayout.equals(Layout.LOBBY_SELECTION_LAYOUT)) {
@@ -246,6 +363,12 @@ public class GUI extends Application implements GraphicalInterface {
                 try {
                     communicationHandler.unregister();
                 } catch (ConnectionException | ClientNotRegisteredException e) {
+                    fatalErrorRoutine(e.getMessage());
+                }
+            } else if (currentLayout.equals(Layout.GAME_STAGE_LAYOUT)) {
+                try {
+                    communicationHandler.logout();
+                } catch (ConnectionException e) {
                     fatalErrorRoutine(e.getMessage());
                 }
             }

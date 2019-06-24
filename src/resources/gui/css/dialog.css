@@ -1,5 +1,4 @@
 @import url("button_alt.css");
-@import url("label.css");
 
 .dialog-pane {
     -fx-border-color: #222A2BFF;
@@ -16,4 +15,10 @@
 
 .dialog-pane > .content.label {
      -fx-background-color: transparent;
+}
+
+.label {
+    -fx-background-color: transparent;
+     -fx-text-fill: #FFFFFFFF;
+     -fx-font: 20 orbitron;
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.remote.gui;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -37,22 +38,21 @@ class Palette {
     static final ImageView ERROR_ICON = new ImageView(new Image(ERROR_ICON_PATH));
 
     //css stylesheets
-    static final String BUTTON_STYLESHEET = "/gui/css/button.css";
-    static final String BUTTON_ALT_STYLESHEET = "/gui/css/button_alt.css";
-    static final String LIST_VIEW_STYLESHEET = "/gui/css/list_view.css";
-    static final String TEXT_FIELD_STYLESHEET = "/gui/css/text_field.css";
-    static final String TEXT_FIELD_ALT_STYLESHEET = "/gui/css/text_field_alt.css";
-    static final String DIALOG_STYLESHEET = "/gui/css/dialog.css";
-    static final String LABEL_STYLESHEET = "/gui/css/label.css";
+    private static final String BUTTON_STYLESHEET = "/gui/css/button.css";
+    private static final String BUTTON_ALT_STYLESHEET = "/gui/css/button_alt.css";
+    private static final String LIST_VIEW_STYLESHEET = "/gui/css/list_view.css";
+    private static final String TEXT_FIELD_STYLESHEET = "/gui/css/text_field.css";
+    private static final String TEXT_FIELD_ALT_STYLESHEET = "/gui/css/text_field_alt.css";
+    private static final String DIALOG_STYLESHEET = "/gui/css/dialog.css";
 
     //font sizes
-    static final double DEFAULT_FONT_SIZE = 20.0;
+    private static final double DEFAULT_FONT_SIZE = 20.0;
 
     //fonts
-    static final Font DEFAULT_FONT = Font.loadFont(Palette.class.getResource(Palette.DEFAULT_FONT_PATH).toExternalForm(), DEFAULT_FONT_SIZE);
+    private static final Font DEFAULT_FONT = Font.loadFont(Palette.class.getResource(Palette.DEFAULT_FONT_PATH).toExternalForm(), DEFAULT_FONT_SIZE);
 
     //font paths
-    static final String DEFAULT_FONT_PATH = "/gui/fonts/orbitron.otf";
+    private static final String DEFAULT_FONT_PATH = "/gui/fonts/orbitron.otf";
 
     // sizes
     private static final double SIZE_NONE = 0.0;
@@ -66,18 +66,21 @@ class Palette {
     static final Insets MEDIUM_HORIZONTAL_PADDING = new Insets(SIZE_NONE, SIZE_DEFAULT, SIZE_DEFAULT, SIZE_NONE);
 
     //margins
-    static final Insets DEFAULT_MARGIN = new Insets(SIZE_DEFAULT);
+    static final Insets DEFAULT_SQUARED_MARGIN = new Insets(SIZE_DEFAULT);
     static final Insets MEDIUM_LEFT_MARGIN = new Insets(SIZE_NONE, SIZE_NONE, SIZE_NONE, SIZE_MEDIUM);
     static final Insets MEDIUM_RIGHT_MARGIN = new Insets(SIZE_NONE, SIZE_MEDIUM, SIZE_NONE, SIZE_NONE);
-    static final Insets MEDIUM_MARGIN = new Insets(SIZE_MEDIUM);
+    static final Insets MEDIUM_SQUARED_MARGIN = new Insets(SIZE_MEDIUM);
     static final Insets LARGE_RIGHT_MARGIN = new Insets(SIZE_NONE, SIZE_LARGE, SIZE_NONE, SIZE_NONE);
-    static final Insets LARGE_VERTICAL_MARGIN = new Insets(SIZE_LARGE, SIZE_NONE, SIZE_NONE, SIZE_LARGE);
+    static final Insets LARGE_TOP_LEFT_MARGIN = new Insets(SIZE_LARGE, SIZE_NONE, SIZE_NONE, SIZE_LARGE);
+    static final Insets LARGE_TOP_RIGHT_MARGIN = new Insets(SIZE_LARGE, SIZE_LARGE, SIZE_NONE, SIZE_NONE);
 
     //dimensions
     static final double LIST_VIEW_ITEM_HEIGHT = LIST_ITEM_BACKGROUND_IMAGE.getImage().getHeight();
     static final double LIST_VIEW_ITEM_WIDTH = LIST_ITEM_BACKGROUND_IMAGE.getImage().getWidth();
-    static final double ICON_FIT_WIDTH = 64.0;
-    static final double ICON_FIT_HEIGHT = 64.0;
+
+    //icon dimensions
+    private static final double ICON_FIT_WIDTH = 64.0;
+    private static final double ICON_FIT_HEIGHT = 64.0;
 
     //spacings
     static final double DEFAULT_SPACING = 10.0;
@@ -88,44 +91,90 @@ class Palette {
     static final String LOGIN_TEXT = "LOGIN";
     static final String OK_TEXT = "OK";
     static final String CANCEL_TEXT = "CANCEL";
-    static final String QUIT_TEXT = "[ESC] quit";
+    static final String QUIT_TEXT = "QUIT";
+    static final String NAME_TEXT = "NAME";
+    static final String PASSWORD_TEXT = "PASSWORD";
+    static final String CREATE_JOIN_TEXT = "CREATE & JOIN";
+    static final String CREATE_LOBBY_TEXT = "CREATE LOBBY";
     static final String INVALID_NICKNAME_TEXT = "Invalid nickname";
     static final String CHOOSE_NICKNAME_TEXT = "Choose a nickname";
     static final String ERROR_TITLE_TEXT = "Error";
     static final String GENERIC_ERROR_TEXT = "An error occurred";
     static final String TITLE_TEXT = "Adrenaline: the game!";
     static final String EXIT_MESSAGE_TEXT = "Exit Adrenaline?";
-    static final String PASSWORD_TEXT = "Password";
+    static final String WELCOME_TEXT = "Welcome to adrenaline, ";
 
     //timeouts
     static final double DEFAULT_TIMEOUT = 3.0;
 
-    static HBox labelBox(String text, Color textColor, Color backgroundColor, Font font, Insets padding, Insets margin, Pos alignment) {
-        //quit hint labelBox
-        Label label = new Label(text);
-
-        if (font != null)
-            label.setFont(font);
-
-        if (textColor != null)
-            label.setTextFill(textColor);
-
-        if (padding != null)
-            label.setPadding(padding);
-
-        if (backgroundColor != null)
-            label.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
+    static HBox labelBox(String text, Color textColor) {
+        Label label = label(text, textColor, ADRENALINE_DARK_GRAY_TRANSPARENT);
 
         HBox hbox = new HBox();
-
-        if (margin != null)
-            HBox.setMargin(label, margin);
-
+        HBox.setMargin(label, Palette.DEFAULT_SQUARED_MARGIN);
         hbox.getChildren().add(label);
-
-        if (alignment != null)
-            hbox.setAlignment(alignment);
+        hbox.setAlignment(Pos.CENTER);
         return hbox;
+    }
+
+    static Label label(String text, Color textColor, Color backgroundColor) {
+        Label label = new Label(text);
+        label.setPadding(DEFAULT_SQUARED_PADDING);
+        label.setFont(DEFAULT_FONT);
+        label.setTextFill(textColor);
+        label.setBackground(backgroundColor(backgroundColor));
+        return label;
+    }
+
+    static TextField textField() {
+        TextField textField = new TextField();
+        textField.getStylesheets().add(TEXT_FIELD_STYLESHEET);
+        return textField;
+    }
+
+    static TextField textFieldAlt() {
+        TextField textField = new TextField();
+        textField.getStylesheets().add(TEXT_FIELD_ALT_STYLESHEET);
+        return textField;
+    }
+
+    static Button button(String text) {
+        Button button = new Button(text);
+        button.getStylesheets().add(BUTTON_STYLESHEET);
+        return button;
+    }
+
+    static Button buttonAlt(String text) {
+        Button button = new Button(text);
+        button.getStylesheets().add(BUTTON_ALT_STYLESHEET);
+        return button;
+    }
+
+    static <T> ListView<T> listView(ObservableList<T> list) {
+        ListView<T> listView = new ListView<>(list);
+        listView.getStylesheets().add(LIST_VIEW_STYLESHEET);
+        listView.setOrientation(Orientation.VERTICAL);
+        listView.setPrefWidth(Palette.LIST_VIEW_ITEM_WIDTH / 2 + Palette.MEDIUM_SPACING);
+        return listView;
+    }
+
+    static Background background(ImageView imageview) {
+        return createBackground(imageview.getImage(), false, true);
+    }
+
+    static Background backgroundImage(ImageView imageview) {
+        return createBackground(imageview.getImage(), true, false);
+    }
+
+    static Background backgroundColor(Color color) {
+        return new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY));
+    }
+
+    private static Background createBackground(Image image, boolean contain, boolean cover) {
+        BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, contain, cover);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        return new Background(backgroundImage);
     }
 
     static Dialog<ButtonType> confirmationDialog(String title, String headerText, String contentText, Stage owner) {
@@ -183,7 +232,7 @@ class Palette {
 
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initStyle(StageStyle.UNDECORATED);
-        enableDragAndDrop(alert.getDialogPane().getScene(), owner);
+        enableDragAndDrop(alert.getDialogPane().getScene(), (Stage) alert.getDialogPane().getScene().getWindow());
 
         alert.getDialogPane().getStylesheets().add(DIALOG_STYLESHEET);
 
@@ -198,8 +247,7 @@ class Palette {
 
     static Stage passwordChoiceStage(Stage owner, Button joinButton, Button cancelButton, TextField inputPassword, HBox errorLabelBox) {
         //label
-        Label passwordLabel = new Label(Palette.PASSWORD_TEXT);
-        passwordLabel.getStylesheets().add(Palette.LABEL_STYLESHEET);
+        Label passwordLabel = label(PASSWORD_TEXT, Color.WHITE, Color.TRANSPARENT);
 
         //label container
         HBox passwordLabelHBox = new HBox(passwordLabel);
@@ -213,7 +261,7 @@ class Palette {
         //password box and error label container
         VBox passwordBox = new VBox();
         passwordBox.getChildren().addAll(passwordInputBox, errorLabelBox);
-        VBox.setMargin(passwordInputBox, LARGE_VERTICAL_MARGIN);
+        VBox.setMargin(passwordInputBox, LARGE_TOP_LEFT_MARGIN);
 
         //button container
         TilePane tileButtons = new TilePane(Orientation.HORIZONTAL);
@@ -227,7 +275,7 @@ class Palette {
         BorderPane basePane = new BorderPane();
         basePane.setCenter(passwordBox);
         basePane.setBottom(tileButtons);
-        basePane.setBackground(new Background(new BackgroundFill(Palette.ADRENALINE_DARK_GRAY_FILL, CornerRadii.EMPTY, Insets.EMPTY)));
+        basePane.setBackground(backgroundColor(Palette.ADRENALINE_DARK_GRAY_FILL));
 
         //scene
         Scene scene = new Scene(basePane);
@@ -240,21 +288,6 @@ class Palette {
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
         return stage;
-    }
-
-    static Background background(ImageView imageview) {
-        return createBackground(imageview.getImage(), false, true);
-    }
-
-    static Background backgroundImage(ImageView imageview) {
-        return createBackground(imageview.getImage(), true, false);
-    }
-
-    private static Background createBackground(Image image, boolean contain, boolean cover) {
-        BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, contain, cover);
-        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        return new Background(backgroundImage);
     }
 }
 

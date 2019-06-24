@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -29,15 +30,12 @@ public class LobbyCell extends ListCell<String> {
         setBackground(Palette.backgroundImage(Palette.LIST_ITEM_BACKGROUND_IMAGE));
 
         //participants and lobby name label
-        label = new Label();
-        label.setFont(Palette.DEFAULT_FONT);
-        label.setTextFill(Palette.ADRENALINE_ORANGE);
+        label = Palette.label(null, Palette.ADRENALINE_ORANGE, Color.TRANSPARENT);
         label.setPadding(Palette.DEFAULT_SQUARED_PADDING);
 
         //join button
-        Button joinButton = new Button(Palette.JOIN_TEXT);
+        Button joinButton = Palette.buttonAlt(Palette.JOIN_TEXT);
         joinButton.setMinSize(Button.USE_PREF_SIZE, Button.USE_PREF_SIZE);
-        joinButton.getStylesheets().add(Palette.BUTTON_ALT_STYLESHEET);
         joinButton.setOnAction(event -> {
             event.consume();
             if (GUI.communicationHandler == null)
@@ -55,6 +53,12 @@ public class LobbyCell extends ListCell<String> {
         HBox.setMargin(label, Palette.MEDIUM_LEFT_MARGIN);
         itemBox = new HBox(label, spacer, joinButton);
         itemBox.setAlignment(Pos.CENTER_LEFT);
+    }
+
+    private void createGameLayout(){
+        GUI.foregroundLayout.getChildren().remove(GUI.lobbySelectionLayout);
+        GameStage gameStage = new GameStage(GUI.baseLayout, GUI.foregroundLayout, GUI.communicationHandler);
+        gameStage.display();
     }
 
     private void fatalErrorRoutine(String errorMessage, boolean terminate) {
@@ -81,23 +85,19 @@ public class LobbyCell extends ListCell<String> {
 
     private void passwordChoiceRoutine() {
         //error label
-        errorLabelBox = Palette.labelBox(null, Palette.ADRENALINE_RED, Palette.ADRENALINE_DARK_GRAY_TRANSPARENT,
-                Palette.DEFAULT_FONT, Palette.DEFAULT_SQUARED_PADDING, Palette.DEFAULT_MARGIN, Pos.CENTER);
+        errorLabelBox = Palette.labelBox(null, Palette.ADRENALINE_RED);
         errorLabelBox.setVisible(false);
 
         //input password text field
-        TextField inputPassword = new TextField();
-        inputPassword.getStylesheets().add(Palette.TEXT_FIELD_ALT_STYLESHEET);
+        TextField inputPassword = Palette.textFieldAlt();
         Platform.runLater(inputPassword::requestFocus);
 
         //join button
-        Button joinButton = new Button(Palette.JOIN_TEXT);
-        joinButton.getStylesheets().add(Palette.BUTTON_ALT_STYLESHEET);
+        Button joinButton = Palette.buttonAlt(Palette.JOIN_TEXT);
         joinButton.setOnAction(event -> handleLobbyLogin(lobbyName, inputPassword.getText()));
 
         //cancel button
-        Button cancelButton = new Button(Palette.CANCEL_TEXT);
-        cancelButton.getStylesheets().add(Palette.BUTTON_ALT_STYLESHEET);
+        Button cancelButton = Palette.buttonAlt(Palette.CANCEL_TEXT);
         cancelButton.setOnAction(actionEvent -> {
             actionEvent.consume();
             passwordChoiceStage.close();
@@ -110,13 +110,25 @@ public class LobbyCell extends ListCell<String> {
     private void handleLobbyLogin(String lobbyName, String lobbyPassword) {
         try {
             GUI.communicationHandler.login(lobbyName, lobbyPassword);
-            errorRoutine("LOGIN SUCCESS !!!");
+            stopLobbyUpdate();
+            createGameLayout();
+
+            if (passwordChoiceStage != null)
+                passwordChoiceStage.close();
         } catch (ConnectionException | PlayerAlreadyAddedException e) {
             fatalErrorRoutine(e.getMessage(), true);
         } catch (LobbyFullException | GameAlreadyStartedException | LobbyNotFoundException e) {
             fatalErrorRoutine(e.getMessage(), false);
         } catch (InvalidPasswordException e) {
             errorRoutine(e.getMessage());
+        }
+    }
+
+    //stops the update and print process
+    private void stopLobbyUpdate() {
+        if (!GUI.futureUpdate.isDone()) {
+            GUI.futureUpdate.cancel(true);
+            GUI.executor.shutdown();
         }
     }
 
