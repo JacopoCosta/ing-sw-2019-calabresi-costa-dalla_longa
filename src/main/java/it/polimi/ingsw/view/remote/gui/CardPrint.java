@@ -1,50 +1,28 @@
 package it.polimi.ingsw.view.remote.gui;
 
-import it.polimi.ingsw.view.remote.status.RemotePowerUp;
-import it.polimi.ingsw.view.remote.status.RemoteWeapon;
+import it.polimi.ingsw.view.remote.status.*;
 
-import javafx.event.Event;
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.control.*;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
-import javafx.util.Duration;
-
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CardPrint {
 
     private final double INACTIVE_SAT_VALUE = -1.0; //ranging from -1.0 to +1.0, no effect by applying 0.0
+
+    private final String CARD_RESOURCES_PATH = "/gui/png/decks/";
 
     public ImageView getSourceImage (RemoteWeapon weapon) {    //given a remoteWeapon, return its image
 
         String path = weapon.getName().replaceAll("\\s","");    //deleting spaces
         path = path.substring(0, 1).toLowerCase() + path.substring(1);  //turning to camelCase by lowering the first character
 
-        path = System.getProperty("user.dir") +     //getting the right path
-                File.separator + "src" +
-                File.separator + "gui" +
-                File.separator + "png" +
-                File.separator + "decks" +
-                File.separator + "weapons" +
-                File.separator + path + ".png";
+        path = CARD_RESOURCES_PATH + "/weapons" + path + ".png";    //getting the right path
 
         ImageView image = new ImageView(new Image(path));
 
-        if(!weapon.isLoaded()) {    //on unloaded weapon, desaturates its source image
+        if(!weapon.isLoaded()) {    //on unloaded weapon, desaturate its source image
 
             ColorAdjust color = new ColorAdjust();
             color.setSaturation(INACTIVE_SAT_VALUE);
@@ -56,22 +34,17 @@ public class CardPrint {
 
     public ImageView getSourceImage(RemotePowerUp powerUp) {    //given a remotePowerUp, return its image
 
-        String path = System.getProperty("user.dir") +     //getting the right path
-                File.separator + "src" +
-                File.separator + "gui" +
-                File.separator + "png" +
-                File.separator + "decks" +
-                File.separator + "powerUps";
+        String path = CARD_RESOURCES_PATH + "powerUps/";
 
         switch (powerUp.getType()) {
             case SCOPE:
-                path += File.separator + "scope";
+                path += "scope";
             case NEWTON:
-                path += File.separator + "newton";
+                path += "newton";
             case TELEPORT:
-                path += File.separator + "teleport";
+                path += "teleport";
             case GRENADE:
-                path += File.separator + "grenade";
+                path += "grenade";
         }
 
         path += "_" + powerUp.getColorCube().toLowerCase() + ".png";
@@ -81,24 +54,77 @@ public class CardPrint {
 
     public ImageView getSourceImage (int red, int yellow, int blue, boolean includesPowerUp) { //given the content af an ammocell, return its image
 
-        StringBuilder path = new StringBuilder(System.getProperty("user.dir") +     //getting the right path
-                File.separator + "src" +
-                File.separator + "gui" +
-                File.separator + "png" +
-                File.separator + "decks" +
-                File.separator + "ammoTiles" +
-                File.separator + "ammoTile_");
+        String path = CARD_RESOURCES_PATH + "ammoTiles/ammoTile_";  //getting the right path
 
         //adjusting the path to get the right image
-        path.append("R".repeat(Math.max(0, red)));
-        path.append("Y".repeat(Math.max(0, yellow)));
-        path.append("B".repeat(Math.max(0, blue)));
+        path += ("R".repeat(Math.max(0, red)));
+        path += ("Y".repeat(Math.max(0, yellow)));
+        path += ("B".repeat(Math.max(0, blue)));
 
         if(includesPowerUp)
-            path.append("_P");
+            path += ("_P");
 
-        path.append(".png");
+        path += (".png");
 
-        return new ImageView(new Image(path.toString()));
+        return new ImageView(new Image(path));
     }
+
+    public Pane printBoard() {
+
+        Pane pane = new StackPane();
+        ImageView boardMap = new ImageView(new Image(RemoteBoard.getBoardImage()));
+
+        //add the main map
+        pane.getChildren().add(boardMap);
+
+        //refresh board tokens
+        /*TODO
+            pane.getChildren().add(refreshAmmo)
+            pane.getChildren().add(refreshPlayers)
+         */
+
+        return pane;
+    }
+
+    public Pane refreshAmmo() {
+
+        Pane ammoPane = new StackPane();
+        HBox horAmmoTiles = new HBox();
+        horAmmoTiles.setSpacing(0.0);   //TODO: calculate this
+
+        for(int h=0; h<RemoteBoard.getHeight(); h++) {
+
+            VBox verAmmoTiles = new VBox();
+
+            verAmmoTiles.setSpacing(0.0);   //TODO: calculate this (it's the horizontal space)
+            verAmmoTiles.setBackground(Background.EMPTY);
+
+            for(int w=0; w<RemoteBoard.getWidth(); w++) {
+
+                RemoteCell cell = RemoteBoard.getCells().get(h*RemoteBoard.getHeight() + w*RemoteBoard.getWidth()); //gets the right cell
+
+                //adds the correct ammo tile image
+                if(cell.isAmmoCell() && cell.getRed()*cell.getYellow()*cell.getBlue() > 0)
+                    verAmmoTiles.getChildren().add(getSourceImage(cell.getRed(), cell.getYellow(), cell.getBlue(), cell.includesPowerUp()));
+                else
+                    verAmmoTiles.getChildren().add(null);   //TODO: make it add a void image
+            }
+
+            horAmmoTiles.getChildren().add(verAmmoTiles);
+        }
+
+        return ammoPane;
+    }
+
+    public Pane refreshPlayers() {
+
+        Pane playersPane = new StackPane();
+
+        for(RemotePlayer player : RemoteBoard.getParticipants()) {
+            //TODO: modify RemoteCell so that it contains a reference to remotePlayers (you'll need to change quite a lot of methods)
+        }
+
+        return playersPane;
+    }
+
 }

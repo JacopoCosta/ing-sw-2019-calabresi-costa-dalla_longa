@@ -40,6 +40,11 @@ public abstract class RemoteBoard {
     private static List<String> doubleKillers;
 
     /**
+     * The path for the right board map image which will be displayed by GUI client.
+     */
+    private static String boardImage;
+
+    /**
      * The horizontal number of cells in this board map. In standard game maps, its value is 4.
      */
     private static int width;
@@ -59,14 +64,22 @@ public abstract class RemoteBoard {
     private static List<RemoteCell> cells;
 
     /**
-     * Getter method for {@link this.width}.
+     * Getter method for {@link #boardImage}.
+     * @return the path of the source image for board drawing if using GUI.
+     */
+    public static String getBoardImage() {
+        return boardImage;
+    }
+
+    /**
+     * Getter method for {@link #width}.
      * @return the horizontal number of cells in this board map.
      */
     public static int getWidth() {
         return width;
     }
     /**
-     * Getter method for {@link this.height}.
+     * Getter method for {@link #height}.
      * @return the vertical number of cells in this board map.
      */
     public static int getHeight() {
@@ -74,7 +87,7 @@ public abstract class RemoteBoard {
     }
 
     /**
-     * Getter method for {@link this.participants}.
+     * Getter method for {@link #participants}.
      * @return the list of participants in this game.
      */
     public static List<RemotePlayer> getParticipants() {
@@ -82,14 +95,14 @@ public abstract class RemoteBoard {
     }
 
     /**
-     * Getter method for {@link this.killers}.
+     * Getter method for {@link #killers}.
      * @return the authors names of every kill since the beginning of the game.
      */
     public static List<String> getKillers() {
         return killers;
     }
     /**
-     * Getter method for {@link this.doubleKillers}.
+     * Getter method for {@link #doubleKillers}.
      * @return the authors names of every double kill since the beginning of the game.
      */
     public static List<String> getDoubleKillers() {
@@ -97,7 +110,7 @@ public abstract class RemoteBoard {
     }
 
     /**
-     * Getter method for {@link this.morphology}.
+     * Getter method for {@link #morphology}.
      * @return the morphology of this board map, i.e. a sorted list of extremely basic components of this board map.
      */
     public static List<ContentType> getMorphology() {
@@ -105,7 +118,7 @@ public abstract class RemoteBoard {
     }
 
     /**
-     * Getter method for {@link this.cells}.
+     * Getter method for {@link #cells}.
      * @return the sorted list of cells composing this board map.
      */
     public static List<RemoteCell> getCells() {
@@ -113,7 +126,7 @@ public abstract class RemoteBoard {
     }
 
     /**
-     * Getter method for {@link this.indexOfUserCharacter}.
+     * Getter method for {@link #indexOfUserCharacter}.
      * @return the index for the user's token in {@link this.participants} list.
      */
     public static int getIndexOfUserCharacter() {
@@ -121,7 +134,7 @@ public abstract class RemoteBoard {
     }
 
     /**
-     * Setter method for {@link this.indexOfUserCharacter}.
+     * Setter method for {@link #indexOfUserCharacter}.
      * @param indexOfUserCharacter the index for the user's token in {@link this.participants} list.
      */
     public static void setIndexOfUserCharacter(int indexOfUserCharacter) {
@@ -129,14 +142,14 @@ public abstract class RemoteBoard {
     }
 
     /**
-     * Getter method for {@link this.killers}.
+     * Getter method for {@link #killers}.
      * @param killers the authors names of every kill since the beginning of the game.
      */
     public static void setKillers(List<String> killers) {
         RemoteBoard.killers = killers;
     }
     /**
-     * Getter method for {@link this.doubleKillers}.
+     * Getter method for {@link #doubleKillers}.
      * @param doubleKillers the authors names of every double kill since the beginning of the game.
      */
     public static void setDoubleKillers(List<String> doubleKillers) {
@@ -144,7 +157,7 @@ public abstract class RemoteBoard {
     }
 
     /**
-     * Setter method for {@link this.participants}.
+     * Setter method for {@link #participants}.
      * @param participants a list of participants for the current game, codified as {@link RemotePlayer}.
      */
     public static void setParticipants(List<RemotePlayer> participants) {
@@ -152,14 +165,24 @@ public abstract class RemoteBoard {
     }
 
     /**
-     * Setter method for {@link this.width}.
+     * Setter method for {@link #boardImage}.
+     * @param boardImage the relative path of the source image for board map drawing if using GUI.
+     */
+    public static void setBoardImage(String boardImage) {
+        RemoteBoard.boardImage = boardImage;
+    }
+
+    /**
+     * Setter method for {@link #width}.
      * @param width the width of the board.
      */
+
+
     public static void setWidth(int width) {
         RemoteBoard.width = width;
     }
     /**
-     * Setter method for {@link this.height}.
+     * Setter method for {@link #height}.
      * @param height the height of the board.
      */
     public static void setHeight(int height) {
@@ -167,7 +190,7 @@ public abstract class RemoteBoard {
     }
 
     /**
-     * Setter method for {@link this.morphology}.
+     * Setter method for {@link #morphology}.
      * @param morphology the morphology of this board map, i.e. a sorted list of extremely basic components of this board map.
      */
     public static void setMorphology(List<ContentType> morphology) {
@@ -180,7 +203,7 @@ public abstract class RemoteBoard {
      * CELL refers to an existing cell, which can be either an ammo cell or a shop cell (in this case, a new cell will be created and added to cell list),
      * while NONE refers to a hole in the map, with no cell associated (in which case, {@code null} will be added instead).
      * After this operation, the RemoteBoard will be ready to receive more specific info about every single cell by the server.
-     * NOTE: the cell scheme will never be changed after its generation, so this method make a setter method for {@link this.cell} completely useless.
+     * NOTE: the cell scheme will never be changed after its generation, so this method make a setter method for {@link #cells} completely useless.
      * Also, this method will be called exactly once per game.
      */
     public static void generateCellScheme() {
@@ -201,7 +224,7 @@ public abstract class RemoteBoard {
 
     /**
      * This method refreshes the list of participants in every {@link RemoteCell}. Since {@link RemoteCell#setPlayers(List)} requires a whole list of participants as argument,
-     * this method iterates through every RemoteCell contained in {@link this.cells}, then iterates on every {@link RemotePlayer} in {@link #participants} in order
+     * this method iterates through every RemoteCell contained in {@link #cells}, then iterates on every {@link RemotePlayer} in {@link #participants} in order
      * to acknowledge which of them are currently located in the current cell, then the name list of players on that cell is used as argument for {@code RemoteCell.setPlayers}.
      * Given k players and n cells, the complexity of this algorithm is O(k*n).
      */
