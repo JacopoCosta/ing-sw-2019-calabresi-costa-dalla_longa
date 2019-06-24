@@ -314,6 +314,7 @@ class Lobby implements Observer {
      */
     @Override
     public void onEvent() {
+        System.out.println("TEMPLOG lobby time expired");
         this.timer.removeObserver(this);
 
         this.game = Game.create(this.gameProperty.finalFrenzy(), this.gameProperty.roundsToPlay(), this.gameProperty.boardType(), this.players);

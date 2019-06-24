@@ -85,11 +85,11 @@ public class Game {
         participants.forEach(p -> p.setConnected(true)); // assume optimal conditions
         virtualView.announceTurn(subject); // this disables all flags on disconnected players
 
-        boolean enoughPlayers = participants.stream()
+        boolean enoughPlayers = participants.stream() // FIXME this always evaluates to false - see SocketClientCommunicationInterface:41
                 .filter(Player::isConnected)
                 .count() >= MINIMUM_PLAYER_COUNT;
 
-        if(enoughPlayers && !offlineMode) { // end game if there are not enough participants
+        if(!enoughPlayers && !offlineMode) { // end game if there are not enough participants
             gameOver = true;
             return;
         }
@@ -240,10 +240,17 @@ public class Game {
     }
 
     public void play() {
+        System.out.println("TEMPLOG game started");
         this.started = true;
 
-        while (!gameOver)
+        int TEMPLOG_tally = 0;
+
+        while (!gameOver) {
+            TEMPLOG_tally ++;
+            System.out.println("Starting turn #" + TEMPLOG_tally);
             this.playTurn();
+            System.out.println("Ended turn #" + TEMPLOG_tally);
+        }
         board.scoreUponGameOver();
 
         this.started = false;
