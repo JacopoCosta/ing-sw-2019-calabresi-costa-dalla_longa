@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.remote.status;
 
+import it.polimi.ingsw.view.remote.gui.Token;
 import it.polimi.ingsw.view.virtual.Deliverable;
 
 import java.util.List;
@@ -52,6 +53,8 @@ public class RemotePlayer {
      * Associates the player to the corresponding physical token for a better GUI visualization, according to {@link PlayerColor} scheme.
      */
     private PlayerColor playerColor; //TODO
+
+    private Token token;    //TODO
 
     /**
      * List of weapons owned by this player, both loaded and unloaded, codified as list of {@link RemoteWeapon}.
@@ -160,6 +163,10 @@ public class RemotePlayer {
      */
     public PlayerColor getPlayerColor() {
         return playerColor;
+    }
+
+    public Token getToken() {
+        return token;
     }
 
     /**
