@@ -72,7 +72,8 @@ public class ClientHandler implements Runnable {
             this.out = new ObjectOutputStream(socket.getOutputStream());
             this.in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            this.console.err(e.getClass() + ": " + e.getMessage());
+            e.printStackTrace();
+            //this.console.err(e.getClass() + ": " + e.getMessage());
             closeConnection();
         }
     }
@@ -84,26 +85,19 @@ public class ClientHandler implements Runnable {
      * to the client-side application is needed.
      */
     private void closeConnection() {
-        if (this.in != null) {
-            try {
-                this.in.close();
-            } catch (IOException e) {
-                this.console.err(e.getClass() + ": " + e.getMessage());
-            }
-        }
-
-        if (this.out != null) {
+        try {
+            this.in.close();
+        } catch (IOException ignored) {
+        } finally {
             try {
                 this.out.close();
-            } catch (IOException e) {
-                this.console.err(e.getClass() + ": " + e.getMessage());
+            } catch (IOException ignored) {
+            } finally {
+                try {
+                    this.socket.close();
+                } catch (IOException ignored) {
+                }
             }
-        }
-
-        try {
-            this.socket.close();
-        } catch (IOException e) {
-            this.console.err(e.getClass() + ": " + e.getMessage());
         }
     }
 
@@ -135,7 +129,8 @@ public class ClientHandler implements Runnable {
         } catch (SocketException | EOFException e) {
             //Client unexpectedly quit: the ClientHandler.connectionChecker will unregister it
         } catch (IOException | ClassNotFoundException e) {
-            this.console.err(e.getClass() + ": " + e.getMessage());
+            e.printStackTrace();
+            //this.console.err(e.getClass() + ": " + e.getMessage());
         } finally {
             closeConnection();
         }

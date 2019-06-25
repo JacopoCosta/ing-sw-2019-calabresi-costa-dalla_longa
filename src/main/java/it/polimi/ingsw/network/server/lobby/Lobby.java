@@ -6,11 +6,9 @@ import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.observer.Observer;
 import it.polimi.ingsw.network.common.util.timer.CountDownTimer;
 import it.polimi.ingsw.network.common.util.property.GameProperty;
+import it.polimi.ingsw.network.client.communication.ServerCommunicationInterface;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A collection of {@link Player}s logged together, waiting for a {@link Game} to start. {@link Player}s should be
@@ -34,6 +32,7 @@ class Lobby implements Observer {
 
     /**
      * The cap to the waiting time, in seconds, after the {@code Lobby} reached it maximum capacity at least once.
+     *
      * @see #MAX_PLAYERS
      */
     private final int WAITING_TIME_REDUCED = 15;
@@ -61,19 +60,10 @@ class Lobby implements Observer {
 
     /**
      * The {@link List} containing all of the {@link Player}s currently logged into the {@code Lobby}.
-     * This is a real time up-to-date {@link Player}s list. If a {@link Player} is contained into {@code players}, then
-     * he is also contained into {@link #previousPlayers} for sure, while the opposite may not be always true.
+     * This is a real time up-to-date {@link Player}s list until the {@link Game} starts. After that the list became
+     * immutable: no new {@link Player}s can be added and old ones cam be removed.
      */
     private final List<Player> players;
-
-    /**
-     * The {@link List} containing the {@link Player}s logged into the {@code Lobby} at the time the {@link Game} started.
-     * This serves the purpose to keep track of the original {@link Player}s to handle an eventual reconnection.
-     * As because all {@code Lobby} must be visible from all clients even after a {@link Game} started, this method allow
-     * the {@code Lobby} to deny access to itself to a {@link Player} that attempts to join the {@code Lobby} after the
-     * {@link Game} started.
-     */
-    private final List<Player> previousPlayers;
 
     /**
      * This value is updated together with {@link #players#size()} whenever a {@link Player} is added or removed from the
@@ -81,7 +71,6 @@ class Lobby implements Observer {
      * or {@link #remove(Player)} operation is performed.
      * Ideally this value represents the number of {@link Player}s found into the {@code Lobby} at the previous step,
      * when the new one was not yet added or the old one was not yet removed.
-     * <p>NOTE: this value is not related in any way to {@link #previousPlayers} size.
      */
     private int previousPlayersAmount;
 
@@ -121,7 +110,6 @@ class Lobby implements Observer {
         this.name = name;
         this.password = password;
 
-        this.previousPlayers = new ArrayList<>();
         this.players = new ArrayList<>();
 
         this.previousPlayersAmount = 0;
@@ -184,10 +172,14 @@ class Lobby implements Observer {
 
     /**
      * Insert the given {@code player} into this {@code Lobby} if some criteria are satisfied. Then call {@link #adjustTimer()}
-     * to adjust the timer countdown.
+     * to adjust the timer countdown. This behavior occurs before a new {@link Game} is started: after this event the list
+     * become immutable: no other {@link Player}s can be added. The only operation possible is to update a {@link Player}'s
+     * {@link ServerCommunicationInterface} with a new one. This happens when a {@link Player} disconnects from the {@link Game}
+     * and reconnects after a certain amount of time.
      *
-     * <p>1 - there must be a space left in the {@code Lobby}. This is true if {@code players.size()} is less than
-     * {@link #MAX_PLAYERS}.
+     * <p>The insertion criteria (that applies before the {@link Game} starts) are:
+     * 1 - there must be a space left in the {@code Lobby}. This is true if {@code players.size()} is less than
+     *      {@link #MAX_PLAYERS}.
      * 2 - the {@code player} can't be {@code null}.
      * 3 - the {@code Lobby} can't contain another instance of {@link Player} {@code p}, so that {@code player.equals(p)}.
      * 4- ether only one of the following conditions must be satisfied:
@@ -216,34 +208,36 @@ class Lobby implements Observer {
                 || ((this.password == null || this.password.isBlank()) && (password != null && !password.isBlank())))
             throw new InvalidPasswordException("password \"" + password + "\" invalid for Lobby \"" + this.name + "\"");
 
-        if (this.players.contains(player))
-            throw new PlayerAlreadyAddedException("Player \"" + player.getName() + "\" already found into Lobby \"" + this.name + "\"");
-
-        for (Player previousPlayer : this.previousPlayers) {
-            if (previousPlayer.equals(player)) {
-                //the Player has been disconnected and wants to join his Game again
-                previousPlayer.setCommunicationInterface(player.getCommunicationInterface()); //communication interface hotswap
-                this.previousPlayersAmount = players.size();
-                this.players.add(previousPlayer);
+        //could be a new player or an old one previously disconnected
+        if (game == null || !game.isStarted()) {
+            //can add other players
+            if (this.players.contains(player))
+                throw new PlayerAlreadyAddedException("Player \"" + player.getName() + "\" already found into Lobby \"" + this.name + "\"");
+            this.previousPlayersAmount = players.size();
+            this.players.add(player);
+            adjustTimer();
+            return;
+        }
+        //this is an old player disconnected: make him join the lobby (and game) again
+        for (Player oldPlayer : this.players) {
+            if (oldPlayer.equals(player)) {
+                oldPlayer.setCommunicationInterface(player.getCommunicationInterface()); //communication interface hotswap
                 return;
             }
         }
-
-        //the Player is a new one, check if he can still join the Lobby
-        if (this.game != null && this.game.isStarted())
-            throw new GameAlreadyStartedException();
-
-        this.previousPlayersAmount = players.size();
-        this.players.add(player);
-        this.previousPlayers.add(player);
-        adjustTimer();
+        //this is a new player: too late to join this lobby
+        throw new GameAlreadyStartedException();
     }
 
     /**
      * Removes the given {@link Player} from the {@code Lobby} if all of the following criteria are satisfied:
      * 1 - the {@code Lobby} can't be empty.
      * 2 - the {@code player} argument can't be null.
-     * 3 - the {@code Lobby} must contain an instance of the given {@code player} {@code p}, so that {@code p.equals(player)}.
+     * 3 - the {@code Lobby} must contain an instance {@code p} of the given {@code player}, so that {@code p.equals(player)}.
+     *
+     * <p>This behavior applies until a new {@link Game} is started. Since that, no other {@link Player}s can be removed
+     * due to the fact that a disconnected {@link Player} must be recognizable at the moment he decides to join again the
+     * {@code Lobby} he was connected before.
      *
      * @param player the {@link Player} to be removed.
      * @throws LobbyEmptyException     if the {@code Lobby} does not contain any {@link Player}.
@@ -257,11 +251,13 @@ class Lobby implements Observer {
         if (player == null)
             throw new NullPointerException("Player is null");
 
-        if (!this.players.contains(player))
-            throw new PlayerNotFoundException("Player \"" + player.getName() + "\" not found into Lobby \"" + this.name + "\"");
-
-        this.players.remove(player);
-        adjustTimer();
+        //a player can be removed only while the game is not started
+        if (this.game == null || !this.game.isStarted()) {
+            if (!this.players.contains(player))
+                throw new PlayerNotFoundException("Player \"" + player.getName() + "\" not found into Lobby \"" + this.name + "\"");
+            this.players.removeIf(p -> p.equals(player));
+            adjustTimer();
+        }
     }
 
     /**
@@ -274,14 +270,14 @@ class Lobby implements Observer {
      */
     private void adjustTimer() {
         // When the capacity limit is reached, drop the waiting time by WAITING_TIME_REDUCED, but not below timeMargin
-        if(players.size() == MAX_PLAYERS) {
+        if (players.size() == MAX_PLAYERS) {
             int time = timer.getTime();
             int newTime = Math.max(time - WAITING_TIME_REDUCED, this.timeMargin);
             timer.setTime(newTime);
         }
 
         // When there is the bare minimum amount of players
-        else if(players.size() == Game.MINIMUM_PLAYER_COUNT) {
+        else if (players.size() == Game.MINIMUM_PLAYER_COUNT) {
 
             // if there was an additional player who left, increase the time by timeMargin, but not above WAITING_TIME_REDUCED
             // any subsequent take of this branch will decrease the effect of timeMargin, as it decrements each time
@@ -300,7 +296,7 @@ class Lobby implements Observer {
 
         // When the number of players drops just below the threshold, stop the timer and reset it to the maximum value
         // Note that this does not reset timeMargin
-        else if(players.size() < Game.MINIMUM_PLAYER_COUNT && previousPlayersAmount >= Game.MINIMUM_PLAYER_COUNT) {
+        else if (players.size() < Game.MINIMUM_PLAYER_COUNT && previousPlayersAmount >= Game.MINIMUM_PLAYER_COUNT) {
             timer.stop();
             timer.setTime(WAITING_TIME_FULL);
         }

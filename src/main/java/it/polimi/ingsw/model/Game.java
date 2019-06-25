@@ -85,7 +85,7 @@ public class Game {
         participants.forEach(p -> p.setConnected(true)); // assume optimal conditions
         virtualView.announceTurn(subject); // this disables all flags on disconnected players
 
-        boolean enoughPlayers = participants.stream() // FIXME this always evaluates to false - see SocketClientCommunicationInterface:41
+        boolean enoughPlayers = participants.stream()
                 .filter(Player::isConnected)
                 .count() >= MINIMUM_PLAYER_COUNT;
 

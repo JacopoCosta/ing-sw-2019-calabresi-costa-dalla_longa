@@ -1,6 +1,8 @@
 package it.polimi.ingsw.network.common.message;
 
-public enum MessageType {
+import java.io.Serializable;
+
+public enum MessageType implements Serializable {
     //ping
     PING_MESSAGE,
 

@@ -38,9 +38,8 @@ public class SocketClientCommunicationInterface implements ClientCommunicationIn
     @Override
     public void sendMessage(NetworkMessage message) throws ConnectionException {
         try {
-            this.out.writeObject(message); // FIXME this always throws NotSerializableException
+            this.out.writeObject(message);
         } catch (IOException e) {
-            e.printStackTrace(); // I added this so that the call trace is visible
             throw new ConnectionException(e);
         }
     }

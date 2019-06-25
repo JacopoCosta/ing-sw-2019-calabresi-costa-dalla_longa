@@ -87,7 +87,8 @@ public class CLI implements GraphicalInterface {
                 communicationHandler.register(username);
                 valid = true;
             } catch (ConnectionException e) {
-                console.err("connection to the server is lost, cause: " + e.getMessage());
+                //console.err("connection to the server is lost, cause: " + e.getMessage());
+                e.printStackTrace();
                 System.exit(-1);
             } catch (ClientAlreadyRegisteredException e) {
                 console.err(e.getMessage());
@@ -100,7 +101,7 @@ public class CLI implements GraphicalInterface {
         try {
             communicationHandler.unregister();
         } catch (ConnectionException | ClientNotRegisteredException e) {
-            console.err("connection to the server is lost, cause: " + e.getMessage());
+            //console.err("connection to the server is lost, cause: " + e.getMessage());
             e.printStackTrace();
             System.exit(-1);
         }
@@ -116,7 +117,8 @@ public class CLI implements GraphicalInterface {
             try {
                 lobbyInfo = communicationHandler.requestUpdate();
             } catch (ConnectionException e) {
-                console.err("connection to the server is lost, cause: " + e.getMessage());
+                //console.err("connection to the server is lost, cause: " + e.getMessage());
+                e.printStackTrace();
                 System.exit(-1);
                 return;
             }
@@ -150,7 +152,8 @@ public class CLI implements GraphicalInterface {
                 valid = true;
                 console.tinyPrintln("Lobby creation success!\n");
             } catch (ConnectionException e) {
-                console.err("connection to the server is lost, cause: " + e.getMessage());
+                //console.err("connection to the server is lost, cause: " + e.getMessage());
+                e.printStackTrace();
                 System.exit(-1);
             } catch (LobbyAlreadyExistsException e) {
                 console.err(e.getMessage());
@@ -165,10 +168,11 @@ public class CLI implements GraphicalInterface {
         try {
             communicationHandler.login(lobbyName, lobbyPassword);
             console.tinyPrintln("Lobby login success!");
-        } catch (ConnectionException | PlayerAlreadyAddedException e) {
-            console.err("connection to the server is lost, cause: " + e.getMessage());
+        } catch (ConnectionException e) {
+            //console.err("connection to the server is lost, cause: " + e.getMessage());
+            e.printStackTrace();
             System.exit(-1);
-        } catch (LobbyNotFoundException | LobbyFullException | InvalidPasswordException e) {
+        } catch (LobbyNotFoundException | LobbyFullException | InvalidPasswordException | PlayerAlreadyAddedException e) {
             console.err(e.getMessage());
             System.exit(-1);
         } catch (GameAlreadyStartedException e){
@@ -182,7 +186,7 @@ public class CLI implements GraphicalInterface {
             communicationHandler.logout();
             console.tinyPrintln("Lobby logout success!");
         } catch (ConnectionException e) {
-            console.err("connection to the server is lost, cause: " + e.getMessage());
+            //console.err("connection to the server is lost, cause: " + e.getMessage());
             e.printStackTrace();
             System.exit(-1);
         }

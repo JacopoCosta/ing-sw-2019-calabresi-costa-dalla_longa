@@ -1,6 +1,8 @@
 package it.polimi.ingsw.view.virtual;
 
-public abstract class Deliverable {
+import java.io.Serializable;
+
+public abstract class Deliverable implements Serializable {
     protected DeliverableType type;
     protected DeliverableEvent event;
     protected String message;

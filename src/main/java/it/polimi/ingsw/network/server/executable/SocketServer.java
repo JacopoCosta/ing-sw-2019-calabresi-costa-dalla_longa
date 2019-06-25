@@ -32,7 +32,8 @@ public class SocketServer implements Runnable {
                 executor.execute(clientHandler); //execute the user thread
             }
         } catch (IOException e) {
-            console.err(e.getClass() + ": " + e.getMessage());
+            e.printStackTrace();
+            //console.err(e.getClass() + ": " + e.getMessage());
         }
     }
 }

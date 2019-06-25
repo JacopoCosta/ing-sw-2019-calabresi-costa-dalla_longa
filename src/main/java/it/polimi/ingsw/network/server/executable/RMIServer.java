@@ -26,7 +26,8 @@ public class RMIServer implements Runnable {
         try {
             serverController = new ServerController();
         } catch (RemoteException e) {
-            console.err(e.getClass() + ": " + e.getMessage());
+            e.printStackTrace();
+            //console.err(e.getClass() + ": " + e.getMessage());
             System.exit(-1);
             return;
         }
@@ -38,7 +39,8 @@ public class RMIServer implements Runnable {
             registry = LocateRegistry.createRegistry(this.port);
             console.log("RMI registry started");
         } catch (RemoteException e) {
-            console.err(e.getClass() + ": " + e.getMessage());
+            e.printStackTrace();
+            //console.err(e.getClass() + ": " + e.getMessage());
             System.exit(-1);
             return;
         }
@@ -48,7 +50,8 @@ public class RMIServer implements Runnable {
         try {
             registry.rebind(bindingName, serverController);
         } catch (RemoteException e) {
-            console.err(e.getClass() + ": " + e.getMessage());
+            e.printStackTrace();
+            //console.err(e.getClass() + ": " + e.getMessage());
             System.exit(-1);
         }
         console.log("RMI done binding");

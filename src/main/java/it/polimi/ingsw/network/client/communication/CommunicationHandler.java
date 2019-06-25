@@ -64,7 +64,7 @@ public class CommunicationHandler {
         } while (message.getType().equals(MessageType.PING_MESSAGE));
 
         if (!(message.getType().equals(MessageType.CLIENT_MESSAGE)))
-            throw new ConnectionException("expected " + MessageType.CLIENT_MESSAGE + " found " + message.getType());
+            throw new ConnectionException("expected: " + MessageType.CLIENT_MESSAGE + ", found: " + message.getType());
         return (Deliverable) message.getContent();
     }
 
@@ -81,8 +81,10 @@ public class CommunicationHandler {
                 this.username = username;
                 return;
             case CLIENT_ALREADY_REGISTERED_ERROR:
-            default:
                 throw new ClientAlreadyRegisteredException("Client \"" + username + "\" already registered");
+            default:
+                throw new ConnectionException("expected: " + MessageType.REGISTER_SUCCESS + ", " +
+                        MessageType.CLIENT_ALREADY_REGISTERED_ERROR + ", found: " + message.getType());
         }
     }
 
@@ -99,11 +101,14 @@ public class CommunicationHandler {
                 this.username = null;
                 return;
             case CLIENT_NOT_REGISTERED_ERROR:
+                throw new ClientNotRegisteredException("client not registered, unregistering failed");
             default:
-                throw new ClientNotRegisteredException("client not registered, unregistering failed\n");
+                throw new ConnectionException("expected: " + MessageType.UNREGISTER_SUCCESS + ", " +
+                        MessageType.CLIENT_NOT_REGISTERED_ERROR + ", found: " + message.getType());
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, String> requestUpdate() throws ConnectionException {
         NetworkMessage message = NetworkMessage.simpleClientMessage(username, MessageType.LOBBY_LIST_UPDATE_REQUEST);
 
@@ -113,7 +118,7 @@ public class CommunicationHandler {
         } while (message.getType().equals(MessageType.PING_MESSAGE));
 
         if (!(message.getType().equals(MessageType.LOBBY_LIST_UPDATE_RESPONSE)))
-            throw new ConnectionException("expected " + MessageType.LOBBY_LIST_UPDATE_RESPONSE + " found " + message.getType());
+            throw new ConnectionException("expected: " + MessageType.LOBBY_LIST_UPDATE_RESPONSE + ", found " + message.getType());
         return (Map<String, String>) message.getContent(); //safe conversion guaranteed by string type
     }
 
@@ -140,6 +145,11 @@ public class CommunicationHandler {
                 throw new ConnectionException("password \"" + lobbyPassword + "\" not valid for Lobby \"" + lobbyName + "\"");
             case LOBBY_ALREADY_EXISTS_ERROR:
                 throw new LobbyAlreadyExistsException("Lobby \"" + lobbyName + "\" already exists");
+            default:
+                throw new ConnectionException("expected: " + MessageType.LOBBY_CREATE_SUCCESS + ", " +
+                        MessageType.LOBBY_NOT_FOUND_ERROR + ", " + MessageType.LOBBY_FULL_ERROR + ", " +
+                        MessageType.PLAYER_ALREADY_ADDED_ERROR + ", " + MessageType.PASSWORD_NOT_VALID_ERROR + ", " +
+                        MessageType.LOBBY_ALREADY_EXISTS_ERROR + ", found: " + message.getType());
         }
     }
 
@@ -168,6 +178,11 @@ public class CommunicationHandler {
                 throw new InvalidPasswordException("Password \"" + lobbyPassword + "\" not valid for Lobby \"" + lobbyName + "\"");
             case GAME_ALREADY_STARTED_ERROR:
                 throw new GameAlreadyStartedException();
+            default:
+                throw new ConnectionException("expected: " + MessageType.LOBBY_LOGIN_SUCCESS + ", " +
+                        MessageType.LOBBY_NOT_FOUND_ERROR + ", " + MessageType.LOBBY_FULL_ERROR + ", " +
+                        MessageType.PLAYER_ALREADY_ADDED_ERROR + ", " + MessageType.PASSWORD_NOT_VALID_ERROR + ", " +
+                        MessageType.GAME_ALREADY_STARTED_ERROR + ", found: " + message.getType());
         }
     }
 
@@ -189,6 +204,10 @@ public class CommunicationHandler {
                 throw new ConnectionException("Player \"" + username + "\" not found");
             case LOBBY_EMPTY_ERROR:
                 throw new ConnectionException("Lobby \"" + lobbyName + "\" is empty");
+            default:
+                throw new ConnectionException("expected: " + MessageType.LOBBY_LOGOUT_SUCCESS + ", " +
+                        MessageType.LOBBY_NOT_FOUND_ERROR + ", " + MessageType.PLAYER_NOT_FOUND_ERROR + ", " +
+                        MessageType.LOBBY_EMPTY_ERROR + ", found: " + message.getType());
         }
     }
 }

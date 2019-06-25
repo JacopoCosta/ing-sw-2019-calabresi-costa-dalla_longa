@@ -31,6 +31,12 @@ public abstract class VirtualClient extends MessageController {
     private ClientCommunicationInterface communicationInterface;
 
     /**
+     * The {@code Lock} object used to synchronize access to {@link ClientCommunicationInterface} instance, so that
+     * at any time only a blocking read or write can be performed.
+     */
+    private final Object communicationInterfaceLock;
+
+    /**
      * This is the only constructor. It creates a new {@code VirtualClient} with the given {@code name}.
      *
      * @param name The new {@code VirtualClient} name.
@@ -39,6 +45,7 @@ public abstract class VirtualClient extends MessageController {
         super();
         this.name = name;
         this.communicationInterface = null;
+        this.communicationInterfaceLock = new Object();
     }
 
     /**
@@ -48,15 +55,20 @@ public abstract class VirtualClient extends MessageController {
      * @param communicationInterface the interface used to connect to the remote counterpart.
      */
     public void setCommunicationInterface(ClientCommunicationInterface communicationInterface) {
-        this.communicationInterface = communicationInterface;
+        synchronized (communicationInterfaceLock) {
+            this.communicationInterface = communicationInterface;
+        }
     }
 
     /**
      * Returns the {@code VirtualClient} current {@link ClientCommunicationInterface}.
+     *
      * @return the {@code VirtualClient} {@link ClientCommunicationInterface}.
      */
-    public ClientCommunicationInterface getCommunicationInterface(){
-        return this.communicationInterface;
+    public ClientCommunicationInterface getCommunicationInterface() {
+        synchronized (communicationInterfaceLock) {
+            return this.communicationInterface;
+        }
     }
 
     /**
@@ -75,10 +87,12 @@ public abstract class VirtualClient extends MessageController {
      * @throws ConnectionException if any exception is thrown at a lower level.
      */
     public void sendMessage(NetworkMessage message) throws ConnectionException {
-        if (this.communicationInterface == null)
-            throw new NullPointerException("ClientCommunicationInterface is null");
+        synchronized (communicationInterfaceLock) {
+            if (this.communicationInterface == null)
+                throw new ConnectionException("ClientCommunicationInterface is null");
 
-        this.communicationInterface.sendMessage(message);
+            this.communicationInterface.sendMessage(message);
+        }
     }
 
     /**
