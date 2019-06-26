@@ -82,7 +82,7 @@ public class Game {
         Player subject = participants.get(currentTurnPlayer);
 
         // verify at least a certain amount of players are still connected
-        participants.forEach(p -> p.setConnected(true)); // assume optimal conditions
+        //participants.forEach(p -> p.setConnected(true)); // assume optimal conditions //FIXME needed to comment in order to prevent strange override behavior
         virtualView.announceTurn(subject); // this disables all flags on disconnected players
 
         boolean enoughPlayers = participants.stream()

@@ -284,6 +284,6 @@ public class Controller {
     }
 
     public void disconnect(Player player) {
-        player.setConnected(false);
+        //player.setConnected(false); //FIXME needed to comment in order to prevent strange override behavior
     }
 }

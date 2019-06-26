@@ -2,20 +2,19 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
-import it.polimi.ingsw.network.common.message.MessageController;
+import it.polimi.ingsw.network.common.message.MessageStatus;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.server.communication.ClientCommunicationInterface;
 import it.polimi.ingsw.view.virtual.Deliverable;
 
 /**
- * A {@code VirtualClient} represents the communication abstraction of a {@link Player}. The goal of this class is to
+ * A {@code VirtualClient} represents the communication layer of a {@link Player}. The goal of this class is to
  * offer a communication {@code API} which is fully transparent to the {@link Player}, so that he can maintain all of
  * the logical functions separated from the network aspect, while being able to easily communicate with his remote
  * counterpart.
  */
-public abstract class VirtualClient extends MessageController {
-
+public abstract class VirtualClient {
     /**
      * The {@code VirtualClient} name.
      */
@@ -31,10 +30,33 @@ public abstract class VirtualClient extends MessageController {
     private ClientCommunicationInterface communicationInterface;
 
     /**
-     * The {@code Lock} object used to synchronize access to {@link ClientCommunicationInterface} instance, so that
-     * at any time only a blocking read or write can be performed.
+     * The status in which a {@link NetworkMessage} can be found. This flag is used to synchronize multiple
+     * calls on the same {@code VirtualClient}'s {@link #nextMessage} attribute, that can be modified through a multi-thread
+     * call to {@link #notifyReceived(NetworkMessage)} and {@link #nextMessage()} methods.
      */
-    private final Object communicationInterfaceLock;
+    private MessageStatus messageStatus;
+
+    /**
+     * The last {@link NetworkMessage} received from the remote-client counterpart.
+     */
+    private NetworkMessage nextMessage;
+
+    /**
+     * The {@code Lock} object used to synchronize access to {@link ClientCommunicationInterface} instance, so that
+     * only a blocking write at a time can be performed.
+     */
+    private final Object messageSentLock;
+
+    /**
+     * The {@code Lock} object used to synchronize access to {@link #nextMessage} object, so that
+     * only a blocking read at a time can be performed.
+     */
+    private final Object messageReceivedLock;
+
+    /**
+     * Whether or not the player resulted to be connected to the {@code Server}.
+     */
+    private boolean connected;
 
     /**
      * This is the only constructor. It creates a new {@code VirtualClient} with the given {@code name}.
@@ -45,7 +67,20 @@ public abstract class VirtualClient extends MessageController {
         super();
         this.name = name;
         this.communicationInterface = null;
-        this.communicationInterfaceLock = new Object();
+        this.messageSentLock = new Object();
+        this.messageReceivedLock = new Object();
+
+        this.messageStatus = MessageStatus.WAITING;
+        this.connected = false; //need to call notifyConnected() manually to connect the VirtualClient
+    }
+
+    /**
+     * Reports the {@code VirtualClient}'s connection status (online or offline).
+     *
+     * @return {@code true} if and only if the {@code VirtualClient} is online.
+     */
+    public boolean isConnected() {
+        return this.connected;
     }
 
     /**
@@ -55,18 +90,18 @@ public abstract class VirtualClient extends MessageController {
      * @param communicationInterface the interface used to connect to the remote counterpart.
      */
     public void setCommunicationInterface(ClientCommunicationInterface communicationInterface) {
-        synchronized (communicationInterfaceLock) {
+        synchronized (this.messageSentLock) {
             this.communicationInterface = communicationInterface;
         }
     }
 
     /**
-     * Returns the {@code VirtualClient} current {@link ClientCommunicationInterface}.
+     * Returns the {@code VirtualClient}'s current {@link ClientCommunicationInterface}.
      *
-     * @return the {@code VirtualClient} {@link ClientCommunicationInterface}.
+     * @return the {@code VirtualClient}'s current {@link ClientCommunicationInterface}.
      */
     public ClientCommunicationInterface getCommunicationInterface() {
-        synchronized (communicationInterfaceLock) {
+        synchronized (this.messageSentLock) {
             return this.communicationInterface;
         }
     }
@@ -77,7 +112,7 @@ public abstract class VirtualClient extends MessageController {
      * @return the {@code VirtualClient} name.
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -87,7 +122,7 @@ public abstract class VirtualClient extends MessageController {
      * @throws ConnectionException if any exception is thrown at a lower level.
      */
     public void sendMessage(NetworkMessage message) throws ConnectionException {
-        synchronized (communicationInterfaceLock) {
+        synchronized (this.messageSentLock) {
             if (this.communicationInterface == null)
                 throw new ConnectionException("ClientCommunicationInterface is null");
 
@@ -107,22 +142,82 @@ public abstract class VirtualClient extends MessageController {
     }
 
     /**
+     * Returns to the caller a {@link NetworkMessage} received from the {@code VirtualClient} remote counterpart.
+     * This is a blocking call, meaning the caller will wait until a new {@link NetworkMessage} is available or an exception is thrown.
+     * Note that calling this method subsequently guarantees that every time a different {@link NetworkMessage} is returned.
+     *
+     * @return the {@link NetworkMessage} received from the remote counterpart.
+     * @throws ConnectionException if the {@link NetworkMessage} remote sender encounters a network issue at any lower level.
+     */
+    private NetworkMessage nextMessage() throws ConnectionException {
+        synchronized (this.messageReceivedLock) {
+            while (this.messageStatus.equals(MessageStatus.WAITING)) ;
+
+            if (this.messageStatus.equals(MessageStatus.UNAVAILABLE))
+                throw new ConnectionException("Client disconnected");
+
+            this.messageStatus = MessageStatus.WAITING;
+            return this.nextMessage;
+        }
+    }
+
+    /**
      * Returns to the caller a {@link Deliverable} received from the {@code VirtualClient} remote counterpart.
-     * This is a blocking call: the caller will wait until a new {@link Deliverable} is available or an exception is thrown.
+     * This is a blocking call, meaning the caller will wait until a new {@link Deliverable} is available or an exception is thrown.
      * Note that calling this method subsequently guarantees that every time a different {@link Deliverable} is returned.
-     * The {@link NetworkMessage} containing the requested {@link Deliverable} can be {@code null} if an exception is
-     * thrown at a lower level, or if any connection error occurs.
      *
      * @return the {@link Deliverable} received from the remote counterpart.
      * @throws ConnectionException if any exception is thrown at a lower level.
      */
     public Deliverable nextDeliverable() throws ConnectionException {
-        if (getMessage() == null)
-            throw new ConnectionException("Connection to the client is lost");
-
-        return (Deliverable) getNextMessage().getContent();
+        return (Deliverable) nextMessage().getContent();
     }
 
+    /**
+     * Notifies the {@code VirtualClient} that a new {@link NetworkMessage} has been received from its remote counterpart.
+     * The received {@link NetworkMessage} is stored in the local object {@link #nextMessage} and the appropriated flag is
+     * set in order to end any blocking call to the {@link #nextMessage()} method.
+     *
+     * @param message the new {@link NetworkMessage} received.
+     */
+    public void notifyReceived(NetworkMessage message) {
+        synchronized (this.messageReceivedLock) {
+            this.nextMessage = message;
+            this.messageStatus = MessageStatus.AVAILABLE;
+        }
+    }
+
+    /**
+     * Notifies the {@code VirtualClient} that he is now connected to the server and can officially start sending and/or
+     * receiving {@link NetworkMessage}s from his remote client counterpart.
+     */
+    public void notifyConnected() {
+        this.connected = true;
+    }
+
+    /**
+     * Notifies the {@code VirtualClient} that he is no longer logged into the server and set the {@link MessageStatus}
+     * accordingly. This is done to end any wait action by other {@code Thread}s listening on the {@link #nextMessage()}
+     * method.
+     */
+    public void notifyDisconnected() {
+        synchronized (this.messageReceivedLock) {
+            this.messageStatus = MessageStatus.UNAVAILABLE;
+            this.connected = false;
+        }
+    }
+
+    /**
+     * Determines whether or not two {@code VirtualClient}s are equals. This is {@code true} if and oly if thy both
+     * share the same {@link #name}, such that {@code equals()} method called between the two {@link #name} attributes
+     * returns {@code true}.
+     *
+     * @param object the {@code VirtualClient} object which with to compare.
+     * @return {@code true} if and oly if the two {@code VirtualClient}'s {@link #name}s are {@code equals()}, {@code false}
+     * otherwise.
+     *
+     * @see String#equals(Object)
+     */
     @Override
     public boolean equals(Object object) {
         if (object == null)

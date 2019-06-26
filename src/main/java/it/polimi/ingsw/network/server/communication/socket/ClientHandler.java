@@ -120,6 +120,7 @@ public class ClientHandler implements Runnable {
                     String playerName = message.getAuthor();
                     Player player = new Player(playerName);
                     player.setCommunicationInterface(clientInterface);
+                    player.notifyConnected();
 
                     message = NetworkMessage.completeClientMessage(message.getAuthor(), message.getType(), player);
                 }

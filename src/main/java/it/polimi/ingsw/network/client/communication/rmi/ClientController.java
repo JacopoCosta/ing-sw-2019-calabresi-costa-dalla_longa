@@ -1,12 +1,15 @@
 package it.polimi.ingsw.network.client.communication.rmi;
 
-import it.polimi.ingsw.network.common.message.MessageController;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.common.rmi.RMIController;
 
-public class ClientController extends MessageController implements RMIController {
+public class ClientController implements RMIController {
+    private NetworkMessage message;
+    private boolean receivedNew;
+
     ClientController() {
-        super();
+        message = null;
+        receivedNew = false;
     }
 
     /*
@@ -14,10 +17,14 @@ public class ClientController extends MessageController implements RMIController
      * */
     @Override
     public synchronized void notifyMessageReceived(NetworkMessage message) {
-        onMessageReceived(message);
+        this.message = message;
+        receivedNew = true;
     }
 
-    public NetworkMessage getMessage() {
-        return getNextMessage();
+    synchronized NetworkMessage nextMessage() {
+        while (!receivedNew) ;
+
+        receivedNew = false;
+        return message;
     }
 }

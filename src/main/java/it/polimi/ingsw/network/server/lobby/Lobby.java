@@ -208,7 +208,7 @@ class Lobby implements Observer {
                 || ((this.password == null || this.password.isBlank()) && (password != null && !password.isBlank())))
             throw new InvalidPasswordException("password \"" + password + "\" invalid for Lobby \"" + this.name + "\"");
 
-        //could be a new player or an old one previously disconnected
+        //could be a new Player or an old one previously disconnected
         if (game == null || !game.isStarted()) {
             //can add other players
             if (this.players.contains(player))
@@ -218,14 +218,15 @@ class Lobby implements Observer {
             adjustTimer();
             return;
         }
-        //this is an old player disconnected: make him join the lobby (and game) again
+        //this is an old Player disconnected: make him join his Lobby (and Game) again
         for (Player oldPlayer : this.players) {
             if (oldPlayer.equals(player)) {
                 oldPlayer.setCommunicationInterface(player.getCommunicationInterface()); //communication interface hotswap
+                oldPlayer.notifyConnected();
                 return;
             }
         }
-        //this is a new player: too late to join this lobby
+        //this is a new Player: too late to join this Lobby
         throw new GameAlreadyStartedException();
     }
 

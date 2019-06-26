@@ -128,10 +128,7 @@ public class Player extends VirtualClient {
      */
     private Cell savedPosition;
 
-    /**
-     * Whether or not the player resulted to be connected after the online player count.
-     */
-    private boolean connected;
+    //FIXME needed to remove "connected" in order to prevent strange override behavior
 
     /**
      * This is the only constructor
@@ -463,21 +460,7 @@ public class Player extends VirtualClient {
         this.causedFrenzy = true;
     }
 
-    /**
-     * Updates the connection status flag of the player.
-     * @param connected The player's new online status.
-     */
-    public void setConnected(boolean connected) {
-        this.connected = connected;
-    }
-
-    /**
-     * Reports the player's connection status (online or offline).
-     * @return true if and only if the player is online.
-     */
-    public boolean isConnected() {
-        return connected;
-    }
+    //FIXME needed to remove "setConnected()" and "isConnected()" in order to prevent strange override behavior
 
     /**
      * Returns the list of {@link Scope} {@link PowerUp}s in the player's hand.

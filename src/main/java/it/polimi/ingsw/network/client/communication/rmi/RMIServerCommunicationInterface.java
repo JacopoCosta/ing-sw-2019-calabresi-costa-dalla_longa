@@ -56,7 +56,7 @@ public class RMIServerCommunicationInterface implements ServerCommunicationInter
     public NetworkMessage nextMessage() throws ConnectionException {
         NetworkMessage message;
 
-        do message = clientController.getMessage();
+        do message = clientController.nextMessage();
         while (message.getType().equals(MessageType.PING_MESSAGE));
 
         if (message.getType() == MessageType.UNREGISTER_SUCCESS)

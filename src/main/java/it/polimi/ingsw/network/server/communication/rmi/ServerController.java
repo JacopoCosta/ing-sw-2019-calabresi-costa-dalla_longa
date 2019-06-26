@@ -49,6 +49,7 @@ public class ServerController extends UnicastRemoteObject implements RMIControll
             ClientCommunicationInterface clientInterface = new RMIClientCommunicationInterface(clientController);
             Player player = new Player(playerName);
             player.setCommunicationInterface(clientInterface);
+            player.notifyConnected();
 
             message = NetworkMessage.completeClientMessage(message.getAuthor(), MessageType.REGISTER_REQUEST, player);
         }

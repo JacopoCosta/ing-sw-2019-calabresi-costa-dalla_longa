@@ -21,7 +21,6 @@ public class CommunicationHub {
     private final LobbyManager lobbyManager;
 
     private final ScheduledExecutorService checkConnectionExecutor;
-    //private final ConnectionChecker checkConnectionTask;
     private final Runnable connectionCheckTask;
     private final int CHECK_PERIOD = 5;
 
@@ -31,35 +30,37 @@ public class CommunicationHub {
         this.players = new ConcurrentLinkedQueue<>();
         this.lobbyManager = new LobbyManager();
 
-        //checkConnectionTask = new ConnectionChecker(players, lobbyManager, instance);
         this.connectionCheckTask = () -> {
             NetworkMessage ping = NetworkMessage.simpleServerMessage(MessageType.PING_MESSAGE);
-            for (Player player : this.players)
-                try {
-                    this.console.mexS(("message " + ping.getType().toString() + " sent to Client \"" + player.getName() + "\""));
-                    player.sendMessage(ping);
-                } catch (ConnectionException ignored) {
-                    this.console.err("Client \"" + player.getName() + "\" lost connection, logging out from his lobby...");
+            for (Player player : this.players) {
+                if (player.isConnected()) {
                     try {
+                        this.console.mexS(("message " + ping.getType().toString() + " sent to Client \"" + player.getName() + "\""));
+                        player.sendMessage(ping);
+                    } catch (ConnectionException ignored) {
+                        this.console.err("Client \"" + player.getName() + "\" lost connection, logging out from his lobby...");
                         try {
-                            String lobbyName = this.lobbyManager.getLobbyNameByPlayer(player);
-                            this.lobbyManager.remove(lobbyName, player);
-                            this.console.log("Client \"" + player.getName() + "\" successfully logged out from Lobby \"" + lobbyName + "\"");
-                        } catch (LobbyNotFoundException e) {
-                            this.console.log(e.getMessage());
-                        } catch (PlayerNotFoundException | LobbyEmptyException e) {
+                            try {
+                                String lobbyName = this.lobbyManager.getLobbyNameByPlayer(player);
+                                this.lobbyManager.remove(lobbyName, player);
+                                this.console.log("Client \"" + player.getName() + "\" successfully logged out from Lobby \"" + lobbyName + "\"");
+                            } catch (LobbyNotFoundException e) {
+                                this.console.log(e.getMessage());
+                            } catch (PlayerNotFoundException | LobbyEmptyException e) {
+                                e.printStackTrace();
+                                //this.console.err(e.getMessage());
+                            }
+                            this.console.log("unregistering Client \"" + player.getName() + "\"...");
+                            unregister(player);
+
+                        } catch (ClientNotRegisteredException e) {
                             e.printStackTrace();
                             //this.console.err(e.getMessage());
                         }
-                        this.console.log("unregistering Client \"" + player.getName() + "\"...");
-                        unregister(player);
-
-                    } catch (ClientNotRegisteredException e) {
-                        e.printStackTrace();
-                        //this.console.err(e.getMessage());
+                        this.console.log("Client \"" + player.getName() + "\" successfully unregistered");
                     }
-                    this.console.log("Client \"" + player.getName() + "\" successfully unregistered");
                 }
+            }
         };
 
         this.checkConnectionExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -90,13 +91,13 @@ public class CommunicationHub {
         this.players.add(player);
     }
 
-    void unregister(Player player) throws ClientNotRegisteredException {
+    private void unregister(Player player) throws ClientNotRegisteredException {
         if (player == null)
             throw new NullPointerException("Player is null");
         if (!this.players.contains(player))
             throw new ClientNotRegisteredException("Client \"" + player.getName() + "\" not registered");
         this.players.remove(player);
-        player.onMessageReceived(null); //to stop the Player from waiting a message while nextMessage() is called.
+        player.notifyDisconnected(); //to stop the Player from waiting a message while nextMessage() is called.
     }
 
     public synchronized void handleMessage(NetworkMessage message) {
@@ -343,7 +344,7 @@ public class CommunicationHub {
             return;
         }
 
-        player.onMessageReceived(message);
+        player.notifyReceived(message);
         this.console.mexS("message " + message.getType() + " forwarded to Player \"" + player.getName() + "\"");
     }
 }
