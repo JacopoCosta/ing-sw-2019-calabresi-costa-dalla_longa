@@ -2,8 +2,10 @@ package it.polimi.ingsw.network.server.lobby;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.util.Table;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.observer.Observer;
+import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.network.common.util.timer.CountDownTimer;
 import it.polimi.ingsw.network.common.util.property.GameProperty;
 import it.polimi.ingsw.network.client.communication.ServerCommunicationInterface;
@@ -15,6 +17,7 @@ import java.util.*;
  * identified through a unique value and the {@code Lobby} should contain only one instance of the same {@link Player}.
  */
 
+@SuppressWarnings("FieldCanBeLocal")
 class Lobby implements Observer {
     /**
      * The maximum number of {@link Player}s a {@code Lobby} can contain.
@@ -100,6 +103,8 @@ class Lobby implements Observer {
      */
     private GameProperty gameProperty;
 
+    private final Console console;
+
     /**
      * This is the only constructor. It create a {@code Lobby} from a given {@code name} and {@code password}.
      *
@@ -116,6 +121,8 @@ class Lobby implements Observer {
         this.timeMargin = WAITING_TIME_MARGIN;
         this.timer = new CountDownTimer(this.WAITING_TIME_FULL);
         this.timer.addObserver(this);
+
+        this.console = Console.getInstance();
     }
 
     /**
@@ -315,5 +322,7 @@ class Lobby implements Observer {
 
         this.game = Game.create(this.gameProperty.finalFrenzy(), this.gameProperty.roundsToPlay(), this.gameProperty.boardType(), this.players);
         new Thread(this.game::play).start();
+
+        this.console.log("Game started from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
     }
 }

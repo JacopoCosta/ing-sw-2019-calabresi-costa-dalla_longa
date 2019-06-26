@@ -149,6 +149,7 @@ public abstract class VirtualClient {
      * @return the {@link NetworkMessage} received from the remote counterpart.
      * @throws ConnectionException if the {@link NetworkMessage} remote sender encounters a network issue at any lower level.
      */
+    @SuppressWarnings("StatementWithEmptyBody")
     private NetworkMessage nextMessage() throws ConnectionException {
         synchronized (this.messageReceivedLock) {
             while (this.messageStatus.equals(MessageStatus.WAITING)) ;

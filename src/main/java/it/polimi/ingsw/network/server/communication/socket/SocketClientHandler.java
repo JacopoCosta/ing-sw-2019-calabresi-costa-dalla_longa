@@ -15,9 +15,9 @@ import java.net.Socket;
 import java.net.SocketException;
 
 /**
- * A {@code ClientHandler} serves the purpose of interfacing with a specific client-side application through a
+ * A {@code SocketClientHandler} serves the purpose of interfacing with a specific client-side application through a
  * {@code Socket} communication protocol.
- * Virtually a {@code ClientHandler} intercepts all the {@link NetworkMessage}s sent from the client-side application and
+ * Virtually a {@code SocketClientHandler} intercepts all the {@link NetworkMessage}s sent from the client-side application and
  * forwards them to the {@link CommunicationHub}; they are then interpreted decisions can be made according to the
  * message content.
  *
@@ -30,7 +30,7 @@ import java.net.SocketException;
  * <p>Before the communication can end, a call to {@link #closeConnection()} must be performed in order to safely interrupt
  * the connection and notify the client-side application in the proper way.
  */
-public class ClientHandler implements Runnable {
+public class SocketClientHandler implements Runnable {
     /**
      * The {@link CommunicationHub} instance to which messages will be forwarded.
      */
@@ -51,18 +51,18 @@ public class ClientHandler implements Runnable {
     private ObjectInputStream in;
 
     /**
-     * The output method to print any possible error that can occur during the life of this {@code ClientHandler}.
+     * The output method to print any possible error that can occur during the life of this {@code SocketClientHandler}.
      */
     private Console console;
 
     /**
-     * This is the only constructor used to create a new {@code ClientHandler} with the given {@code socket} argument.
+     * This is the only constructor used to create a new {@code SocketClientHandler} with the given {@code socket} argument.
      * This is used to create the input and output channels to instantiate a bi-directional communication to the
      * client-side application.
      *
      * @param socket the {@link Socket} object needed to instantiate the bi-directional communication.
      */
-    public ClientHandler(Socket socket) {
+    public SocketClientHandler(Socket socket) {
         this.communicationHub = CommunicationHub.getInstance();
         this.socket = socket;
 
@@ -102,7 +102,7 @@ public class ClientHandler implements Runnable {
     }
 
     /**
-     * Executes the {@code ClientHandler} core logic: forwards every {@link NetworkMessage} received from the client-side
+     * Executes the {@code SocketClientHandler} core logic: forwards every {@link NetworkMessage} received from the client-side
      * application to the {@link CommunicationHub} for proper handling until an {@link MessageType#UNREGISTER_REQUEST}
      * type of {@link NetworkMessage} is received or if any exception is throw at a lower level.
      * Finally a {@link #closeConnection()} call is performed to safely close the communication before terminating.
@@ -128,7 +128,7 @@ public class ClientHandler implements Runnable {
                 this.communicationHub.handleMessage(message);
             } while (!message.getType().equals(MessageType.UNREGISTER_REQUEST));
         } catch (SocketException | EOFException e) {
-            //Client unexpectedly quit: the ClientHandler.connectionChecker will unregister it
+            //Client unexpectedly quit: the CommunicationHub will unregister it
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             //this.console.err(e.getClass() + ": " + e.getMessage());

@@ -21,6 +21,7 @@ public class ClientController implements RMIController {
         receivedNew = true;
     }
 
+    @SuppressWarnings({"WhileLoopSpinsOnField", "StatementWithEmptyBody"})
     synchronized NetworkMessage nextMessage() {
         while (!receivedNew) ;
 

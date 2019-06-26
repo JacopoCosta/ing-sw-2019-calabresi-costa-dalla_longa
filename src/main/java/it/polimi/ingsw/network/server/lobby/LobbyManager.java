@@ -27,11 +27,6 @@ public class LobbyManager {
     private final Queue<Lobby> lobbies; //all Lobbies located on the Server
 
     /**
-     * The {@link Console} used to display notification messages on the server {@code CLI}.
-     */
-    private final Console console;
-
-    /**
      * The properties used by all the {@code Lobby}.
      * These properties are loaded once from a configuration file by the {@link GamePropertyLoader} and will be the
      * same for all of the {@code Lobby}.
@@ -43,12 +38,12 @@ public class LobbyManager {
      */
     public LobbyManager() {
         this.lobbies = new ConcurrentLinkedQueue<>();
-        this.console = Console.getInstance();
 
         GamePropertyLoader loader = new GamePropertyLoader();
         try {
             this.gameProperty = loader.readGameProperties();
         } catch (InvalidPropertyException e) {
+            Console console = Console.getInstance();
             console.err(e.getMessage());
             System.exit(-1);
         }

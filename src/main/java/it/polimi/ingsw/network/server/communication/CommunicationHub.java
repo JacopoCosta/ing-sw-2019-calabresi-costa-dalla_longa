@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class CommunicationHub {
     private static CommunicationHub instance;
 
@@ -196,7 +197,7 @@ public class CommunicationHub {
 
         try {
             player.sendMessage(message);
-            this.console.mexS("message " + message.getType() + " sent to client \"" + player.getName() + "\"");
+            this.console.mexS("message " + message.getType() + " sent to Client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
             e.printStackTrace();
             //this.console.err(e.getClass() + ": " + e.getMessage());
@@ -247,7 +248,7 @@ public class CommunicationHub {
 
         try {
             player.sendMessage(message);
-            this.console.mexS("message " + message.getType() + " sent to client \"" + player.getName() + "\"");
+            this.console.mexS("message " + message.getType() + " sent to Client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
             e.printStackTrace();
             //this.console.err(e.getClass() + ": " + e.getMessage());
@@ -290,7 +291,7 @@ public class CommunicationHub {
 
         try {
             player.sendMessage(message);
-            this.console.mexS("message " + message.getType() + " sent to client \"" + player.getName() + "\"");
+            this.console.mexS("message " + message.getType() + " sent to Client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
             e.printStackTrace();
             //this.console.err(e.getClass() + ": " + e.getMessage());
@@ -312,7 +313,7 @@ public class CommunicationHub {
         try {
             this.lobbyManager.remove(lobbyName, player);
             message = NetworkMessage.simpleServerMessage(MessageType.LOBBY_LOGOUT_SUCCESS);
-            this.console.log("Client \"" + player.getName() + "\" succesfully log out of Lobby \"" + lobbyName + "\"");
+            this.console.log("Client \"" + player.getName() + "\" successfully log out of Lobby \"" + lobbyName + "\"");
         } catch (LobbyNotFoundException e) {
             this.console.err(e.getMessage());
             message = NetworkMessage.simpleServerMessage(MessageType.LOBBY_NOT_FOUND_ERROR);
@@ -326,7 +327,7 @@ public class CommunicationHub {
 
         try {
             player.sendMessage(message);
-            this.console.mexS("message " + message.getType() + " sent to client \"" + player.getName() + "\"");
+            this.console.mexS("message " + message.getType() + " sent to Client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
             e.printStackTrace();
             //this.console.err(e.getClass() + ": " + e.getMessage());
