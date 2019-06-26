@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link SpawnCell}s are {@link Cell}s that {@link Player}s can choose as spawn points.
- * Each {@link SpawnCell} also includes a display of {@link Weapon}s available to be purchased by {@link Player}s,
+ * {@code SpawnCell}s are {@link Cell}s that {@link Player}s can choose as spawn points.
+ * Each {@code SpawnCell} also includes a display of {@link Weapon}s available to be purchased by {@link Player}s,
  * so long as they have enough ammo to be able to afford the purchase cost of the {@link Weapon}.
  */
 public class SpawnCell extends Cell {
     /**
-     * This attribute is used to determine which {@link SpawnCell} a given {@link PowerUp} refers to as its spawn point.
+     * This attribute is used to determine which {@code SpawnCell} a given {@link PowerUp} refers to as its spawn point.
      * @see PowerUp#getAmmoCubes()
      */
     private AmmoCubes ammoCubeColor; // this attribute is used to determine which Cell a given PowerUp refers to as its spawnPoint
@@ -29,7 +29,7 @@ public class SpawnCell extends Cell {
      * This is the only constructor.
      * @param xCoord the x (horizontal) coordinate in the 2-dimensional discrete space this {@link Cell} will be put at.
      * @param yCoord the y (vertical) coordinate in the 2-dimensional discrete space this {@link Cell} will be put at.
-     * @param ammoCubeColor the colour of the {@link SpawnCell}.
+     * @param ammoCubeColor the colour of the {@code SpawnCell}.
      */
     public SpawnCell(int xCoord, int yCoord, AmmoCubes ammoCubeColor) {
         super(xCoord, yCoord);
@@ -39,7 +39,7 @@ public class SpawnCell extends Cell {
     }
 
     /**
-     * Returns a set of {@link AmmoCubes} containing only one cube of the colour used to identify the {@link SpawnCell}.
+     * Returns a set of {@link AmmoCubes} containing only one cube of the colour used to identify the {@code SpawnCell}.
      * @return the set.
      */
     public AmmoCubes getAmmoCubeColor() {

@@ -22,16 +22,28 @@ public class TargetPlayer extends Target {
         this.player = player;
     }
 
+    /**
+     * Returns the chosen {@link TargetPlayer#player}.
+     * @return the {@link Player}.
+     */
     @Override
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Returns the {@link Cell} containing the chosen {@link TargetPlayer#player}.
+     * @return the {@link Cell}.
+     */
     @Override
     public Cell getCell() {
         return player.getPosition();
     }
 
+    /**
+     * Returns the {@link Room} containing the {@link Cell} containing the chosen {@link TargetPlayer#player}.
+     * @return the {@link Room}.
+     */
     @Override
     public Room getRoom() {
         if(player.getPosition() == null)
@@ -39,6 +51,11 @@ public class TargetPlayer extends Target {
         return player.getPosition().getRoom();
     }
 
+    /**
+     * Creates a list containing all the {@link Player}s available to choose as {@code TargetPlayer}s
+     * that respect all of the {@link Target#constraints}.
+     * @return the list.
+     */
     public List<Player> filter() {
         return Constraint.filterPlayers(context, constraints);
     }

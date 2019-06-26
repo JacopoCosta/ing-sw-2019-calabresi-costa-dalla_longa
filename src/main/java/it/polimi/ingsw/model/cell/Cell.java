@@ -12,12 +12,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * The {@link Cell} is the unit of space on the {@link Board}. Cells are organized in a 2-dimensional
+ * The {@code Cell} is the unit of space on the {@link Board}. Cells are organized in a 2-dimensional
  * lattice space, forming a grid of 10 ~ 12 units that fits in a bounding box spanning
- * 4 units horizontally and 3 units vertically. The coordinate system used to identify {@link Cell}s
+ * 4 units horizontally and 3 units vertically. The coordinate system used to identify {@code Cell}s
  * is a clockwise pair of axes with the {@code x} coordinate increasing to the right and the {@code y}
  * coordinate increasing downwards.
- * Cells are grouped into {@link Room}s, this is important when evaluating visibility between two {@link Cell}s.
+ * Cells are grouped into {@link Room}s, this is important when evaluating visibility between two {@code Cell}s.
  * @see Room
  * @see it.polimi.ingsw.model.board.Board
  */
@@ -25,32 +25,32 @@ import java.util.stream.Collectors;
 public abstract class Cell {
 
     /**
-     * A list of all the {@link Cell}s considered to be adjacent to the current {@link Cell}.
+     * A list of all the {@code Cell}s considered to be adjacent to the current {@code Cell}.
      */
     private List<Cell> adjacentCells;
 
     /**
-     * The {@link Board} this {@link Cell} belongs to.
+     * The {@link Board} this {@code Cell} belongs to.
      */
     protected Board board;
 
     /**
-     * The {@link Room} this {@link Cell} belongs to.
+     * The {@link Room} this {@code Cell} belongs to.
      */
     protected Room room;
 
     /**
-     * The horizontal coordinate of the {@link Cell} on the {@link Board}.
+     * The horizontal coordinate of the {@code Cell} on the {@link Board}.
      */
     private int xCoord;
 
     /**
-     * The vertical coordinate of the {@link Cell} on the {@link Board}.
+     * The vertical coordinate of the {@code Cell} on the {@link Board}.
      */
     private int yCoord;
 
     /**
-     * Indicates if a {@link Cell} is instance of {@code SpawnCell} (the alternative being {@code AmmoCell}).
+     * Indicates if a {@code Cell} is instance of {@code SpawnCell} (the alternative being {@code AmmoCell}).
      * @see SpawnCell
      * @see AmmoCell
      */
@@ -58,8 +58,8 @@ public abstract class Cell {
 
     /**
      * This is the only constructor.
-     * @param xCoord the x (horizontal) coordinate in the 2-dimensional discrete space this {@link Cell} will be put at.
-     * @param yCoord the y (vertical) coordinate in the 2-dimensional discrete space this {@link Cell} will be put at.
+     * @param xCoord the x (horizontal) coordinate in the 2-dimensional discrete space this {@code Cell} will be put at.
+     * @param yCoord the y (vertical) coordinate in the 2-dimensional discrete space this {@code Cell} will be put at.
      */
     public Cell(int xCoord, int yCoord) {
         this.adjacentCells = new ArrayList<>();
@@ -68,8 +68,8 @@ public abstract class Cell {
     }
 
     /**
-     * Returns a number that uniquely identifies the {@link Cell} on the {@link Board}.
-     * @return the {@link Cell}'s id.
+     * Returns a number that uniquely identifies the {@code Cell} on the {@link Board}.
+     * @return the {@code Cell}'s id.
      */
     public int getId() {
         return board.getCells().indexOf(this) + 1;
@@ -77,7 +77,7 @@ public abstract class Cell {
 
     /**
      * This method is used to distinguish between the two possible implementations of this class.
-     * @return whether or not this {@link Cell} acts as a spawn point.
+     * @return whether or not this {@code Cell} acts as a spawn point.
      * @see SpawnCell
      * @see AmmoCell
      */
@@ -86,16 +86,16 @@ public abstract class Cell {
     }
 
     /**
-     * Binds the {@link Cell} to a {@link Board}.
-     * @param board the board to bind the {@link Cell} to.
+     * Binds the {@code Cell} to a {@link Board}.
+     * @param board the board to bind the {@code Cell} to.
      */
     public void setBoard(Board board) {
         this.board = board;
     }
 
     /**
-     * This method tells which {@link Board} a {@link Cell} belongs to.
-     * @return the {@link Board} containing the {@link Cell} this method was called upon.
+     * This method tells which {@link Board} a {@code Cell} belongs to.
+     * @return the {@link Board} containing the {@code Cell} this method was called upon.
      */
     public Board getBoard() {
         return board;
@@ -286,6 +286,10 @@ public abstract class Cell {
         return false;
     }
 
+    /**
+     * Creates a short string containing a brief description of the cell.
+     * @return the string.
+     */
     @Override
     public String toString() {
         return "Cell #" + getId() + " (" + xCoord + "," + yCoord + ")";

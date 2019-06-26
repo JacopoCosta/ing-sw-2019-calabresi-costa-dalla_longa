@@ -73,6 +73,10 @@ public class AmmoTile {
         return includesPowerUp;
     }
 
+    /**
+     * Creates a short description of the ammo tile.
+     * @return the description.
+     */
     @Override
     public String toString() {
         return ammoCubes.toString() + (includesPowerUp ? "+P" : "");

@@ -82,12 +82,13 @@ public class Game {
         Player subject = participants.get(currentTurnPlayer);
 
         // verify at least a certain amount of players are still connected
-        //participants.forEach(p -> p.setConnected(true)); // assume optimal conditions //FIXME needed to comment in order to prevent strange override behavior
-        virtualView.announceTurn(subject); // this disables all flags on disconnected players
+        virtualView.announceTurn(subject); // this should update all connection flags on virtual clients
 
-        boolean enoughPlayers = participants.stream()
+        int onlinePlayerCount = (int) participants.stream()
                 .filter(Player::isConnected)
-                .count() >= MINIMUM_PLAYER_COUNT;
+                .count();
+
+        boolean enoughPlayers = onlinePlayerCount >= MINIMUM_PLAYER_COUNT;
 
         if(!enoughPlayers && !offlineMode) { // end game if there are not enough participants
             gameOver = true;
@@ -103,7 +104,7 @@ public class Game {
                 } catch (FullHandException ignored) { } // discarding will be part of the respawn mechanic
             });
 
-            if(participants.stream().map(Player::getDeathCount).reduce(Math::max).orElse(0) == 0) // if nobody has died yet -- it's the entry spawn, draw twice
+            if(subject.getDeathCount() == 0) // if subject hasn't died yet -- it's the entry spawn, draw twice
                 board.getPowerUpDeck().smartDraw(true).ifPresent(c -> {
                     try {
                         subject.givePowerUp(c);
@@ -240,16 +241,10 @@ public class Game {
     }
 
     public void play() {
-        System.out.println("TEMPLOG game started");
         this.started = true;
 
-        int TEMPLOG_tally = 0;
-
         while (!gameOver) {
-            TEMPLOG_tally ++;
-            System.out.println("Starting turn #" + TEMPLOG_tally);
             this.playTurn();
-            System.out.println("Ended turn #" + TEMPLOG_tally);
         }
         board.scoreUponGameOver();
 

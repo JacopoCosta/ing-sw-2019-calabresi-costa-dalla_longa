@@ -69,6 +69,10 @@ public class Move extends Effect {
         virtualView.sendUpdateMove(target, author, destination);
     }
 
+    /**
+     * Creates a short description of the effect.
+     * @return the description.
+     */
     @Override
     public String toString() {
         String s = "move " + Constraint.getHumanReadableName(sourceAttackModuleId, sourceTargetId);

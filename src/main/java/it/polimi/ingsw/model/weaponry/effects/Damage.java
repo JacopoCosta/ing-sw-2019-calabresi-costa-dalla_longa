@@ -76,6 +76,10 @@ public class Damage extends OffensiveEffect {
                 });
     }
 
+    /**
+     * Creates a short description of the effect.
+     * @return the description.
+     */
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder(amount + " damage to player such that");

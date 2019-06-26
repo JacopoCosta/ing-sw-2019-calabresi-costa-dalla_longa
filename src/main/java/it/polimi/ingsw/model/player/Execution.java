@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An {@link Execution} is an ordered list of {@link Activity}s the {@link Player} can perform during their turn.
- * On each turn, a {@link Player} can normally perform two {@link Execution}s, except when they use frenetic actions.
+ * An {@code Execution} is an ordered list of {@link Activity}s the {@link Player} can perform during their turn.
+ * On each turn, a {@link Player} can normally perform two {@code Execution}s, except when they use frenetic actions.
  */
 public class Execution {
     /**
@@ -78,20 +78,20 @@ public class Execution {
     private static final int SHOOT_ENHANCE_THRESHOLD = 6; // the amount of damage a player must take before being able to use the enhanced version of shoot
 
     /**
-     * The list of {@link Activity}s the {@link Execution} consists of.
+     * The list of {@link Activity}s the {@code Execution} consists of.
      */
     private List<Activity> activities;
 
     /**
      * This is the only constructor.
-     * @param activities the list of {@link Activity}s the {@link Execution} will be made out of.
+     * @param activities the list of {@link Activity}s the {@code Execution} will be made out of.
      */
     private Execution(List<Activity> activities) {
         this.activities = activities;
     }
 
     /**
-     * Returns the list of {@link Activity}s composing the {@link Execution}.
+     * Returns the list of {@link Activity}s composing the {@code Execution}.
      * @return the list.
      */
     public List<Activity> getActivities() {
@@ -99,10 +99,10 @@ public class Execution {
     }
 
     /**
-     * Generates an {@link Execution} using the {@code Move} {@link Activity},
+     * Generates an {@code Execution} using the {@code Move} {@link Activity},
      * based on the condition of the {@link Player} passed as argument.
-     * @param subject The {@link Player} for whom this method needs to generate the {@link Execution}.
-     * @return The {@link Execution} deemed correct for the {@link Player}, given their status.
+     * @param subject The {@link Player} for whom this method needs to generate the {@code Execution}.
+     * @return The {@code Execution} deemed correct for the {@link Player}, given their status.
      * @see Move
      */
     private static Execution generateMove(Player subject) { // moves only
@@ -115,10 +115,10 @@ public class Execution {
     }
 
     /**
-     * Generates an {@link Execution} using the {@code Move} and {@code Grab} {@link Activity}s,
+     * Generates an {@code Execution} using the {@code Move} and {@code Grab} {@link Activity}s,
      * based on the condition of the {@link Player} passed as argument.
-     * @param subject The {@link Player} for whom this method needs to generate the {@link Execution}.
-     * @return The {@link Execution} deemed correct for the {@link Player}, given their status.
+     * @param subject The {@link Player} for whom this method needs to generate the {@code Execution}.
+     * @return The {@code Execution} deemed correct for the {@link Player}, given their status.
      * @see Move
      * @see Grab
      */
@@ -135,11 +135,11 @@ public class Execution {
     }
 
     /**
-     * Generates an {@link Execution} using the {@code Shoot} {@link Activity},
+     * Generates an {@code Execution} using the {@code Shoot} {@link Activity},
      * occasionally coupled with the {@code Move} and/or {@code Reload} {@link Activity}s,
      * based on the condition of the {@link Player} passed as argument.
-     * @param subject The {@link Player} for whom this methods needs to generate the {@link Execution}.
-     * @return The {@link Execution} deemed correct for the {@link Player}, given their status.
+     * @param subject The {@link Player} for whom this methods needs to generate the {@code Execution}.
+     * @return The {@code Execution} deemed correct for the {@link Player}, given their status.
      * @see Move
      * @see Shoot
      * @see Reload
@@ -161,14 +161,14 @@ public class Execution {
     }
 
     /**
-     * This method takes in a list of {@link Activity} (the soon-to-be {@link Execution}) and a {@link Player}.
-     * If the {@link Player} is not on final frenzy and they are about to perform the last {@link Execution} of their turn, the option
+     * This method takes in a list of {@link Activity} (the soon-to-be {@code Execution}) and a {@link Player}.
+     * If the {@link Player} is not on final frenzy and they are about to perform the last {@code Execution} of their turn, the option
      * to {@link Reload} a {@link Weapon} at the end is added.
      * This is achieved by concatenating a {@code Reload} {@link Activity} at the end
      * of the list of {@link Activity}s passed in as argument.
      * Should the {@link Player} not meet the requirements to be able to {@link Reload}
-     * at the end of the {@link Execution}, this method will have no effect on the {@link Activity} list.
-     * @param activityList The list of {@link Activity}s that will shortly be turned into an {@link Execution}.
+     * at the end of the {@code Execution}, this method will have no effect on the {@link Activity} list.
+     * @param activityList The list of {@link Activity}s that will shortly be turned into an {@code Execution}.
      * @param subject The {@link Player} for whom to evaluate whether or not to allow a {@link Reload} at the end of their turn.
      */
     private static void concatenateReload(List<Activity> activityList, Player subject) { // each last execution of a non-frenzy turn also offers a reload at the end
@@ -177,9 +177,9 @@ public class Execution {
     }
 
     /**
-     * Generates a list of {@link Execution}s based on a {@link Player}'s current condition.
+     * Generates a list of {@code Execution}s based on a {@link Player}'s current condition.
      * @param subject The {@link Player} for whom to generate a list of options.
-     * @return A list of {@link Execution}s from which the {@link Player} will pick one to perform.
+     * @return A list of {@code Execution}s from which the {@link Player} will pick one to perform.
      */
     public static List<Execution> getOptionsForPlayer(Player subject) {
         List<Execution> e = new ArrayList<>();
@@ -191,6 +191,10 @@ public class Execution {
         return e;
     }
 
+    /**
+     * Generates a string containing a short description of the execution.
+     * @return the string.
+     */
     @Override
     public String toString() {
         boolean addPlus = false;

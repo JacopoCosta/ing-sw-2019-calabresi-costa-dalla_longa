@@ -3,9 +3,9 @@ package it.polimi.ingsw.model.player;
 import it.polimi.ingsw.model.cell.Cell;
 
 /**
- * The {@link Move} {@link Activity} is used to change a {@link Player}'s position to a new position,
+ * The {@code Move} {@link Activity} is used to change a {@link Player}'s position to a new position,
  * so long as the distance between the two does not exceed a fixed limit.
- * @see it.polimi.ingsw.model.cell.Cell#distance(Cell)
+ * @see Cell#distance(Cell)
  */
 public class Move extends Activity {
     /**
@@ -23,7 +23,7 @@ public class Move extends Activity {
     }
 
     /**
-     * Returns the {@link Move}'s maximum distance.
+     * Returns the {@code Move}'s {@link Move#maxDistance}.
      * @return The maximum allowed distance between source {@link Cell} and destination {@link Cell}.
      */
     public int getMaxDistance() {

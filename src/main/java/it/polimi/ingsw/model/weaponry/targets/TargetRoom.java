@@ -23,21 +23,40 @@ public class TargetRoom extends Target {
         this.room = room;
     }
 
+    /**
+     * Throws {@link TargetInheritanceException} because it is impossible to uniquely identify
+     * a {@link Player} given a {@link Room}.
+     * @return nothing.
+     */
     @Override
     public Player getPlayer() {
         throw new TargetInheritanceException("Constraints on players cannot be applied to rooms.");
     }
 
+    /**
+     * Throws {@link TargetInheritanceException} because it is impossible to uniquely identify
+     * a {@link Cell} given a {@link Room}.
+     * @return nothing.
+     */
     @Override
     public Cell getCell() {
         throw new TargetInheritanceException("Constraints on cells cannot be applied to rooms.");
     }
 
+    /**
+     * Returns the chosen {@link TargetRoom#room}.
+     * @return the {@link Room}.
+     */
     @Override
     public Room getRoom() {
         return room;
     }
 
+    /**
+     * Creates a list containing all the {@link Room}s available to choose as {@code TargetRoom}s
+     * that respect all of the {@link Target#constraints}.
+     * @return the list.
+     */
     public List<Room> filter() {
         return Constraint.filterRooms(context, constraints);
     }

@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.weaponry.effects.Damage;
 import it.polimi.ingsw.model.weaponry.effects.Mark;
 
 /**
- * The {@link Shoot} {@link Activity} allows a {@link Player} to use a loaded {@link Weapon} in their possession
+ * The {@code Shoot} {@link Activity} allows a {@link Player} to use a loaded {@link Weapon} in their possession
  * to {@link Damage}, {@link Mark} and/or {@link Move} one or more of their opponents.
  */
 class Shoot extends Activity {

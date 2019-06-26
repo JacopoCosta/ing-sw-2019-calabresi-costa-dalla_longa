@@ -12,29 +12,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Effects are consequences of attacks that change a player's status.
+ * {@code Effect}s are consequences of attacks that change a player's status.
  */
 public abstract class Effect {
     /**
-     * The {@link Effect}'s type.
+     * The {@code Effect}'s type.
      */
     protected EffectType type;
 
     /**
-     * The context the {@link Effect} is being caused in.
+     * The context the {@code Effect} is being caused in.
      */
     protected AttackPattern context;
 
     /**
-     * The player who caused the {@link Effect} to happen.
+     * The player who caused the {@code Effect} to happen.
      */
     protected Player author;
 
     /**
-     * This factory method constructs an {@link Effect}, with the properties found inside the JSON object passed as argument.
+     * This factory method constructs an {@code Effect}, with the properties found inside the JSON object passed as argument.
      * @param jEffect the JSON object containing the desired properties.
      * @return an instance of this class in accordance with the specified properties.
-     * @throws InvalidEffectTypeException when attempting to instantiate a new {@link Effect} whose type is not in the
+     * @throws InvalidEffectTypeException when attempting to instantiate a new {@code Effect} whose type is not in the
      * enumeration of possible effect types.
      */
     public static Effect build(DecoratedJsonObject jEffect) throws InvalidEffectTypeException {
@@ -114,39 +114,39 @@ public abstract class Effect {
     }
 
     /**
-     * Sets the {@link Effect}'s author.
-     * @param author the {@link Effect}'s author.
+     * Sets the {@code Effect}'s author.
+     * @param author the {@code Effect}'s author.
      */
     public void setAuthor(Player author) {
         this.author = author;
     }
 
     /**
-     * Returns the {@link Effect}'s author.
-     * @return the {@link Effect}'s author.
+     * Returns the {@code Effect}'s author.
+     * @return the {@code Effect}'s author.
      */
     public Player getAuthor() {
         return author;
     }
 
     /**
-     * Sets the {@link Effect}'s context.
-     * @param context the context the {@link Effect} is being caused in.
+     * Sets the {@code Effect}'s context.
+     * @param context the context the {@code Effect} is being caused in.
      */
     public void setContext(AttackPattern context) {
         this.context = context;
     }
 
     /**
-     * Returns the {@link Effect}'s type.
-     * @return the {@link Effect}'s type.
+     * Returns the {@code Effect}'s type.
+     * @return the {@code Effect}'s type.
      */
     public EffectType getType() {
         return type;
     }
 
     /**
-     * Causes the {@link Effect}'s consequences to happen.
+     * Causes the {@code Effect}'s consequences to happen.
      */
     public abstract void apply();
 

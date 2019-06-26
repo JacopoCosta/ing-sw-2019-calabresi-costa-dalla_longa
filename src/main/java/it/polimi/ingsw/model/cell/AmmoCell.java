@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.cell;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 
 /**
- * {@link AmmoCell}s are {@link Cell}s that are able to host an {@link AmmoTile} on them.
+ * {@code AmmoCell}s are {@link Cell}s that are able to host an {@link AmmoTile} on them.
  */
 public class AmmoCell extends Cell {
 

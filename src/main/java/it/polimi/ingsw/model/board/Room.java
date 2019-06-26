@@ -48,6 +48,10 @@ public class Room {
         return cells;
     }
 
+    /**
+     * Creates a string with a short description of the room.
+     * @return the string.
+     */
     @Override
     public String toString() {
         return color + " room";

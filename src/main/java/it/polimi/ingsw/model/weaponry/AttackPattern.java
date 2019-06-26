@@ -8,16 +8,41 @@ import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An {@code AttackPattern} is a directional network of {@link AttackModule}s, fully describing the working
+ * process of a {@link Weapon}.
+ */
 public class AttackPattern {
+    /**
+     * The {@link Player} launching the attack.
+     */
     private Player author;
+
+    /**
+     * A list containing the ids of all the {@link AttackModule}s the attack can start with.
+     */
     private List<Integer> first;
+
+    /**
+     * A list containing all of the {@link AttackModule}s of the {@link Weapon} defined by the {@code AttackPattern}.
+     */
     private List<AttackModule> content;
 
+    /**
+     * This is the only constructor.
+     * @param first the {@link AttackPattern#first} list.
+     * @param content the {@link AttackPattern#content} list.
+     */
     public AttackPattern(List<Integer> first, List<AttackModule> content) {
         this.first = first;
         this.content = content;
     }
 
+    /**
+     * This factory method instantiates and returns an {@code AttackPattern}, with the properties found inside the JSON object passed as argument.
+     * @param jPattern the JSON object containing the desired properties.
+     * @return an instance of this class in accordance with the specified properties.
+     */
     public static AttackPattern build(DecoratedJsonObject jPattern) {
         List<Integer> ids = new ArrayList<>();
         List<AttackModule> attackModules = new ArrayList<>();
@@ -48,28 +73,52 @@ public class AttackPattern {
         return attackPattern;
     }
 
+    /**
+     * Gets the {@link AttackModule} with a specified id.
+     * @param index the id.
+     * @return the {@link AttackModule}.
+     */
     public AttackModule getModule(int index) {
         return content.get(index);
     }
 
+    /**
+     * Returns the {@code AttackPattern}'s {@link AttackPattern#first} list.
+     * @return the list.
+     */
     public List<Integer> getFirst() {
         return first;
     }
 
+    /**
+     * Signs all the attacks dealt through this {@link AttackPattern} by a {@link Player}.
+     * @param author the attacker.
+     */
     public void setAuthor(Player author) {
         if(author == null)
             throw new NullPointerException("An attack pattern cannot be authored by null");
         this.author = author;
     }
 
+    /**
+     * Returns the {@code AttackPattern}'s {@link AttackPattern#author}.
+     * @return the {@link Player} by whom every attack dealt through this {@code AttackPatten} will be registered.
+     */
     public Player getAuthor() {
         return author;
     }
 
+    /**
+     * Prepares the {@code AttackPattern} for a new attack by setting all of its {@link AttackModule}s to not used.
+     */
     public void resetAllModules() {
         content.forEach(m -> m.setUsed(false));
     }
 
+    /**
+     * Generates a string containing a small description of the {@code AttackPattern}.
+     * @return the string.
+     */
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();

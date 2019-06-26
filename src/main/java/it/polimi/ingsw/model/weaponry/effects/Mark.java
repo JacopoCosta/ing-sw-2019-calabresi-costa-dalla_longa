@@ -49,6 +49,10 @@ public class Mark extends OffensiveEffect{
         target.applyMarking(author);
     }
 
+    /**
+     * Creates a short description of the effect.
+     * @return the description.
+     */
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder(amount + " mark(s) to player such that");

@@ -26,7 +26,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * the
+ * The {@code Player} is the main actor of the {@link Game}.
  */
 public class Player extends VirtualClient {
     /**
@@ -127,8 +127,6 @@ public class Player extends VirtualClient {
      * @see Execution
      */
     private Cell savedPosition;
-
-    //FIXME needed to remove "connected" in order to prevent strange override behavior
 
     /**
      * This is the only constructor
@@ -460,8 +458,6 @@ public class Player extends VirtualClient {
         this.causedFrenzy = true;
     }
 
-    //FIXME needed to remove "setConnected()" and "isConnected()" in order to prevent strange override behavior
-
     /**
      * Returns the list of {@link Scope} {@link PowerUp}s in the player's hand.
      * This is used when checking whether or not the player can add one or more {@link Scope}s to an attack,
@@ -617,6 +613,10 @@ public class Player extends VirtualClient {
         this.position = cell;
     }
 
+    /**
+     * Creates a string containing a short description of the player.
+     * @return the string.
+     */
     @Override
     public String toString() {
         return getName();

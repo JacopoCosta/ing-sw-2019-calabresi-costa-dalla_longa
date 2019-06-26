@@ -207,6 +207,15 @@ public abstract class Constraint {
             throw new InvalidEffectTypeException(type + " is not a valid name for a Constraint type. Use \"alignment\", \"distance\", \"identity\", \"order\", \"room\", or \"visibility\"");
     }
 
+    /**
+     * Given an {@link AttackPattern} to provide a context, it searches for the {@link Target}
+     * identified by the {@link AttackModule} id inside the context and the {@link Target} id
+     * inside the module.
+     * @param context The {@link AttackPattern} of reference.
+     * @param attackModuleId The id of the {@link AttackModule} inside which to look for the {@link Target}.
+     * @param targetId The id of the {@link Target} inside the {@link AttackModule}.
+     * @return the {@link Target}.
+     */
     public static Target getTarget(AttackPattern context, int attackModuleId, int targetId) {
         if(context.getAuthor() == null)
             throw new UnauthoredAttackPatternException("Cannot evaluate target for an attack pattern without a valid author.");
@@ -233,6 +242,13 @@ public abstract class Constraint {
 
     public abstract List<Room> filterRooms(AttackPattern context);
 
+    /**
+     * Given an {@link AttackPattern} to provide a context, it searches for all {@link Player}s
+     * that meet the requirements expressed by all of the {@code Constraint}s inside a list.
+     * @param context The {@link AttackPattern} of interest.
+     * @param constraints The list of {@code Constraint}s.
+     * @return all the {@link Player}s that satisfy every {@code Constraint} in the list.
+     */
     public static List<Player> filterPlayers(AttackPattern context, List<Constraint> constraints) {
         List<List<Player>> targetTable = new ArrayList<>();
 
@@ -256,6 +272,13 @@ public abstract class Constraint {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Given an {@link AttackPattern} to provide a context, it searches for all {@link Cell}s
+     * that meet the requirements expressed by all of the {@code Constraint}s inside a list.
+     * @param context The {@link AttackPattern} of interest.
+     * @param constraints The list of {@code Constraint}s.
+     * @return all the {@link Cell}s that satisfy every {@code Constraint} in the list.
+     */
     public static List<Cell> filterCells(AttackPattern context, List<Constraint> constraints) {
         List<List<Cell>> targetTable = new ArrayList<>();
 
@@ -278,6 +301,13 @@ public abstract class Constraint {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Given an {@link AttackPattern} to provide a context, it searches for all {@link Room}s
+     * that meet the requirements expressed by all of the {@code Constraint}s inside a list.
+     * @param context The {@link AttackPattern} of interest.
+     * @param constraints The list of {@code Constraint}s.
+     * @return all the {@link Room}s that satisfy every {@code Constraint} in the list.
+     */
     public static List<Room> filterRooms(AttackPattern context, List<Constraint> constraints) {
         List<List<Room>> targetTable = new ArrayList<>();
 
@@ -301,6 +331,10 @@ public abstract class Constraint {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Sets the context for the {@code Constraint}.
+     * @param context the {@link AttackPattern} inside which the {@code Constraint} should be evaluated.
+     */
     public void setContext(AttackPattern context) {
         this.context = context;
     }
@@ -308,6 +342,13 @@ public abstract class Constraint {
     @Override
     public abstract String toString();
 
+    /**
+     * Creates a string containing a short description of how the {@code Constraint} will
+     * work given an id pair.
+     * @param attackModuleId The id of the {@link AttackModule} inside which to look for the {@link Target}.
+     * @param targetId The id of the {@link Target} inside the {@link AttackModule}.
+     * @return the string.
+     */
     public static String getHumanReadableName(int attackModuleId, int targetId) {
         if(attackModuleId == -3 && targetId == -3)
             return "player";

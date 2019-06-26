@@ -123,7 +123,7 @@ public class VirtualView {
             } catch (ConnectionException e) {
                 throw new AbortedTurnException("");
             }
-            if(deliverable.getType() != DeliverableType.INFO) {
+            if(!deliverable.getType().equals(DeliverableType.INFO) && !deliverable.getType().equals(DeliverableType.BULK)) {
                 try {
                     return ((Response) recipient.nextDeliverable()).getNumber();
                 } catch (ConnectionException e) {
@@ -146,8 +146,7 @@ public class VirtualView {
             game.getParticipants().forEach(recipient -> {
                 try {
                     send(recipient, deliverable);
-                } catch (AbortedTurnException e) {
-                    controller.disconnect(recipient);
+                } catch (AbortedTurnException ignored) { // connection flags are allegedly updated from the network package
                 }
             });
         }

@@ -15,16 +15,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Targets are the actors that have a role in attacks. Each {@link AttackModule}
- * has a list of targets, each of which corresponds to a choice made by the attacker. Targets can be {@link Room}s,
+ * {@code Target}s are the actors that have a role in attacks. Each {@link AttackModule}
+ * has a list of {@code Target}s, each of which corresponds to a choice made by the attacker. {@code Target}s can be {@link Room}s,
  * {@link Cell}s or {@link Player}s.
  */
 public abstract class Target {
+    /**
+     * The type of the {@code Target}.
+     */
     protected TargetType type;
+
+    /**
+     * The message presented to the user when they need to make a decision about the choice entailed by the {@code Target}.
+     */
     protected String message;
+
+    /**
+     * A list of rules that the user's choice should abide by.
+     */
     protected List<Constraint> constraints;
+
+    /**
+     * The context in which the choice is made.
+     */
     protected AttackPattern context;
 
+    /**
+     * This factory method constructs a {@code Target}, with the properties found inside the JSON object passed as argument.
+     * @param jTarget the JSON object containing the desired properties.
+     * @return an instance of this class in accordance with the specified properties.
+     * @throws InvalidTargetTypeException when attempting to instantiate a new {@code Target} whose type is not in the
+     * enumeration of possible {@code Target} types.
+     */
     public static Target build(DecoratedJsonObject jTarget) {
         String type;
         try {
@@ -62,22 +84,42 @@ public abstract class Target {
         }
     }
 
+    /**
+     * Tells what {@link Target#type} the {@code Target} is.
+     * @return the type.
+     */
     public TargetType getType() {
         return type;
     }
 
+    /**
+     * Tells what the {@code Target}'s {@link Target#message} is.
+     * @return the message.
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * Tells what the {@code Target}'s {@link Target#constraints} are.
+     * @return a list containing them.
+     */
     public List<Constraint> getConstraints() {
         return constraints;
     }
 
+    /**
+     * Tells what the {@code Target}'s {@link Target#context} is.
+     * @return the relevant {@link AttackPattern}.
+     */
     public Object getContext() {
         return context;
     }
 
+    /**
+     * Sets what the {@code Target}'s {@link Target#context} should be.
+     * @param context the relevant {@link AttackPattern}.
+     */
     public void setContext(AttackPattern context) {
         this.context = context;
         for(Constraint constraint : constraints)
@@ -90,6 +132,10 @@ public abstract class Target {
 
     public abstract Room getRoom();
 
+    /**
+     * Generates a string containing a short description of the {@code Target}.
+     * @return the string.
+     */
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder(type.toString().toLowerCase());
