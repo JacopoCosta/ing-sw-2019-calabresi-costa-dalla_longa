@@ -318,20 +318,8 @@ public class GraphicsEventHandler {
 
             String powerUpType = ((List<String>) powerUpElement).get(0);
             String powerUpColor = ((List<String>) powerUpElement).get(1);
-            switch (powerUpType) {
-                case ("GRENADE"):
-                    powerUps.add(new RemotePowerUp(PowerUpType.GRENADE, powerUpColor));
-                    break;
-                case ("NEWTON"):
-                    powerUps.add(new RemotePowerUp(PowerUpType.NEWTON, powerUpColor));
-                    break;
-                case ("SCOPE"):
-                    powerUps.add(new RemotePowerUp(PowerUpType.SCOPE, powerUpColor));
-                    break;
-                case ("TELEPORT"):
-                    powerUps.add(new RemotePowerUp(PowerUpType.TELEPORT, powerUpColor));
-                    break;
-            } //end switch
+
+            powerUps.add(new RemotePowerUp(powerUpType, powerUpColor));
         }//end for
         player.setPowerUps(powerUps);
 

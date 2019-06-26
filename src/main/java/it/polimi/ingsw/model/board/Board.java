@@ -636,7 +636,7 @@ public class Board {
 
     //FIXME a server method can't return a remote type
     /**
-     * Calculates the wall between two given {@link Cell}s. Note that this calculation is symmetrical
+     * Calculates the wall between two given {@link Cell}. Note that this calculation is symmetrical
      * (i.e. its result doesn't change in case x1 and x2 are swapped, as long as y1 and y2 are swapped as well).
      * @param x1 the horizontal coordinate of the first {@link Cell}, ranging from 0 (left) to boardWidth-1 (right).
      * @param y1 the vertical coordinate of the first {@link Cell}, ranging from 0 (top) to boardHeight-1 (bottom).

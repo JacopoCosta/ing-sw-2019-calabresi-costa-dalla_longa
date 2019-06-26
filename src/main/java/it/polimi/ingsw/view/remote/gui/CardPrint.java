@@ -34,21 +34,8 @@ public class CardPrint {
 
     public ImageView getSourceImage(RemotePowerUp powerUp) {    //given a remotePowerUp, return its image
 
-        String path = CARD_RESOURCES_PATH + "powerUps/";
-
-        switch (powerUp.getType()) {
-            case SCOPE:
-                path += "scope";
-            case NEWTON:
-                path += "newton";
-            case TELEPORT:
-                path += "teleport";
-            case GRENADE:
-                path += "grenade";
-        }
-
-        path += "_" + powerUp.getColorCube().toLowerCase() + ".png";
-
+        //it works fine, as powerUp.getType() is always in lowerCase
+        String path = CARD_RESOURCES_PATH + "powerUps/" + powerUp.getType() + ("_" + powerUp.getColorCube().toLowerCase() + ".png");
         return new ImageView(new Image(path));
     }
 

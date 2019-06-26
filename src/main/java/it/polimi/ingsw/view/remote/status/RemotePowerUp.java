@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.remote.status;
 
-import it.polimi.ingsw.model.powerups.PowerUpType;
 import it.polimi.ingsw.view.virtual.Deliverable;
 
 /**
@@ -10,9 +9,9 @@ import it.polimi.ingsw.view.virtual.Deliverable;
  */
 public class RemotePowerUp {
     /**
-     * Type of the power-up card. Refer to {@see PowerUpType} for details about any type.
+     * Type of the power-up card, codified as String.
      */
-    private PowerUpType type;
+    private String type;
     /**
      * The equivalent ammo that can be earned by using this power-up as payment for weapons, codified as String.
      */
@@ -20,11 +19,11 @@ public class RemotePowerUp {
 
     /**
      * This is the only constructor.
-     * @param type the type of this power-up card.
+     * @param type the type of this power-up card, codified as String.
      * @param colorCube The ammo that can be earned by using this power-up as payment, codified as String.
      */
-    public RemotePowerUp(PowerUpType type, String colorCube) {
-        this.type = type;
+    public RemotePowerUp(String type, String colorCube) {
+        this.type = type.toLowerCase();
         this.colorCube = colorCube;
     }
 
@@ -32,7 +31,7 @@ public class RemotePowerUp {
      * Getter method for {@link this.type}.
      * @return the type of the power-up card.
      */
-    public PowerUpType getType() {
+    public String getType() {
         return type;
     }
 
