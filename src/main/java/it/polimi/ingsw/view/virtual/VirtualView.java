@@ -23,6 +23,7 @@ import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.model.weaponry.targets.TargetCell;
 import it.polimi.ingsw.model.weaponry.targets.TargetPlayer;
 import it.polimi.ingsw.model.weaponry.targets.TargetRoom;
+import it.polimi.ingsw.network.common.deliverable.*;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.view.remote.Dispatcher;
 

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.virtual;
+package it.polimi.ingsw.network.common.deliverable;
 
 public class Response extends Deliverable {
     private int number;

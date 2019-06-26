@@ -6,7 +6,7 @@ import it.polimi.ingsw.network.common.message.MessageStatus;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.server.communication.ClientCommunicationInterface;
-import it.polimi.ingsw.view.virtual.Deliverable;
+import it.polimi.ingsw.network.common.deliverable.Deliverable;
 
 /**
  * A {@code VirtualClient} represents the communication layer of a {@link Player}. The goal of this class is to

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.remote.status;
 
-import it.polimi.ingsw.view.virtual.Deliverable;
+import it.polimi.ingsw.network.common.deliverable.Deliverable;
 
 /**
  * This class stores simplified information about any weapon. Such info is used by CLI-using clients in order to get the player know about the related weapon.

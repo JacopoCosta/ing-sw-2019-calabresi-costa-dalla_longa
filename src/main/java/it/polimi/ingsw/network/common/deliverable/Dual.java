@@ -1,10 +1,10 @@
-package it.polimi.ingsw.view.virtual;
+package it.polimi.ingsw.network.common.deliverable;
 
 /**
  *
  */
 public class Dual extends Deliverable {
-    protected Dual(DeliverableEvent event) {
+    public Dual(DeliverableEvent event) {
         super(event);
         this.type = DeliverableType.DUAL;
     }

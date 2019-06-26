@@ -1,7 +1,7 @@
-package it.polimi.ingsw.view.virtual;
+package it.polimi.ingsw.network.common.deliverable;
 
 public class Info extends Deliverable {
-    protected Info(DeliverableEvent event) {
+    public Info(DeliverableEvent event) {
         super(event);
         this.type = DeliverableType.INFO;
     }

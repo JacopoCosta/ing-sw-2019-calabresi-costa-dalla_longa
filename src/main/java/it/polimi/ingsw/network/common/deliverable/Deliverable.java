@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.virtual;
+package it.polimi.ingsw.network.common.deliverable;
 
 import java.io.Serializable;
 
@@ -7,7 +7,7 @@ public abstract class Deliverable implements Serializable {
     protected DeliverableEvent event;
     protected String message;
 
-    protected Deliverable(DeliverableEvent event) {
+    public Deliverable(DeliverableEvent event) {
         this.event = event;
         this.message = event.message;
     }

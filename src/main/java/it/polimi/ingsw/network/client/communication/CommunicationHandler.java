@@ -5,7 +5,7 @@ import it.polimi.ingsw.network.client.communication.socket.SocketServerCommunica
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
-import it.polimi.ingsw.view.virtual.Deliverable;
+import it.polimi.ingsw.network.common.deliverable.Deliverable;
 
 import java.util.Map;
 

@@ -1,12 +1,13 @@
 package it.polimi.ingsw.view.remote;
 
-import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.powerups.PowerUpType;
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
+import it.polimi.ingsw.network.common.deliverable.Bulk;
+import it.polimi.ingsw.network.common.deliverable.Deliverable;
+import it.polimi.ingsw.network.common.deliverable.Mapped;
+import it.polimi.ingsw.network.common.deliverable.Response;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.view.remote.status.*;
-import it.polimi.ingsw.view.virtual.*;
 
 import java.util.ArrayList;
 import java.util.List;

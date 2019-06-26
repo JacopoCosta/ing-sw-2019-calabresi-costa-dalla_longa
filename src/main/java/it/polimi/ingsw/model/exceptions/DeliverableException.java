@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.exceptions;
 
 import it.polimi.ingsw.network.client.executable.Client;
-import it.polimi.ingsw.view.virtual.Deliverable;
+import it.polimi.ingsw.network.common.deliverable.Deliverable;
 
 /**
  * This exception is thrown when attempting to broadcast to all {@link Client} a {@link Deliverable} of a type that expects a response.

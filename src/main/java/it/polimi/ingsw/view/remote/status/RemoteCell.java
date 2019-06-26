@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.remote.status;
 
-import it.polimi.ingsw.view.virtual.Deliverable;
+import it.polimi.ingsw.network.common.deliverable.Deliverable;
 
 import java.util.List;
 
