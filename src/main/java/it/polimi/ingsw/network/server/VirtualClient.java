@@ -8,6 +8,8 @@ import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.server.communication.ClientCommunicationInterface;
 import it.polimi.ingsw.network.common.deliverable.Deliverable;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * A {@code VirtualClient} represents the communication layer of a {@link Player}. The goal of this class is to
  * offer a communication {@code API} which is fully transparent to the {@link Player}, so that he can maintain all of
@@ -56,7 +58,7 @@ public abstract class VirtualClient {
     /**
      * Whether or not the player resulted to be connected to the {@code Server}.
      */
-    private boolean connected;
+    private AtomicBoolean connected;
 
     /**
      * This is the only constructor. It creates a new {@code VirtualClient} with the given {@code name}.
@@ -71,7 +73,7 @@ public abstract class VirtualClient {
         this.messageReceivedLock = new Object();
 
         this.messageStatus = MessageStatus.WAITING;
-        this.connected = false; //need to call notifyConnected() manually to connect the VirtualClient
+        this.connected = new AtomicBoolean(false); //need to call notifyConnected() manually to connect the VirtualClient
     }
 
     /**
@@ -80,7 +82,7 @@ public abstract class VirtualClient {
      * @return {@code true} if and only if the {@code VirtualClient} is online.
      */
     public boolean isConnected() {
-        return this.connected;
+        return this.connected.get();
     }
 
     /**
@@ -193,7 +195,7 @@ public abstract class VirtualClient {
      * receiving {@link NetworkMessage}s from his remote client counterpart.
      */
     public void notifyConnected() {
-        this.connected = true;
+        this.connected.set(true);
     }
 
     /**
@@ -204,7 +206,7 @@ public abstract class VirtualClient {
     public void notifyDisconnected() {
         synchronized (this.messageReceivedLock) {
             this.messageStatus = MessageStatus.UNAVAILABLE;
-            this.connected = false;
+            this.connected.set(false);
         }
     }
 

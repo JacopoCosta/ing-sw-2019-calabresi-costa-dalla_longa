@@ -17,7 +17,8 @@ public class LobbyCell extends ListCell<String> {
     //item components
     private Stage parentStage;
     private Stage passwordChoiceStage;
-    private Label label;
+    private Label lobbyNameLabel;
+    private Label participantsLabel;
     private HBox itemBox;
 
     //password input components
@@ -29,9 +30,13 @@ public class LobbyCell extends ListCell<String> {
 
         setBackground(Palette.backgroundImage(Palette.LIST_ITEM_BACKGROUND_IMAGE));
 
-        //participants and lobby name label
-        label = Palette.label(null, Palette.ADRENALINE_ORANGE, Color.TRANSPARENT);
-        label.setPadding(Palette.DEFAULT_SQUARED_PADDING);
+        //lobby name label
+        lobbyNameLabel = Palette.label(null, Palette.ADRENALINE_ORANGE, Color.TRANSPARENT);
+        lobbyNameLabel.setPadding(Palette.DEFAULT_SQUARED_PADDING);
+
+        //participants number label
+        participantsLabel = Palette.label(null, Palette.ADRENALINE_DARK_GRAY_FILL, Color.TRANSPARENT);
+        participantsLabel.setPadding(Palette.DEFAULT_SQUARED_PADDING);
 
         //join button
         Button joinButton = Palette.buttonAlt(Palette.JOIN_TEXT);
@@ -50,12 +55,12 @@ public class LobbyCell extends ListCell<String> {
 
         //cell
         HBox.setMargin(joinButton, Palette.LARGE_RIGHT_MARGIN);
-        HBox.setMargin(label, Palette.MEDIUM_LEFT_MARGIN);
-        itemBox = new HBox(label, spacer, joinButton);
+        HBox.setMargin(participantsLabel, Palette.MEDIUM_LEFT_MARGIN);
+        itemBox = new HBox(participantsLabel, lobbyNameLabel, spacer, joinButton);
         itemBox.setAlignment(Pos.CENTER_LEFT);
     }
 
-    private void createGameLayout(){
+    private void createGameLayout() {
         GUI.foregroundLayout.getChildren().remove(GUI.lobbySelectionLayout);
         GameStage gameStage = new GameStage(GUI.baseLayout, GUI.foregroundLayout, GUI.communicationHandler);
         gameStage.display();
@@ -141,12 +146,14 @@ public class LobbyCell extends ListCell<String> {
             setPrefHeight(0D);
             setGraphic(null);
         } else {
+            String participantsNumber = value.substring(0, value.indexOf(']') + 1);
             lobbyName = value.substring(value.indexOf(']') + 2);
 
             setPrefHeight(Palette.LIST_VIEW_ITEM_HEIGHT / 2);
             setPrefWidth(Palette.LIST_VIEW_ITEM_WIDTH / 2);
 
-            label.setText(value);
+            participantsLabel.setText(participantsNumber);
+            lobbyNameLabel.setText(lobbyName);
             setGraphic(itemBox);
         }
     }

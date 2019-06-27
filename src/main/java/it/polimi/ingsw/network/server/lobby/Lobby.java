@@ -259,20 +259,27 @@ class Lobby implements Observer {
         if (player == null)
             throw new NullPointerException("Player is null");
 
-        //a player can be removed only while the game is not started
+        if (!this.players.contains(player))
+            throw new PlayerNotFoundException("Player \"" + player.getName() + "\" not found into Lobby \"" + this.name + "\"");
+
+        //a Player can be removed only while the Game is not started
         if (this.game == null || !this.game.isStarted()) {
-            if (!this.players.contains(player))
-                throw new PlayerNotFoundException("Player \"" + player.getName() + "\" not found into Lobby \"" + this.name + "\"");
+            this.previousPlayersAmount = this.players.size();
             this.players.removeIf(p -> p.equals(player));
             adjustTimer();
+            return;
         }
+
+        //if the Game is started, the Player is not removed, but it's disconnection is notified
+        player.notifyDisconnected();
     }
 
     /**
-     * This function is called every time a new {@link Player} is added to this {@code Lobby} or an existing one is removed.
+     * This function is called every time a new {@link Player} is added to this {@code Lobby} or an existing one is removed,
+     * only if the game is not started yet.
      * This function adjusts the {@link CountDownTimer} countdown based on the number of
-     * {@link Player} logged into the {@code Lobby}, represented by {@link #players#size()}.
-     * Every time the number of {@link Player} changes, a delay value can be evaluate to adjust the countdown.
+     * {@link Player}s logged into the {@code Lobby}, represented by {@link #players#size()}.
+     * Every time the number of {@link Player}s changes, a delay value can be evaluate to adjust the countdown.
      *
      * @see CountDownTimer
      */
@@ -323,6 +330,6 @@ class Lobby implements Observer {
         this.game = Game.create(this.gameProperty.finalFrenzy(), this.gameProperty.roundsToPlay(), this.gameProperty.boardType(), this.players);
         new Thread(this.game::play).start();
 
-        this.console.log("Game started from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
+        this.console.mexG("Game started from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
     }
 }

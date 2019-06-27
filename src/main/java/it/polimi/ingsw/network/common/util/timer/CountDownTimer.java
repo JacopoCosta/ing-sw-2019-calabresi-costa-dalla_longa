@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A {@code Timer} class to perform countdown from {@link #startingSeconds} all way down to {@code 0}.
+ * A {@code Timer} class to perform countdown from {@link #currentSeconds} all way down to {@code 0}.
  * This class extends the {@link Observable} interface, so the caller of {@link CountDownTimer} can be notified when the
  * timer expires.
  */
@@ -26,11 +26,6 @@ public class CountDownTimer implements Observable {
      * Time in seconds between successive {@link #tick} task executions.
      */
     private static final int PERIOD = 1;
-
-    /**
-     * Time in seconds to start counting from.
-     */
-    private final int startingSeconds;
 
     /**
      * Time left in seconds before the countdown expires.
@@ -64,8 +59,7 @@ public class CountDownTimer implements Observable {
      * @param startingSeconds the amount of seconds to start counting from.
      */
     public CountDownTimer(int startingSeconds) {
-        this.startingSeconds = startingSeconds;
-        this.currentSeconds = new AtomicInteger();
+        this.currentSeconds = new AtomicInteger(startingSeconds);
 
         this.executor = Executors.newSingleThreadScheduledExecutor();
         this.tick = () -> {
@@ -103,15 +97,13 @@ public class CountDownTimer implements Observable {
     }
 
     /**
-     * Starts the countdown from {@link #startingSeconds} down to  {@code 0}.
-     * If called called repeatedly before the {@link #tick} task is done, the second and subsequent calls have no effect.
+     * Starts the countdown from {@link #currentSeconds} down to  {@code 0}.
+     * If called repeatedly before the {@link #tick} task is done, the second and subsequent calls have no effect.
      */
     public void start() {
-        //prepare the timer to start the countdown from the beginning
-        if (this.future == null || this.future.isDone()) {
-            this.currentSeconds.set(this.startingSeconds);
+        //prepare the timer to start the countdown from the last value before interruption
+        if (this.future == null || this.future.isDone())
             this.future = this.executor.scheduleAtFixedRate(this.tick, INITIAL_DELAY, PERIOD, TimeUnit.SECONDS);
-        }
     }
 
     /**
