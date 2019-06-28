@@ -24,7 +24,7 @@ public class RemotePowerUp {
      */
     public RemotePowerUp(String type, String colorCube) {
         this.type = type.toLowerCase();
-        this.colorCube = colorCube;
+        this.colorCube = colorCube.toLowerCase();
     }
 
     /**

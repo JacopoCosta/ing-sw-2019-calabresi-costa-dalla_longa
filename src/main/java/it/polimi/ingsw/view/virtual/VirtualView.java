@@ -174,21 +174,6 @@ public class VirtualView {
                 .map(Player::getName)
                 .collect(Collectors.toList()));
 
-        /*
-
-        This is probably redundant.
-        TODO: check its redundancy (useless in case participants ID are used on view-level only, as participants are already
-              sent using a sorted list of participants)
-
-        //adds participants ID
-        content.add(game.getParticipants()
-                .stream()
-                .map(Player::getPosition)
-                .map(Cell::getId)
-                .collect(Collectors.toList()));
-
-         */
-
         Deliverable deliverable = new Bulk(DeliverableEvent.BOARD_INIT, content);
         broadcast(deliverable);
 
@@ -205,6 +190,10 @@ public class VirtualView {
 
             sendUpdateBoardKill(null, null);
             sendUpdateDoubleKill();
+
+            for(Cell cell : board.getCells()) {
+                sendUpdateCell(cell);
+            }
         }
     }
 

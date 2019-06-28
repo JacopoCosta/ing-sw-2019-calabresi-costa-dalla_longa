@@ -9,7 +9,7 @@ import javafx.scene.layout.*;
 
 public class CardPrint {
 
-    private final double INACTIVE_SAT_VALUE = -1.0; //ranging from -1.0 to +1.0, no effect by applying 0.0
+    private final double INACTIVE_SAT_VALUE = -0.8; //ranging from -1.0 to +1.0, no effect by applying 0.0
 
     private final String CARD_RESOURCES_PATH = "/gui/png/decks/";
 
@@ -18,7 +18,7 @@ public class CardPrint {
         String path = weapon.getName().replaceAll("\\s","");    //deleting spaces
         path = path.substring(0, 1).toLowerCase() + path.substring(1);  //turning to camelCase by lowering the first character
 
-        path = CARD_RESOURCES_PATH + "/weapons" + path + ".png";    //getting the right path
+        path = CARD_RESOURCES_PATH + "/weapons/" + path + ".png";    //getting the right path
 
         ImageView image = new ImageView(new Image(path));
 
