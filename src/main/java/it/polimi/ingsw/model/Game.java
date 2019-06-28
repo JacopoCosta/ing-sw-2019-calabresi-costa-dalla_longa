@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.Room;
@@ -10,6 +11,9 @@ import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.util.json.DecoratedJsonArray;
 import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
 import it.polimi.ingsw.model.util.json.JsonPathGenerator;
+import it.polimi.ingsw.network.server.Server;
+import it.polimi.ingsw.network.server.VirtualClient;
+import it.polimi.ingsw.network.server.lobby.Lobby;
 import it.polimi.ingsw.view.virtual.VirtualView;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.player.*;
@@ -17,30 +21,97 @@ import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.util.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * This class handles at a high level everything concerning the game logic and interfaces with the {@link VirtualView}
+ * to update {@link VirtualClient}s on its status, which is in turn modified by the {@link Controller}.
+ */
 public class Game {
+    /**
+     * The minimum amount of players for an online match.
+     */
     public static final int MINIMUM_PLAYER_COUNT = 3;
 
+    /**
+     * Allows to play a game without depending on the client-server architecture. Enabling this flag
+     * allows integration testing of the game only, without indirectly testing external aspects as well.
+     */
     public static boolean offlineMode = false;
+
+    /**
+     * Intercepts requests to the player and instantly provides the awaiting method with a random value
+     * between the legal choices. Enabling this flag allows to automatically run, and therefore test very
+     * quickly, complete games in less than a second each.
+     */
     public static boolean autoPilot = false;
+
+    /**
+     * Disables all output. Enabling this flag significantly reduces execution times in some of the beefier
+     * tests, since removing calls to the {@code System.out} saves a few hundred clock cycles per removed call.
+     */
     public static boolean silent = false;
 
+    /**
+     * Whether or not the standard game should be followed by an additional round in Final Frenzy mode.
+     */
     private boolean finalFrenzy;
+
+    /**
+     * The number of kills left before the game ends or enters the Final Frenzy. This also represents
+     * the number of skulls on the killshot track.
+     */
     private int roundsLeft;
-    private boolean gameOver;
 
-    private List<Player> participants;
-    private int currentTurnPlayer;
-
-    private int boardType;
-    private Board board;
-    private VirtualView virtualView;
-
+    /**
+     * Whether or not the game has already started. This allows the {@link Lobby} to know that a game has
+     * started, so as not to modify the list of {@link Game#participants}.
+     */
     private boolean started;
 
+    /**
+     * Whether or not the game has ended. This occurs after {@link Game#roundsLeft} drops to {@code 0} in Sudden Death
+     * mode, or after a full round is played in Final Frenzy mode.
+     */
+    private boolean gameOver;
+
+    /**
+     * The {@link Player}s involved in the game.
+     */
+    private List<Player> participants;
+
+    /**
+     * The id of the player whose turn it is, inside the {@link Game#participants} list.
+     */
+    private int currentTurnPlayer;
+
+    /**
+     * The id of the {@link Board} schematic the game is being played on. This is never used during a game
+     * but needs to be saved in order to reload the game, should the {@link Server} go down.
+     */
+    private int boardType;
+
+    /**
+     * The board the game is being played on. This defines all possible movements.
+     */
+    private Board board;
+
+    /**
+     * A reference to the game's {@link VirtualView} through which the model sends requests to {@link VirtualClient}s.
+     */
+    private VirtualView virtualView;
+
+    /**
+     * This is the only constructor.
+     *
+     * @param finalFrenzy  whether to enable {@link Game#finalFrenzy}.
+     * @param roundsToPlay the number of rounds to play, also the initial value {@link Game#roundsLeft}.
+     * @param boardType    the id of the type of {@link Board} to play the game on.
+     * @param participants the list of {@link Game#participants}.
+     */
     private Game(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {
         this.finalFrenzy = finalFrenzy;
         this.roundsLeft = roundsToPlay;
@@ -53,28 +124,61 @@ public class Game {
         this.started = false;
     }
 
+    /**
+     * This factory method creates a new {@code Game} with the settings specified by the arguments. It then
+     * proceeds to bind each of the {@code participants} to the {@code Game}.
+     *
+     * @param finalFrenzy  whether to enable {@link Game#finalFrenzy}.
+     * @param roundsToPlay the number of rounds to play, also the initial value {@link Game#roundsLeft}.
+     * @param boardType    the id of the type of {@link Board} to play the game on.
+     * @param participants the list of {@link Game#participants}.
+     * @return the {@code Game}.
+     */
     public static Game create(boolean finalFrenzy, int roundsToPlay, int boardType, List<Player> participants) {
         Game game = new Game(finalFrenzy, roundsToPlay, boardType, participants);
         participants.forEach(p -> p.setGame(game));
         return game;
     }
 
+    /**
+     * Gets the list containing the {@link Game#participants} of the {@code Game}.
+     *
+     * @return the list.
+     */
     public List<Player> getParticipants() {
         return participants;
     }
 
+    /**
+     * Gets the {@link Game#board} the {@code Game} is played on.
+     *
+     * @return the {@link Board}.
+     */
     public Board getBoard() {
         return this.board;
     }
 
+    /**
+     * Gets the {@link Game#virtualView} bound to the {@code Game}.
+     *
+     * @return the {@link VirtualView}.
+     */
     public VirtualView getVirtualView() {
         return virtualView;
     }
 
+    /**
+     * Tells whether the game has {@link Game#started}.
+     *
+     * @return {@code true} if it has.
+     */
     public boolean isStarted() {
         return this.started;
     }
 
+    /**
+     * Executes a sequence of internal methods that form one complete turn.
+     */
     private void playTurn() {
         board.spreadAmmo();
         board.spreadWeapons();
@@ -90,7 +194,7 @@ public class Game {
 
         boolean enoughPlayers = onlinePlayerCount >= MINIMUM_PLAYER_COUNT;
 
-        if(!enoughPlayers && !offlineMode) { // end game if there are not enough participants
+        if (!enoughPlayers && !offlineMode) { // end game if there are not enough participants
             gameOver = true;
             return;
         }
@@ -101,14 +205,16 @@ public class Game {
             board.getPowerUpDeck().smartDraw(true).ifPresent(c -> {
                 try {
                     subject.givePowerUp(c);
-                } catch (FullHandException ignored) { } // discarding will be part of the respawn mechanic
+                } catch (FullHandException ignored) {
+                } // discarding will be part of the respawn mechanic
             });
 
-            if(subject.getDeathCount() == 0) // if subject hasn't died yet -- it's the entry spawn, draw twice
+            if (subject.getDeathCount() == 0) // if subject hasn't died yet -- it's the entry spawn, draw twice
                 board.getPowerUpDeck().smartDraw(true).ifPresent(c -> {
                     try {
                         subject.givePowerUp(c);
-                    } catch (FullHandException ignored) { } // discarding will be part of the respawn mechanic
+                    } catch (FullHandException ignored) {
+                    } // discarding will be part of the respawn mechanic
                 });
 
             try {
@@ -214,23 +320,24 @@ public class Game {
                     board.getPowerUpDeck().smartDraw(true).ifPresent(c -> {
                         try {
                             p.givePowerUp(c);
-                        } catch (FullHandException ignored) { } // discarding will be part of the respawn process
+                        } catch (FullHandException ignored) {
+                        } // discarding will be part of the respawn process
                     });
                     try {
                         virtualView.spawn(p);
-                    } catch (AbortedTurnException ignored) { } // in case of lost connection, don't spawn
+                    } catch (AbortedTurnException ignored) {
+                    } // in case of lost connection, don't spawn
                 });
 
         board.promoteDoubleKillers();
 
         if (roundsLeft == 0) { // when the last skull has been removed from the killshot track
             if (finalFrenzy && !subject.causedFrenzy()) {
-                if(participants.stream().noneMatch(Player::causedFrenzy)) {
+                if (participants.stream().noneMatch(Player::causedFrenzy)) {
                     virtualView.announceFrenzy(subject);
                     subject.causeFrenzy();
                 }
-            }
-            else {
+            } else {
                 gameOver = true;
                 invalidateSaveState();
             }
@@ -240,6 +347,9 @@ public class Game {
         save(); // save the game state at the end of each turn
     }
 
+    /**
+     * Starts the game.
+     */
     public void play() {
         this.started = true;
 
@@ -258,6 +368,9 @@ public class Game {
         virtualView.announceWinner(ranking);
     }
 
+    /**
+     * Saves the game to a {@code .json} file.
+     */
     public void save() {
         DecoratedJsonObject jSaved = new DecoratedJsonObject();
 
@@ -383,6 +496,10 @@ public class Game {
         tl.writeToFile(JsonPathGenerator.getPath("saved.json"));
     }
 
+    /**
+     * Taints the current save state for this {@code Game} by applying an invalidity tag. This is done
+     * to prevent the option of replaying the last round of a {@code Game} that has already come to a conclusion.
+     */
     public void invalidateSaveState() {
         DecoratedJsonObject jSaved = new DecoratedJsonObject();
 
@@ -393,8 +510,17 @@ public class Game {
         tl.writeToFile(JsonPathGenerator.getPath("saved.json"));
     }
 
-    public static Game load(DecoratedJsonObject jSaveState, List<Player> participants) throws InvalidSaveStateException, UnmatchedSavedParticipantsException {
-        if(participants == null)
+    /**
+     * This factory method creates a new {@code Game} based on a save state retrieved from a {@code .json} file.
+     * @param jSaveState The {@link DecoratedJsonObject} parsed from the file.
+     * @param shuffledParticipants The list of {@link Player}s attempting to join the reloaded {@code Game}.
+     * @return The {@code Game}.
+     * @throws InvalidSaveStateException when attempting to load from an invalidated save state.
+     * @throws UnmatchedSavedParticipantsException when the list of joining {@link Player}s is not a permutation
+     * of the list of {@link Player}s found in the save state.
+     */
+    public static Game load(DecoratedJsonObject jSaveState, List<Player> shuffledParticipants) throws InvalidSaveStateException, UnmatchedSavedParticipantsException {
+        if (shuffledParticipants == null)
             throw new NullPointerException("Tried to load a game with participants set to null.");
         DecoratedJsonObject jSaved;
         try {
@@ -430,7 +556,7 @@ public class Game {
             throw new JsonException("Savestate participants not found.");
         }
 
-        List<String> playerNames = participants.stream()
+        List<String> playerNames = shuffledParticipants.stream()
                 .map(Player::getName)
                 .collect(Collectors.toList());
 
@@ -444,6 +570,10 @@ public class Game {
         Optional<String> intrusivePlayer = playerNames.stream().filter(s -> !savedPlayerNames.contains(s)).findFirst();
         if (intrusivePlayer.isPresent())
             throw new UnmatchedSavedParticipantsException("The saved game did not expect a player named \"" + intrusivePlayer + "\".");
+
+        final List<Player> participants = shuffledParticipants.stream() // match the saved order
+                .sorted(Comparator.comparingInt(p -> savedPlayerNames.indexOf(p.getName())))
+                .collect(Collectors.toList());
 
         boolean finalFrenzy;
         try {
@@ -551,7 +681,7 @@ public class Game {
                         } catch (JullPointerException e) {
                             throw new JsonException("Savestate cell ammoTile not found.");
                         }
-                        if(!jAmmoTile.isEmpty()) {
+                        if (!jAmmoTile.isEmpty()) {
                             int red;
                             try {
                                 red = jAmmoTile.getInt("red");
@@ -579,8 +709,7 @@ public class Game {
                             game.getBoard()
                                     .fetchAmmoTile(red, yellow, blue, includesPowerUp)
                                     .ifPresent(((AmmoCell) cell)::setAmmoTile);
-                        }
-                        else
+                        } else
                             ((AmmoCell) cell).setAmmoTile(null);
                     }
                 }
@@ -768,6 +897,11 @@ public class Game {
         return game;
     }
 
+    /**
+     * Generates a string containing a summary of the game status. Thhe intended use is for
+     * synoptic inspection and should not be presented to the end user.
+     * @return the string.
+     */
     @Override
     public String toString() {
         final int edge = 160;

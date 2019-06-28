@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 
 /**
  * This class controls changes in the status of the {@link Game}. One {@code Controller} is instantiated for each {@link Game}.
- * @see Game;
  */
 
 public class Controller {

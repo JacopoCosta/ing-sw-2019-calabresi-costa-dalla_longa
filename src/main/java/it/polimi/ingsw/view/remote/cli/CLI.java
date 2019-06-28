@@ -4,6 +4,7 @@ import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.view.remote.GraphicalInterface;
+import it.polimi.ingsw.view.remote.GraphicsEventHandler;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -58,6 +59,12 @@ public class CLI implements GraphicalInterface {
         }
         //TODO: note: from here client is registered and need to do something :)
 
+        GraphicsEventHandler graphicsEventHandler = new GraphicsEventHandler(false, communicationHandler);
+
+        while(true) // TODO define exit conditions
+        graphicsEventHandler.deliverableCatcher();
+
+        /* commenting this out, because further input will be solicited by Deliverable requests
         //request the next action to do
         int action = requestAction();
 
@@ -65,6 +72,7 @@ public class CLI implements GraphicalInterface {
             logoutFromLobby();
             unregister();
         }
+        */
     }
 
     private String in() {

@@ -59,7 +59,7 @@ public abstract class BoardGraph {
         //print Kills list
         boolean emptyList = true;
         console.tinyPrintln("\nKills list:");
-        for(String killerName: RemoteBoard.getKillers()) {
+        for(String killerName: RemoteBoard.getKillers()) { // FIXME NullPointerException when called by GraphicsEventHandler:292
             if(killerName != null) {
                 if(RemoteBoard.getKillers().get(RemoteBoard.getKillers().indexOf(killerName) + 1) == null) {
                     console.tinyPrintln("\t" + killerName + " (Overkill!) ");

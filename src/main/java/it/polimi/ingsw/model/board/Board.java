@@ -593,6 +593,8 @@ public class Board {
         return Optional.of(ammoTile);
     }
 
+    // FIXME client-server issue
+
     /**
      * Calculates the morphology of the {@link Cell} scheme of this {@code Board}, i.e. a simple scheme containing basic info about the type of walls between every {@link Cell}.
      * Its only purpose is being analysed by CLI-type clients in order to draw the correct {@code Board} configuration.
@@ -634,7 +636,6 @@ public class Board {
         return morphology;
     }
 
-    //FIXME a server method can't return a remote type
     /**
      * Calculates the wall between two given {@link Cell}. Note that this calculation is symmetrical
      * (i.e. its result doesn't change in case x1 and x2 are swapped, as long as y1 and y2 are swapped as well).

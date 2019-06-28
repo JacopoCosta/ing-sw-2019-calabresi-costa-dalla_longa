@@ -18,7 +18,7 @@ import java.util.*;
  */
 
 @SuppressWarnings("FieldCanBeLocal")
-class Lobby implements Observer {
+public class Lobby implements Observer {
     /**
      * The maximum number of {@link Player}s a {@code Lobby} can contain.
      */

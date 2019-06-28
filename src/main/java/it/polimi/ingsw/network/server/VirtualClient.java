@@ -154,7 +154,7 @@ public abstract class VirtualClient {
     @SuppressWarnings("StatementWithEmptyBody")
     private NetworkMessage nextMessage() throws ConnectionException {
         synchronized (this.messageReceivedLock) {
-            while (this.messageStatus.equals(MessageStatus.WAITING)) ;
+            while (this.messageStatus.equals(MessageStatus.WAITING)) ; // TEMP il server si pianta qui perché non riceve risposta
 
             if (this.messageStatus.equals(MessageStatus.UNAVAILABLE))
                 throw new ConnectionException("Client disconnected");
