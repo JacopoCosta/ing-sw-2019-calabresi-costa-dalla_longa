@@ -182,6 +182,7 @@ public class Game {
     private void playTurn() {
         board.spreadAmmo();
         board.spreadWeapons();
+        virtualView.sendUpdateAllCells(this.getBoard());    //TODO: is it better calling it here or later?
 
         Player subject = participants.get(currentTurnPlayer);
 
@@ -352,6 +353,8 @@ public class Game {
      */
     public void play() {
         this.started = true;
+        //send clients board initial configuration
+        virtualView.sendStatusInit(this.getBoard());
 
         while (!gameOver) {
             this.playTurn();

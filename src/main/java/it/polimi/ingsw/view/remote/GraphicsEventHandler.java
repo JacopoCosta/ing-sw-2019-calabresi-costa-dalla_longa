@@ -178,17 +178,21 @@ public class GraphicsEventHandler {
     private void CLIBulkHandler(Deliverable deliverable) {
         Object bulk = ((Bulk) deliverable).unpack();
 
+        System.out.println("Received bulk deliverable: " + deliverable.getEvent().toString());
+        //TODO: remove this, this is for debug-purpose only
+
         switch (deliverable.getEvent()) {
             case UPDATE_DAMAGE:
 
                 //creates a new damageList from the deliverable content, then sets it as damageList of the player
-                List<String> damageList = new ArrayList<>();
+                List<String> newDamageList = new ArrayList<>();
 
                 for(int i=1; i < ((List<String>) bulk).size(); i++) {
-                    damageList.add(((List<String>) bulk).get(i));
+                    //System.out.println(i + "/" + content.size() + "; " + ((List<String>) bulk).size());
+                    newDamageList.add(((List<String>) bulk).get(i));
                 }
                 //sets damageList as new damageList for the player who needs the update
-                RemoteBoard.getParticipants().get(((List<Integer>) bulk).get(0) - 1).setDamage(damageList);
+                RemoteBoard.getParticipants().get(((List<Integer>) bulk).get(0) - 1).setDamage(newDamageList);
 
                 break;
             case UPDATE_MARKING:
@@ -204,7 +208,12 @@ public class GraphicsEventHandler {
                 break;
             case UPDATE_MOVE:
                 //simply sets the new player position to the new position written in the deliverable content
-                RemoteBoard.getParticipants().get(((List<Integer>) bulk).get(0) - 1).setPosition(((List<Integer>) bulk).get(1));
+                int participantIndex = ((List<Integer>) bulk).get(0);
+                int newPositionIndex = -1;
+
+                if (((List<Object>) bulk).get(1) != null)   //it happens when the player hasn't spawned yet
+                    newPositionIndex = ((List<Integer>) bulk).get(1);
+                RemoteBoard.getParticipants().get(participantIndex - 1).setPosition(newPositionIndex);
                 //NOTE:
                 //Players Ids range from 1 to n, so its value must be decreased by 1 to get its location in RemoteBoard.getParticipants();
                 //Cells Id also range from 1 to n, but in this case we are just setting player's position: we are not getting a cell position
@@ -354,10 +363,12 @@ public class GraphicsEventHandler {
 
         //extracts info about participants, adding them to the RemoteBoard
         List<String> playerNames = (List<String>) ((List<Object>) bulk).get(3);
+        List<RemotePlayer> participants = new ArrayList<>();
         for(String name: playerNames) {
             RemotePlayer remotePlayer = new RemotePlayer(name);
-            RemoteBoard.getParticipants().add(remotePlayer);
+            participants.add(remotePlayer);
         }
+        RemoteBoard.setParticipants(participants);
     }
 
 }

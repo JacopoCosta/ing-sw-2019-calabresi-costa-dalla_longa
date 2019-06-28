@@ -157,7 +157,7 @@ public class VirtualView {
     BULK sender: sends initial info about the game itself: list of participants, board morphology and game settings.
     If the game comes from a previous saved game (isNewGame == true), it also sends all the information about players and board status.
     */
-    public void sendStatusInit(Board board, boolean isNewGame) {
+    public void sendStatusInit(Board board/*, boolean isNewGame*/) {
         List<Object> content = new ArrayList<>();
         //adds general board structure info
         content.add(game.getBoard().getWidth());
@@ -177,7 +177,7 @@ public class VirtualView {
         Deliverable deliverable = new Bulk(DeliverableEvent.BOARD_INIT, content);
         broadcast(deliverable);
 
-        if(!isNewGame) {    //the game comes from a saved game, so all the info about the players shall be broadcast as well
+        //if(!isNewGame) {    //the game comes from a saved game, so all the info about the players shall be broadcast as well
 
             for(Player player: game.getParticipants()) {
                 sendUpdateScore(player, null, 0, false);    //the important part is amount set to 0
@@ -191,10 +191,14 @@ public class VirtualView {
             sendUpdateBoardKill(null, null);
             sendUpdateDoubleKill();
 
-            for(Cell cell : board.getCells()) {
-                sendUpdateCell(cell);
-            }
-        }
+            //sendUpdateAllCells(board);
+        //}
+    }
+
+    //shortcut for multiple calls of sendUpdateCell
+    public void sendUpdateAllCells(Board board) {
+        for(Cell cell: board.getCells())
+            sendUpdateCell(cell);
     }
 
     //BULK: sends an updated, new value for a cell content
@@ -239,7 +243,7 @@ public class VirtualView {
 
         content.add(target.getId());  //indicates the player whose damagelist has to be updated
 
-        content.add(target.getDamageAsList()
+        content.addAll(target.getDamageAsList()
                 .stream()
                 .map(Player::getName)
                 .collect(Collectors.toList()));
@@ -256,7 +260,9 @@ public class VirtualView {
 
         List<Object> content = new ArrayList<>();
 
-            content.add(target.getMarkingsAsList()
+            content.add(target.getId());  //indicates the player whose markingList has to be updated
+
+            content.addAll(target.getMarkingsAsList()
                     .stream()
                     .map(Player::getName)
                     .collect(Collectors.toList()));
@@ -277,7 +283,10 @@ public class VirtualView {
         List<Integer> content = new ArrayList<>();
 
         content.add(target.getId());
-        content.add(target.getPosition().getId());
+        if(destination == null)
+            content.add(null);
+        else
+            content.add(destination.getId());
 
         Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_MOVE, content);
 
