@@ -2,6 +2,9 @@ package it.polimi.ingsw.network.common.deliverable;
 
 import java.io.Serializable;
 
+/**
+ * This enumeration contains all events that could trigger the sending and receiving of a {@link Deliverable}.
+ */
 public enum DeliverableEvent implements Serializable {
     SPAWN_REQUEST("Which power-up would you like to discard? You will spawn where indicated by its colour."),
     SPAWN_SUCCESS("You spawned."),

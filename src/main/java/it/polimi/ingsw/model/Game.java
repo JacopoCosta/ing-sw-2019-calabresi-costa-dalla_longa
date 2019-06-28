@@ -369,7 +369,7 @@ public class Game {
     }
 
     /**
-     * Saves the game to a {@code .json} file.
+     * Saves the game status to a {@code .json} file.
      */
     public void save() {
         DecoratedJsonObject jSaved = new DecoratedJsonObject();
