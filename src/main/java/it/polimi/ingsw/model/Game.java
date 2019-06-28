@@ -512,12 +512,13 @@ public class Game {
 
     /**
      * This factory method creates a new {@code Game} based on a save state retrieved from a {@code .json} file.
-     * @param jSaveState The {@link DecoratedJsonObject} parsed from the file.
+     *
+     * @param jSaveState           The {@link DecoratedJsonObject} parsed from the file.
      * @param shuffledParticipants The list of {@link Player}s attempting to join the reloaded {@code Game}.
      * @return The {@code Game}.
-     * @throws InvalidSaveStateException when attempting to load from an invalidated save state.
+     * @throws InvalidSaveStateException           when attempting to load from an invalidated save state.
      * @throws UnmatchedSavedParticipantsException when the list of joining {@link Player}s is not a permutation
-     * of the list of {@link Player}s found in the save state.
+     *                                             of the list of {@link Player}s found in the save state.
      */
     public static Game load(DecoratedJsonObject jSaveState, List<Player> shuffledParticipants) throws InvalidSaveStateException, UnmatchedSavedParticipantsException {
         if (shuffledParticipants == null)
@@ -898,8 +899,9 @@ public class Game {
     }
 
     /**
-     * Generates a string containing a summary of the game status. Thhe intended use is for
+     * Generates a string containing a summary of the game status. The intended use is for
      * synoptic inspection and should not be presented to the end user.
+     *
      * @return the string.
      */
     @Override

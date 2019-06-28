@@ -15,6 +15,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * offer a communication {@code API} which is fully transparent to the {@link Player}, so that he can maintain all of
  * the logical functions separated from the network aspect, while being able to easily communicate with his remote
  * counterpart.
+ *
+ * @see Player
  */
 public abstract class VirtualClient {
     /**
@@ -56,7 +58,7 @@ public abstract class VirtualClient {
     private final Object messageReceivedLock;
 
     /**
-     * Whether or not the player resulted to be connected to the {@code Server}.
+     * Whether or not the {@code VirtualClient} resulted to be connected to the {@code Server}.
      */
     private AtomicBoolean connected;
 
@@ -154,7 +156,7 @@ public abstract class VirtualClient {
     @SuppressWarnings("StatementWithEmptyBody")
     private NetworkMessage nextMessage() throws ConnectionException {
         synchronized (this.messageReceivedLock) {
-            while (this.messageStatus.equals(MessageStatus.WAITING)) ; // TEMP il server si pianta qui perché non riceve risposta
+            while (this.messageStatus.equals(MessageStatus.WAITING)) ;
 
             if (this.messageStatus.equals(MessageStatus.UNAVAILABLE))
                 throw new ConnectionException("Client disconnected");
@@ -216,9 +218,7 @@ public abstract class VirtualClient {
      * returns {@code true}.
      *
      * @param object the {@code VirtualClient} object which with to compare.
-     * @return {@code true} if and oly if the two {@code VirtualClient}'s {@link #name}s are {@code equals()}, {@code false}
-     * otherwise.
-     *
+     * @return {@code true} if and oly if the two {@code VirtualClient}'s {@link #name}s are {@code equals()}, {@code false otherwise.
      * @see String#equals(Object)
      */
     @Override

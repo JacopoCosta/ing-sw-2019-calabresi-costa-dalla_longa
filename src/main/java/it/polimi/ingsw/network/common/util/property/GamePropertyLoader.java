@@ -43,22 +43,22 @@ public class GamePropertyLoader {
     private static final String BOARD_TYPE_SEQUENCE = "board type";
 
     /**
-     * The lowerbound for the {@link #roundsToPlay} attribute.
+     * The lower bound for the {@link #roundsToPlay} attribute.
      */
     private static final int MINIMUM_ROUNDS_TO_PLAY_VALUE = 5;
 
     /**
-     * The upperbound for the {@link #roundsToPlay} attribute.
+     * The upper bound for the {@link #roundsToPlay} attribute.
      */
     private static final int MAXIMUM_ROUNDS_TO_PLAY_VALUE = 8;
 
     /**
-     * The lowerbound for the {@link #boardType} attribute.
+     * The lower bound for the {@link #boardType} attribute.
      */
     private static final int MINIMUM_BOARD_TYPE_VALUE = 1;
 
     /**
-     * The upperbound for the {@link #boardType} attribute.
+     * The upper bound for the {@link #boardType} attribute.
      */
     private static final int MAXIMUM_BOARD_TYPE_VALUE = 4;
 
@@ -148,47 +148,53 @@ public class GamePropertyLoader {
     }
 
     /**
-     * Returns the integer value corresponding to the given {@code String} representation, after verifying that
-     * the given {@code description} satisfies all the corresponding requirements.
+     * Returns the integer value corresponding to the given {@code String} representation for the {@link #roundsToPlay} property,
+     * after verifying that the given {@code description} satisfies all the corresponding requirements.
      *
      * @param description the {@code String} representation of the {@link #roundsToPlay} property.
      * @return the corresponding {@link #roundsToPlay} property.
      * @throws InvalidPropertyException if the corresponding requirements are not satisfied.
+     * @see #getIntegerProperty(String, String, int, int)
      */
     private int getRoundsToPlayProperty(String description) throws InvalidPropertyException {
-        int value;
+        return getIntegerProperty(description, ROUNDS_TO_PLAY_SEQUENCE, MINIMUM_ROUNDS_TO_PLAY_VALUE, MAXIMUM_ROUNDS_TO_PLAY_VALUE);
+    }
 
-        try {
-            value = Integer.parseInt(description);
-        } catch (NumberFormatException e) {
-            throw new InvalidPropertyException("\"" + description + "\" is not a valid parameter for property \"" + ROUNDS_TO_PLAY_SEQUENCE + "\"");
-        }
-
-        if (value < MINIMUM_ROUNDS_TO_PLAY_VALUE || value > MAXIMUM_ROUNDS_TO_PLAY_VALUE)
-            throw new InvalidPropertyException(ROUNDS_TO_PLAY_SEQUENCE + " parameter not in range " + MINIMUM_ROUNDS_TO_PLAY_VALUE + "-" + MAXIMUM_ROUNDS_TO_PLAY_VALUE + ", found: " + value);
-
-        return value;
+    /**
+     * Returns the integer value corresponding to the given {@code String} representation for the {@link #boardType} property,
+     * after verifying that the given {@code description} satisfies all the corresponding requirements.
+     *
+     * @param description the {@code String} representation of the {@link #boardType} property.
+     * @return the corresponding {@link #boardType} property.
+     * @throws InvalidPropertyException if the corresponding requirements are not satisfied.
+     * @see #getIntegerProperty(String, String, int, int)
+     */
+    private int getBoardTypeProperty(String description) throws InvalidPropertyException {
+        return getIntegerProperty(description, BOARD_TYPE_SEQUENCE, MINIMUM_BOARD_TYPE_VALUE, MAXIMUM_BOARD_TYPE_VALUE);
     }
 
     /**
      * Returns the integer value corresponding to the given {@code String} representation, after verifying that
      * the given {@code description} satisfies all the corresponding requirements.
      *
-     * @param description the {@code String} representation of the {@link #boardType} property.
-     * @return the corresponding {@link #boardType} property.
+     * @param description  the {@code String} representation of the requested property.
+     * @param propertyName the {@code String} sequence to refer to the given property.
+     * @param lowerBound   the minimum value accepted for the given property.
+     * @param upperBound   the maximum value accepted for the given property.
+     * @return the property corresponding to the given {@code description}.
      * @throws InvalidPropertyException if the corresponding requirements are not satisfied.
      */
-    private int getBoardTypeProperty(String description) throws InvalidPropertyException {
+    private int getIntegerProperty(String description, String propertyName, int lowerBound, int upperBound) throws InvalidPropertyException {
         int value;
 
         try {
             value = Integer.parseInt(description);
         } catch (NumberFormatException e) {
-            throw new InvalidPropertyException("\"" + description + "\" is not a valid parameter for property \"" + BOARD_TYPE_SEQUENCE + "\"");
+            throw new InvalidPropertyException("\"" + description + "\" is not a valid parameter for property \"" + propertyName + "\"");
         }
 
-        if (value < MINIMUM_BOARD_TYPE_VALUE || value > MAXIMUM_BOARD_TYPE_VALUE)
-            throw new InvalidPropertyException(BOARD_TYPE_SEQUENCE + " parameter not in range " + MINIMUM_BOARD_TYPE_VALUE + "-" + MAXIMUM_BOARD_TYPE_VALUE + ", found: " + value);
+        if (value < lowerBound || value > upperBound)
+            throw new InvalidPropertyException(propertyName + " parameter not in range " + lowerBound + "-" + upperBound + ", found: " + value);
 
         return value;
     }

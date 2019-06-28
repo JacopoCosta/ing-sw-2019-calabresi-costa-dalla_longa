@@ -225,16 +225,9 @@ public class Lobby implements Observer {
             adjustTimer();
             return;
         }
-        //this is an old Player disconnected: make him join his Lobby (and Game) again
-        for (Player oldPlayer : this.players) {
-            if (oldPlayer.equals(player)) {
-                oldPlayer.setCommunicationInterface(player.getCommunicationInterface()); //communication interface hotswap
-                oldPlayer.notifyConnected();
-                return;
-            }
-        }
-        //this is a new Player: too late to join this Lobby
-        throw new GameAlreadyStartedException();
+        if (!players.contains(player))
+            throw new GameAlreadyStartedException(); //this is a new Player: too late to join this Lobby
+        //this is an old Player disconnected: he is already inside his Lobby (and Game)
     }
 
     /**
@@ -267,11 +260,7 @@ public class Lobby implements Observer {
             this.previousPlayersAmount = this.players.size();
             this.players.removeIf(p -> p.equals(player));
             adjustTimer();
-            return;
         }
-
-        //if the Game is started, the Player is not removed, but it's disconnection is notified
-        player.notifyDisconnected();
     }
 
     /**

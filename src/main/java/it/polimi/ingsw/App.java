@@ -9,6 +9,7 @@ import it.polimi.ingsw.view.remote.GraphicManager;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class App {
     private static Console console;
     private static ExecutorService executor;

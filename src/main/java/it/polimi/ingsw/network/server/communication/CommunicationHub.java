@@ -84,12 +84,29 @@ public class CommunicationHub {
         throw new ClientNotRegisteredException("Client \"" + name + "\" not registered");
     }
 
-    private void register(Player player) throws ClientAlreadyRegisteredException {
+    //returns true if the player was already found into the server and is has simply rejoined, false if the player is a new one
+    private boolean register(Player player) throws ClientAlreadyRegisteredException {
         if (player == null)
             throw new NullPointerException("Client is null");
-        if (this.players.contains(player))
+
+        Player dormantPlayer;
+        try {
+            dormantPlayer = getPlayerByName(player.getName());
+        } catch (ClientNotRegisteredException ignored) {
+            //this is a new Player with a unique name
+            this.players.add(player);
+            player.notifyConnected();
+            return false;
+        }
+
+        if (dormantPlayer.isConnected())
+            //this is a new Player with the same name of another one
             throw new ClientAlreadyRegisteredException("Client \"" + player.getName() + "\" already registered");
-        this.players.add(player);
+
+        //this Player lost connection and is trying to reconnect, we need to manually update its status.
+        dormantPlayer.setCommunicationInterface(player.getCommunicationInterface());
+        dormantPlayer.notifyConnected();
+        return true;
     }
 
     private void unregister(Player player) throws ClientNotRegisteredException {
@@ -98,7 +115,6 @@ public class CommunicationHub {
         if (!this.players.contains(player))
             throw new ClientNotRegisteredException("Client \"" + player.getName() + "\" not registered");
         this.players.remove(player);
-        player.notifyDisconnected(); //to stop the Player from waiting a message while nextMessage() is called.
     }
 
     public synchronized void handleMessage(NetworkMessage message) {
@@ -135,9 +151,11 @@ public class CommunicationHub {
 
         this.console.log("registering Client \"" + player.getName() + "\"...");
         try {
-            register(player);
+            if(!register(player))
+                this.console.log("Client \"" + player.getName() + "\" successfully registered");
+            else
+                this.console.log("Client \"" + player.getName() + "\" already found in server, rejoin successful");
             message = NetworkMessage.simpleServerMessage(MessageType.REGISTER_SUCCESS);
-            this.console.log("Client \"" + player.getName() + "\" successfully registered");
         } catch (ClientAlreadyRegisteredException e) {
             message = NetworkMessage.simpleServerMessage(MessageType.CLIENT_ALREADY_REGISTERED_ERROR);
             this.console.err(e.getMessage());
@@ -308,6 +326,7 @@ public class CommunicationHub {
             this.console.err(e.getMessage());
             return;
         }
+        player.notifyDisconnected(); //to stop the Player from waiting a message while nextMessage() is called.
 
         this.console.log("logging Client \"" + player.getName() + "\" out of Lobby \"" + lobbyName + "\"...");
         try {

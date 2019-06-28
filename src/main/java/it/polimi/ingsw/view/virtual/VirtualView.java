@@ -383,17 +383,16 @@ public class VirtualView {
     //BULK: sends info about global killers
     public void sendUpdateBoardKill(Player author, Player target) {
 
-        List<Object> content = new ArrayList<>();
-
-        content.addAll(game.getBoard().getKillers()
+        List<Object> content = game.getBoard()
+                .getKillers()
                 .stream()
                 .map(p -> { //that's because some values are set to null
-                    if(p != null)
+                    if (p != null)
                         return p.getName();
                     else
                         return null;
                 })
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
 
         Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_BOARDKILL, content);
 
@@ -410,12 +409,10 @@ public class VirtualView {
     //BULK: sends info about global doublekillers
     public void sendUpdateDoubleKill() {
 
-         List<Object> content = new ArrayList<>();
-
-        content.addAll(game.getBoard().getDoubleKillers()
+        List<Object> content = game.getBoard().getDoubleKillers()
                 .stream()
                 .map(Player::getName)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
 
         Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_BOARDDOUBLEKILL, content);
         broadcast(deliverable);
