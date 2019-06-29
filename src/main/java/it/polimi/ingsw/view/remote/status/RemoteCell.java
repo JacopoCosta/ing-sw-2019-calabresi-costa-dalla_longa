@@ -16,6 +16,8 @@ public class RemoteCell {
      */
     private boolean isAmmoCell;
 
+    private int logicalIndex;
+
     /**
      * Weapons that can be bought in this shop, codified as {@link RemoteWeapon}. It must be taken into account only in case {@link this.isAmmoCell} is set to {@code false}.
      */
@@ -41,6 +43,10 @@ public class RemoteCell {
      * Indicates whether this cell contains a power-up card in addition to its ammo. It must be taken into account only in case {@link this.isAmmoCell} is set to {@code true}.
      */
     private boolean includesPowerUp;
+
+    public int getLogicalIndex() {
+        return logicalIndex;
+    }
 
     /**
      * Getter method for {@link this.shop}.
@@ -102,6 +108,10 @@ public class RemoteCell {
      */
     public void setAmmoCell(boolean isAmmoCell) {
         this.isAmmoCell = isAmmoCell;
+    }
+
+    public void setLogicalIndex(int logicalIndex) {
+        this.logicalIndex = logicalIndex;
     }
 
     /**

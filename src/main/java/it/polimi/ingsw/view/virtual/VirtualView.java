@@ -205,31 +205,35 @@ public class VirtualView {
     public void sendUpdateCell(Cell cell) {
         List <Object> content = new ArrayList<>();
 
-        content.add(cell.getId());
-        content.add(cell.isSpawnPoint() ? "0" : "1");   //boolean cast to String
+        content.add(cell.getId());  //element content.get(0)
+        //adds "0" if cell is a spawnPoint, "1" if cell is an AmmoCell
+        content.add(cell.isSpawnPoint() ? "1" : "0");   //boolean cast to String, element content.get(1);
 
         if(cell.isSpawnPoint()) {
             //adds spawnpoint color
-            content.add(((SpawnCell) cell).getAmmoCubeColor().toStringAsColor());
+            content.add(((SpawnCell) cell).getAmmoCubeColor().toStringAsColor());   //content.get(2)
 
-            //adds weapons list (the encoding is similar to sendUpdateInventory)
-            content.add(((SpawnCell) cell).getWeaponShop()
-                    .stream()
-                    .map(w -> {
-                        List<String> weapon = new ArrayList<>();
-                        weapon.add(w.getName());
-                        weapon.add(w.getPurchaseCost().toString());
-                        weapon.add(w.getReloadCost().toString());
-                        return weapon;
-                    })
-                    .collect(Collectors.toList()));
+            List<Weapon> shop = ((SpawnCell) cell).getWeaponShop(); //shorthand
+
+            //adds weapons list
+            for(int i = 0; i < shop.size(); i++) {
+
+                List<String> weaponList = new ArrayList<>();
+                Weapon weapon = shop.get(i);    //shorthand
+
+                weaponList.add(weapon.getName());
+                weaponList.add(weapon.getPurchaseCost().toString());
+                weaponList.add(weapon.getReloadCost().toString());
+
+                content.add(weaponList);
+            }
         } //end if(isSpawnpoint)
         else {
             //adds its ammo
-            content.add(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed());
-            content.add(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow());
-            content.add(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow());
-            content.add(((AmmoCell) cell).getAmmoTile().includesPowerUp() ? "0" : "1"); //boolean cast to String
+            content.add(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed());       //content.get(3)
+            content.add(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow());    //content.get(4)
+            content.add(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow());    //content.get(5)
+            content.add(((AmmoCell) cell).getAmmoTile().includesPowerUp() ? "0" : "1"); //boolean cast to String, content.get(6)
         }
 
         Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_CELL, content);

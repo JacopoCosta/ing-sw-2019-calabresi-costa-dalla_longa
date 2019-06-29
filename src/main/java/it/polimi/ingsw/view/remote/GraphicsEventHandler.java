@@ -178,9 +178,6 @@ public class GraphicsEventHandler {
     private void CLIBulkHandler(Deliverable deliverable) {
         Object bulk = ((Bulk) deliverable).unpack();
 
-        System.out.println("Received bulk deliverable: " + deliverable.getEvent().toString());
-        //TODO: remove this, this is for debug-purpose only
-
         switch (deliverable.getEvent()) {
             case UPDATE_DAMAGE:
 
@@ -261,7 +258,7 @@ public class GraphicsEventHandler {
                 break;
             case UPDATE_CELL:
 
-                RemoteCell cell = RemoteBoard.getCells().get(((List<Integer>) bulk).get(0));    //Shorthand for the cell that must be modified
+                RemoteCell cell = RemoteBoard.getCellByLogicalIndex(((List<Integer>) bulk).get(0) - 1);    //Shorthand for the cell that must be modified
 
                 if(((List<String>) bulk).get(1).equals("0")) {  //cell is an AmmoCell
 
@@ -276,20 +273,32 @@ public class GraphicsEventHandler {
                 else {
 
                     cell.setAmmoCell(false);
-                    List<RemoteWeapon> shopList = new ArrayList<>();
 
-                    for(int i = 0; i < ((List<String>)((List<Object>) bulk).get(2)).size(); i++) {
+                    switch (((List<String>) bulk).get(2).toLowerCase()) {
+                        case "red":
+                            cell.rewrite(1, 0, 0, false);
+                            break;
+                        case "yellow":
+                            cell.rewrite(0, 1, 0, false);
+                            break;
+                        case "blue":
+                            cell.rewrite(0, 0, 1, false);
+                            break;
+                    }
 
-                        Object weaponList = ((List<Object>) bulk).get(2);
-                        Object weaponElement = ((List<Object>) weaponList).get(i);
+                    List<RemoteWeapon> newShopList = new ArrayList<>();
+
+                    for(int i = 3; i < ((List<Object>) bulk).size(); i++) {
+
+                        Object weaponElement = ((List<String>) bulk).get(i);    //element of the weaponList
 
                         String weaponName = ((List<String>) weaponElement).get(0);
                         String purchaseCost = ((List<String>) weaponElement).get(1);
                         String reloadCost = ((List<String>) weaponElement).get(2);
 
-                        shopList.add(new RemoteWeapon(weaponName, purchaseCost, reloadCost, true));
+                        newShopList.add(new RemoteWeapon(weaponName, purchaseCost, reloadCost, true));
                     }
-                    cell.setShop(shopList);
+                    cell.setShop(newShopList);
                 }
 
                 break;
@@ -299,7 +308,7 @@ public class GraphicsEventHandler {
                 break;
             case STATUS_UPDATE:
                 BoardGraph.printBoardStatus();
-                BoardGraph.printBoard();
+                //BoardGraph.printBoard();  FIXME causes npe at RemoteBoard.java:263
                 for(int i=0; i<RemoteBoard.getParticipants().size(); i++) {
                     BoardGraph.printPlayerStatus(RemoteBoard.getParticipants().get(i), i == RemoteBoard.getIndexOfUserCharacter());    //TODO: this can be improved
                 }

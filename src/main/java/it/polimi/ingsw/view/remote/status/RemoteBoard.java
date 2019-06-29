@@ -125,6 +125,14 @@ public abstract class RemoteBoard {
         return cells;
     }
 
+    public static RemoteCell getCellByLogicalIndex(int index) {    //remember that ranges from 0 to 11 in standard cases
+        for(int i=0; i<cells.size(); i++) {
+            if(cells.get(i) != null && cells.get(i).getLogicalIndex() == index)
+                return cells.get(i);
+        }
+        return null;    //should never happen
+    }
+
     /**
      * Getter method for {@link #indexOfUserCharacter}.
      * @return the index for the user's token in {@link this.participants} list.
@@ -201,7 +209,7 @@ public abstract class RemoteBoard {
      * This method initialises the list {@link #cells}. This is done by iterating through every element of {@link #morphology}
      * completely ignoring {@link ContentType} walls and angles and focusing on CELL and NONE elements.
      * CELL refers to an existing cell, which can be either an ammo cell or a shop cell (in this case, a new cell will be created and added to cell list),
-     * while NONE refers to a hole in the map, with no cell associated (in which case, {@code null} will be added instead).
+     * while NONE refers to a hole in the map, with no cell associated (in which case, such element will be skipped and not represented as cell).
      * After this operation, the RemoteBoard will be ready to receive more specific info about every single cell by the server.
      * NOTE: the cell scheme will never be changed after its generation, so this method make a setter method for {@link #cells} completely useless.
      * Also, this method will be called exactly once per game.
@@ -210,14 +218,32 @@ public abstract class RemoteBoard {
 
         List<RemoteCell> cells = new ArrayList<>();
 
+        int logicallIndex = 0;
+
         for(ContentType c: morphology) {
-            if(c.equals(ContentType.CELL))
-                cells.add(new RemoteCell());
+            if(c.equals(ContentType.CELL)) {
+                RemoteCell cell = new RemoteCell();
+                cell.setLogicalIndex(logicallIndex);
+                cells.add(cell);
+                logicallIndex++;
+            }
 
             else if(c.equals(ContentType.NONE)) {
                 cells.add(null);
             }
+
         }
+
+        /*
+         DEBUG ONLY
+        System.out.println("Generated cell scheme:");
+        for(int i=0; i<cells.size(); i++) {
+            if(cells.get(i) == null)
+                System.out.println("cell "+ i + " is null");
+            else
+                System.out.println("cell "+ i + "has phys. index " + cells.get(i).getLogicalIndex());
+        }
+        */
 
         RemoteBoard.cells = cells;
     }
@@ -237,7 +263,7 @@ public abstract class RemoteBoard {
                 if(p.getPosition() == i)
                     playersInThisCell.add(p.getName());
             }
-            RemoteBoard.cells.get(i).setPlayers(playersInThisCell);
+            RemoteBoard.getCellByLogicalIndex(i).setPlayers(playersInThisCell);
         }
     }
 

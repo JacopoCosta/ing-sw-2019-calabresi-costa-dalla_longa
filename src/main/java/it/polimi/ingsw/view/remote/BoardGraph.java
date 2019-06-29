@@ -15,6 +15,13 @@ public abstract class BoardGraph {
 
     public static void printBoard() {
 
+        for(int i=0; i<RemoteBoard.getCells().size(); i++) {
+            if(RemoteBoard.getCells().get(i) == null)
+                System.out.println("null lol");
+            else
+                System.out.println("Cell number " + i + " of logical index " + (RemoteBoard.getCellByLogicalIndex(i)));
+        }
+
         int schemeWidth = RemoteBoard.getWidth()*2 + 1;     //width of the morphology
         int schemeHeight = RemoteBoard.getHeight()*2 + 1;   //height of the morphology
 
