@@ -121,12 +121,16 @@ public class VirtualView {
         else {
             try {
                 recipient.deliver(deliverable);
+                System.out.println("[BUG] The server sent a " + deliverable.getType());
             } catch (ConnectionException e) {
                 throw new AbortedTurnException("");
             }
-            if(!deliverable.getType().equals(DeliverableType.INFO) && !deliverable.getType().equals(DeliverableType.BULK)) {
+            if(deliverable.getType().equals(DeliverableType.DUAL) || deliverable.getType().equals(DeliverableType.MAPPED)) {
                 try {
-                    return ((Response) recipient.nextDeliverable()).getNumber();
+                    System.out.println("[BUG] Since " + deliverable.getType() + " is blocking, the server awaits a RESPONSE.");
+                    int response = ((Response) recipient.nextDeliverable()).getNumber();
+                    System.out.println("[BUG] The server received a RESPONSE: " + response);
+                    return response;
                 } catch (ConnectionException e) {
                     throw new AbortedTurnException("");
                 }

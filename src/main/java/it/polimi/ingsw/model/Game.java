@@ -354,7 +354,7 @@ public class Game {
     public void play() {
         this.started = true;
         //send clients board initial configuration
-        virtualView.sendStatusInit(this.getBoard());
+        virtualView.sendStatusInit(board);
 
         while (!gameOver) {
             this.playTurn();
