@@ -18,14 +18,6 @@
 | Domination or Towers modes | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
 | Terminator | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
 
-
-<!--
-[![RED](https://placehold.it/15/f03c15/f03c15)](#)
-[![YELLOW](https://placehold.it/15/ffdd00/ffdd00)](#)
-[![GREEN](https://placehold.it/15/44bb44/44bb44)](#)
--->
-
-<br>
 ## Launch parameters:
 - ### Server ```<IP> <port>```
     - ```<IP>``` the IP address of the machine on which the server will be run, e.g. ```123.45.67.89```. This field is required.
@@ -35,3 +27,9 @@
     - ```<port>``` the port of the server to connect to, e.g. ```12345```. This field is required.
     - ```<c|g>``` select the type of interface: ```c``` for CLI, ```g``` for GUI. The flag ```-int``` and its value can be omitted and default value ```g``` will be used.
     - ```<s|r>``` select the type of connection: ```s``` for Socket, ```r``` for RMI. The flag ```-conn``` and its value can be omitted and default value ```s``` will be used.
+    
+<!--
+[![RED](https://placehold.it/15/f03c15/f03c15)](#)
+[![YELLOW](https://placehold.it/15/ffdd00/ffdd00)](#)
+[![GREEN](https://placehold.it/15/44bb44/44bb44)](#)
+-->
