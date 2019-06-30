@@ -234,6 +234,12 @@ public class VirtualView {
             content.add(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow());    //content.get(4)
             content.add(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow());    //content.get(5)
             content.add(((AmmoCell) cell).getAmmoTile().includesPowerUp() ? "0" : "1"); //boolean cast to String, content.get(6)
+
+            //FIXME check this output!
+            System.out.println("sending ammocell containing " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed() +
+                    ", " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() +
+                    ", " + ((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow() +
+                    ", " + ((AmmoCell) cell).getAmmoTile().includesPowerUp());
         }
 
         Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_CELL, content);

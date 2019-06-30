@@ -308,7 +308,7 @@ public class GraphicsEventHandler {
                 break;
             case STATUS_UPDATE:
                 BoardGraph.printBoardStatus();
-                //BoardGraph.printBoard();  FIXME causes npe at RemoteBoard.java:263
+                BoardGraph.printBoard();
                 for(int i=0; i<RemoteBoard.getParticipants().size(); i++) {
                     BoardGraph.printPlayerStatus(RemoteBoard.getParticipants().get(i), i == RemoteBoard.getIndexOfUserCharacter());    //TODO: this can be improved
                 }

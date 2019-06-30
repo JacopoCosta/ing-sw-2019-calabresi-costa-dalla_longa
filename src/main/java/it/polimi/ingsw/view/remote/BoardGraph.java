@@ -15,26 +15,27 @@ public abstract class BoardGraph {
 
     public static void printBoard() {
 
-        for(int i=0; i<RemoteBoard.getCells().size(); i++) {
-            if(RemoteBoard.getCells().get(i) == null)
-                System.out.println("null lol");
-            else
-                System.out.println("Cell number " + i + " of logical index " + (RemoteBoard.getCellByLogicalIndex(i)));
-        }
-
-        int schemeWidth = RemoteBoard.getWidth()*2 + 1;     //width of the morphology
-        int schemeHeight = RemoteBoard.getHeight()*2 + 1;   //height of the morphology
+        int schemeWidth = RemoteBoard.getWidth()*2 + 1;     //width of the morphology grid
+        int schemeHeight = RemoteBoard.getHeight()*2 + 1;   //height of the morphology grid
 
         List<ContentType> morphology = RemoteBoard.getMorphology(); //shorthand
 
         RemoteBoard.updatePlayersPosition();    //refresh for players' position on the cell scheme (needed for a correct visualization)
+
+        for(RemoteCell c: RemoteBoard.getLogicalCells()) {
+            if(c.isAmmoCell()) {
+                System.out.println("ammo cell number " + (c.getLogicalIndex()+1) + " contains " + c.getRed() + ", " + c.getYellow() + ", " + c.getBlue() + ", " + c.includesPowerUp());
+            }
+            else
+                System.out.println("spawn cell number " + c.getLogicalIndex() + " contains " + c.getShop());
+        }
 
         for(int h=0; h<schemeHeight; h++) { //cycling on every row
 
             if(h%2 == 0) {  //the current row is made of angles and HOR_walls only
 
                 for (int w = 0; w < schemeWidth; w++) { //cycling on every element of a row
-                    BoardGraph.printWall(morphology.get(h*schemeHeight + w), internalWidth);
+                    BoardGraph.printWall(morphology.get(h*schemeWidth + w), internalWidth);
 
                     if(w == schemeWidth-1)  //prints a new line when the last element has just been printed
                         console.tinyPrint("\n");
@@ -43,18 +44,35 @@ public abstract class BoardGraph {
 
             else {  //there are cells and VER_walls on this row
 
-                for (int w = 0; w < schemeWidth; w++) { //cycling on every element of a row
-                    BoardGraph.printFirstLine(h*schemeHeight + w);
-                    BoardGraph.printSecondLine(h*schemeHeight + w);
-                    BoardGraph.printThirdLine(h*schemeHeight + w);
-                    BoardGraph.printFourthLine(h*schemeHeight + w);
-                    BoardGraph.printFifthLine(h*schemeHeight + w);
-                    BoardGraph.printSixthLine(h*schemeHeight + w);
-                    BoardGraph.printSeventhLine(h*schemeHeight + w);
-                    BoardGraph.printEigthLine(h*schemeHeight + w);
-                    BoardGraph.printNinthLine(h*schemeHeight + w);
-                    BoardGraph.printTenthLine(h*schemeHeight + w);
-                }
+                for (int w = 0; w < schemeWidth; w++)//cycling on every element of a row
+                    BoardGraph.printFirstLine(h, w);
+
+                for (int w = 0; w < schemeWidth; w++)
+                    BoardGraph.printSecondLine(h, w);
+
+                for (int w = 0; w < schemeWidth; w++)
+                    BoardGraph.printThirdLine(h, w);
+
+                for (int w = 0; w < schemeWidth; w++)
+                    BoardGraph.printFourthLine(h, w);
+
+                for (int w = 0; w < schemeWidth; w++)
+                    BoardGraph.printFifthLine(h, w);
+
+                for (int w = 0; w < schemeWidth; w++)
+                    BoardGraph.printSixthLine(h, w);
+
+                for (int w = 0; w < schemeWidth; w++)
+                    BoardGraph.printSeventhLine(h, w);
+
+                for (int w = 0; w < schemeWidth; w++)
+                    BoardGraph.printEightLine(h, w);
+
+                for (int w = 0; w < schemeWidth; w++)
+                    BoardGraph.printNinthLine(h, w);
+
+                for (int w = 0; w < schemeWidth; w++)
+                    BoardGraph.printTenthLine(h, w);
             } //end else (h is odd)
         }
 
@@ -183,40 +201,49 @@ public abstract class BoardGraph {
         }
     }
 
-    private static void printFirstLine(int index) {   //prints the cell ID
+    private static void printFirstLine(int h, int w) {   //prints the cell ID
+
+        int schemeWidth = RemoteBoard.getWidth()*2 +1;
+        int index = h*schemeWidth + w;   //index for current morphology element
 
         if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
+            //it's a vertical wall
             printWall(RemoteBoard.getMorphology().get(index), BoardGraph.internalWidth);
 
-            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+            if(w == schemeWidth-1)
                 console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         }
         else {
-            int cellIndex = (index - 1) / 2;
+            //it's not a vertical wall, so it's a cell (either CELL or NONE)
+            int cellIndex = (h/2) * RemoteBoard.getWidth() + w/2; //index for current cell element
             RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
 
-            if (cell != null)   //cell is actually an existing cell
-                if (cellIndex + 1 < 10)
-                    console.tinyPrint(" <" + (cellIndex+1) + ">" + fillWith(BoardGraph.internalWidth - 4, " "));   //single digit cell ID
+            if (cell != null) {   //cell is actually an existing cell
+                int logicalIndex = cell.getLogicalIndex();  //shorthand
+                if (logicalIndex + 1 < 10)
+                    console.tinyPrint(" <" + (logicalIndex + 1) + ">" + fillWith(BoardGraph.internalWidth - 4, " "));   //single digit cell ID
                 else
-                    console.tinyPrint(" <" + (cellIndex+1) + ">" + fillWith(BoardGraph.internalWidth - 5, " "));    //double digit cell ID
+                    console.tinyPrint(" <" + (logicalIndex + 1) + ">" + fillWith(BoardGraph.internalWidth - 5, " "));    //double digit cell ID
+            }
             else    //cell is referring to a void cell
                 console.tinyPrint(fillWith(BoardGraph.internalWidth, " "));   //just spaces
         }
     }
 
-    private static void printSecondLine(int index) {
+    private static void printSecondLine(int h, int w) {
+        int schemeWidth = RemoteBoard.getWidth()*2 +1;
+        int index = h*schemeWidth + w;   //index for current morphology element
 
         if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
             printWall(RemoteBoard.getMorphology().get(index), BoardGraph.internalWidth);
 
-            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+            if(w == schemeWidth-1)
                 console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
-            int cellIndex = (index - 1) / 2;
+            int cellIndex = (h/2) * RemoteBoard.getWidth() + w/2; //index for current cell element
             RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
 
             if (cell != null) { //cell is actually an existing cell
@@ -247,33 +274,35 @@ public abstract class BoardGraph {
         } //end else (it's a cell)
     }
 
-    private static void printThirdLine(int index) {
+    private static void printThirdLine(int h, int w) {
+        int schemeWidth = RemoteBoard.getWidth()*2 +1;
+        int index = h*schemeWidth + w;   //index for current morphology element
 
         if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
             printWall(RemoteBoard.getMorphology().get(index), BoardGraph.internalWidth);
 
-            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+            if(w == schemeWidth-1)
                 console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
-            int cellIndex = (index - 1) / 2;
+            int cellIndex = (h/2) * RemoteBoard.getWidth() + w/2; //index for current cell element
             RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
 
             if (cell != null) { //cell is actually an existing cell
                 if(cell.isAmmoCell()) {
                     if (cell.getRed() > 0) {
-                        if(cell.getBlue() > 0)              //red ammo were already printed by printSecondLine, so blue ammo or yellow ones are next
-                            console.tinyPrint(" BLUE: " + cell.getBlue() + fillWith(BoardGraph.internalWidth - 8, " "));
-                        else if(cell.getYellow() > 0)       //same, but there aren't blue ammo, so yellow ones are printed instead
+                        if(cell.getYellow() > 0)              //red ammo were already printed by printSecondLine, so yellow ammo or blue ones are next
                             console.tinyPrint(" YELLOW: " + cell.getYellow() + fillWith(BoardGraph.internalWidth - 10, " "));
+                        else if(cell.getBlue() > 0)       //same, but there aren't yellow ammo, so blue ones are printed instead
+                            console.tinyPrint(" BLUE: " + cell.getBlue() + fillWith(BoardGraph.internalWidth - 8, " "));
                         else if (cell.includesPowerUp())    //the ammo tile is made of red ammo and a powerup
                             console.tinyPrint(" *POWER UP*" + fillWith(BoardGraph.internalWidth - 11, " "));
                     }
-                    else {  //there were no red ammo, so blue or yellow must have been printed instead
-                        if(cell.getBlue() > 0) {        //blue ammo were already printed by printSecondLine
-                            if (cell.getYellow() > 0)
-                                console.tinyPrint(" YELLOW: " + cell.getYellow() + fillWith(BoardGraph.internalWidth - 10, " "));
+                    else {  //there were no red ammo, so yellow or blue must have been printed instead
+                        if(cell.getYellow() > 0) {        //yellow ammo were already printed by printSecondLine
+                            if (cell.getBlue() > 0)
+                                console.tinyPrint(" BLUE: " + cell.getBlue() + fillWith(BoardGraph.internalWidth - 8, " "));
                             else if (cell.includesPowerUp())
                                 console.tinyPrint(" *POWER UP*" + fillWith(BoardGraph.internalWidth - 11, " "));
                         }
@@ -284,7 +313,7 @@ public abstract class BoardGraph {
                 }
                 else {  //cell is a spawn/shop cell, so its shop needs be printed
                     if(cell.getShop().size() >= 1)
-                        console.tinyPrint(truncate(cell.getShop().get(0).getName() + fillWith(BoardGraph.internalWidth, " "), BoardGraph.internalWidth));
+                        console.tinyPrint(truncate(" " + cell.getShop().get(0).getName() + fillWith(BoardGraph.internalWidth, " "), BoardGraph.internalWidth));
                     else
                         console.tinyPrint(fillWith(BoardGraph.internalWidth, " "));
                 }
@@ -297,18 +326,20 @@ public abstract class BoardGraph {
         //  It will be improved, but its priority is very low.
     }
 
-    private static void printFourthLine(int index) {
+    private static void printFourthLine(int h, int w) {
+        int schemeWidth = RemoteBoard.getWidth()*2 +1;
+        int index = h*schemeWidth + w;   //index for current morphology element
 
         if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
             printWall(RemoteBoard.getMorphology().get(index), BoardGraph.internalWidth);
 
-            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+            if(w == schemeWidth-1)
                 console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
 
-            int cellIndex = (index - 1) / 2;
+            int cellIndex = (h/2) * RemoteBoard.getWidth() + w/2; //index for current cell element
             RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
 
             if (cell != null) { //cell is actually an existing cell
@@ -316,7 +347,7 @@ public abstract class BoardGraph {
                     console.tinyPrint(fillWith(BoardGraph.internalWidth, " "));    //just spaces
                 else {                  //there's a shop, so the second weapon, if existing, will be printed
                     if(cell.getShop().size() >= 2)
-                        console.tinyPrint(truncate(cell.getShop().get(1).getName() + fillWith(BoardGraph.internalWidth, " "), BoardGraph.internalWidth));
+                        console.tinyPrint(truncate(" " + cell.getShop().get(1).getName() + fillWith(BoardGraph.internalWidth, " "), BoardGraph.internalWidth));
                     else                //there aren't enough weapons to display
                         console.tinyPrint(fillWith(BoardGraph.internalWidth, " "));
                 }
@@ -326,18 +357,20 @@ public abstract class BoardGraph {
         }
     }
 
-    private static void printFifthLine(int index) {
+    private static void printFifthLine(int h, int w) {
+        int schemeWidth = RemoteBoard.getWidth()*2 +1;
+        int index = h*schemeWidth + w;   //index for current morphology element
 
         if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
             printWall(RemoteBoard.getMorphology().get(index), BoardGraph.internalWidth);
 
-            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+            if(w == schemeWidth-1)
                 console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
 
-            int cellIndex = (index - 1) / 2;
+            int cellIndex = (h/2) * RemoteBoard.getWidth() + w/2; //index for current cell element
             RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
 
             if (cell != null) { //cell is actually an existing cell
@@ -345,7 +378,7 @@ public abstract class BoardGraph {
                     console.tinyPrint(fillWith(BoardGraph.internalWidth, " "));    //just spaces
                 else {                  //there's a shop, so the second weapon, if existing, will be printed
                     if(cell.getShop().size() >= 3)
-                        console.tinyPrint(truncate(cell.getShop().get(2).getName() + fillWith(BoardGraph.internalWidth, " "), BoardGraph.internalWidth));
+                        console.tinyPrint(truncate(" " + cell.getShop().get(2).getName() + fillWith(BoardGraph.internalWidth, " "), BoardGraph.internalWidth));
                     else                //there aren't enough weapons to display
                         console.tinyPrint(fillWith(BoardGraph.internalWidth, " "));
                 }
@@ -356,18 +389,20 @@ public abstract class BoardGraph {
     }
 
     //starts to print players on this cell, if any
-    private static void printSixthLine(int index) {
+    private static void printSixthLine(int h, int w) {
+        int schemeWidth = RemoteBoard.getWidth()*2 +1;
+        int index = h*schemeWidth + w;   //index for current morphology element
 
         if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
             printWall(RemoteBoard.getMorphology().get(index), BoardGraph.internalWidth);
 
-            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+            if(w == schemeWidth-1)
                 console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
 
-            int cellIndex = (index - 1) / 2;
+            int cellIndex = (h/2) * RemoteBoard.getWidth() + w/2; //index for current cell element
             RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
 
             if (cell != null) { //cell is actually an existing cell
@@ -389,18 +424,20 @@ public abstract class BoardGraph {
         }
     }
 
-    private static void printSeventhLine(int index) {
+    private static void printSeventhLine(int h, int w) {
+        int schemeWidth = RemoteBoard.getWidth()*2 +1;
+        int index = h*schemeWidth + w;   //index for current morphology element
 
         if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
             printWall(RemoteBoard.getMorphology().get(index), BoardGraph.internalWidth);
 
-            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+            if(w == schemeWidth-1)
                 console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
 
-            int cellIndex = (index - 1) / 2;
+            int cellIndex = (h/2) * RemoteBoard.getWidth() + w/2; //index for current cell element
             RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
 
             if (cell != null) { //cell is actually an existing cell
@@ -423,18 +460,20 @@ public abstract class BoardGraph {
         }
     }
 
-    private static void printEigthLine(int index) {
+    private static void printEightLine(int h, int w) {
+        int schemeWidth = RemoteBoard.getWidth()*2 +1;
+        int index = h*schemeWidth + w;   //index for current morphology element
 
         if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
             printWall(RemoteBoard.getMorphology().get(index), BoardGraph.internalWidth);
 
-            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+            if(w == schemeWidth-1)
                 console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
 
-            int cellIndex = (index - 1) / 2;
+            int cellIndex = (h/2) * RemoteBoard.getWidth() + w/2; //index for current cell element
             RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
 
             if (cell != null) { //cell is actually an existing cell
@@ -460,18 +499,20 @@ public abstract class BoardGraph {
         }
     }
 
-    private static void printNinthLine(int index) {
+    private static void printNinthLine(int h, int w) {
+        int schemeWidth = RemoteBoard.getWidth()*2 +1;
+        int index = h*schemeWidth + w;   //index for current morphology element
 
         if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
             printWall(RemoteBoard.getMorphology().get(index), BoardGraph.internalWidth);
 
-            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+            if(w == schemeWidth-1)
                 console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
 
-            int cellIndex = (index - 1) / 2;
+            int cellIndex = (h/2) * RemoteBoard.getWidth() + w/2; //index for current cell element
             RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
 
             if (cell != null) { //cell is actually an existing cell
@@ -496,18 +537,20 @@ public abstract class BoardGraph {
         }
     }
 
-    private static void printTenthLine(int index) {
+    private static void printTenthLine(int h, int w) {
+        int schemeWidth = RemoteBoard.getWidth()*2 +1;
+        int index = h*schemeWidth + w;   //index for current morphology element
 
         if(!RemoteBoard.getMorphology().get(index).equals(CELL) && !RemoteBoard.getMorphology().get(index).equals(NONE)) {
             printWall(RemoteBoard.getMorphology().get(index), BoardGraph.internalWidth);
 
-            if(index % (RemoteBoard.getWidth()*2 + 1) == 0)
+            if(w == schemeWidth-1)
                 console.tinyPrint("\n");
             //NOTE: this is the only case where a new line can be displayed here
         } //end if (not a cell)
         else {
 
-            int cellIndex = (index - 1) / 2;
+            int cellIndex = (h/2) * RemoteBoard.getWidth() + w/2; //index for current cell element
             RemoteCell cell = RemoteBoard.getCells().get(cellIndex);    //shorthand
 
             if (cell != null) { //cell is actually an existing cell

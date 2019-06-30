@@ -125,6 +125,15 @@ public abstract class RemoteBoard {
         return cells;
     }
 
+    public static List<RemoteCell> getLogicalCells() {
+        List<RemoteCell> cellsList = new ArrayList<>();
+        for(RemoteCell c: RemoteBoard.getCells()) {
+            if(c != null)
+                cellsList.add(c);
+        }
+        return cellsList;
+    }
+
     public static RemoteCell getCellByLogicalIndex(int index) {    //remember that ranges from 0 to 11 in standard cases
         for(int i=0; i<cells.size(); i++) {
             if(cells.get(i) != null && cells.get(i).getLogicalIndex() == index)
@@ -218,14 +227,14 @@ public abstract class RemoteBoard {
 
         List<RemoteCell> cells = new ArrayList<>();
 
-        int logicallIndex = 0;
+        int logicalIndex = 0;
 
         for(ContentType c: morphology) {
             if(c.equals(ContentType.CELL)) {
                 RemoteCell cell = new RemoteCell();
-                cell.setLogicalIndex(logicallIndex);
+                cell.setLogicalIndex(logicalIndex);
                 cells.add(cell);
-                logicallIndex++;
+                logicalIndex++;
             }
 
             else if(c.equals(ContentType.NONE)) {
@@ -255,15 +264,15 @@ public abstract class RemoteBoard {
      * Given k players and n cells, the complexity of this algorithm is O(k*n).
      */
     public static void updatePlayersPosition() {
-        for(int i=0; i<getCells().size(); i++) {
+        for(int i=0; i<getLogicalCells().size(); i++) {
 
             List<String> playersInThisCell = new ArrayList<>();
 
             for(RemotePlayer p: RemoteBoard.getParticipants()) {
-                if(p.getPosition() == i)
+                if(p.getPosition() == i)    //since i starts from 0, every player in a position less than 0 won't be considered
                     playersInThisCell.add(p.getName());
             }
-            RemoteBoard.getCellByLogicalIndex(i).setPlayers(playersInThisCell);
+            RemoteBoard.getLogicalCells().get(i).setPlayers(playersInThisCell);
         }
     }
 
