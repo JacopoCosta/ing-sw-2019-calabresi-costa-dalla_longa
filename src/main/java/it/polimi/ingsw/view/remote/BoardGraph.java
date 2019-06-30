@@ -22,14 +22,6 @@ public abstract class BoardGraph {
 
         RemoteBoard.updatePlayersPosition();    //refresh for players' position on the cell scheme (needed for a correct visualization)
 
-        for(RemoteCell c: RemoteBoard.getLogicalCells()) {
-            if(c.isAmmoCell()) {
-                System.out.println("ammo cell number " + (c.getLogicalIndex()+1) + " contains " + c.getRed() + ", " + c.getYellow() + ", " + c.getBlue() + ", " + c.includesPowerUp());
-            }
-            else
-                System.out.println("spawn cell number " + c.getLogicalIndex() + " contains " + c.getShop());
-        }
-
         for(int h=0; h<schemeHeight; h++) { //cycling on every row
 
             if(h%2 == 0) {  //the current row is made of angles and HOR_walls only
@@ -84,7 +76,7 @@ public abstract class BoardGraph {
         //print Kills list
         boolean emptyList = true;
         console.tinyPrintln("\nKills list:");
-        for(String killerName: RemoteBoard.getKillers()) { // FIXME NullPointerException when called by GraphicsEventHandler:292
+        for(String killerName: RemoteBoard.getKillers()) {
             if(killerName != null) {
                 if(RemoteBoard.getKillers().get(RemoteBoard.getKillers().indexOf(killerName) + 1) == null) {
                     console.tinyPrintln("\t" + killerName + " (Overkill!) ");
