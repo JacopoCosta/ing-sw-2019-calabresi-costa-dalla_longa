@@ -141,11 +141,19 @@ public abstract class RemoteBoard {
     }
 
     public static RemoteCell getCellByLogicalIndex(int index) {    //remember that ranges from 0 to 11 in standard cases
-        for(int i=0; i<cells.size(); i++) {
-            if(cells.get(i) != null && cells.get(i).getLogicalIndex() == index)
-                return cells.get(i);
+        for (RemoteCell cell : cells) {
+            if (cell != null && cell.getLogicalIndex() == index)
+                return cell;
         }
         return null;    //should never happen
+    }
+
+    public static RemotePlayer getPlayerByName(String name) {
+        for(RemotePlayer p : RemoteBoard.getParticipants())
+            if(name.equals(p.getName()))
+                return p;
+
+        return null;    //will never happen
     }
 
     /**

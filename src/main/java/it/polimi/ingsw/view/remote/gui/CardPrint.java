@@ -11,10 +11,13 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.List;
 
-public class CardPrint {
+public abstract class CardPrint {
 
     private static final double INACTIVE_SAT_VALUE = -0.55; //ranging from -1.0 to +1.0, no effect by applying 0.0
     private static final double INACTIVE_BRIGHTNESS_VALUE = -0.7;
+
+    private static final double HORIZONTAL_AMMO_GAP = 2.0;
+    private static final double VERTICAL_AMMO_GAP = 2.0;
 
     private static final String CARD_RESOURCES_PATH = "/gui/png/decks/";
 
@@ -98,37 +101,32 @@ public class CardPrint {
 
         //TODO pane.getChildren().add(getPlayersOnMap)
 
-
         return pane;
     }
 
-    public static Pane getCellsContent() { //works both for ammocell and shops
+    private static Pane getCellsContent() { //works both for ammocell and shops
 
-        Pane ammoPane = new StackPane();
-        HBox horAmmoTiles = new HBox();
-        horAmmoTiles.setSpacing(0.0);   //TODO: calculate this
+        GridPane ammoPane = new GridPane();
+        //ammoPane.setHgap(HORIZONTAL_AMMO_GAP);
+        //ammoPane.setVgap(VERTICAL_AMMO_GAP);
+        ammoPane.setBackground(Background.EMPTY);
+
+        double cellHeight = new Image(RemoteBoard.getBoardImage()).getHeight() / RemoteBoard.getHeight();   //needed for spacing calc
+        double cellWidth = new Image(RemoteBoard.getBoardImage()).getWidth() / RemoteBoard.getWidth();
 
         for(int h=0; h<RemoteBoard.getHeight(); h++) {
 
-            VBox verAmmoTiles = new VBox();
-
-            verAmmoTiles.setSpacing(0.0);   //TODO: calculate this (it's the horizontal space)
-            verAmmoTiles.setBackground(Background.EMPTY);
-
             for(int w=0; w<RemoteBoard.getWidth(); w++) {
 
-                RemoteCell cell = RemoteBoard.getCells().get(h*RemoteBoard.getHeight() + w*RemoteBoard.getWidth()); //gets the right cell
+                RemoteCell cell = RemoteBoard.getCells().get(h*RemoteBoard.getWidth() + w); //gets the right cell
 
-                //adds the correct ammo tile image
-                if(cell.isAmmoCell()) {
-                    verAmmoTiles.getChildren().add(getCellImage(cell));
-                }
-                else {
-                    //TODO
-                }
+                Pane content = getCellImage(cell);
+                content.setTranslateX(0.0); //not sure about these
+                content.setTranslateY(0.0);
+                content.relocate(w*cellWidth - content.getWidth(), h*cellHeight - content.getHeight());
+
+                ammoPane.getChildren().add(content);
             }
-
-            horAmmoTiles.getChildren().add(verAmmoTiles);
         }
 
         return ammoPane;
@@ -180,7 +178,17 @@ public class CardPrint {
         ammoBox.getChildren().add(blueAmmoBox);
         ammoBox.setSpacing(0.2);
 
-        //TODO: finish this
+        damageBox.setSpacing(0.3);
+        markingBox.setSpacing(0.1);
+
+        //loading damage drops
+        for(String s: player.getDamage())
+            damageBox.getChildren().add(RemoteBoard.getPlayerByName(s).getToken().dropPrint()); //will never produce NPE
+
+        //loading marking drops
+        for(String s: player.getMarkings())
+            markingBox.getChildren().add(RemoteBoard.getPlayerByName(s).getToken().dropPrint());//will never produce NPE
+
         return playerBoard;
     }
 
