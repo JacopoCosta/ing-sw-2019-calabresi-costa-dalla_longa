@@ -30,7 +30,8 @@ public class Client implements Runnable {
         try {
             communicationHandler = new CommunicationHandler(hostAddress, port, communicationInterface);
         } catch (ConnectionException e) {
-            console.err("connection to the server is lost, cause: " + e.getMessage());
+            //console.err("connection to the server is lost, cause: " + e.getMessage());
+            e.printStackTrace();
             System.exit(-1);
             return;
         }
