@@ -1,13 +1,12 @@
 package it.polimi.ingsw.view.remote.status;
 
 import it.polimi.ingsw.view.remote.gui.Token;
-import it.polimi.ingsw.network.common.deliverable.Deliverable;
 
 import java.util.List;
 
 /**
  * This class stores simplified information about any weapon. Such info is used by CLI-using clients in order to get the player know about the related weapon.
- * The gathered info is completely received from the server via {@link Deliverable} communication with no further elaboration (every data here is for player acknowledgment only).
+ * The gathered info is completely received from the server with no further elaboration (every data here is for player acknowledgment only).
  * The only constructor here (i.e. {@link this.RemotePlayer}) is used to create a new player, which will be modified but never re-constructed until the end of the game.
  */
 public class RemotePlayer {
@@ -44,6 +43,13 @@ public class RemotePlayer {
     private int blueAmmo;
 
     /**
+     * Indicates whether this player is controlled by user {@code true} or by one of their opponents {@code false}.
+     */
+    private boolean isUser;
+
+    private boolean onFrenzy;
+
+    /**
      * Flag to check player's connection status. It's set to {@code true} if this player is connected and participating to the current game, else it's set to {@code false}.
      * It's not strictly necessary for either CLI or GUI to work, but it could be a good info for other participants.
      */
@@ -78,8 +84,25 @@ public class RemotePlayer {
      * This is the only constructor.
      * @param name player's name.
      */
-    public RemotePlayer(String name) {
+    public RemotePlayer(String name, int index) {
         this.name = name;
+        switch (index) {
+            case 0:
+                playerColor = PlayerColor.YELLOW;
+                break;
+            case 1:
+                playerColor = PlayerColor.GREEN;
+                break;
+            case 2:
+                playerColor = PlayerColor.TEAL;
+                break;
+            case 3:
+                playerColor = PlayerColor.GRAY;
+                break;
+            case 4:
+                playerColor = PlayerColor.VIOLET;
+                break;
+        }
     }
 
     /**
@@ -89,6 +112,11 @@ public class RemotePlayer {
     public String getName() {
         return name;
     }
+
+    public boolean isOnFrenzy() {
+        return onFrenzy;
+    }
+
     /**
      * Getter method for the current score of this player.
      * @return the current score of this player.
@@ -102,6 +130,10 @@ public class RemotePlayer {
      */
     public int getPosition() {
         return position;
+    }
+
+    public boolean isUser() {
+        return name.equals(RemoteBoard.getUsername());
     }
 
     /**
@@ -169,6 +201,10 @@ public class RemotePlayer {
         return token;
     }
 
+    public void setToken(Token token) {
+        this.token = token;
+    }
+
     /**
      * Getter method for the names of players who inflicted damage to this player since last scoring.
      * @return a list of names of players who inflicted damage to this player since last scoring.
@@ -191,6 +227,11 @@ public class RemotePlayer {
     public void setDamage(List<String> damage) {
         this.damage = damage;
     }
+
+    public void setOnFrenzy(boolean onFrenzy) {
+        this.onFrenzy = onFrenzy;
+    }
+
     /**
      * Setter method for the names of players who put markings on this player since last scoring.
      * @param markings a list of names of players who put markings on this player since last scoring.
@@ -213,6 +254,11 @@ public class RemotePlayer {
     public void setPosition(int position) {
         this.position = position;
     }
+
+    public void setUser(boolean user) {
+        isUser = user;
+    }
+
     /**
      * Setter method for the current amount of death suffered by this player since the beginning of the game.
      * @param deathCount the current amount of death of this player.

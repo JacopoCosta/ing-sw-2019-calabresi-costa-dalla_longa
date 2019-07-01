@@ -1,14 +1,13 @@
 package it.polimi.ingsw.view.remote.status;
 
 import it.polimi.ingsw.view.remote.ContentType;
-import it.polimi.ingsw.network.common.deliverable.Deliverable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This class stores simplified information about game global properties and board settings. Such info is used by clients in order to get the player know about the game.
- * The gathered info is completely received from the server via {@link Deliverable} communication.
+ * The gathered info is completely received from the server.
  * This class is abstract, as there's no need for a client to instantiate a RemoteBoard object because every client is playing to at most one game, while for a server this
  * entire class is useless, for its purpose is client visualization only.
  */
@@ -19,12 +18,15 @@ public abstract class RemoteBoard {
      */
     private static List<RemotePlayer> participants;
 
+    private static String Username;
+
     /**
      * The index for the user's token in {@link this.participants} list.
      * Such information about which participant is the user's one is useful for better and more specific visualization methods for {@link RemoteWeapon} and {@link RemotePowerUp}.
      */
     private static int indexOfUserCharacter;    //participants.get(indexOfUserCharacter) is the user's token. Can be used for better and more specific visualization
                                                 //of power-ups, weapons and so on. TODO: modify virtualView, CLI or whatever to set it correctly
+    //TODO: maybe you can remove this
 
     /**
      * A list of names of players who has killed somebody since the beginning of the game.
@@ -69,6 +71,10 @@ public abstract class RemoteBoard {
      */
     public static String getBoardImage() {
         return boardImage;
+    }
+
+    public static String getUsername() {
+        return Username;
     }
 
     /**
@@ -158,6 +164,10 @@ public abstract class RemoteBoard {
         RemoteBoard.indexOfUserCharacter = indexOfUserCharacter;
     }
 
+    public static void setUsername(String username) {
+        Username = username;
+    }
+
     /**
      * Getter method for {@link #killers}.
      * @param killers the authors names of every kill since the beginning of the game.
@@ -182,19 +192,17 @@ public abstract class RemoteBoard {
     }
 
     /**
-     * Setter method for {@link #boardImage}.
-     * @param boardImage the relative path of the source image for board map drawing if using GUI.
+     * Calculator method for {@link #boardImage}.
+     * @param boardType the number of boardType (ranging from 1 to 4) needed to calculate the source image for board map drawing (needed if using GUI).
      */
-    public static void setBoardImage(String boardImage) {
-        RemoteBoard.boardImage = boardImage;
+    public static void calculateBoardImage(int boardType) {
+        RemoteBoard.boardImage = "/gui/png/board/board_" + (char) boardType + ".png";
     }
 
     /**
      * Setter method for {@link #width}.
      * @param width the width of the board.
      */
-
-
     public static void setWidth(int width) {
         RemoteBoard.width = width;
     }

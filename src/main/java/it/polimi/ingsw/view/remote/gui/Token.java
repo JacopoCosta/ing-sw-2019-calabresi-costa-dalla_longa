@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.remote.gui;
 
-import it.polimi.ingsw.view.remote.status.PlayerColor;
 import it.polimi.ingsw.view.remote.status.RemotePlayer;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,8 +13,6 @@ import java.util.List;
 
 public class Token {
 
-    //TODO: connect it to RemotePlayer class
-
     private static final double radius = 20.0;      //TODO: these values are probably wrong
     private static final double dropHeight = 35.0;
     private static final double dropWidth = 20.0;
@@ -23,35 +20,35 @@ public class Token {
 
     private Color color;
     private String dropPath;
-    private String inventoryPath;   //remember to add either "_0.png" or "_1.png"
+    private String inventoryPath;
 
-    public Token(PlayerColor color) {
-        switch (color) {
-            case GREEN:
+    public Token(int choice) {
+        switch (choice) {
+            case 0:
                 this.color = Color.rgb(60, 170, 40, 1);
                 this.dropPath = "/gui/png/icons.drops/drop_green.png";
                 this.inventoryPath = "/gui/png/inventory/inventory_green";
                 break;
 
-            case GRAY:
+            case 1:
                 this.color = Color.rgb(80, 100, 110, 1);
                 this.dropPath = "/gui/png/icons.drops/drop_gray.png";
                 this.inventoryPath = "/gui/png/inventory/inventory_gray";
                 break;
 
-            case TEAL:
+            case 2:
                 this.color = Color.rgb(10, 190, 230, 1);
                 this.dropPath = "/gui/png/icons.drops/drop_teal.png";
                 this.inventoryPath = "/gui/png/inventory/inventory_teal";
                 break;
 
-            case VIOLET:
+            case 3:
                 this.color = Color.rgb(210, 0, 240, 1);
                 this.dropPath = "/gui/png/icons.drops/drop_violet.png";
                 this.inventoryPath = "/gui/png/inventory/inventory_violet";
                 break;
 
-            case YELLOW:
+            case 4:
                 this.color = Color.rgb(230, 180, 0, 1);
                 this.dropPath = "/gui/png/icons.drops/drop_yellow.png";
                 this.inventoryPath = "/gui/png/inventory/inventory_yellow";
@@ -109,5 +106,9 @@ public class Token {
 
     public Color getColor() {
         return color;
+    }
+
+    public String getInventoryPath(boolean onFrenzy) {
+        return inventoryPath + (onFrenzy ? "_1.png" : "_0.png");
     }
 }

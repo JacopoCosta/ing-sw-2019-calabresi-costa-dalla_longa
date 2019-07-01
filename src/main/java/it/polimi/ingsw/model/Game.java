@@ -159,6 +159,15 @@ public class Game {
     }
 
     /**
+     * Gets the {@link Game#boardType} the {@code Board} uses as map.
+     *
+     * @return the {@link Game#boardType}
+     */
+    public int getBoardType() {
+        return boardType;
+    }
+
+    /**
      * Gets the {@link Game#virtualView} bound to the {@code Game}.
      *
      * @return the {@link VirtualView}.

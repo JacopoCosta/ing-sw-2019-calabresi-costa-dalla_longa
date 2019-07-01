@@ -6,57 +6,85 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+
+import java.util.List;
 
 public class CardPrint {
 
-    private final double INACTIVE_SAT_VALUE = -0.8; //ranging from -1.0 to +1.0, no effect by applying 0.0
+    private static final double INACTIVE_SAT_VALUE = -0.55; //ranging from -1.0 to +1.0, no effect by applying 0.0
+    private static final double INACTIVE_BRIGHTNESS_VALUE = -0.7;
 
-    private final String CARD_RESOURCES_PATH = "/gui/png/decks/";
+    private static final String CARD_RESOURCES_PATH = "/gui/png/decks/";
 
-    public ImageView getSourceImage (RemoteWeapon weapon) {    //given a remoteWeapon, return its image
+    public static HBox getWeaponListImage(List<RemoteWeapon> weaponList) {    //given a list of RemoteWeapon, return a HBox containing them
 
-        String path = weapon.getName().replaceAll("\\s","");    //deleting spaces
-        path = path.substring(0, 1).toLowerCase() + path.substring(1);  //turning to camelCase by lowering the first character
+        HBox weaponPane = new HBox();   //main pane
 
-        path = CARD_RESOURCES_PATH + "/weapons/" + path + ".png";    //getting the right path
+        for(RemoteWeapon weapon : weaponList) {
+            String path = weapon.getName().replaceAll("\\s", "");    //deleting spaces
+            path = path.substring(0, 1).toLowerCase() + path.substring(1);  //turning to camelCase by lowering the first character
 
-        ImageView image = new ImageView(new Image(path));
+            path = CARD_RESOURCES_PATH + "/weapons/" + path + ".png";    //getting the right path
 
-        if(!weapon.isLoaded()) {    //on unloaded weapon, desaturate its source image
+            ImageView weaponImageView = new ImageView(new Image(path));
 
-            ColorAdjust color = new ColorAdjust();
-            color.setSaturation(INACTIVE_SAT_VALUE);
-            image.setEffect(color);
+            if (!weapon.isLoaded()) {    //on unloaded weapon, desaturate its source image
+
+                ColorAdjust color = new ColorAdjust();
+                color.setSaturation(INACTIVE_SAT_VALUE);
+                color.setBrightness(INACTIVE_BRIGHTNESS_VALUE);
+                weaponImageView.setEffect(color);
+            }
+
+            weaponPane.getChildren().add(weaponImageView);
         }
 
-        return image;
+        return weaponPane;
     }
 
-    public ImageView getSourceImage(RemotePowerUp powerUp) {    //given a remotePowerUp, return its image
+    public static Pane getPowerUpListImage(List<RemotePowerUp> powerUpList) {    //given a remotePowerUp, return its image
 
-        //it works fine, as powerUp.getType() is always in lowerCase
-        String path = CARD_RESOURCES_PATH + "powerUps/" + powerUp.getType() + ("_" + powerUp.getColorCube().toLowerCase() + ".png");
-        return new ImageView(new Image(path));
+        Pane powerUpPane = new HBox();  //main pane
+
+        for(RemotePowerUp pUp : powerUpList) {
+            String path = CARD_RESOURCES_PATH + "powerUps/" + pUp.getType() + ("_" + pUp.getColorCube().toLowerCase() + ".png");
+            powerUpPane.getChildren().add(new ImageView(new Image(path)));
+        }
+        return powerUpPane;
     }
 
-    public ImageView getSourceImage (int red, int yellow, int blue, boolean includesPowerUp) { //given the content af an ammocell, return its image
+    private static Pane getCellImage(RemoteCell cell) { //given the content af a cell, return an image of its content
 
-        String path = CARD_RESOURCES_PATH + "ammoTiles/ammoTile_";  //getting the right path
+        String path = CARD_RESOURCES_PATH;
+        if(cell.isAmmoCell()) {
 
-        //adjusting the path to get the right image
-        path += ("R".repeat(Math.max(0, red)));
-        path += ("Y".repeat(Math.max(0, yellow)));
-        path += ("B".repeat(Math.max(0, blue)));
+            if (cell.getRed() + cell.getYellow() + cell.getBlue() == 0) {
+                path += "ammoTileDeck.png"; //path for void ammoTile image
+            } else {
+                path += "ammoTiles/ammoTile_";  //starts calculating the correct ammoTile image path
 
-        if(includesPowerUp)
-            path += ("_P");
+                //adjusting the path to get the right image
+                path += ("R".repeat(Math.max(0, cell.getRed())));
+                path += ("Y".repeat(Math.max(0, cell.getYellow())));
+                path += ("B".repeat(Math.max(0, cell.getBlue())));
 
-        path += (".png");
+                if (cell.includesPowerUp())
+                    path += ("_P");
 
-        return new ImageView(new Image(path));
+                path += (".png");
+            }
+
+            return new Pane(new ImageView(new Image(path)));
+        }
+        else {  //cell is a shop
+
+            return getWeaponListImage(cell.getShop());  //returns HBox
+        }
     }
 
-    public Pane printBoard() {
+    public static Pane printBoard() {
 
         Pane pane = new StackPane();
         ImageView boardMap = new ImageView(new Image(RemoteBoard.getBoardImage()));
@@ -65,15 +93,16 @@ public class CardPrint {
         pane.getChildren().add(boardMap);
 
         //refresh board tokens
-        /*TODO
-            pane.getChildren().add(refreshAmmo)
-            pane.getChildren().add(refreshPlayers)
-         */
+
+        pane.getChildren().add(getCellsContent());
+
+        //TODO pane.getChildren().add(getPlayersOnMap)
+
 
         return pane;
     }
 
-    public Pane refreshAmmo() {
+    public static Pane getCellsContent() { //works both for ammocell and shops
 
         Pane ammoPane = new StackPane();
         HBox horAmmoTiles = new HBox();
@@ -91,10 +120,12 @@ public class CardPrint {
                 RemoteCell cell = RemoteBoard.getCells().get(h*RemoteBoard.getHeight() + w*RemoteBoard.getWidth()); //gets the right cell
 
                 //adds the correct ammo tile image
-                if(cell.isAmmoCell() && cell.getRed()*cell.getYellow()*cell.getBlue() > 0)
-                    verAmmoTiles.getChildren().add(getSourceImage(cell.getRed(), cell.getYellow(), cell.getBlue(), cell.includesPowerUp()));
-                else
-                    verAmmoTiles.getChildren().add(null);   //TODO: make it add a void image
+                if(cell.isAmmoCell()) {
+                    verAmmoTiles.getChildren().add(getCellImage(cell));
+                }
+                else {
+                    //TODO
+                }
             }
 
             horAmmoTiles.getChildren().add(verAmmoTiles);
@@ -103,15 +134,65 @@ public class CardPrint {
         return ammoPane;
     }
 
-    public Pane refreshPlayers() {
+    public static Pane getPlayersOnMap() {
 
         Pane playersPane = new StackPane();
+        List<RemotePlayer> participants = RemoteBoard.getParticipants();
 
-        for(RemotePlayer player : RemoteBoard.getParticipants()) {
-            //TODO: modify RemoteCell so that it contains a reference to remotePlayers (you'll need to change quite a lot of methods)
-        }
+        //TODO: finish this
 
         return playersPane;
+    }
+
+    public static Pane getPlayerBoard(RemotePlayer player) {
+
+        Pane playerBoard = new StackPane(); //main pane
+        HBox damageBox = new HBox();        //pane containing damage tokens
+        HBox markingBox = new HBox();       //pane containing marking tokens
+        HBox redAmmoBox = new HBox();
+        HBox yellowAmmoBox = new HBox();
+        HBox blueAmmoBox = new HBox();
+        VBox ammoBox = new VBox();
+
+        //load base image on the main pane
+        playerBoard.getChildren().add(new ImageView(new Image(player.getToken().getInventoryPath(player.isOnFrenzy()))));
+
+        //loading ammo
+        Rectangle ammoCube = new Rectangle();
+        ammoCube.setHeight(2.0);
+        ammoCube.setWidth(2.0);
+
+        for(int i=0; i<player.getRedAmmo(); i++)
+            redAmmoBox.getChildren().add(getAmmoCube(Color.RED));
+
+        for(int i=0; i<player.getYellowAmmo(); i++)
+            yellowAmmoBox.getChildren().add(getAmmoCube(Color.YELLOW));
+
+        for(int i=0; i<player.getBlueAmmo(); i++)
+            blueAmmoBox.getChildren().add(getAmmoCube(Color.BLUE));
+
+        redAmmoBox.setSpacing(0.15);
+        yellowAmmoBox.setSpacing(0.15);
+        blueAmmoBox.setSpacing(0.15);
+
+        ammoBox.getChildren().add(redAmmoBox);
+        ammoBox.getChildren().add(yellowAmmoBox);
+        ammoBox.getChildren().add(blueAmmoBox);
+        ammoBox.setSpacing(0.2);
+
+        //TODO: finish this
+        return playerBoard;
+    }
+
+    private static Rectangle getAmmoCube(Color color) {
+
+        Rectangle ammoCube = new Rectangle();
+        ammoCube.setHeight(2.0);
+        ammoCube.setWidth(2.0);
+
+        ammoCube.setFill(color);
+
+        return ammoCube;
     }
 
 }
