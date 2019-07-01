@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.network.common.message.MessageStatus;
@@ -38,7 +39,7 @@ public abstract class VirtualClient {
      * calls on the same {@code VirtualClient}'s {@link #nextMessage} attribute, that can be modified through a multi-thread
      * call to {@link #notifyReceived(NetworkMessage)} and {@link #nextMessage()} methods.
      */
-    private MessageStatus messageStatus;
+    private volatile MessageStatus messageStatus;
 
     /**
      * The last {@link NetworkMessage} received from the remote-client counterpart.
@@ -155,9 +156,10 @@ public abstract class VirtualClient {
      */
     @SuppressWarnings("StatementWithEmptyBody")
     private NetworkMessage nextMessage() throws ConnectionException {
-        synchronized (this.messageReceivedLock) {
-            while (this.messageStatus.equals(MessageStatus.WAITING)) ;
 
+        while (this.messageStatus.equals(MessageStatus.WAITING));
+
+        synchronized (this.messageReceivedLock) {
             if (this.messageStatus.equals(MessageStatus.UNAVAILABLE))
                 throw new ConnectionException("Client disconnected");
 

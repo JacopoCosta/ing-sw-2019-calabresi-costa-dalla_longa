@@ -31,19 +31,19 @@ public class Lobby implements Observer {
      * @see it.polimi.ingsw.model.Game
      * @see #adjustTimer()
      */
-    private final int WAITING_TIME_FULL = 30; //time in seconds the timer starts from
+    private final int WAITING_TIME_FULL = 12; //time in seconds the timer starts from
 
     /**
      * The cap to the waiting time, in seconds, after the {@code Lobby} reached it maximum capacity at least once.
      *
      * @see #MAX_PLAYERS
      */
-    private final int WAITING_TIME_REDUCED = 15;
+    private final int WAITING_TIME_REDUCED = 6;
 
     /**
      * The initial value of {@link #timeMargin}.
      */
-    private final int WAITING_TIME_MARGIN = 5;
+    private final int WAITING_TIME_MARGIN = 2;
 
     /**
      * The duration, in seconds, of a short interval of time given to a {@code Lobby} before starting the game, and

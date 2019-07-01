@@ -169,7 +169,6 @@ public class GraphicsEventHandler {
 
         int choice = Dispatcher.requestMappedOption(deliverable.getMessage(), ((Mapped) deliverable).getOptions(), ((Mapped) deliverable).getKeys());
 
-        System.out.println("[BUG] The client delivers \"" + choice + "\" back to the server.");
         Deliverable response = new Response(choice);
         communicationHandler.deliver(response);
     }

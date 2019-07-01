@@ -141,6 +141,7 @@ public class CommunicationHub {
                 break;
             case CLIENT_MESSAGE:
                 notifyPlayer(message);
+                break;
             default:
                 this.console.err("Message " + message.getType() + " received from Client \"" + message.getAuthor() + "\": ignored");
         }
