@@ -124,7 +124,7 @@ public class GUI extends Application implements GraphicalInterface {
             Map<String, String> lobbyInfo;
 
             try {
-                lobbyInfo = communicationHandler.requestUpdate();
+                lobbyInfo = communicationHandler.requestLobbyUpdate();
             } catch (ConnectionException e) {
                 fatalErrorRoutine(e.getMessage());
                 return;

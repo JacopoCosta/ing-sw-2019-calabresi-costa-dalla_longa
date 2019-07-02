@@ -1,6 +1,5 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.network.common.message.MessageStatus;
@@ -154,10 +153,10 @@ public abstract class VirtualClient {
      * @return the {@link NetworkMessage} received from the remote counterpart.
      * @throws ConnectionException if the {@link NetworkMessage} remote sender encounters a network issue at any lower level.
      */
-    @SuppressWarnings("StatementWithEmptyBody")
     private NetworkMessage nextMessage() throws ConnectionException {
 
-        while (this.messageStatus.equals(MessageStatus.WAITING));
+        while (this.messageStatus.equals(MessageStatus.WAITING))
+            Thread.onSpinWait();
 
         synchronized (this.messageReceivedLock) {
             if (this.messageStatus.equals(MessageStatus.UNAVAILABLE))

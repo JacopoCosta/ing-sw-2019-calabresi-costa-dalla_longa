@@ -1,16 +1,23 @@
 package it.polimi.ingsw.network.server.lobby;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.exceptions.InvalidSaveStateException;
+import it.polimi.ingsw.model.exceptions.UnmatchedSavedParticipantsException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.util.Table;
 import it.polimi.ingsw.network.common.exceptions.*;
+import it.polimi.ingsw.network.common.message.MessageType;
+import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.common.observer.Observer;
+import it.polimi.ingsw.network.common.observer.Observable;
 import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.network.common.util.timer.CountDownTimer;
 import it.polimi.ingsw.network.common.util.property.GameProperty;
 import it.polimi.ingsw.network.client.communication.ServerCommunicationInterface;
+import it.polimi.ingsw.network.server.VirtualClient;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A collection of {@link Player}s logged together, waiting for a {@link Game} to start. {@link Player}s should be
@@ -97,12 +104,21 @@ public class Lobby implements Observer {
     private Game game;
 
     /**
+     * Whether or not the {@link Player}s should be notified about opponents update. This is necessary until the {@link Game}
+     * starts. After that no more notifications are desirable.
+     */
+    private boolean notify;
+
+    /**
      * The properties needed in order to play a new {@link Game}.
      *
      * @see GameProperty
      */
     private GameProperty gameProperty;
 
+    /**
+     * The {@link Console} used to print any kind of information needed to the server command prompt.
+     */
     private final Console console;
 
     /**
@@ -123,6 +139,8 @@ public class Lobby implements Observer {
         this.timer.addObserver(this);
 
         this.console = Console.getInstance();
+
+        this.notify = true;
     }
 
     /**
@@ -186,15 +204,15 @@ public class Lobby implements Observer {
      *
      * <p>The insertion criteria (that applies before the {@link Game} starts) are:
      * 1 - there must be a space left in the {@code Lobby}. This is true if {@code players.size()} is less than
-     *      {@link #MAX_PLAYERS}.
+     * {@link #MAX_PLAYERS}.
      * 2 - the {@code player} can't be {@code null}.
      * 3 - the {@code Lobby} can't contain another instance of {@link Player} {@code p}, so that {@code player.equals(p)}.
      * 4- ether only one of the following conditions must be satisfied:
-     *      a - the given {@code password} must be the same a {@code this.password}, so that
-     *          {@code password.equals(this.password)}.
-     *      b - both the given {@code password} and {@code this.password} must be null simultaneously.
-     *      c - {@code this.password} must be either {@code null} or such that {@code this.password.isEmpty()} and
-     *          {@code password } must be either {@code null} or such that {@code password.isBlank()}.
+     * a - the given {@code password} must be the same a {@code this.password}, so that
+     * {@code password.equals(this.password)}.
+     * b - both the given {@code password} and {@code this.password} must be null simultaneously.
+     * c - {@code this.password} must be either {@code null} or such that {@code this.password.isEmpty()} and
+     * {@code password } must be either {@code null} or such that {@code password.isBlank()}.
      *
      * @param player   the {@link Player} to insert into the {@code Lobby}.
      * @param password the authentication password to allow {@code player} to be inserted into this {@code Lobby}.
@@ -307,18 +325,108 @@ public class Lobby implements Observer {
     }
 
     /**
-     * This function is called when the {@link #timer} expires and notifies that a new {@link Game}
-     * should start using the {@link Player}s currently logged into this {@code Lobby}.
+     * Notifies all the {@link #players} that the {@link #timer} has been expired.
+     */
+    private void notifyExpired() {
+        players.stream()
+                .filter(VirtualClient::isConnected)
+                .forEach(player -> {
+                    try {
+                        player.sendMessage(NetworkMessage.simpleServerMessage(MessageType.COUNTDOWN_EXPIRED));
+                        this.console.mexS("message " + MessageType.COUNTDOWN_EXPIRED + " sent to client \"" + player.getName() + "\"");
+                    } catch (ConnectionException ignored) {
+                    }
+                });
+    }
+
+    /**
+     * Notifies all the {@link #players} that the {@link #timer} has performed a time update.
      *
+     * @param seconds the new amount of time left to count down from.
+     */
+    private void notifyTimeUpdate(int seconds) {
+        players.stream()
+                .filter(VirtualClient::isConnected)
+                .forEach(player -> {
+                    try {
+                        player.sendMessage(NetworkMessage.completeServerMessage(MessageType.COUNTDOWN_UPDATE, seconds));
+                        this.console.mexS("message " + MessageType.COUNTDOWN_UPDATE + " sent to client \"" + player.getName() + "\"");
+                    } catch (ConnectionException ignored) {
+                    }
+                });
+    }
+
+    /**
+     * Notifies all the {@link #players} that the {@link #timer} has been stopped or paused due to not enough {@link Player}s
+     * left in the {@code Lobby}.
+     */
+    private void notifyStopped() {
+        players.stream()
+                .filter(VirtualClient::isConnected)
+                .forEach(player -> {
+                    try {
+                        player.sendMessage(NetworkMessage.simpleServerMessage(MessageType.COUNTDOWN_STOPPED));
+                        this.console.mexS("message " + MessageType.COUNTDOWN_STOPPED + " sent to client \"" + player.getName() + "\"");
+                    } catch (ConnectionException ignored) {
+                    }
+                });
+    }
+
+    /**
+     * Notifies all the {@link #players} with the updated list of all the other {@link Player}s logged in the same {@link Lobby},
+     * except himself.
+     */
+    void notifyOpponentUpdate() {
+        if (notify)
+            players.stream()
+                    .filter(VirtualClient::isConnected)
+                    .forEach(player -> {
+                        try {
+                            player.sendMessage(NetworkMessage.completeServerMessage(MessageType.OPPONENTS_LIST_UPDATE,
+                                    players.stream()
+                                            .filter(p -> !p.equals(player))
+                                            .map(VirtualClient::getName)
+                                            .collect(Collectors.toList())));
+                            this.console.mexS("message " + MessageType.OPPONENTS_LIST_UPDATE + " sent to client \"" + player.getName() + "\"");
+                        } catch (ConnectionException ignored) {
+                        }
+                    });
+    }
+
+    /**
+     * This function is called when the {@link #timer} experience a relevant update while performing the countdown.
+     * Depending on the {@code eventStatus} that has been triggered and its {@code content}, different actions may be taken
+     * to respond accordingly to the occurred event.
+     *
+     * @param eventStatus the status in which the {@link Observable} is found when performs the call to {@code notifyEvent()}.
+     * @param value       the value of the actual event status.
      * @see Observer
      */
     @Override
-    public void onEvent() {
-        this.timer.removeObserver(this);
+    public void onEvent(int eventStatus, int value) {
+        if (eventStatus == CountDownTimer.STATUS_EXPIRED) {
+            this.timer.removeObserver(this);
 
-        this.game = Game.create(this.gameProperty.finalFrenzy(), this.gameProperty.roundsToPlay(), this.gameProperty.boardType(), this.players);
-        new Thread(this.game::play).start();
+            //notify Clients the Game is about to start
+            notifyExpired();
 
-        this.console.mexG("Game started from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
+            //start a new game or load an existing one
+            new Thread(() -> {
+                try {
+                    //FIXME remove NullPointerException and adjust Game.load mechanic
+                    this.game = Game.load(null, this.players);
+                    this.console.mexG("previous Game loaded from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
+                } catch (InvalidSaveStateException | UnmatchedSavedParticipantsException | NullPointerException ignored) {
+                    this.game = Game.create(this.gameProperty.finalFrenzy(), this.gameProperty.roundsToPlay(),
+                            this.gameProperty.boardType(), this.players);
+                    this.console.stat("new Game started from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
+                }
+                game.play();
+            }).start();
+            notify = false;
+        } else if (eventStatus == CountDownTimer.STATUS_TIME_UPDATE)
+            notifyTimeUpdate(value);
+        else if (eventStatus == CountDownTimer.STATUS_STOPPED) //else should be enough but, just in case...
+            notifyStopped();
     }
 }

@@ -7,9 +7,9 @@ package it.polimi.ingsw.network.common.observer;
  * An {@code Observable} object can have one or more observers. An observer
  * is object that implements interface {@link Observer}. After an
  * observable instance changes, an application calling the
- * {@code Observable}'s {@link #notifyObservers()} method
+ * {@code Observable}'s {@link #notifyObservers(int, int)} method
  * causes all of its observers to be notified of the change by a call
- * to their {@link Observer#onEvent()} method.
+ * to their {@link Observer#onEvent(int, int)} method.
  * <p>
  * The order in which notifications will be delivered may vary depending on the
  * data structure in which {@link Observer}s are stored and the notification
@@ -44,7 +44,10 @@ public interface Observable {
     /**
      * Indicates that a change in the extender class happened and notifies all of
      * its {@link Observer}s.
-     * As a result, each {@link Observer} has its {@link Observer#onEvent()} method called.
+     * As a result, each {@link Observer} has its {@link Observer#onEvent(int, int)} method called.
+     *
+     * @param status the status in which the {@link Observable} class is found when invoking the notify procedure.
+     * @param value  the value of the {@link Observable} status.
      */
-    void notifyObservers();
+    void notifyObservers(int status, int value);
 }

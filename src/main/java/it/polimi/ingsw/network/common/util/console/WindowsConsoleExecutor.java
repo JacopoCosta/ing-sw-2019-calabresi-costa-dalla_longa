@@ -15,14 +15,15 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      * performed individually by a separate thread.
      *
      * @param command the directive to be executed.
-     * @throws IOException          if an {@link IOException} is thrown at a lower level.
-     * @throws InterruptedException if an {@link InterruptedException} is thrown at a lower level.
      */
-    private void execute(String command) throws IOException, InterruptedException {
+    private synchronized void execute(String command) {
         ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", command);
 
-        Process p = pb.inheritIO().start();
-        p.waitFor();
+        try {
+            Process p = pb.inheritIO().start();
+            p.waitFor();
+        } catch (IOException | InterruptedException ignored) {
+        }
     }
 
     /**
@@ -30,11 +31,7 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      */
     @Override
     public void clear() {
-        try {
-            execute("cls");
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        execute("cls");
     }
 
     /**
@@ -52,11 +49,7 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      */
     @Override
     public void ANSIPrint(String ansiMessage) {
-        try {
-            execute("<nul set /p =\"" + ansiMessage + "\"");
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        execute("<nul set /p =\"" + ansiMessage + "\"");
     }
 
     /**
@@ -71,10 +64,6 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      */
     @Override
     public void ANSIPrintln(String ansiMessage) {
-        try {
-            execute("<nul set /p =\"" + ansiMessage + "\" & echo.");
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        execute("<nul set /p =\"" + ansiMessage + "\" & echo.");
     }
 }

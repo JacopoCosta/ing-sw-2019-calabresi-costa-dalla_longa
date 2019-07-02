@@ -162,4 +162,14 @@ public class LobbyManager {
                 .map(Lobby::getStatus)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
+
+    /**
+     * Notifies the given {@code player} about the update in his opponents list.
+     * @param player the {@link Player} to be notified.
+     * @throws LobbyNotFoundException if no {@link Lobby} containing the given {@code player }can be found.
+     * @throws PlayerNotFoundException if no {@link Player} corresponding to the given {@code player} can be found.
+     */
+    public void notifyOpponentsUpdate(Player player) throws LobbyNotFoundException, PlayerNotFoundException {
+        getLobbyByName(getLobbyNameByPlayer(player)).notifyOpponentUpdate();
+    }
 }

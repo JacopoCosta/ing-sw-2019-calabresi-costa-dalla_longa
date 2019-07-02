@@ -7,8 +7,10 @@ import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.common.deliverable.Deliverable;
 
+import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("unchecked")
 public class CommunicationHandler {
     public enum Interface {
         SOCKET_INTERFACE,
@@ -49,7 +51,12 @@ public class CommunicationHandler {
     }
 
     private NetworkMessage nextMessage() throws ConnectionException {
-        return communicationInterface.nextMessage();
+        NetworkMessage message;
+        do {
+            message = communicationInterface.nextMessage();
+        } while (message.getType().equals(MessageType.PING_MESSAGE));
+
+        return message;
     }
 
     public void deliver(Deliverable deliverable) throws ConnectionException {
@@ -58,10 +65,7 @@ public class CommunicationHandler {
     }
 
     public Deliverable nextDeliverable() throws ConnectionException {
-        NetworkMessage message;
-        do {
-            message = nextMessage();
-        } while (message.getType().equals(MessageType.PING_MESSAGE));
+        NetworkMessage message = nextMessage();
 
         if (!(message.getType().equals(MessageType.CLIENT_MESSAGE)))
             throw new ConnectionException("expected: " + MessageType.CLIENT_MESSAGE + ", found: " + message.getType());
@@ -69,12 +73,8 @@ public class CommunicationHandler {
     }
 
     public void register(String username) throws ConnectionException, ClientAlreadyRegisteredException {
-        NetworkMessage message = NetworkMessage.simpleClientMessage(username, MessageType.REGISTER_REQUEST);
-
-        sendMessage(message);
-        do {
-            message = nextMessage();
-        } while (message.getType().equals(MessageType.PING_MESSAGE));
+        sendMessage(NetworkMessage.simpleClientMessage(username, MessageType.REGISTER_REQUEST));
+        NetworkMessage message = nextMessage();
 
         switch (message.getType()) {
             case REGISTER_SUCCESS:
@@ -89,12 +89,8 @@ public class CommunicationHandler {
     }
 
     public void unregister() throws ConnectionException, ClientNotRegisteredException {
-        NetworkMessage message = NetworkMessage.simpleClientMessage(username, MessageType.UNREGISTER_REQUEST);
-
-        sendMessage(message);
-        do {
-            message = nextMessage();
-        } while (message.getType().equals(MessageType.PING_MESSAGE));
+        sendMessage(NetworkMessage.simpleClientMessage(username, MessageType.UNREGISTER_REQUEST));
+        NetworkMessage message = nextMessage();
 
         switch (message.getType()) {
             case UNREGISTER_SUCCESS:
@@ -108,28 +104,11 @@ public class CommunicationHandler {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public Map<String, String> requestUpdate() throws ConnectionException {
-        NetworkMessage message = NetworkMessage.simpleClientMessage(username, MessageType.LOBBY_LIST_UPDATE_REQUEST);
-
-        sendMessage(message);
-        do {
-            message = nextMessage();
-        } while (message.getType().equals(MessageType.PING_MESSAGE));
-
-        if (!(message.getType().equals(MessageType.LOBBY_LIST_UPDATE_RESPONSE)))
-            throw new ConnectionException("expected: " + MessageType.LOBBY_LIST_UPDATE_RESPONSE + ", found " + message.getType());
-        return (Map<String, String>) message.getContent(); //safe conversion guaranteed by string type
-    }
-
     public void initLobby(String lobbyName, String lobbyPassword) throws ConnectionException, LobbyAlreadyExistsException {
         String[] lobbyInfo = {lobbyName, lobbyPassword};
-        NetworkMessage message = NetworkMessage.completeClientMessage(username, MessageType.LOBBY_CREATE_REQUEST, lobbyInfo);
 
-        sendMessage(message);
-        do {
-            message = nextMessage();
-        } while (message.getType().equals(MessageType.PING_MESSAGE));
+        sendMessage(NetworkMessage.completeClientMessage(username, MessageType.LOBBY_CREATE_REQUEST, lobbyInfo));
+        NetworkMessage message = nextMessage();
 
         switch (message.getType()) {
             case LOBBY_CREATE_SUCCESS:
@@ -157,12 +136,9 @@ public class CommunicationHandler {
             throws ConnectionException, LobbyNotFoundException, LobbyFullException, InvalidPasswordException,
             GameAlreadyStartedException, PlayerAlreadyAddedException {
         String[] lobbyInfo = {lobbyName, lobbyPassword};
-        NetworkMessage message = NetworkMessage.completeClientMessage(username, MessageType.LOBBY_LOGIN_REQUEST, lobbyInfo);
 
-        sendMessage(message);
-        do {
-            message = nextMessage();
-        } while (message.getType().equals(MessageType.PING_MESSAGE));
+        sendMessage(NetworkMessage.completeClientMessage(username, MessageType.LOBBY_LOGIN_REQUEST, lobbyInfo));
+        NetworkMessage message = nextMessage();
 
         switch (message.getType()) {
             case LOBBY_LOGIN_SUCCESS:
@@ -187,12 +163,8 @@ public class CommunicationHandler {
     }
 
     public void logout() throws ConnectionException {
-        NetworkMessage message = NetworkMessage.completeClientMessage(username, MessageType.LOBBY_LOGOUT_REQUEST, lobbyName);
-
-        sendMessage(message);
-        do {
-            message = nextMessage();
-        } while (message.getType().equals(MessageType.PING_MESSAGE));
+        sendMessage(NetworkMessage.completeClientMessage(username, MessageType.LOBBY_LOGOUT_REQUEST, lobbyName));
+        NetworkMessage message = nextMessage();
 
         switch (message.getType()) {
             case LOBBY_LOGOUT_SUCCESS:
@@ -209,5 +181,25 @@ public class CommunicationHandler {
                         MessageType.LOBBY_NOT_FOUND_ERROR + ", " + MessageType.PLAYER_NOT_FOUND_ERROR + ", " +
                         MessageType.LOBBY_EMPTY_ERROR + ", found: " + message.getType());
         }
+    }
+
+    public NetworkMessage getPreGameInfoUpdate() throws ConnectionException {
+        NetworkMessage message = nextMessage();
+
+        if (!message.getType().equals(MessageType.COUNTDOWN_EXPIRED) && !message.getType().equals(MessageType.COUNTDOWN_STOPPED)
+                && !message.getType().equals(MessageType.COUNTDOWN_UPDATE) && !message.getType().equals(MessageType.OPPONENTS_LIST_UPDATE))
+            throw new ConnectionException("expected: " + MessageType.COUNTDOWN_EXPIRED + ", " + MessageType.COUNTDOWN_STOPPED + ", "
+                    + MessageType.COUNTDOWN_UPDATE + ", " + MessageType.OPPONENTS_LIST_UPDATE + ", found: " + message.getType());
+        return message;
+
+    }
+
+    public Map<String, String> requestLobbyUpdate() throws ConnectionException {
+        sendMessage(NetworkMessage.simpleClientMessage(username, MessageType.LOBBY_LIST_UPDATE_REQUEST));
+        NetworkMessage message = nextMessage();
+
+        if (!(message.getType().equals(MessageType.LOBBY_LIST_UPDATE_RESPONSE)))
+            throw new ConnectionException("expected: " + MessageType.LOBBY_LIST_UPDATE_RESPONSE + ", found " + message.getType());
+        return (Map<String, String>) message.getContent(); //safe conversion guaranteed by string type
     }
 }

@@ -152,7 +152,7 @@ public class CommunicationHub {
 
         this.console.log("registering Client \"" + player.getName() + "\"...");
         try {
-            if(!register(player))
+            if (!register(player))
                 this.console.log("Client \"" + player.getName() + "\" successfully registered");
             else
                 this.console.log("Client \"" + player.getName() + "\" already found in server, rejoin successful");
@@ -272,6 +272,7 @@ public class CommunicationHub {
             e.printStackTrace();
             //this.console.err(e.getClass() + ": " + e.getMessage());
         }
+        sendOpponentsUpdate(player);
     }
 
     private void handleLobbyLogin(NetworkMessage message) {
@@ -315,6 +316,7 @@ public class CommunicationHub {
             e.printStackTrace();
             //this.console.err(e.getClass() + ": " + e.getMessage());
         }
+        sendOpponentsUpdate(player);
     }
 
     private void handleLobbyLogout(NetworkMessage message) {
@@ -352,6 +354,18 @@ public class CommunicationHub {
             e.printStackTrace();
             //this.console.err(e.getClass() + ": " + e.getMessage());
         }
+        sendOpponentsUpdate(player);
+    }
+
+    private void sendOpponentsUpdate(Player player) {
+        try {
+            lobbyManager.notifyOpponentsUpdate(player);
+        } catch (LobbyNotFoundException | PlayerNotFoundException e) {
+            //this.console.err(e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+        this.console.mexS("message " + MessageType.OPPONENTS_LIST_UPDATE + " sent to Client \"" + player.getName() + "\"");
     }
 
     private void notifyPlayer(NetworkMessage message) {
@@ -364,7 +378,6 @@ public class CommunicationHub {
             //this.console.err(e.getMessage());
             return;
         }
-
         player.notifyReceived(message);
         this.console.mexS("message " + message.getType() + " forwarded to Player \"" + player.getName() + "\"");
     }

@@ -2,6 +2,9 @@ package it.polimi.ingsw.network.common.util.timer;
 
 import it.polimi.ingsw.network.common.observer.Observable;
 import it.polimi.ingsw.network.common.observer.Observer;
+import it.polimi.ingsw.network.server.lobby.Lobby;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +12,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A {@code Timer} class to perform countdown from {@link #currentSeconds} all way down to {@code 0}.
  * This class extends the {@link Observable} interface, so the caller of {@link CountDownTimer} can be notified when the
- * timer expires.
+ * timer expires, stops/pauses, or is being updated and the countdown performs from a slightly different value of time.
  */
 public class CountDownTimer implements Observable {
     /**
@@ -53,6 +57,31 @@ public class CountDownTimer implements Observable {
     private final List<Observer> observers;
 
     /**
+     * This status is used to indicate that the timer has been expired and therefore a new {@link Game} is about to start
+     * from the current {@link Lobby} with the logged {@link Player}s till that moment.
+     */
+    public static final int STATUS_EXPIRED = 1;
+
+    /**
+     * This status is used to indicate that the timer has been stopped or paused due to not enough {@link Player}s
+     * left in the {@link Lobby}.
+     */
+    public static final int STATUS_STOPPED = 2;
+
+    /**
+     * This status is used to indicate that a time update is performed. This may happen only when a relevant change in
+     * the timer countdown has been detected.
+     */
+    public static final int STATUS_TIME_UPDATE = 3;
+
+    /**
+     * Whether or not the timer must send updates to its {@link Observer}s. This flag is typically {@code true}
+     * before a {@link Game} starts and becomes {@code false} after that because, as the {@link Game} begins, there
+     * is no need to continue sending lobby-related updates to the remote {@link Player}s.
+     */
+    private final AtomicBoolean sendTimeUpdate;
+
+    /**
      * This is the only constructor. It creates a new {@code CountDownTimer} that starts the countdown from the given
      * amount of seconds.
      *
@@ -60,12 +89,16 @@ public class CountDownTimer implements Observable {
      */
     public CountDownTimer(int startingSeconds) {
         this.currentSeconds = new AtomicInteger(startingSeconds);
+        this.sendTimeUpdate = new AtomicBoolean(true);
 
         this.executor = Executors.newSingleThreadScheduledExecutor();
         this.tick = () -> {
-            if (this.currentSeconds.decrementAndGet() == 0) {
+            if (this.currentSeconds.decrementAndGet() <= 0) {
                 stop();
-                notifyObservers();
+                notifyObservers(STATUS_EXPIRED, -1); //-1: no valuable information given when the timer expires
+            } else if (this.sendTimeUpdate.get()) { //a time update is triggered only when a setTime() call is performed
+                notifyObservers(STATUS_TIME_UPDATE, this.currentSeconds.get());
+                this.sendTimeUpdate.set(false);
             }
         };
 
@@ -94,10 +127,11 @@ public class CountDownTimer implements Observable {
      */
     public void setTime(int seconds) {
         this.currentSeconds.set(seconds);
+        this.sendTimeUpdate.set(true);
     }
 
     /**
-     * Starts the countdown from {@link #currentSeconds} down to  {@code 0}.
+     * Starts the countdown from {@link #currentSeconds} down to {@code 0}.
      * If called repeatedly before the {@link #tick} task is done, the second and subsequent calls have no effect.
      */
     public void start() {
@@ -116,6 +150,8 @@ public class CountDownTimer implements Observable {
      */
     public void stop() {
         this.future.cancel(true);
+        if (currentSeconds.get() > 0) //otherwise a STATUS_EXPIRED has already been sent
+            notifyObservers(STATUS_STOPPED, -1); //-1: no valuable information given when the timer stops
     }
 
     /**
@@ -144,12 +180,15 @@ public class CountDownTimer implements Observable {
     }
 
     /**
-     * Notify all the {@link Observer}s that the timer has expired by calling,
-     * for each {@link Observer}, it's {@link Observer#onEvent()} method.
+     * Notify all the {@link Observer}s about the expiration, stop and update of the timer status by calling,
+     * for each {@link Observer}, it's {@link Observer#onEvent(int, int)} method.
+     *
+     * @param eventStatus the status in which the {@code timer} is found when notifying its {@link Observer}s.
+     * @param value       the value value of the status event.
      */
     @Override
-    public void notifyObservers() {
+    public void notifyObservers(int eventStatus, int value) {
         for (Observer observer : this.observers)
-            observer.onEvent();
+            observer.onEvent(eventStatus, value);
     }
 }

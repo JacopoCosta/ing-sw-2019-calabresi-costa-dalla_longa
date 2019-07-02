@@ -5,7 +5,8 @@ import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.view.remote.GraphicManager;
 
-public class Client implements Runnable {
+@SuppressWarnings("FieldCanBeLocal")
+public class Client {
     private final String hostAddress;
     private final int port;
     private final CommunicationHandler.Interface communicationInterface;
@@ -23,9 +24,7 @@ public class Client implements Runnable {
         console = Console.getInstance();
     }
 
-    @Override
-    public void run() {
-
+    public void start() {
         CommunicationHandler communicationHandler;
         try {
             communicationHandler = new CommunicationHandler(hostAddress, port, communicationInterface);

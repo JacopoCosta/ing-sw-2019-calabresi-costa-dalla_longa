@@ -41,7 +41,7 @@ public class LoginManagement {
             Map<String, String> lobbyInfo;
 
             try {
-                lobbyInfo = communicationHandler.requestUpdate();
+                lobbyInfo = communicationHandler.requestLobbyUpdate();
             } catch (ConnectionException e) {
                 System.exit(-1);
                 return;

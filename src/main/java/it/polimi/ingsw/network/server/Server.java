@@ -3,7 +3,6 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.network.server.executable.RMIServer;
 import it.polimi.ingsw.network.server.executable.SocketServer;
-import it.polimi.ingsw.App;
 
 import java.rmi.registry.Registry;
 import java.util.concurrent.ExecutorService;
@@ -11,7 +10,7 @@ import java.util.concurrent.Executors;
 
 /**
  * The class responsible for the server side infrastructure. This class is the first one invoked if an Adrenaline
- * server is desired, by specifying the correct {@code args[]} to the {@link App} class.
+ * server is desired, by specifying the correct {@code args[]} to the {@link ServerLauncher} class.
  * This class instantiate two different {@code threads} to handle the client connection using different protocols:
  * an {@link RMIServer} to listen for incoming connections by {@code RMI} clients;
  * a {@link SocketServer} to listen for incoming connections by {@code Socket} clients.
@@ -21,7 +20,7 @@ import java.util.concurrent.Executors;
  */
 
 @SuppressWarnings("UnnecessaryLocalVariable")
-public class Server implements Runnable {
+public class Server {
     /**
      * The Adrenaline server ip address.
      */
@@ -58,10 +57,9 @@ public class Server implements Runnable {
     }
 
     /**
-     * Executes the {@code Server} core logic and creates the two server implementations for {@code RMI} and {@code Socket}.
+     * Starts the {@code Server} core logic and creates the two server implementations for {@code RMI} and {@code Socket}.
      */
-    @Override
-    public void run() {
+    public void start() {
         int socketPort = this.port;
         int rmiPort = Registry.REGISTRY_PORT;
 

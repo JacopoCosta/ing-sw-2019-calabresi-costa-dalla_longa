@@ -2,24 +2,27 @@ package it.polimi.ingsw.view.remote.cli;
 
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.*;
+import it.polimi.ingsw.network.common.message.MessageType;
+import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.common.util.console.Console;
 import it.polimi.ingsw.view.remote.GraphicalInterface;
-import it.polimi.ingsw.view.remote.GraphicsEventHandler;
 
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
+@SuppressWarnings({"unchecked", "FieldCanBeLocal"})
 public class CLI implements GraphicalInterface {
     private final List<String> lobbies = Collections.synchronizedList(new ArrayList<>());
 
     private final Scanner in = new Scanner(System.in);
 
-    private Runnable updateTask;
     private ScheduledExecutorService executor;
     private ScheduledFuture<?> futureUpdate;
+
     private final int UPDATE_REQUEST_PERIOD = 5;
 
     private CommunicationHandler communicationHandler;
@@ -44,27 +47,31 @@ public class CLI implements GraphicalInterface {
         register();
 
         //requests the updated Lobby list with a delay interval and prints them
-        startUpdateAndPrint();
+        startLobbyUpdateAndPrint();
 
         //get the client response: create a new lobby ('n') or select a valid lobby to login (number)
         String choice = requestChoice();
 
         //stops the update and print requests once the Client selected a valid choice
-        stopUpdateAndPrint();
+        stopLobbyUpdateAndPrint();
 
         if (choice.equals("n")) //Client wants to create a new Lobby
             initLobby();
         else { //Client wants to join an existing Lobby (choice is the lobby name)
             loginToLobby(choice);
         }
-        //TODO: note: from here client is registered and need to do something :)
 
-        GraphicsEventHandler graphicsEventHandler = new GraphicsEventHandler(false, communicationHandler);
+        //display the pre-game information: timer countdown and opponents list
+        printPreGameInfo();
 
-        while(true) // TODO define exit conditions
-        graphicsEventHandler.deliverableCatcher();
+        //TODO: note: from here client is registered, logged into a specific Lobby and the game is starting
 
-        /* commenting this out, because further input will be solicited by Deliverable requests
+        /*GraphicsEventHandler graphicsEventHandler = new GraphicsEventHandler(false, communicationHandler);
+
+        while (true) // TODO define exit conditions
+            graphicsEventHandler.deliverableCatcher();*/
+
+        /* commenting this out, because further input will be solicited by Deliverable requests */
         //request the next action to do
         int action = requestAction();
 
@@ -72,7 +79,6 @@ public class CLI implements GraphicalInterface {
             logoutFromLobby();
             unregister();
         }
-        */
     }
 
     private String in() {
@@ -117,13 +123,14 @@ public class CLI implements GraphicalInterface {
     }
 
     //update the Lobby list and print them
-    private void startUpdateAndPrint() {
-        updateTask = () -> {
+    private void startLobbyUpdateAndPrint() {
+        //console.err("connection to the server is lost, cause: " + e.getMessage());
+        Runnable updateTask = () -> {
 
             Map<String, String> lobbyInfo;
 
             try {
-                lobbyInfo = communicationHandler.requestUpdate();
+                lobbyInfo = communicationHandler.requestLobbyUpdate();
             } catch (ConnectionException e) {
                 //console.err("connection to the server is lost, cause: " + e.getMessage());
                 e.printStackTrace();
@@ -136,16 +143,14 @@ public class CLI implements GraphicalInterface {
             }
             printAll(lobbyInfo);
         };
-        executor = Executors.newSingleThreadScheduledExecutor();
+        executor = Executors.newScheduledThreadPool(2);
         futureUpdate = executor.scheduleAtFixedRate(updateTask, 0, UPDATE_REQUEST_PERIOD, TimeUnit.SECONDS);
     }
 
     //stops the update and print process
-    private void stopUpdateAndPrint() {
-        if (!futureUpdate.isDone()) {
+    private void stopLobbyUpdateAndPrint() {
+        if (!futureUpdate.isDone())
             futureUpdate.cancel(true);
-            executor.shutdown();
-        }
     }
 
     //create a new Lobby and login the Lobby author
@@ -183,7 +188,7 @@ public class CLI implements GraphicalInterface {
         } catch (LobbyNotFoundException | LobbyFullException | InvalidPasswordException | PlayerAlreadyAddedException e) {
             console.err(e.getMessage());
             System.exit(-1);
-        } catch (GameAlreadyStartedException e){
+        } catch (GameAlreadyStartedException e) {
             console.err("can't login, game already started");
             System.exit(-1);
         }
@@ -204,6 +209,7 @@ public class CLI implements GraphicalInterface {
     private int requestAction() {
         int action = 0;
         boolean valid = false;
+        console.clear();
         console.tinyPrintln("Choose an action:\n");
         console.tinyPrintln("[0] Logout\n");
         do {
@@ -285,5 +291,73 @@ public class CLI implements GraphicalInterface {
 
         console.tinyPrintln("[n] to create a new lobby\n");
         console.tinyPrint("Choice: ");
+    }
+
+    private void printPreGameInfo() {
+        NetworkMessage message;
+
+        do {
+            try {
+                message = communicationHandler.getPreGameInfoUpdate();
+            } catch (ConnectionException e) {
+                //console.err(e.getMessage());
+                e.printStackTrace();
+                System.exit(-1);
+                return;
+            }
+
+            switch (message.getType()) {
+                case COUNTDOWN_UPDATE:
+                    printCountDown((int) message.getContent());
+                    break;
+                case COUNTDOWN_STOPPED:
+                    stopCountDownPrint();
+                    printPauseMessage();
+                    break;
+                case OPPONENTS_LIST_UPDATE:
+                    opponents = (List<String>) message.getContent();
+                    printOpponents();
+                default:
+                    break;
+            }
+        } while (!message.getType().equals(MessageType.COUNTDOWN_EXPIRED)); //if timer expires the game is about to start
+        stopCountDownPrint();
+    }
+
+    private List<String> opponents;
+
+    private void printCountDown(int startingSeconds) {
+        AtomicInteger timeLeft = new AtomicInteger(startingSeconds);
+        Runnable printCountDownTask = () -> {
+            printOpponents();
+
+            if (timeLeft.decrementAndGet() >= 0) {
+                console.tinyPrintln("Game starts in " + timeLeft.get());
+            } else
+                stopCountDownPrint();
+        };
+        futureUpdate = executor.scheduleAtFixedRate(printCountDownTask, 0, 1, TimeUnit.SECONDS);
+    }
+
+    private void stopCountDownPrint() {
+        futureUpdate.cancel(true);
+    }
+
+    private void printPauseMessage(){
+        printOpponents();
+        console.tinyPrintln("Too many players left the lobby, countdown suspended.");
+    }
+
+    private void printOpponents() {
+        console.clear();
+
+        if (opponents.size() == 0)
+            console.tinyPrintln("Waiting for opponents to join...");
+        else {
+            console.tinyPrintln("Your opponents for this game:\n");
+            opponents.forEach(console::tinyPrintln);
+        }
+
+        console.tinyPrintln("");
     }
 }

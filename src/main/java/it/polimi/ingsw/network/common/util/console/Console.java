@@ -93,7 +93,7 @@ public class Console {
      *
      * @param message the {@code String} value to be printed.
      */
-    public synchronized void tinyPrint(String message) {
+    public void tinyPrint(String message) {
         System.out.print(message);
     }
 
@@ -104,7 +104,7 @@ public class Console {
      *
      * @param message the {@code String} value to be printed.
      */
-    public synchronized void tinyPrintln(String message) {
+    public void tinyPrintln(String message) {
         System.out.println(message);
     }
 
@@ -118,7 +118,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      * @see #ANSIPrintln(String)
      */
-    public synchronized void ANSIPrint(String message) {
+    public void ANSIPrint(String message) {
         executor.ANSIPrint(message);
     }
 
@@ -132,7 +132,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      * @see #ANSIPrint(String)
      */
-    public synchronized void ANSIPrintln(String message) {
+    public void ANSIPrintln(String message) {
         executor.ANSIPrintln(message);
     }
 
@@ -194,7 +194,7 @@ public class Console {
      * Clears the underlying command line environment by presenting an empty window with all the text previously displayed
      * being cleared.
      */
-    public synchronized void clear() {
+    public void clear() {
         executor.clear();
     }
 }
