@@ -42,6 +42,8 @@ public class GraphicsEventHandler {
 
     private void ActionFilter(Deliverable deliverable) throws ConnectionException {
 
+        System.out.println("received deliverable of type " + deliverable.getType() + " of event " + deliverable.getEvent());
+
         if(usesGUI) {
 
             if(deliverable.getType() == DeliverableType.BULK) {
@@ -131,7 +133,6 @@ public class GraphicsEventHandler {
         }//end if(usesGUI)
 
         else {  //the client is using CLI
-            System.out.println("Received deliverable of type " + deliverable.getType() + " of event " + deliverable.getEvent());
             switch(deliverable.getType()) {
                 case INFO:
                     CLIInfoHandler(deliverable);
@@ -170,6 +171,7 @@ public class GraphicsEventHandler {
     }
 
 
+    @SuppressWarnings("unchecked")
     private void BulkHandler(Deliverable deliverable, boolean usesGUI) {
         Object bulk = ((Bulk) deliverable).unpack();
 
@@ -256,7 +258,7 @@ public class GraphicsEventHandler {
 
                 if(((List<String>) bulk).get(1).equals("0")) {  //cell is an AmmoCell
 
-                    cell.setAmmoCell(true);
+                    cell.setAmmoCell(true); //it will never produce NPE
                     int redAmmo = ((List<Integer>) bulk).get(2);
                     int yellowAmmo = ((List<Integer>) bulk).get(3);
                     int blueAmmo = ((List<Integer>) bulk).get(4);
@@ -266,7 +268,7 @@ public class GraphicsEventHandler {
                 } //end if (ammoCell)
                 else {
 
-                    cell.setAmmoCell(false);
+                    cell.setAmmoCell(false); //it will never produce NPE
 
                     switch (((List<String>) bulk).get(2).toLowerCase()) {
                         case "red":
@@ -300,6 +302,10 @@ public class GraphicsEventHandler {
 
                 BoardInitializer(bulk);
                 RemoteBoard.setUsername(communicationHandler.getUsername());
+
+                if(usesGUI) {
+
+                }
 
                 break;
             case STATUS_UPDATE:

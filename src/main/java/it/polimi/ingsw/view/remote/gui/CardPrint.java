@@ -2,6 +2,8 @@ package it.polimi.ingsw.view.remote.gui;
 
 import it.polimi.ingsw.view.remote.status.*;
 
+import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -142,9 +144,9 @@ public abstract class CardPrint {
         return playersPane;
     }
 
-    public static Pane getPlayerBoard(RemotePlayer player) {
+    public static StackPane getPlayerBoard(RemotePlayer player) {
 
-        Pane playerBoard = new StackPane(); //main pane
+        StackPane playerBoard = new StackPane(); //main pane
         HBox damageBox = new HBox();        //pane containing damage tokens
         HBox markingBox = new HBox();       //pane containing marking tokens
         HBox redAmmoBox = new HBox();
@@ -155,11 +157,7 @@ public abstract class CardPrint {
         //load base image on the main pane
         playerBoard.getChildren().add(new ImageView(new Image(player.getToken().getInventoryPath(player.isOnFrenzy()))));
 
-        //loading ammo
-        Rectangle ammoCube = new Rectangle();
-        ammoCube.setHeight(2.0);
-        ammoCube.setWidth(2.0);
-
+        //adding ammo
         for(int i=0; i<player.getRedAmmo(); i++)
             redAmmoBox.getChildren().add(getAmmoCube(Color.RED));
 
@@ -169,34 +167,45 @@ public abstract class CardPrint {
         for(int i=0; i<player.getBlueAmmo(); i++)
             blueAmmoBox.getChildren().add(getAmmoCube(Color.BLUE));
 
-        redAmmoBox.setSpacing(0.15);
-        yellowAmmoBox.setSpacing(0.15);
-        blueAmmoBox.setSpacing(0.15);
+        redAmmoBox.setSpacing(4.0);
+        yellowAmmoBox.setSpacing(4.0);
+        blueAmmoBox.setSpacing(4.0);
 
+        //collecting all ammo in an ammoBox
         ammoBox.getChildren().add(redAmmoBox);
         ammoBox.getChildren().add(yellowAmmoBox);
         ammoBox.getChildren().add(blueAmmoBox);
-        ammoBox.setSpacing(0.2);
+        ammoBox.setSpacing(5.0);
 
-        damageBox.setSpacing(0.3);
-        markingBox.setSpacing(0.1);
+        playerBoard.getChildren().add(ammoBox);
 
         //loading damage drops
         for(String s: player.getDamage())
-            damageBox.getChildren().add(RemoteBoard.getPlayerByName(s).getToken().dropPrint()); //will never produce NPE
+            damageBox.getChildren().add(RemoteBoard.getPlayerByName(s).getToken().dropPrint());    //will never produce NPE
+        playerBoard.getChildren().add(damageBox);
 
         //loading marking drops
         for(String s: player.getMarkings())
-            markingBox.getChildren().add(RemoteBoard.getPlayerByName(s).getToken().dropPrint());//will never produce NPE
+            markingBox.getChildren().add(RemoteBoard.getPlayerByName(s).getToken().dropPrint());   //will never produce NPE
+        playerBoard.getChildren().add(markingBox);
 
+        damageBox.setSpacing(-80.6);
+        markingBox.setSpacing(-120.0);
+
+        damageBox.setTranslateX(55.5);
+        damageBox.setTranslateY(3.0);
+        markingBox.setTranslateX(450.0);
+        markingBox.setTranslateY(-92.0);
+        ammoBox.setTranslateX(900.0);   //TODO: these are hardcoded values
+        ammoBox.setTranslateY(100.0);
         return playerBoard;
     }
 
-    private static Rectangle getAmmoCube(Color color) {
+    public static Rectangle getAmmoCube(Color color) {
 
         Rectangle ammoCube = new Rectangle();
-        ammoCube.setHeight(2.0);
-        ammoCube.setWidth(2.0);
+        ammoCube.setHeight(40.0);
+        ammoCube.setWidth(40.0);
 
         ammoCube.setFill(color);
 
