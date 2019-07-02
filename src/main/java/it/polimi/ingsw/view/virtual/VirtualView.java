@@ -157,9 +157,10 @@ public class VirtualView {
     BULK sender: sends initial info about the game itself: list of participants, board morphology and game settings.
     If the game comes from a previous saved game (isNewGame == true), it also sends all the information about players and board status.
     */
-    public void sendStatusInit(Board board/*, boolean isNewGame*/) {
+    public void sendStatusInit(Board board) {
         List<Object> content = new ArrayList<>();
         //adds general board structure info
+        content.add(game.getBoardType());
         content.add(game.getBoard().getWidth());
         content.add(game.getBoard().getHeight());
         //NOTE: in every standard configuration, width == 4 and height == 3, however this increases code robustness
@@ -337,6 +338,7 @@ public class VirtualView {
         List<Object> content = new ArrayList<>();
 
         content.add(player.getId());
+        content.add(player.isOnFrenzy());
 
         //adds player's ammo
         List<Integer> ammo = new ArrayList<>();

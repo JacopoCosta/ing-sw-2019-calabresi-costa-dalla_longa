@@ -1,12 +1,10 @@
 package it.polimi.ingsw.view.remote;
 
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
-import it.polimi.ingsw.network.common.deliverable.Bulk;
-import it.polimi.ingsw.network.common.deliverable.Deliverable;
-import it.polimi.ingsw.network.common.deliverable.Mapped;
-import it.polimi.ingsw.network.common.deliverable.Response;
+import it.polimi.ingsw.network.common.deliverable.*;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.network.common.util.console.Console;
+import it.polimi.ingsw.view.remote.gui.Token;
 import it.polimi.ingsw.view.remote.status.*;
 
 import java.util.ArrayList;
@@ -44,7 +42,15 @@ public class GraphicsEventHandler {
 
     private void ActionFilter(Deliverable deliverable) throws ConnectionException {
 
+        System.out.println("received deliverable of type " + deliverable.getType() + " of event " + deliverable.getEvent());
+
         if(usesGUI) {
+
+            if(deliverable.getType() == DeliverableType.BULK) {
+                BulkHandler(deliverable, true);
+            }
+
+            else {
             switch (deliverable.getEvent()) {
                 case SPAWN_REQUEST:
                     //spawnRequest(deliverable);
@@ -115,24 +121,15 @@ public class GraphicsEventHandler {
                     break;
                 case TARGET_REQUEST:
                     break;
-                case UPDATE_DAMAGE:
-                    break;
-                case UPDATE_MARKING:
-                    break;
-                case UPDATE_MOVE:
-                    break;
-                case UPDATE_BOARDKILL:
-                    break;
-                case UPDATE_SCORE:
-                    break;
                 case UPDATE_FRENZY:
                     break;
                 case UPDATE_WINNER:
                     break;
                 case UPDATE_DISCONNECT:
                     break;
-                    //FIXME: this list needs an update (will be done when creating GUI)
-            }
+                //FIXME: this list needs an update (will be done when creating GUI)
+                } //end switch(deliverable.getEvent())
+            } //end else (not BULK)
         }//end if(usesGUI)
 
         else {  //the client is using CLI
@@ -147,7 +144,7 @@ public class GraphicsEventHandler {
                     CLIMappedHandler(deliverable);
                     break;
                 case BULK:
-                    CLIBulkHandler(deliverable);
+                    BulkHandler(deliverable, false);
                     break;
             }
         }
@@ -174,8 +171,8 @@ public class GraphicsEventHandler {
     }
 
 
-
-    private void CLIBulkHandler(Deliverable deliverable) {
+    @SuppressWarnings("unchecked")
+    private void BulkHandler(Deliverable deliverable, boolean usesGUI) {
         Object bulk = ((Bulk) deliverable).unpack();
 
         switch (deliverable.getEvent()) {
@@ -185,7 +182,6 @@ public class GraphicsEventHandler {
                 List<String> newDamageList = new ArrayList<>();
 
                 for(int i=1; i < ((List<String>) bulk).size(); i++) {
-                    //System.out.println(i + "/" + content.size() + "; " + ((List<String>) bulk).size());
                     newDamageList.add(((List<String>) bulk).get(i));
                 }
                 //sets damageList as new damageList for the player who needs the update
@@ -262,7 +258,7 @@ public class GraphicsEventHandler {
 
                 if(((List<String>) bulk).get(1).equals("0")) {  //cell is an AmmoCell
 
-                    cell.setAmmoCell(true);
+                    cell.setAmmoCell(true); //it will never produce NPE
                     int redAmmo = ((List<Integer>) bulk).get(2);
                     int yellowAmmo = ((List<Integer>) bulk).get(3);
                     int blueAmmo = ((List<Integer>) bulk).get(4);
@@ -272,7 +268,7 @@ public class GraphicsEventHandler {
                 } //end if (ammoCell)
                 else {
 
-                    cell.setAmmoCell(false);
+                    cell.setAmmoCell(false); //it will never produce NPE
 
                     switch (((List<String>) bulk).get(2).toLowerCase()) {
                         case "red":
@@ -305,13 +301,24 @@ public class GraphicsEventHandler {
             case BOARD_INIT:
 
                 BoardInitializer(bulk);
+                RemoteBoard.setUsername(communicationHandler.getUsername());
+
+                if(usesGUI) {
+
+                }
+
                 break;
             case STATUS_UPDATE:
-                BoardGraph.printBoardStatus();
-                BoardGraph.printBoard();
-                for(int i=0; i<RemoteBoard.getParticipants().size(); i++) {
-                    BoardGraph.printPlayerStatus(RemoteBoard.getParticipants().get(i), i == RemoteBoard.getIndexOfUserCharacter());    //TODO: this can be improved
+                if(usesGUI) {
+                    //TODO
                 }
+                else {  //cli printing methods
+                    BoardGraph.printBoardStatus();
+                    BoardGraph.printBoard();
+                    for (RemotePlayer p : RemoteBoard.getParticipants()) {
+                        BoardGraph.printPlayerStatus(p, p.isUser());    //TODO: this can be improved
+                    }
+                } //end else (using cli)
                 break;
 
         }
@@ -324,13 +331,16 @@ public class GraphicsEventHandler {
 
         RemotePlayer player = RemoteBoard.getParticipants().get(((List<Integer>) bulk).get(0) - 1);    //Shorthand for the player who must be updated
 
+        //update onFrenzy
+        player.setOnFrenzy(((List<Boolean>) bulk).get(1));
+
         //update ammo
-        player.setRedAmmo(((List<Integer>)((List<Object>) bulk).get(1)).get(0));    //yes, the cast is right
-        player.setYellowAmmo(((List<Integer>)((List<Object>) bulk).get(1)).get(1));
-        player.setBlueAmmo(((List<Integer>)((List<Object>) bulk).get(1)).get(2));
+        player.setRedAmmo(((List<Integer>)((List<Object>) bulk).get(2)).get(0));    //yes, the cast is right
+        player.setYellowAmmo(((List<Integer>)((List<Object>) bulk).get(2)).get(1));
+        player.setBlueAmmo(((List<Integer>)((List<Object>) bulk).get(2)).get(2));
 
         //update powerups
-        for(int i = 0; i < ((List<String>)((List<Object>) bulk).get(2)).size(); i++) {
+        for(int i = 0; i < ((List<String>)((List<Object>) bulk).get(3)).size(); i++) {
 
             Object powerUpList = ((List<Object>) bulk).get(2);
             Object powerUpElement = ((List<Object>) powerUpList).get(i);
@@ -343,7 +353,7 @@ public class GraphicsEventHandler {
         player.setPowerUps(powerUps);
 
         //update weapons
-        for(int i = 0; i < ((List<String>)((List<Object>) bulk).get(3)).size(); i++) {
+        for(int i = 0; i < ((List<String>)((List<Object>) bulk).get(4)).size(); i++) {
 
             Object weaponList = ((List<Object>) bulk).get(3);
             Object weaponElement = ((List<Object>) weaponList).get(i);
@@ -362,19 +372,22 @@ public class GraphicsEventHandler {
     private void BoardInitializer(Object bulk) {
 
         //extracts info about the board
-        RemoteBoard.setWidth(((List<Integer>) bulk).get(0));
-        RemoteBoard.setHeight(((List<Integer>) bulk).get(1));
+        RemoteBoard.calculateBoardImage(((List<Integer>) bulk).get(0));
+        RemoteBoard.setWidth(((List<Integer>) bulk).get(1));
+        RemoteBoard.setHeight(((List<Integer>) bulk).get(2));
 
         //extracts board morphology (sent as List<ContentType>)
-        List<ContentType> morphology = (List<ContentType>) ((List<Object>) bulk).get(2);
+        List<ContentType> morphology = (List<ContentType>) ((List<Object>) bulk).get(3);
         RemoteBoard.setMorphology(morphology);
         RemoteBoard.generateCellScheme();
 
         //extracts info about participants, adding them to the RemoteBoard
-        List<String> playerNames = (List<String>) ((List<Object>) bulk).get(3);
+        List<String> playerNames = (List<String>) ((List<Object>) bulk).get(4);
         List<RemotePlayer> participants = new ArrayList<>();
-        for(String name: playerNames) {
-            RemotePlayer remotePlayer = new RemotePlayer(name);
+        for(int i=0; i < playerNames.size(); i++) {
+
+            RemotePlayer remotePlayer = new RemotePlayer(playerNames.get(i), participants.size());
+            remotePlayer.setToken(new Token(i));    //since i is a progressive number, every player will have a different token associated
             participants.add(remotePlayer);
         }
         RemoteBoard.setParticipants(participants);

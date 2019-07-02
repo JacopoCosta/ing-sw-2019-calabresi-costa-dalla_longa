@@ -1,10 +1,8 @@
 package it.polimi.ingsw.view.remote.status;
 
-import it.polimi.ingsw.network.common.deliverable.Deliverable;
-
 /**
  * This class stores simplified information about any power-up. Such info is used by clients in order to get the player know about the related power-up card.
- * The gathered info is completely received from the server via {@link Deliverable} communication with no further elaboration (every data here is for player acknowledgment only).
+ * The gathered info is completely received from the server with no further elaboration (every data here is for player acknowledgment only).
  * There isn't any setter method, as elaborating data and manage players choices is up to the server, that's not the purpose of this client.
  */
 public class RemotePowerUp {

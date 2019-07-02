@@ -116,7 +116,7 @@ public abstract class BoardGraph {
             int index=1;
             console.tinyPrintln("Owned weapons:");
             for(RemoteWeapon w: player.getWeapons()) {
-                console.tinyPrintln(((char) index) + ". " + w.getName());
+                console.tinyPrintln(((char) index) + ". " + w.getName() + "; reload cost: " + w.getReloadCost());
 
                 if(w.isLoaded())
                     console.tinyPrintln("\tReady to fire!");
@@ -137,6 +137,10 @@ public abstract class BoardGraph {
 
         console.tinyPrintln("\nDead " + player.getDeathCount() + " times");
 
+        //printing ammo:
+        console.tinyPrintln("\nOwned ammo:\tRED: " + player.getRedAmmo() + ", YELLOW: " + player.getYellowAmmo() + ", BLUE: " + player.getBlueAmmo());
+
+        //printing powerUps:
         if(isSelf) {
             console.tinyPrintln("\nOwned power-ups:");
 
@@ -150,7 +154,7 @@ public abstract class BoardGraph {
         else
             console.tinyPrintln("\nThis player owns " + player.getPowerUps().size() + " power-ups");
 
-        BoardGraph.printDamageBoard(player);
+        //BoardGraph.printDamageBoard(player);
     }
 
     private static void printDamageBoard(RemotePlayer player) {
