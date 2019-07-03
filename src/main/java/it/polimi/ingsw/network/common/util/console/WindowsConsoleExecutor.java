@@ -33,7 +33,7 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      */
     @Override
     public void clear() {
-        execute("cls");
+        execute("clear");
     }
 
     /**
