@@ -113,14 +113,14 @@ public class Console {
      * characters without a new line at the end.
      * This method supports ANSI escape characters.
      *
-     * @param message the {@code String} value to be printed.
-     * @param color   the message {@link Color}.
+     * @param utf8Message the {@code String} value to be printed.
+     * @param textColor   the message text {@link Color}.
      * @see #ANSIPrintln(String, String)
      */
-    public void ANSIPrint(String color, String message) {
-        if (color != null)
-            executor.ANSIPrint(color);
-        System.out.print(message);
+    public void ANSIPrint(String textColor, String utf8Message) {
+        if (textColor != null)
+            executor.ANSIPrint(textColor);
+        System.out.print(utf8Message);
         executor.ANSIPrint(Color.ANSI_RESET);
     }
 
@@ -129,14 +129,14 @@ public class Console {
      * characters and then a new line sequence at the end.
      * This method supports ANSI escape characters.
      *
-     * @param message the {@code String} value to be printed.
-     * @param color   the message {@link Color}.
+     * @param utf8Message the {@code String} value to be printed.
+     * @param textColor   the message text {@link Color}.
      * @see #ANSIPrint(String, String)
      */
-    public void ANSIPrintln(String color, String message) {
-        if (color != null)
-            executor.ANSIPrint(color);
-        System.out.print(message);
+    public void ANSIPrintln(String textColor, String utf8Message) {
+        if (textColor != null)
+            executor.ANSIPrint(textColor);
+        System.out.print(utf8Message);
         executor.ANSIPrintln(Color.ANSI_RESET);
     }
 

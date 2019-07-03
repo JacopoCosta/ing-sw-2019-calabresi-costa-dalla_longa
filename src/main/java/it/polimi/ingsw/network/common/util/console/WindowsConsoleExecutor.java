@@ -9,6 +9,14 @@ import java.io.IOException;
  * @see ConsoleExecutor
  */
 class WindowsConsoleExecutor implements ConsoleExecutor {
+    /**
+     * The initialization command to allow UTF-8 characters to be printed under CMD.
+     */
+    private static final String INIT_COMMAND = "chcp >nul";
+
+    WindowsConsoleExecutor() {
+        execute(INIT_COMMAND);
+    }
 
     /**
      * Executes a given {@code command} onto the Microsoft Windows command prompt (CMD). Each call of this method is
@@ -17,7 +25,7 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      * @param command the directive to be executed.
      */
     private synchronized void execute(String command) {
-        ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", command);
+        ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", (command));
 
         try {
             Process p = pb.inheritIO().start();
