@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server.executable;
 
-import it.polimi.ingsw.network.common.util.console.Console;
+import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.network.server.communication.socket.SocketClientHandler;
 
 import java.io.IOException;

@@ -170,7 +170,7 @@ public class VirtualView {
 
         //adds board morphology (i.e. cell positions and walls, but no info about their content, which will be sent via UPDATE_CELL)
         //NOTE: this is useful for CLI only
-        content.add(board.getMorphology());
+        //content.add(board.getMorphology()); FIXME boh
 
         //adds participants names
         content.add(game.getParticipants()

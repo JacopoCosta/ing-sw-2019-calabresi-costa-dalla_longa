@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.remote;
 
-import it.polimi.ingsw.network.common.util.console.Console;
+import it.polimi.ingsw.util.console.Console;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -10,10 +10,9 @@ import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.common.observer.Observer;
 import it.polimi.ingsw.network.common.observer.Observable;
-import it.polimi.ingsw.network.common.util.console.Console;
+import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.network.common.util.timer.CountDownTimer;
 import it.polimi.ingsw.network.common.util.property.GameProperty;
-import it.polimi.ingsw.network.client.communication.ServerCommunicationInterface;
 import it.polimi.ingsw.network.server.VirtualClient;
 
 import java.util.*;
@@ -199,7 +198,7 @@ public class Lobby implements Observer {
      * Insert the given {@code player} into this {@code Lobby} if some criteria are satisfied. Then call {@link #adjustTimer()}
      * to adjust the timer countdown. This behavior occurs before a new {@link Game} is started: after this event the list
      * become immutable: no other {@link Player}s can be added. The only operation possible is to update a {@link Player}'s
-     * {@link ServerCommunicationInterface} with a new one. This happens when a {@link Player} disconnects from the {@link Game}
+     * {@code ServerCommunicationInterface} with a new one. This happens when a {@link Player} disconnects from the {@link Game}
      * and reconnects after a certain amount of time.
      *
      * <p>The insertion criteria (that applies before the {@link Game} starts) are:

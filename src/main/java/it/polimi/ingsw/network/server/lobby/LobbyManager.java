@@ -2,7 +2,7 @@ package it.polimi.ingsw.network.server.lobby;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.*;
-import it.polimi.ingsw.network.common.util.console.Console;
+import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.network.common.util.property.GameProperty;
 import it.polimi.ingsw.network.common.util.property.GamePropertyLoader;
 

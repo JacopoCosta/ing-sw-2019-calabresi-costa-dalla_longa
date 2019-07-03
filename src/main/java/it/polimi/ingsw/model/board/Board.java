@@ -13,7 +13,6 @@ import it.polimi.ingsw.model.powerups.*;
 import it.polimi.ingsw.util.json.DecoratedJsonObject;
 import it.polimi.ingsw.util.json.JsonObjectGenerator;
 import it.polimi.ingsw.model.weaponry.Weapon;
-import it.polimi.ingsw.view.remote.ContentType;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -591,116 +590,5 @@ public class Board {
             ammoTileDeck.regenerate();
         }
         return Optional.of(ammoTile);
-    }
-
-    // FIXME client-server issue
-
-    /**
-     * Calculates the morphology of the {@link Cell} scheme of this {@code Board}, i.e. a simple scheme containing basic info about the type of walls between every {@link Cell}.
-     * Its only purpose is being analysed by CLI-type clients in order to draw the correct {@code Board} configuration.
-     * @return A List containing the morphology of the current {@code Board} {@link Cell} scheme.
-     */
-    public List<ContentType> getMorphology() {
-        List<ContentType> morphology = new ArrayList<>();
-
-        int gridHeight = this.getHeight()*2 + 1;
-        int gridWidth = this.getWidth()*2 + 1;
-
-        for(int h = 0; h < gridHeight; h++) {
-            for(int w = 0; w < gridWidth; w++) {
-
-                if(h%2 == 0) {  //we are cycling on a row made of ANGLES and horizontal walls
-                    if(w%2 == 0)
-
-                        morphology.add(ContentType.ANGLE);
-
-                    else    //w is odd
-                            //must add the wall between the cell above and the cell below
-                        morphology.add(getWallBetweenCells((w-1)/2, (h-2)/2, (w-1)/2, h/2));
-                }
-                else { //we are cycling on a row made of vertical walls and cells
-                    if(w%2 == 0)
-
-                        morphology.add(getWallBetweenCells((w-2)/2, (h-1)/2, w/2, (h-1)/2));
-
-                    else {   //it's a cell, but it can exist or not
-                        if(this.getCellByCoordinates((w-1)/2, (h-1)/2) == null) //the cell doesn't exist
-                            morphology.add(ContentType.NONE);
-                        else
-                            morphology.add(ContentType.CELL);
-                    }
-                }
-            }
-        }
-
-        return morphology;
-    }
-
-    /**
-     * Calculates the wall between two given {@link Cell}. Note that this calculation is symmetrical
-     * (i.e. its result doesn't change in case x1 and x2 are swapped, as long as y1 and y2 are swapped as well).
-     * @param x1 the horizontal coordinate of the first {@link Cell}, ranging from 0 (left) to boardWidth-1 (right).
-     * @param y1 the vertical coordinate of the first {@link Cell}, ranging from 0 (top) to boardHeight-1 (bottom).
-     * @param x2 the horizontal coordinate of the second {@link Cell}, ranging from 0 (left) to boardWidth-1 (right).
-     * @param y2 the vertical coordinate of the second {@link Cell}, ranging from 0 (top) to boardHeight-1 (bottom).
-     * @return The right wall separating the {@link Cell}s. Note: If given {@link Cell}s are too far to be separated by a wall, ContentType.ANGLE will be returned instead.
-     */
-    private ContentType getWallBetweenCells(int x1, int y1, int x2, int y2) {
-        if (this.getCellByCoordinates(x1, y1) != null && this.getCellByCoordinates(x2, y2) != null) { //they both exist
-
-            try {
-                if (this.getCellByCoordinates(x1, y1).isGhostlyAdjacent(this.getCellByCoordinates(x2, y2))) { //the cells may be separated by a wall, a door or nothing
-                    if (!this.getCellByCoordinates(x1, y1).isAdjacent(this.getCellByCoordinates(x2, y2))) { //the cells are separated by a wall
-                        if (x1 == x2)
-                            return ContentType.HOR_FULL;
-                        else if (y1 == y2)
-                            return ContentType.VER_FULL;
-                    }
-                    else if (this.getCellByCoordinates(x1, y1).getRoom() == this.getCellByCoordinates(x2, y2).getRoom()) { //they're part of the same room
-                        if (x1 == x2)
-                            return ContentType.HOR_VOID;
-                        else if (y1 == y2)
-                            return ContentType.VER_VOID;
-                    }
-                    else { //they are separated by a door
-                        if(x1 == x2)
-                            return ContentType.HOR_DOOR;
-                        else if (y1 == y2)
-                            return ContentType.VER_DOOR;
-                    }
-                }
-            } catch (NullCellOperationException ignored) {
-                //it never happens, as this method is invoked only after the whole board has been initialised
-            }
-            //the cells aren't even ghostlyAdjacent, so there isn't any separator between them, so it should be
-            //return ContentType.ANGLE;
-            //Yet, this case is covered by "return ANGLE" at the end of the method
-
-        } //end if (both cells exist)
-
-        else if(this.getCellByCoordinates(x1, y1) == null && this.getCellByCoordinates(x2, y2) == null) {
-            //none of them exist; however, they may be printed if they refers to blank spaces
-            if (x1 == x2 && Math.abs(y1 - y2) == 1)
-                return ContentType.HOR_VOID;
-            else if (y1 == y2 && Math.abs(x1 - x2) == 1)
-                return ContentType.VER_VOID;
-        }
-        else
-        {
-            if(this.getCellByCoordinates(x1, y1) == null) { //cell1 does not exists, while cell2 does
-                if(x1 == x2 && Math.abs(y1 - y2) == 1)
-                    return ContentType.HOR_FULL;
-                else if(y1 == y2 && Math.abs(x1 - x2) == 1)
-                    return ContentType.VER_FULL;
-            }
-            else if(this.getCellByCoordinates(x2, y2) == null) { //cell2 does not exists, while cell1 does
-                if(x1 == x2 && Math.abs(y1 - y2) == 1)
-                    return ContentType.HOR_FULL;
-                else if(y1 == y2 && Math.abs(x1 - x2) == 1) {
-                    return ContentType.VER_FULL;
-                }
-            }
-        }//end else (exactly one cell exists)
-        return ContentType.ANGLE; //can be useful, however in this whole program this method will be called only to determine walls, not angle
     }
 }

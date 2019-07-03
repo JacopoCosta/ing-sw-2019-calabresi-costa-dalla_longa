@@ -6,11 +6,6 @@ import it.polimi.ingsw.network.common.exceptions.ClientNotRegisteredException;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.network.common.exceptions.LobbyAlreadyExistsException;
 import it.polimi.ingsw.view.remote.GraphicalInterface;
-import it.polimi.ingsw.view.remote.GraphicsEventHandler;
-import it.polimi.ingsw.view.remote.status.RemoteBoard;
-import it.polimi.ingsw.view.remote.status.RemotePlayer;
-import it.polimi.ingsw.view.remote.status.RemotePowerUp;
-import it.polimi.ingsw.view.remote.status.RemoteWeapon;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -22,23 +17,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Executors;
@@ -79,8 +65,6 @@ public class GUI extends Application implements GraphicalInterface {
 
     public GUI() {
     }
-
-
 
     @Override
     public void setCommunicationHandler(CommunicationHandler communicationHandler) {
@@ -398,8 +382,6 @@ public class GUI extends Application implements GraphicalInterface {
 
     @Override
     public void start(Stage primaryStage) {
-
-
         Scene scene = new Scene(createLoginLayout());
 
         stage = primaryStage;
@@ -411,97 +393,5 @@ public class GUI extends Application implements GraphicalInterface {
         stage.setOnCloseRequest(Event::consume);
         stage.getIcons().add(Palette.ADRENALINE_LOGO_IMAGE.getImage());
         stage.show();
-
-
-
-
-        /*
-                GRAPHIC METHODS TEST: uncomment the lines below and comment the lines above this one to try it
-         */
-
-
-        /*
-
-        Pane base = new StackPane();//main layout
-        Pane pUpPane = new HBox();      //powerup collector
-        Scene scene = new Scene(base);  //main scene, containing main layout
-
-        //initializing weapon cards
-        RemoteWeapon weapon_1 = new RemoteWeapon("furnace", "", "", true);
-        RemoteWeapon weapon_2 = new RemoteWeapon("rocketLauncher", "", "", false);
-        RemoteWeapon weapon_3 = new RemoteWeapon("plasmaGun", "", "", true);
-        List<RemoteWeapon> weaponList = new ArrayList<>();
-        weaponList.add(weapon_1);
-        weaponList.add(weapon_2);
-        weaponList.add(weapon_3);
-
-        //initializing powerups
-        RemotePowerUp p1 = new RemotePowerUp("Teleport", "red");
-        RemotePowerUp p2 = new RemotePowerUp("Grenade", "yellow");
-        RemotePowerUp p3 = new RemotePowerUp("Grenade", "blue");
-        List<RemotePowerUp> powerUpList = new ArrayList<>();
-        powerUpList.add(p1);
-        powerUpList.add(p2);
-        powerUpList.add(p3);
-
-        //initializing players
-        RemotePlayer fox = new RemotePlayer("fox", 0);
-        RemotePlayer fbf = new RemotePlayer("fbf", 1);
-        RemotePlayer tdm = new RemotePlayer("tdm", 2);
-
-        fox.setToken(new Token(1));
-        fox.setOnFrenzy(false);
-        fbf.setToken(new Token(2));
-        fbf.setOnFrenzy(true);
-        tdm.setToken(new Token(0));
-        tdm.setOnFrenzy(false);
-
-        fox.setRedAmmo(3);
-        fox.setYellowAmmo(2);
-        fox.setBlueAmmo(1);
-
-        List<String> foxDamagers = new ArrayList<>();
-        foxDamagers.add("fbf");
-        foxDamagers.add("fbf");
-        foxDamagers.add("fbf");
-        foxDamagers.add("fbf");
-        foxDamagers.add("tdm");
-        foxDamagers.add("fox");
-        foxDamagers.add("fox");
-        foxDamagers.add("fbf");
-        List<String> foxMarkers = new ArrayList<>();
-        foxMarkers.add("tdm");
-        foxMarkers.add("tdm");
-        foxMarkers.add("tdm");
-        foxMarkers.add("fbf");
-        foxMarkers.add("fbf");
-
-        fox.setDamage(foxDamagers);
-        fox.setMarkings(foxMarkers);
-
-        List<RemotePlayer> participants = new ArrayList<>();
-        participants.add(fox);
-        participants.add(fbf);
-        participants.add(tdm);
-
-        RemoteBoard.setParticipants(participants);
-
-
-        //showing scene
-
-        //base.getChildren().add(CardPrint.getWeaponListImage(weaponList));
-        //base.getChildren().add(CardPrint.getPowerUpListImage(powerUpList));
-        base.getChildren().add(CardPrint.getPlayerBoard(fox));
-
-
-        stage = primaryStage;
-        stage.setScene(scene);
-        stage.setFullScreen(false);
-        stage.setResizable(true);
-        stage.show();
-
-         */
-
-
     }
 }

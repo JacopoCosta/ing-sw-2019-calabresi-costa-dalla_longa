@@ -4,7 +4,7 @@ import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
-import it.polimi.ingsw.network.common.util.console.Console;
+import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.view.remote.GraphicalInterface;
 
 import java.util.*;

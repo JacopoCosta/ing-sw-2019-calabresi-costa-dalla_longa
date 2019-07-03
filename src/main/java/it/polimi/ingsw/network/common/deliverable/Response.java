@@ -1,10 +1,9 @@
 package it.polimi.ingsw.network.common.deliverable;
 
-import it.polimi.ingsw.network.client.executable.Client;
 import it.polimi.ingsw.network.server.Server;
 
 /**
- * {@code Response}-type {@link Deliverable}s are the only ones sent by the {@link Client} to the {@link Server},
+ * {@code Response}-type {@link Deliverable}s are the only ones sent by the client to the {@link Server},
  * and carry with them an integer equivalent to the end user's choice.
  */
 public class Response extends Deliverable {

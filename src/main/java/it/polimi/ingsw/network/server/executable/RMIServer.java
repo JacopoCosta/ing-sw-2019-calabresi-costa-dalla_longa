@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server.executable;
 
-import it.polimi.ingsw.network.common.util.console.Console;
+import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.network.server.communication.rmi.RMIServerController;
 
 import java.rmi.RemoteException;

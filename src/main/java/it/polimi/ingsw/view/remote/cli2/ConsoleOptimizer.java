@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.remote.cli2;
 
-import it.polimi.ingsw.network.common.util.console.Console;
+import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.util.ColoredString;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public abstract class ConsoleOptimizer {
         for(List<ColoredString> line : lines) {
             for(ColoredString cs : line) {
                 tally ++;
-                console.ANSIPrint(cs.color(), cs.content());
+                console.ANSIPrint(cs.color() + cs.content());
             }
             console.tinyPrintln("");
         }

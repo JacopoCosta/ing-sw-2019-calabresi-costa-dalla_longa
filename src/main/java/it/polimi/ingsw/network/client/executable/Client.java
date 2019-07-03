@@ -2,7 +2,7 @@ package it.polimi.ingsw.network.client.executable;
 
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
-import it.polimi.ingsw.network.common.util.console.Console;
+import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.view.remote.GraphicManager;
 
 @SuppressWarnings("FieldCanBeLocal")

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.common.util.console;
+package it.polimi.ingsw.util.console;
 
 import it.polimi.ingsw.util.Color;
 
@@ -131,7 +131,8 @@ public class Console {
      * @see #ANSIPrint(String)
      */
     public void ANSIPrintln(String utf8Message) {
-        executor.ANSIPrintln(utf8Message);
+        executor.ANSIPrint(utf8Message);
+        tinyPrintln("");
     }
 
     /**
@@ -158,7 +159,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void log(String message) {
-        ANSIPrintln("[LOG] " + message);
+        tinyPrintln("[LOG] " + message);
     }
 
     /**

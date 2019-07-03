@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.common.util.console;
+package it.polimi.ingsw.util.console;
 
 import java.io.IOException;
 
@@ -47,31 +47,11 @@ class UnixConsoleExecutor implements ConsoleExecutor {
      * as this method does not support regular escape characters and every given one will be ignored and printed as plain text.
      *
      * @param ansiMessage the ANSI message to be printed.
-     * @see #ANSIPrintln(String)
      */
     @Override
     public void ANSIPrint(String ansiMessage) {
         try {
             execute("echo -n \"" + ansiMessage.replace("\"", "\\\"") + "\"");
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Writes the given {@code ansiMessage} to the Linux (or Unix based) shell, then a newline sequence is printed.
-     * This method supports ANSI escape characters.
-     *
-     * <p>Note that calling {@code ANSIPrint("message\n")} does NOT behaves the same as {@code ANSIPrintln("message")}
-     * as this method does not support regular escape characters and every given one will be ignored and printed as plain text.
-     *
-     * @param ansiMessage the ANSI message to be printed.
-     * @see #ANSIPrint(String)
-     */
-    @Override
-    public void ANSIPrintln(String ansiMessage) {
-        try {
-            execute("echo \"" + ansiMessage.replace("\"", "\\\"") + "\"");
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
