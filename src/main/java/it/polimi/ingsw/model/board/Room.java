@@ -41,6 +41,14 @@ public class Room {
     }
 
     /**
+     * Returns the name of the {@code Room}'s {@link #color}.
+     * @return the name of the {@code Room}'s {@link #color}.
+     */
+    public String getColor() {
+        return color;
+    }
+
+    /**
      * Returns the list of {@link Cell}s that make up the {@link Room}.
      * @return the list.
      */

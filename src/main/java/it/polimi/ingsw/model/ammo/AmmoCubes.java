@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
+import it.polimi.ingsw.util.json.DecoratedJsonObject;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.board;
 
 import it.polimi.ingsw.model.exceptions.EmptyDeckException;
-import it.polimi.ingsw.model.util.json.JsonObjectGenerator;
+import it.polimi.ingsw.util.json.JsonObjectGenerator;
 import it.polimi.ingsw.model.weaponry.Weapon;
 import org.junit.Test;
 

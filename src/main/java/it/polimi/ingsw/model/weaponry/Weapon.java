@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
+import it.polimi.ingsw.util.json.DecoratedJsonObject;
 import it.polimi.ingsw.model.weaponry.effects.Damage;
 import it.polimi.ingsw.model.weaponry.effects.Mark;
 import it.polimi.ingsw.model.weaponry.effects.Move;

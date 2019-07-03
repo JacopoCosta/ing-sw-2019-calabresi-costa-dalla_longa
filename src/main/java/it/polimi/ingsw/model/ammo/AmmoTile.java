@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
+import it.polimi.ingsw.util.json.DecoratedJsonObject;
 
 /**
  * {@link AmmoTile}s are tokens spread on the {@link Cell}s that are not {@link SpawnCell}s.

@@ -1,11 +1,10 @@
-package it.polimi.ingsw.model.util;
+package it.polimi.ingsw.util;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.exceptions.FullHandException;
 import it.polimi.ingsw.model.exceptions.InvalidSaveStateException;
 import it.polimi.ingsw.model.exceptions.UnmatchedSavedParticipantsException;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.util.json.JsonObjectGenerator;
 import org.junit.Test;
 
 import java.util.ArrayList;

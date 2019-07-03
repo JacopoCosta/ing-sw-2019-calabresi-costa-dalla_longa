@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.util.json;
+package it.polimi.ingsw.util.json;
 
 import it.polimi.ingsw.model.exceptions.JsonException;
 import org.json.simple.JSONArray;

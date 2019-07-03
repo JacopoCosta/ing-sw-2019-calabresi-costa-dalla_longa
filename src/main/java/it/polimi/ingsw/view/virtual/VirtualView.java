@@ -11,7 +11,7 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.powerups.*;
-import it.polimi.ingsw.model.util.Table;
+import it.polimi.ingsw.util.Table;
 import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.Weapon;

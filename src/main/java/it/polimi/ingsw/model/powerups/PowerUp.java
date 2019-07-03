@@ -9,7 +9,7 @@ import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.player.Execution;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
+import it.polimi.ingsw.util.json.DecoratedJsonObject;
 
 /**
  * {@code PowerUp}s are action cards that each {@link Player} can use in their turn, before each {@link Execution}, during an attack,

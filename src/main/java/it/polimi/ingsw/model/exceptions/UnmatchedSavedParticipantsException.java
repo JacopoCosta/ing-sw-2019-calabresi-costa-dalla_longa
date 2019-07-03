@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.exceptions;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
+import it.polimi.ingsw.util.json.DecoratedJsonObject;
 
 import java.util.List;
 

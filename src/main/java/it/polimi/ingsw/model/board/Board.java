@@ -10,8 +10,8 @@ import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ScoreList;
 import it.polimi.ingsw.model.powerups.*;
-import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
-import it.polimi.ingsw.model.util.json.JsonObjectGenerator;
+import it.polimi.ingsw.util.json.DecoratedJsonObject;
+import it.polimi.ingsw.util.json.JsonObjectGenerator;
 import it.polimi.ingsw.model.weaponry.Weapon;
 import it.polimi.ingsw.view.remote.ContentType;
 

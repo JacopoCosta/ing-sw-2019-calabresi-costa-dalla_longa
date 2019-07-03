@@ -4,8 +4,8 @@ import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.powerups.*;
-import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
-import it.polimi.ingsw.model.util.Table;
+import it.polimi.ingsw.util.json.DecoratedJsonObject;
+import it.polimi.ingsw.util.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
 
 import java.util.*;

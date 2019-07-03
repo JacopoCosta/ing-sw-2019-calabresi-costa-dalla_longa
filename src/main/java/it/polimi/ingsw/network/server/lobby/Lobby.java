@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.exceptions.InvalidSaveStateException;
 import it.polimi.ingsw.model.exceptions.UnmatchedSavedParticipantsException;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.util.Table;
+import it.polimi.ingsw.util.Table;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
