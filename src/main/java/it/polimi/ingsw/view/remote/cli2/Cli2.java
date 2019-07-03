@@ -5,21 +5,16 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
-import it.polimi.ingsw.util.ColoredString;
-import it.polimi.ingsw.util.Table;
 import it.polimi.ingsw.util.Color;
-import it.polimi.ingsw.network.common.util.console.Console;
-
-import static it.polimi.ingsw.util.UTF.*;
+import it.polimi.ingsw.util.ColoredString;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static it.polimi.ingsw.util.UTF.*;
 
 public class Cli2 {
-    private static final Console console = Console.getInstance();
-
     private static final int cellWidth = 27;
     private static final int cellHeight = 13;
     
@@ -27,6 +22,8 @@ public class Cli2 {
     private static final int doorHeight = 5;
 
     public static void main(String[] args) {
+        System.out.println(block.length());
+
         printBoard(Game.create(false, 0, 2, new ArrayList<>()).getBoard());
     }
 
@@ -40,66 +37,7 @@ public class Cli2 {
         for(Cell cell : board.getCells())
             writeCell(grid, cell);
 
-        printAccumulatedLines(accumulateLines(grid));
-    }
-
-    private static List<List<ColoredString>> accumulateLines(ColoredString[][] grid) {
-        List<List<ColoredString>> lines = new ArrayList<>();
-
-        for(ColoredString[] row : grid) {
-            List<ColoredString> line = new ArrayList<>();
-            StringBuilder accumulator = new StringBuilder();
-            String lastColor = null;
-            boolean firstColor = true;
-
-            for(ColoredString cs : row) {
-                if(cs == null) {
-                    accumulator.append(" ");
-                }
-                else if(cs.color() == null || cs.color().equals(lastColor)) {
-                    accumulator.append(cs.content());
-                }
-                else {
-                    if(firstColor) {
-                        accumulator.append(cs.content());
-                        lastColor = cs.color();
-                        firstColor = false;
-                    }
-                    else {
-                        if (accumulator.length() > 0) {
-                            line.add(new ColoredString(accumulator.toString(), lastColor));
-                        }
-                        accumulator = new StringBuilder();
-                        accumulator.append(cs.content());
-                        lastColor = cs.color();
-                    }
-                }
-            }
-
-            if(accumulator.length() > 0) {
-                line.add(new ColoredString(accumulator.toString(), lastColor));
-            }
-
-            lines.add(line);
-
-            System.out.println(Table.list(line.stream()
-                    .map(cs -> cs.content().length())
-                    .collect(Collectors.toList())));
-        }
-
-        return lines;
-    }
-
-    private static void printAccumulatedLines(List<List<ColoredString>> lines) {
-        int tally = 0;
-        for(List<ColoredString> line : lines) {
-            for(ColoredString cs : line) {
-                tally ++;
-                console.ANSIPrint(cs.color(), cs.content());
-            }
-            console.tinyPrintln("");
-        }
-        System.out.println("called ANSIprint " + tally + " times");
+        ConsoleOptimizer.print(grid);
     }
 
     private enum WallType {
