@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.remote.cli2;
+package it.polimi.ingsw.view.virtual.cli;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.Player;
@@ -11,20 +11,20 @@ import java.util.List;
 
 import static it.polimi.ingsw.util.UTF.*;
 
-public class CliTracks {
+public abstract class CliTracks {
     private static final int trackWidth = 27;
     private static final int trackHeight = 6;
 
     private static ColoredString[][] grid;
 
-    public static void print(Game game) {
+    public static ColoredString[][] print(Game game) {
         List<Player> doubleKillers = game.getBoard().getDoubleKillers();
         grid = new ColoredString[trackHeight][trackWidth + 3 + 2 * doubleKillers.size()];
 
         writeKillerTrack(game.getBoard().getKillers(), game.getRoundsLeft());
         writeDoubleKillerTrack(doubleKillers);
 
-        ConsoleOptimizer.print(grid);
+        return grid;
     }
 
     private static void writeKillerTrack(List<Player> rawKillers, int roundsLeft) {

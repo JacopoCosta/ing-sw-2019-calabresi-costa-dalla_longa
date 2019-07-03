@@ -35,7 +35,7 @@ public class Mark extends OffensiveEffect{
             for(int i = 0; i < amount; i ++)
                 target.applyMarking(author);
             VirtualView virtualView = author.getGame().getVirtualView();
-            virtualView.sendUpdateMarking(target, author, amount);
+            virtualView.announceMarking(target, author, amount);
         });
     }
 

@@ -574,7 +574,7 @@ public class Player extends VirtualClient {
         for(Player p : ranking) {
             int points = ScoreList.get(i, onFrenzy);
             p.giveScore(points);
-            game.getVirtualView().sendUpdateScore(this, p, points, false);
+            game.getVirtualView().announceScore(this, p, points, false);
             i ++;
         }
 
@@ -595,7 +595,7 @@ public class Player extends VirtualClient {
         // one extra point to the player who drew first blood (if the victim is not on frenzy)
         if(!onFrenzy) {
             this.damage.get(0).giveScore(1);
-            game.getVirtualView().sendUpdateScore(this, damage.get(0), 1, true);
+            game.getVirtualView().announceScore(this, damage.get(0), 1, true);
         }
     }
 

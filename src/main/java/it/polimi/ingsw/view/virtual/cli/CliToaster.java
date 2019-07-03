@@ -1,9 +1,10 @@
-package it.polimi.ingsw.view.remote.cli2;
+package it.polimi.ingsw.view.virtual.cli;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ScoreList;
 import it.polimi.ingsw.util.Color;
 import it.polimi.ingsw.util.ColoredString;
+import it.polimi.ingsw.view.remote.cli.ConsoleOptimizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,13 +13,13 @@ import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.util.UTF.*;
 
-public class CliToaster {
+public abstract class CliToaster {
     private static final int toasterWidth = 35;
     private static final int toasterHeight = 10;
 
     private static ColoredString[][] toasterField;
 
-    public static void printOpponents(Player player) {
+    public static ColoredString[][] printOpponents(Player player) {
         List<Player> opponents = player.getGame()
                 .getParticipants()
                 .stream()
@@ -33,7 +34,7 @@ public class CliToaster {
             index ++;
         }
 
-        ConsoleOptimizer.print(toasterField);
+        return toasterField;
     }
 
     public static void printSelf(Player player) {

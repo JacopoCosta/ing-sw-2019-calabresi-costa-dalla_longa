@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.common.deliverable;
 
 import it.polimi.ingsw.network.client.executable.Client;
 import it.polimi.ingsw.network.server.Server;
+import it.polimi.ingsw.util.ColoredString;
 
 /**
  * {@code Bulk}-type {@link Deliverable}s are used to convey generic objects, most often compound lists,
@@ -9,30 +10,29 @@ import it.polimi.ingsw.network.server.Server;
  * unbeknownst to the player, no {@link Response} is required (or indeed expected) by the server, after sending a {@code Bulk}.
  */
 //  ^ Footnote: IntelliJ's scrubby vocabulary thinks that "unbeknownst" is a typo, but it's not. It's a valid word.
-public class Bulk extends Deliverable {
+public class Assets extends Deliverable {
 
     /**
-     * A generic field in which to put the body of the {@code Bulk} to be sent.
+     * A field in which to put the body of the {@code Assets} to be sent.
      */
-    private Object object;
+    private ColoredString[][] graphicalMatrix;
 
     /**
      * This is the only constructor.
-     * @param event the event that caused the {@code Bulk} to be sent.
-     * @param object the content of the {@code Bulk}.
+     * @param graphicalMatrix the content of the {@code Assets}.
      */
-    public Bulk(DeliverableEvent event, Object object) {
-        super(event);
-        this.type = DeliverableType.BULK;
-        this.object = object;
+    public Assets(ColoredString[][] graphicalMatrix) {
+        super(DeliverableEvent.UPDATE_VIEW);
+        this.type = DeliverableType.ASSETS;
+        this.graphicalMatrix = graphicalMatrix;
     }
 
     /**
-     * Gets the {@code Bulk}'s {@link #object}
+     * Gets the {@code Assets}'s {@link #graphicalMatrix}
      * @return the object.
      */
-    public Object unpack() {
-        return object;
+    public ColoredString[][] unpack() {
+        return graphicalMatrix;
     }
 
 }

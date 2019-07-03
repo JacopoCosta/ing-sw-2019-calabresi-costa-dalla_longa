@@ -1,6 +1,5 @@
-package it.polimi.ingsw.view.remote.cli2;
+package it.polimi.ingsw.view.virtual.cli;
 
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cell.AmmoCell;
@@ -17,7 +16,7 @@ import java.util.List;
 
 import static it.polimi.ingsw.util.UTF.*;
 
-public class CliBoard {
+public abstract class CliBoard {
     private static final int cellWidth = 27;
     private static final int cellHeight = 13;
     
@@ -26,7 +25,7 @@ public class CliBoard {
 
     private static ColoredString[][] grid;
 
-    public static void print(Board board) {
+    public static ColoredString[][] build(Board board) {
 
         final int totalWidth = cellWidth * board.getWidth();
         final int totalHeight = cellHeight * board.getHeight();
@@ -36,7 +35,7 @@ public class CliBoard {
         for(Cell cell : board.getCells())
             writeCell(cell);
 
-        ConsoleOptimizer.print(grid);
+        return grid;
     }
 
     private enum WallType {

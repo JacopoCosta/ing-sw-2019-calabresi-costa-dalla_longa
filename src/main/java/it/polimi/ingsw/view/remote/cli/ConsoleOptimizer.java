@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.remote.cli2;
+package it.polimi.ingsw.view.remote.cli;
 
 import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.util.ColoredString;

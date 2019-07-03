@@ -15,8 +15,6 @@ import it.polimi.ingsw.util.json.JsonPathGenerator;
 import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.network.server.VirtualClient;
 import it.polimi.ingsw.network.server.lobby.Lobby;
-import it.polimi.ingsw.view.remote.cli2.CliToaster;
-import it.polimi.ingsw.view.remote.cli2.CliTracks;
 import it.polimi.ingsw.view.virtual.VirtualView;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.player.*;
@@ -202,7 +200,6 @@ public class Game {
     private void playTurn() {
         board.spreadAmmo();
         board.spreadWeapons();
-        virtualView.sendUpdateAllCells(this.getBoard());    //TODO: is it better calling it here or later?
 
         Player subject = participants.get(currentTurnPlayer);
 
@@ -336,8 +333,10 @@ public class Game {
                     p.die();
                     if (roundsLeft > 0)
                         roundsLeft--;
-                    if (finalFrenzy && roundsLeft == 0)
+                    if (finalFrenzy && roundsLeft == 0) {
                         p.activateFrenzy();
+                        p.setDeathCount(0);
+                    }
                     board.getPowerUpDeck().smartDraw(true).ifPresent(c -> {
                         try {
                             p.givePowerUp(c);
@@ -373,8 +372,6 @@ public class Game {
      */
     public void play() {
         this.started = true;
-        //send clients board initial configuration
-        virtualView.sendStatusInit(board);
 
         while (!gameOver) {
             this.playTurn();

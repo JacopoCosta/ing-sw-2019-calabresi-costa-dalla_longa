@@ -1,10 +1,12 @@
 package it.polimi.ingsw.view.remote.cli;
 
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
+import it.polimi.ingsw.network.common.deliverable.*;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.util.console.Console;
+import it.polimi.ingsw.view.remote.Dispatcher;
 import it.polimi.ingsw.view.remote.GraphicalInterface;
 
 import java.util.*;
@@ -67,18 +69,29 @@ public class CLI implements GraphicalInterface {
 
         //TODO: note: from here client is registered, logged into a specific Lobby and the game is starting
 
-        /*GraphicsEventHandler graphicsEventHandler = new GraphicsEventHandler(false, communicationHandler);
+        while (true) {
+            try {
+                manageArrivals(communicationHandler.nextDeliverable());
+            } catch (ConnectionException e) {
+                System.exit(-1);
+            }
+        }
+    }
 
-        while (true) // TODO define exit conditions
-            graphicsEventHandler.deliverableCatcher();*/
-
-        /* commenting this out, because further input will be solicited by Deliverable requests */
-        //request the next action to do
-        int action = requestAction();
-
-        if (action == 0) {
-            logoutFromLobby();
-            unregister();
+    private void manageArrivals(Deliverable deliverable) throws ConnectionException {
+        switch(deliverable.getType()) {
+            case INFO:
+                console.tinyPrintln(deliverable.getMessage());
+                break;
+            case DUAL:
+                communicationHandler.deliver(new Response(Dispatcher.requestBoolean(deliverable.getMessage()) ? 1 : 0));
+                break;
+            case MAPPED:
+                communicationHandler.deliver(new Response(Dispatcher.requestMappedOption(deliverable.getMessage(), ((Mapped) deliverable).getOptions(), ((Mapped) deliverable).getKeys())));
+                break;
+            case ASSETS:
+                console.clear();
+                ConsoleOptimizer.print(((Assets) deliverable).unpack());
         }
     }
 

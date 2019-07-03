@@ -41,22 +41,16 @@ public enum DeliverableEvent implements Serializable {
     TELEPORT_REQUEST_CELL("Where would you like to teleport?"),
     TARGET_REQUEST(""),     //Mapped, messages from weapons
     UPDATE_TURN(""),        //Info, contains the current player
-    UPDATE_DAMAGE(""),      //Bulk, contains the scoreboard of a player
-    UPDATE_MARKING(""),     //Bulk, contains a list of players
-    UPDATE_MOVE(""),        //Bulk, contains the new position of a player
-    UPDATE_SCORE(""),       //Bulk, contains a new value for a player's score
-    UPDATE_DEATH_COUNT(""),   //Bulk, contains a new value for a player's number of death
-    UPDATE_INVENTORY(""),   //Bulk, contains player's weapons, ammo and powerup
-    UPDATE_BOARD_KILL(""),   //Bulk, contains a new value for List<RemotePlayers> killers
-    UPDATE_BOARD_DOUBLE_KILL(""), //as above, but for doublekillers
+    UPDATE_DAMAGE(""),
+    UPDATE_MARKING(""),
+    UPDATE_MOVE(""),
+    UPDATE_KILL(""),
+    UPDATE_SCORE(""),
     UPDATE_FRENZY(""),      //Info
     UPDATE_WINNER(""),      //Info
     UPDATE_DISCONNECT(""),  //Info
     RESPONSE(""),           //This is the only deliverable sent by client to server
-    BOARD_INIT(""),         //Bulk, initialises the RemoteBoard in most of its variables
-    UPDATE_CELL(""),        //Bulk, updates the content of a cell
-    STATUS_UPDATE("");      //Bulk, it asks the client to refresh its CLI for the user
-                                     //It could be an info, but we made it bulk so that it can be handled by GraphicsEventHandler.CLIBulkHandler
+    UPDATE_VIEW("");
 
     public final String message;
     DeliverableEvent(String message) {

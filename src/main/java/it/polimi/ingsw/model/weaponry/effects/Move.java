@@ -66,7 +66,7 @@ public class Move extends Effect {
         target.setPosition(destination);
 
         VirtualView virtualView = author.getGame().getVirtualView();
-        virtualView.sendUpdateMove(target, author, destination);
+        virtualView.announceMove(target, author, destination);
     }
 
     /**

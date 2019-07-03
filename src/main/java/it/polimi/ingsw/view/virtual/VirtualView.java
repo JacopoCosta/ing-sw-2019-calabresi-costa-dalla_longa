@@ -3,7 +3,6 @@ package it.polimi.ingsw.view.virtual;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.ammo.AmmoCubes;
-import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
@@ -110,7 +109,7 @@ public class VirtualView {
                         return response;
                     }
 
-                case BULK:
+                case ASSETS:
                     if(enableDispatch)
                         Dispatcher.sendMessage(game.toString());
                 default:
@@ -139,7 +138,7 @@ public class VirtualView {
      * @param deliverable the {@link Deliverable} to broadcast.
      */
     private void broadcast(Deliverable deliverable) {
-        if(!(deliverable.getType().equals(DeliverableType.INFO) || deliverable.getType().equals(DeliverableType.BULK)))
+        if(!(deliverable.getType().equals(DeliverableType.INFO) || deliverable.getType().equals(DeliverableType.ASSETS)))
             throw new DeliverableException("Wrong call to send in VirtualView.");
 
         if(offlineMode) {
@@ -156,293 +155,8 @@ public class VirtualView {
         }
     }
 
-    /*
-    BULK sender: sends initial info about the game itself: list of participants, board morphology and game settings.
-    If the game comes from a previous saved game (isNewGame == true), it also sends all the information about players and board status.
-    */
-    public void sendStatusInit(Board board) {
-        List<Object> content = new ArrayList<>();
-        //adds general board structure info
-        content.add(game.getBoardType());
-        content.add(game.getBoard().getWidth());
-        content.add(game.getBoard().getHeight());
-        //NOTE: in every standard configuration, width == 4 and height == 3, however this increases code robustness
+    private void updateView() {
 
-        //adds board morphology (i.e. cell positions and walls, but no info about their content, which will be sent via UPDATE_CELL)
-        //NOTE: this is useful for CLI only
-        //content.add(board.getMorphology()); FIXME boh
-
-        //adds participants names
-        content.add(game.getParticipants()
-                .stream()
-                .map(Player::getName)
-                .collect(Collectors.toList()));
-
-        Deliverable deliverable = new Bulk(DeliverableEvent.BOARD_INIT, content);
-        broadcast(deliverable);
-
-        //if(!isNewGame) {    //the game comes from a saved game, so all the info about the players shall be broadcast as well
-
-            for(Player player: game.getParticipants()) {
-                sendUpdateScore(player, null, 0, false);    //the important part is amount set to 0
-                sendUpdateDamage(player, null, 0);  //the important part is author set to null
-                sendUpdateMarking(player, null, 0); //the important part is author set to null
-                sendUpdateMove(player, null, null); //the important part is destination set to null
-                sendUpdatePlayerDeathCount(player);
-                sendUpdateInventory(player);
-            }
-
-            sendUpdateBoardKill(null, null);
-            sendUpdateDoubleKill();
-
-            //sendUpdateAllCells(board);
-        //}
-    }
-
-    //shortcut for multiple calls of sendUpdateCell
-    public void sendUpdateAllCells(Board board) {
-        for(Cell cell: board.getCells())
-            sendUpdateCell(cell);
-    }
-
-    //BULK: sends an updated, new value for a cell content
-    public void sendUpdateCell(Cell cell) {
-        List <Object> content = new ArrayList<>();
-
-        content.add(cell.getId());  //element content.get(0)
-        //adds "0" if cell is a spawnPoint, "1" if cell is an AmmoCell
-        content.add(cell.isSpawnPoint() ? "1" : "0");   //boolean cast to String, element content.get(1);
-
-        if(cell.isSpawnPoint()) {
-            //adds spawnpoint color
-            content.add(((SpawnCell) cell).getAmmoCubeColor().toStringAsColor());   //content.get(2)
-
-            List<Weapon> shop = ((SpawnCell) cell).getWeaponShop(); //shorthand
-
-            //adds weapons list
-            for(int i = 0; i < shop.size(); i++) {
-
-                List<String> weaponList = new ArrayList<>();
-                Weapon weapon = shop.get(i);    //shorthand
-
-                weaponList.add(weapon.getName());
-                weaponList.add(weapon.getPurchaseCost().toString());
-                weaponList.add(weapon.getReloadCost().toString());
-
-                content.add(weaponList);
-            }
-        } //end if(isSpawnpoint)
-        else {
-            //adds its ammo
-            content.add(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getRed());       //content.get(3)
-            content.add(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getYellow());    //content.get(4)
-            content.add(((AmmoCell) cell).getAmmoTile().getAmmoCubes().getBlue());    //content.get(5)
-            content.add(((AmmoCell) cell).getAmmoTile().includesPowerUp() ? "1" : "0"); //boolean cast to String, content.get(6)
-        }
-
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_CELL, content);
-        broadcast(deliverable);
-    }
-
-    //BULK: sends an updated, new value for a player's damage
-    public void sendUpdateDamage(Player target, Player author, int amount) {
-
-        List<Object> content = new ArrayList<>();
-
-        content.add(target.getId());  //indicates the player whose damagelist has to be updated
-
-        content.addAll(target.getDamageAsList()
-                .stream()
-                .map(Player::getName)
-                .collect(Collectors.toList()));
-
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_DAMAGE, content);
-        if(author != null)
-            deliverable.overwriteMessage(author.getName() + " dealt " + amount + " damage to " + target.getName() + ".");
-        broadcast(deliverable);
-    }
-
-
-    //BULK: sends an updated, new value for a player's marking list
-    public void sendUpdateMarking(Player target, Player author, int amount) {
-
-        List<Object> content = new ArrayList<>();
-
-            content.add(target.getId());  //indicates the player whose markingList has to be updated
-
-            content.addAll(target.getMarkingsAsList()
-                    .stream()
-                    .map(Player::getName)
-                    .collect(Collectors.toList()));
-
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_MARKING, content);
-
-        if(author != null) {
-            String lexeme = amount > 1 ? "marks" : "mark";
-            deliverable.overwriteMessage(author.getName() + " dealt " + amount + " " + lexeme + " to " + target.getName() + ".");
-        }
-
-        broadcast(deliverable);
-    }
-
-    //BULK: sends an updated value for a player's position (sent as index of its cell)
-    public void sendUpdateMove(Player target, Player author, Cell destination) {
-
-        List<Integer> content = new ArrayList<>();
-
-        content.add(target.getId());
-        if(destination == null)
-            content.add(null);
-        else
-            content.add(destination.getId());
-
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_MOVE, content);
-
-        if(destination != null) {
-            String message = author.getName() + " moved";
-            if(!target.equals(author))
-                message += " " + target.getName();
-            deliverable.overwriteMessage(message + " to " + destination.toString() + ".");
-        }
-
-        broadcast(deliverable);
-    }
-
-    //BULK: sends the updated score of a player (creditor)
-    public void sendUpdateScore(Player creditor, Player source, int amount, boolean firstBloodOrDoubleKill) {
-
-        List<Integer> content = new ArrayList<>();
-
-        content.add(creditor.getId());
-        content.add(creditor.getScore());
-
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_SCORE, content);
-
-        if(amount != 0) {
-            String lexeme = amount == 1 ? "point" : "points";
-            String message = creditor + " earned " + amount + " " + lexeme;
-            if(source == null) {
-                if(firstBloodOrDoubleKill)
-                    message += " for scoring a doubleKill.";
-                else
-                    message += " from the killshot track.";
-            }
-            else if (firstBloodOrDoubleKill)
-                message += " for drawing first blood on " + source + ".";
-            else
-                message += " for damaging " + source + ".";
-            deliverable.overwriteMessage(message);
-        }
-
-        broadcast(deliverable);
-    }
-
-    public void sendUpdateInventory(Player player) {
-        List<Object> content = new ArrayList<>();
-
-        content.add(player.getId());
-        content.add(player.isOnFrenzy());
-
-        //adds player's ammo
-        List<Integer> ammo = new ArrayList<>();
-        ammo.add(player.getAmmoCubes().getRed());
-        ammo.add(player.getAmmoCubes().getYellow());
-        ammo.add(player.getAmmoCubes().getBlue());
-
-        content.add(ammo);
-
-        //adds player's powerups (both type and color)
-        content.add(player.getPowerUps()
-               .stream()
-               .map(up -> {
-                   List<String> upHand = new ArrayList<>();
-                   upHand.add(up.getType().toString());             //e.g. "GRENADE"
-                   upHand.add(up.getAmmoCubes().toStringAsColor()); //e.g. "red"
-                   return upHand;
-               })
-               .collect(Collectors.toList()));
-
-        //adds player's weapons
-        content.add(player.getWeapons()
-                .stream()
-                .map(w -> {
-                    List<String> weapon = new ArrayList<>();
-                    weapon.add(w.getName());
-                    weapon.add(w.getPurchaseCost().toString());
-                    weapon.add(w.getReloadCost().toString());
-                    weapon.add(w.isLoaded() ? "0" : "1");
-                    return weapon;
-                })
-                .collect(Collectors.toList()));
-
-        //sends the bulk deliverable
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_INVENTORY, content);
-        broadcast(deliverable);
-        /*
-        So, there will be an ArrayList deliverable of 4 elements:
-            deliverable [0] contains the player's Id;
-            deliverable [1] contains an ArrayList containing the ammo they own, codified as Integer;
-            deliverable [2] contains an ArrayList containing the name and the color of each powerUp they own, codified as String;
-            deliverable [3] contains an ArrayList containing the name, the cost, the reloadCost and the status (reloaded or not) of each Weapon they own, codified as String.
-         */
-    }
-
-    public void sendUpdatePlayerDeathCount(Player player) {
-
-        List<Integer> content = new ArrayList<>();
-
-        content.add(player.getId());
-        content.add(player.getDeathCount());
-
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_DEATH_COUNT, content);
-        broadcast(deliverable);
-    }
-
-    //BULK: sends info about global killers
-    public void sendUpdateBoardKill(Player author, Player target) {
-
-        List<Object> content = game.getBoard()
-                .getKillers()
-                .stream()
-                .map(p -> { //that's because some values are set to null
-                    if (p != null)
-                        return p.getName();
-                    else
-                        return null;
-                })
-                .collect(Collectors.toList());
-
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_BOARD_KILL, content);
-
-        if(author != null) {
-            String message = author.getName() +  " ";
-            if(target.isOverKilled())
-                message += "over";
-            message += "killed " + target.getName() + "!";
-            deliverable.overwriteMessage(message);
-        }
-        broadcast(deliverable);
-    }
-
-    //BULK: sends info about global doublekillers
-    public void sendUpdateDoubleKill() {
-
-        List<Object> content = game.getBoard().getDoubleKillers()
-                .stream()
-                .map(Player::getName)
-                .collect(Collectors.toList());
-
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_BOARD_DOUBLE_KILL, content);
-        broadcast(deliverable);
-    }
-
-    private void sendStatusUpdate(Player subject) throws AbortedTurnException {
-
-        Deliverable deliverable = new Bulk(DeliverableEvent.STATUS_UPDATE, null);
-        if(offlineMode)
-            deliverable.overwriteMessage(game.toString());
-
-        send(subject, deliverable);
     }
 
     /**
@@ -451,7 +165,6 @@ public class VirtualView {
      * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
      */
     public void spawn(Player subject) throws AbortedTurnException {
-        sendStatusUpdate(subject);
 
         List<String> options = subject.getPowerUps()
                 .stream()
@@ -506,8 +219,6 @@ public class VirtualView {
      * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
      */
     public Execution chooseExecution(Player subject, List<Execution> executions) throws AbortedTurnException {
-        sendStatusUpdate(subject);
-
         List<String> options = executions.stream()
                 .map(Execution::toString)
                 .collect(Collectors.toList());
@@ -626,8 +337,6 @@ public class VirtualView {
      * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
      */
     public void shootAttackModule(Player subject, AttackPattern pattern, List<Integer> next) throws AbortedTurnException {
-        sendStatusUpdate(subject);
-
         List<String> options = next.stream()
                 .map(i -> {
                     if(i == -1) // -1 ends action
@@ -1012,6 +721,56 @@ public class VirtualView {
     public void announceTurn(Player subject) {
         Deliverable deliverable = new Info(DeliverableEvent.UPDATE_TURN);
         deliverable.overwriteMessage("It is now " + subject.getName() + "'s turn.");
+        broadcast(deliverable);
+    }
+
+    public void announceDamage(Player author, Player target, int amount) {
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_DAMAGE);
+        deliverable.overwriteMessage(author.getName() + " dealt " + amount + " damage to " + target.getName() + ".");
+        broadcast(deliverable);
+    }
+
+    public void announceMarking(Player author, Player target, int amount) {
+        String lexeme = amount > 1 ? "marks" : "mark";
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_MARKING);
+        deliverable.overwriteMessage(author.getName() + " dealt " + amount + " " + lexeme + " to " + target.getName() + ".");
+        broadcast(deliverable);
+    }
+
+    public void announceMove(Player author, Player target, Cell destination) {
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_MOVE);
+        String message = author.getName() + " moved";
+        if(!target.equals(author))
+            message += " " + target.getName();
+        deliverable.overwriteMessage(message + " to " + destination.toString() + ".");
+        broadcast(deliverable);
+    }
+
+    public void announceKill(Player author, Player target) {
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_KILL);
+        String message = author.getName() +  " ";
+        if(target.isOverKilled())
+            message += "over";
+        message += "killed " + target.getName() + "!";
+        deliverable.overwriteMessage(message);
+        broadcast(deliverable);
+    }
+
+    public void announceScore(Player source, Player creditor, int amount, boolean firstBloodOrDoubleKill) {
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_SCORE);
+        String lexeme = amount == 1 ? "point" : "points";
+        String message = creditor + " earned " + amount + " " + lexeme;
+        if(source == null) {
+            if(firstBloodOrDoubleKill)
+                message += " for scoring a doubleKill.";
+            else
+                message += " from the killshot track.";
+        }
+        else if (firstBloodOrDoubleKill)
+            message += " for drawing first blood on " + source + ".";
+        else
+            message += " for damaging " + source + ".";
+        deliverable.overwriteMessage(message);
         broadcast(deliverable);
     }
 
