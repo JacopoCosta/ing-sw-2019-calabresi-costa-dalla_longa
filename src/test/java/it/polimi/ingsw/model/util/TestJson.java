@@ -81,7 +81,7 @@ public class TestJson {
         try {
             Game game = Game.create(false, 1, 2, participants);
             game.save();
-            Game loadedGame = Game.load(JsonObjectGenerator.getSavedGameBuilder(), participants);
+            Game loadedGame = Game.load(participants);
         } catch (InvalidSaveStateException | UnmatchedSavedParticipantsException e) {
             fail();
         }

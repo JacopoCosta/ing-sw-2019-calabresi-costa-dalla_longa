@@ -9,15 +9,13 @@ import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.*;
-import it.polimi.ingsw.model.player.Execution;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.powerups.Newton;
-import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.model.powerups.PowerUpType;
+import it.polimi.ingsw.model.player.*;
+import it.polimi.ingsw.model.powerups.*;
 import it.polimi.ingsw.model.util.Table;
 import it.polimi.ingsw.model.weaponry.AttackModule;
 import it.polimi.ingsw.model.weaponry.AttackPattern;
 import it.polimi.ingsw.model.weaponry.Weapon;
+import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 import it.polimi.ingsw.model.weaponry.effects.Damage;
 import it.polimi.ingsw.model.weaponry.targets.Target;
 import it.polimi.ingsw.model.weaponry.targets.TargetCell;
@@ -25,6 +23,7 @@ import it.polimi.ingsw.model.weaponry.targets.TargetPlayer;
 import it.polimi.ingsw.model.weaponry.targets.TargetRoom;
 import it.polimi.ingsw.network.common.deliverable.*;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
+import it.polimi.ingsw.network.server.VirtualClient;
 import it.polimi.ingsw.view.remote.Dispatcher;
 
 import java.util.ArrayList;
@@ -35,16 +34,16 @@ import static it.polimi.ingsw.model.Game.*;
 
 /**
  * This class is responsible of bridging the network and model packages converting game-related request into {@link Deliverable}s.
- * On this end, {@link Deliverable}s are sent to (and received from) the virtual client, whose {@code .deliver()} method is invoked.
+ * On this end, {@link Deliverable}s are sent to (and received from) the {@link VirtualClient}, whose {@link VirtualClient#deliver(Deliverable)} method is invoked.
  */
 public class VirtualView {
     /**
-     * The {@link Game} that instantiated the virtual view.
+     * The {@link Game} that instantiated the {@code VirtualView}.
      */
     private Game game;
 
     /**
-     * The {@link Controller} that the virtual view will forward its responses to, triggering changes in the {@link Game} status.
+     * The {@link Controller} that the {@code VirtualView} will forward its responses to, triggering changes in the {@link Game} status.
      */
     private Controller controller;
 
@@ -58,15 +57,15 @@ public class VirtualView {
     }
 
     /**
-     * Getter method for the {@link Controller} attribute.
-     * @return The {@link Controller}.
+     * Getter method for the {@link VirtualView#controller} attribute.
+     * @return The {@link VirtualView#controller}.
      */
     public Controller getController() {
         return controller;
     }
 
     /**
-     * Sends a {@link Deliverable} to a player's client.
+     * Sends a {@link Deliverable} to a {@link Player}'s client.
      * @param recipient The recipient of the {@link Deliverable}.
      * @param deliverable The {@link Deliverable} of interest.
      * @throws AbortedTurnException When the request routine catches a {@code ConnectionException}
@@ -135,6 +134,10 @@ public class VirtualView {
         }
     }
 
+    /**
+     * Sends a {@link Deliverable} to all {@link Player}s connected to the {@link VirtualView#game}
+     * @param deliverable the {@link Deliverable} to broadcast.
+     */
     private void broadcast(Deliverable deliverable) {
         if(!(deliverable.getType().equals(DeliverableType.INFO) || deliverable.getType().equals(DeliverableType.BULK)))
             throw new DeliverableException("Wrong call to send in VirtualView.");
@@ -391,7 +394,7 @@ public class VirtualView {
         content.add(player.getId());
         content.add(player.getDeathCount());
 
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_DEATHCOUNT, content);
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_DEATH_COUNT, content);
         broadcast(deliverable);
     }
 
@@ -409,7 +412,7 @@ public class VirtualView {
                 })
                 .collect(Collectors.toList());
 
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_BOARDKILL, content);
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_BOARD_KILL, content);
 
         if(author != null) {
             String message = author.getName() +  " ";
@@ -429,7 +432,7 @@ public class VirtualView {
                 .map(Player::getName)
                 .collect(Collectors.toList());
 
-        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_BOARDDOUBLEKILL, content);
+        Deliverable deliverable = new Bulk(DeliverableEvent.UPDATE_BOARD_DOUBLE_KILL, content);
         broadcast(deliverable);
     }
 
@@ -442,6 +445,11 @@ public class VirtualView {
         send(subject, deliverable);
     }
 
+    /**
+     * Initiates the spawning routine for a player.
+     * @param subject the player.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void spawn(Player subject) throws AbortedTurnException {
         sendStatusUpdate(subject);
 
@@ -456,6 +464,11 @@ public class VirtualView {
         send(subject, new Info(DeliverableEvent.SPAWN_SUCCESS));
     }
 
+    /**
+     * Makes a {@link Player} discard a {@link PowerUp}.
+     * @param subject the player.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void discardPowerUp(Player subject) throws AbortedTurnException {
         List<PowerUp> powerUps = subject.getPowerUps();
 
@@ -468,6 +481,11 @@ public class VirtualView {
         controller.discardPowerUp(subject, powerUpToDiscard);
     }
 
+    /**
+     * Makes a {@link Player} discard a {@link Weapon}.
+     * @param subject the player.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void discardWeapon(Player subject) throws AbortedTurnException {
         List<Weapon> weapons = subject.getWeapons();
 
@@ -480,6 +498,13 @@ public class VirtualView {
         controller.discardWeapon(subject, weaponToDiscard);
     }
 
+    /**
+     * Queries the {@link Player} about which {@link Execution} they intend to use for their turn.
+     * @param subject the current player.
+     * @param executions a list containing all the possible {@link Execution}s.
+     * @return the chosen {@link Execution}.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public Execution chooseExecution(Player subject, List<Execution> executions) throws AbortedTurnException {
         sendStatusUpdate(subject);
 
@@ -491,6 +516,12 @@ public class VirtualView {
         return executions.get(choiceIndex);
     }
 
+    /**
+     * Performs a {@link Move} routine.
+     * @param subject the current player.
+     * @param cells the list of possible {@link Cell}s to legally move to.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void move(Player subject, List<Cell> cells) throws AbortedTurnException {
         List<String> options = cells.stream()
                 .map(Cell::toString)
@@ -505,6 +536,11 @@ public class VirtualView {
         controller.move(subject, destination);
     }
 
+    /**
+     * Performs a {@link Grab} routine on an {@link AmmoCell}.
+     * @param subject the grabbing player.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void grabAmmo(Player subject) throws AbortedTurnException {
         boolean success = controller.grabAmmo(subject);
         if(success)
@@ -513,6 +549,11 @@ public class VirtualView {
             send(subject, new Info(DeliverableEvent.GRAB_AMMO_FAILURE));
     }
 
+    /**
+     * Performs a {@link Grab} routine on a {@link SpawnCell}'s {@link Weapon} shop.
+     * @param subject the acquirer.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void grabWeapon(Player subject) throws AbortedTurnException {
 
         List<Weapon> weapons = ((SpawnCell) subject.getPosition()).getWeaponShop()
@@ -553,6 +594,11 @@ public class VirtualView {
         powerUps.forEach(subject::discardPowerUp);
     }
 
+    /**
+     * Queries a {@link Player} about which {@link Weapon} they intend to use to perform a {@link Shoot}.
+     * @param subject the attacker.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void shoot(Player subject) throws AbortedTurnException {
         List<Weapon> availableWeapons = subject.getWeapons()
                 .stream()
@@ -572,6 +618,13 @@ public class VirtualView {
         weapon.unload();
     }
 
+    /**
+     * Queries a {@link Player} aboout which {@link AttackModule} they intend to use to perform a {@link Shoot}.
+     * @param subject the attacker.
+     * @param pattern the {@link AttackPattern} of the previously chosen {@link Weapon}.
+     * @param next a list containing the numerical ids of the available {@link AttackModule}s inside the {@link AttackPattern}.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void shootAttackModule(Player subject, AttackPattern pattern, List<Integer> next) throws AbortedTurnException {
         sendStatusUpdate(subject);
 
@@ -590,6 +643,13 @@ public class VirtualView {
         controller.shoot(subject, pattern, moduleId);
     }
 
+    /**
+     * Initiates the {@link Target} acquisition sequence.
+     * @param subject the attacker, also the player being queried.
+     * @param attackModule the attack being brought forward by the {@code subject}.
+     * @param targets a list of all the {@link Target}s that need to be acquired in order to discharge the attack.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void acquireTargets(Player subject, AttackModule attackModule, List<Target> targets) throws AbortedTurnException {
         for(Target target : targets) {
             switch(target.getType()) {
@@ -630,6 +690,14 @@ public class VirtualView {
         controller.shootTargets(subject, attackModule, targets);
     }
 
+    /**
+     * Queries a {@link Player} on which opponent they intend to use as a {@link Target}.
+     * @param subject the player to query.
+     * @param target the {@link Target} containing the {@link Constraint}s defining which choices are legal.
+     * @return the index of the targeted {@link Player}.
+     * @throws NoValidTargetsException when the list of legal choices is empty, making it impossible to query the player.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     private Player shootPlayer(Player subject, TargetPlayer target) throws NoValidTargetsException, AbortedTurnException {
         List<Player> players = target.filter();
         if(players.size() == 0) {
@@ -647,6 +715,14 @@ public class VirtualView {
         return players.get(playerIndex);
     }
 
+    /**
+     * Queries a {@link Player} on which {@link Cell} they intend to use as a {@link Target}.
+     * @param subject the player to query.
+     * @param target the {@link Target} containing the {@link Constraint}s defining which choices are legal.
+     * @return the index of the targeted {@link Cell}.
+     * @throws NoValidTargetsException when the list of legal choices is empty, making it impossible to query the player.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     private Cell shootCell(Player subject, TargetCell target) throws NoValidTargetsException, AbortedTurnException {
         List<Cell> cells = target.filter();
         if(cells.size() == 0) {
@@ -669,6 +745,14 @@ public class VirtualView {
         return cells.get(cellIndex);
     }
 
+    /**
+     * Queries a {@link Player} on which {@link Room} they intend to use as a {@link Target}.
+     * @param subject the player to query.
+     * @param target the {@link Target} containing the {@link Constraint}s defining which choices are legal.
+     * @return the index of the targeted {@link Room}.
+     * @throws NoValidTargetsException when the list of legal choices is empty, making it impossible to query the player.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     private Room shootRoom(Player subject, TargetRoom target) throws NoValidTargetsException, AbortedTurnException {
         List<Room> rooms = target.filter();
         if (rooms.size() == 0) {
@@ -687,6 +771,11 @@ public class VirtualView {
         return rooms.get(roomIndex);
     }
 
+    /**
+     * Starts a request routine, querying a player on whether or not they intend to reload a {@link Weapon}.
+     * @param subject the player to query.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void reload(Player subject) throws AbortedTurnException {
         List<Weapon> weapons = subject.getWeapons().stream()
                 .filter(w -> !w.isLoaded())
@@ -731,6 +820,11 @@ public class VirtualView {
         }
     }
 
+    /**
+     * Starts a request routine, querying a player on whether or not they intend to use a {@link PowerUp}.
+     * @param subject the player to query.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void usePowerUp(Player subject) throws AbortedTurnException {
         List<PowerUp> powerUps = subject.getPowerUps()
                 .stream()
@@ -753,6 +847,12 @@ public class VirtualView {
         controller.usePowerUp(subject, powerUp);
     }
 
+    /**
+     * Starts a request routine about the usage of a {@link Teleport} {@link PowerUp}.
+     * @param damage the effect taking place. The {@link Player} found as author of it will be queried.
+     * @param targets the victims to the {@code damage} effect, since only damaged players can be attacked with a {@link Scope}.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void scope(Damage damage, List<Player> targets) throws AbortedTurnException {
         Player subject = damage.getAuthor();
         List<PowerUp> scopes = subject.getScopes();
@@ -802,6 +902,12 @@ public class VirtualView {
         controller.scope(damage, targets, scopedPlayers);
     }
 
+    /**
+     * Starts a request routine about the usage of a {@link Grenade} {@link PowerUp}.
+     * @param subject the player to query.
+     * @param originalAttacker the player from which {@code subject} was attacked.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void grenade(Player subject, Player originalAttacker) throws AbortedTurnException {
         List<PowerUp> grenades = subject.getGrenades();
         boolean useGrenade = send(subject, new Dual(DeliverableEvent.GRENADE_REQUEST_IF)) != 0;
@@ -818,6 +924,11 @@ public class VirtualView {
         controller.grenade(subject, originalAttacker);
     }
 
+    /**
+     * Starts a request routine about the usage of a {@link Newton} {@link PowerUp}.
+     * @param subject the player to query.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void newton(Player subject) throws AbortedTurnException {
         List<Player> targetPlayers = game.getParticipants()
                 .stream()
@@ -873,6 +984,11 @@ public class VirtualView {
         controller.newton(targetPlayer, targetCell);
     }
 
+    /**
+     * Starts a request routine about the usage of a {@link Teleport} {@link PowerUp}.
+     * @param subject the player to query.
+     * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
+     */
     public void teleport(Player subject) throws AbortedTurnException {
         List<Cell> targetCells = game.getBoard().getCells();
 
@@ -889,18 +1005,31 @@ public class VirtualView {
         controller.teleport(subject, destination);
     }
 
+    /**
+     * Announces when the turn passes from a {@link Player} onto another.
+     * @param subject the player who just began their turn.
+     */
     public void announceTurn(Player subject) {
         Deliverable deliverable = new Info(DeliverableEvent.UPDATE_TURN);
         deliverable.overwriteMessage("It is now " + subject.getName() + "'s turn.");
         broadcast(deliverable);
     }
 
+    /**
+     * Announces when a {@link Player}'s death enables the Final Frenzy for the first time in the {@link Game}.
+     * @param cause the dead player's murderer.
+     */
     public void announceFrenzy(Player cause) {
         Deliverable deliverable = new Info(DeliverableEvent.UPDATE_FRENZY);
         deliverable.overwriteMessage(cause.toString() + " activated the Final Frenzy!");
         broadcast(deliverable);
     }
 
+    /**
+     * Broadcasts the final standings of the {@link Game}, ranking {@link Player}s best to last,
+     * in decreasing order of their score.
+     * @param ranking the already sorted list of players.
+     */
     public void announceWinner(List<Player> ranking) {
         Deliverable deliverable = new Info(DeliverableEvent.UPDATE_WINNER);
         String message = "\n\nGAME OVER!\n" + ranking.get(0).toString() + " won the game!\n\nRanking:\n" + Table.create(
@@ -921,6 +1050,11 @@ public class VirtualView {
         broadcast(deliverable);
     }
 
+    /**
+     * Broadcasts about a {@link Player}'s disconnection. This warns other players in the same {@link Game} that
+     * the disconnected player's turn will be prematurely ended and skipped.
+     * @param disconnectedPlayer the {@link Player} who lost connection.
+     */
     public void announceDisconnect(Player disconnectedPlayer) {
         Deliverable deliverable = new Info(DeliverableEvent.UPDATE_DISCONNECT);
         String message = disconnectedPlayer + " has lost connection. Skipping to the next turn...";

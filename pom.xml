@@ -73,7 +73,7 @@
               <manifest>
                 <addClasspath>true</addClasspath>
                 <classpathPrefix>lib/</classpathPrefix>
-                <mainClass>it.polimi.ingsw.App</mainClass>
+                <mainClass>it.polimi.ingsw.network.server.Server</mainClass>
               </manifest>
             </archive>
           </configuration>

@@ -33,21 +33,21 @@ public class GraphicsEventHandler {
         }
 
         try {
-            ActionFilter(deliverable);
+            actionFilter(deliverable);
         } catch (ConnectionException e) {
             System.exit(-1);
         }
 
     }
 
-    private void ActionFilter(Deliverable deliverable) throws ConnectionException {
+    private void actionFilter(Deliverable deliverable) throws ConnectionException {
 
         System.out.println("received deliverable of type " + deliverable.getType() + " of event " + deliverable.getEvent());
 
         if(usesGUI) {
 
             if(deliverable.getType() == DeliverableType.BULK) {
-                BulkHandler(deliverable, true);
+                bulkHandler(deliverable, true);
             }
 
             else {
@@ -144,7 +144,7 @@ public class GraphicsEventHandler {
                     CLIMappedHandler(deliverable);
                     break;
                 case BULK:
-                    BulkHandler(deliverable, false);
+                    bulkHandler(deliverable, false);
                     break;
             }
         }
@@ -172,7 +172,7 @@ public class GraphicsEventHandler {
 
 
     @SuppressWarnings("unchecked")
-    private void BulkHandler(Deliverable deliverable, boolean usesGUI) {
+    private void bulkHandler(Deliverable deliverable, boolean usesGUI) {
         Object bulk = ((Bulk) deliverable).unpack();
 
         switch (deliverable.getEvent()) {
@@ -218,17 +218,17 @@ public class GraphicsEventHandler {
                 RemoteBoard.getParticipants().get(((List<Integer>) bulk).get(0) - 1).setScore(((List<Integer>) bulk).get(1));
 
                 break;
-            case UPDATE_DEATHCOUNT:
+            case UPDATE_DEATH_COUNT:
                 //sets the deathcount of this player
                 RemoteBoard.getParticipants().get(((List<Integer>) bulk).get(0) -1).setDeathCount(((List<Integer>) bulk).get(1));
 
                 break;
             case UPDATE_INVENTORY:
 
-                UpdateInventory(bulk);
+                updateInventory(bulk);
 
                 break;
-            case UPDATE_BOARDKILL:
+            case UPDATE_BOARD_KILL:
 
                 List<String> boardKill = new ArrayList<>();
 
@@ -240,7 +240,7 @@ public class GraphicsEventHandler {
                 RemoteBoard.setKillers(boardKill);
 
                 break;
-            case UPDATE_BOARDDOUBLEKILL:
+            case UPDATE_BOARD_DOUBLE_KILL:
 
                 List<String> boardDoubleKill = new ArrayList<>();
 
@@ -300,7 +300,7 @@ public class GraphicsEventHandler {
                 break;
             case BOARD_INIT:
 
-                BoardInitializer(bulk);
+                boardInitializer(bulk);
                 RemoteBoard.setUsername(communicationHandler.getUsername());
 
                 if(usesGUI) {
@@ -324,7 +324,7 @@ public class GraphicsEventHandler {
         }
     }
 
-    private void UpdateInventory(Object bulk) {
+    private void updateInventory(Object bulk) {
 
         List<RemotePowerUp> powerUps = new ArrayList<>();
         List<RemoteWeapon> weapons = new ArrayList<>();
@@ -369,7 +369,7 @@ public class GraphicsEventHandler {
 
     }
 
-    private void BoardInitializer(Object bulk) {
+    private void boardInitializer(Object bulk) {
 
         //extracts info about the board
         RemoteBoard.calculateBoardImage(((List<Integer>) bulk).get(0));
