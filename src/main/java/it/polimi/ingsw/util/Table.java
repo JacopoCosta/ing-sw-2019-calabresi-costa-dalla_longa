@@ -21,7 +21,7 @@ public abstract class Table {
     private static final String DEFAULT_SEPARATOR = ", ";
 
     /**
-     * The default string to print in places where no value was found.
+     * The default string to printOpponents in places where no value was found.
      */
     private static final String NULL = "--";
 
@@ -88,7 +88,7 @@ public abstract class Table {
 
     /**
      * Puts each element of a list in a string, separating them with the {@link Table#DEFAULT_SEPARATOR} character.
-     * @param list the list to print.
+     * @param list the list to printOpponents.
      * @return a string describing the content of the list.
      */
     public static String list(List<?> list) {
@@ -97,7 +97,7 @@ public abstract class Table {
 
     /**
      * Puts each element of a list in a string, separating them with another string passed in as argument.
-     * @param list the list to print.
+     * @param list the list to printOpponents.
      * @param separator the string to put in between each pair of adjacent elements of the list.
      * @return a string describing the content of the list.
      */

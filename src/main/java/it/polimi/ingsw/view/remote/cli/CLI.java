@@ -53,7 +53,7 @@ public class CLI implements GraphicalInterface {
         //get the client response: create a new lobby ('n') or select a valid lobby to login (number)
         String choice = requestChoice();
 
-        //stops the update and print requests once the Client selected a valid choice
+        //stops the update and printOpponents requests once the Client selected a valid choice
         stopLobbyUpdateAndPrint();
 
         if (choice.equals("n")) //Client wants to create a new Lobby
@@ -123,7 +123,7 @@ public class CLI implements GraphicalInterface {
         System.exit(0);
     }
 
-    //update the Lobby list and print them
+    //update the Lobby list and printOpponents them
     private void startLobbyUpdateAndPrint() {
         //console.err("connection to the server is lost, cause: " + e.getMessage());
         Runnable updateTask = () -> {
@@ -148,7 +148,7 @@ public class CLI implements GraphicalInterface {
         futureUpdate = executor.scheduleAtFixedRate(updateTask, 0, UPDATE_REQUEST_PERIOD, TimeUnit.SECONDS);
     }
 
-    //stops the update and print process
+    //stops the update and printOpponents process
     private void stopLobbyUpdateAndPrint() {
         if (!futureUpdate.isDone())
             futureUpdate.cancel(true);
@@ -279,7 +279,7 @@ public class CLI implements GraphicalInterface {
         console.tinyPrintln("Welcome to Adrenaline !");
     }
 
-    //print the given Lobbies and some other commands
+    //printOpponents the given Lobbies and some other commands
     private void printAll(Map<String, String> lobbies) {
         console.clear();
 

@@ -117,7 +117,7 @@ public class GUI extends Application implements GraphicalInterface {
             createLobby(lobbyName, lobbyPassword);
     }
 
-    //update the Lobby list and print them
+    //update the Lobby list and printOpponents them
     private void startLobbyUpdate() {
         Runnable updateTask = () -> {
 
@@ -138,7 +138,7 @@ public class GUI extends Application implements GraphicalInterface {
         futureUpdate = executor.scheduleAtFixedRate(updateTask, 0, UPDATE_REQUEST_PERIOD, TimeUnit.SECONDS);
     }
 
-    //stops the update and print process
+    //stops the update and printOpponents process
     private void stopLobbyUpdate() {
         if (!futureUpdate.isDone()) {
             futureUpdate.cancel(true);

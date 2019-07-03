@@ -578,7 +578,10 @@ public class Player extends VirtualClient {
             i ++;
         }
 
-        if(this.isKilled()) { // only when scoring upon death
+        if(this.isKilled() && !game.getParticipants()
+                .stream()
+                .map(Player::isOnFrenzy)
+                .reduce((a, b) -> a || b).orElse(false)) { // only when scoring upon death and not in final frenzy
             game.getBoard().addKiller(damage.get(KILL_THRESHOLD));
             if (this.isOverKilled()) {
                 if (damage.get(KILL_THRESHOLD) == damage.get(OVERKILL_THRESHOLD)) { // the opposite should never happen

@@ -293,4 +293,15 @@ public class AmmoCubes {
             coloredStrings.add(new ColoredString((" " + UTF.block).repeat(blue), Color.ANSI_BLUE));
         return coloredStrings;
     }
+
+    public List<ColoredString> toColoredStringsWithNumbers() {
+        List<ColoredString> coloredStrings = new ArrayList();
+        coloredStrings.add(new ColoredString(" "+ red, Color.ANSI_RESET));
+        coloredStrings.add(new ColoredString(UTF.block, Color.ANSI_RED));
+        coloredStrings.add(new ColoredString(" "+ yellow, Color.ANSI_RESET));
+        coloredStrings.add(new ColoredString(UTF.block, Color.ANSI_YELLOW));
+        coloredStrings.add(new ColoredString(" "+ blue, Color.ANSI_RESET));
+        coloredStrings.add(new ColoredString(UTF.block, Color.ANSI_BLUE));
+        return coloredStrings;
+    }
 }

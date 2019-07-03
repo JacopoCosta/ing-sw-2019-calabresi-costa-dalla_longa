@@ -129,7 +129,7 @@ public class LobbyCell extends ListCell<String> {
         }
     }
 
-    //stops the update and print process
+    //stops the update and printOpponents process
     private void stopLobbyUpdate() {
         if (!GUI.futureUpdate.isDone()) {
             GUI.futureUpdate.cancel(true);

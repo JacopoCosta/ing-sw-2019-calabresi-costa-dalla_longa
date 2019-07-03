@@ -3,7 +3,7 @@ package it.polimi.ingsw.util.console;
 import it.polimi.ingsw.util.Color;
 
 /**
- * This is an utility class used to print different type of {@code String} based information onto a command line console.
+ * This is an utility class used to printOpponents different type of {@code String} based information onto a command line console.
  * These operations are done independently from the OS environment this class is invoked from and guarantee an equal result
  * for each one of them.
  */

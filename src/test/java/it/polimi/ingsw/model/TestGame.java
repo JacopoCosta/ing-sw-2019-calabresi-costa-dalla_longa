@@ -5,7 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TestGame {
 
@@ -18,12 +20,12 @@ public class TestGame {
 
     @Test
     public void autoPlay() {
-        List<Player> participants = new ArrayList<>();
+        List<String> participantNames = Arrays.asList("Aldo", "Mariassuntaconcettina", "Giacomo", "Luca", "Paolo");
+        List<Player> participants = participantNames.stream()
+                .map(Player::new)
+                .collect(Collectors.toList());
 
-        for(int i = 1; i <= 5; i ++)
-            participants.add(new Player("Player" + i));
-
-        Game game = Game.create(true, 8, 4, participants);
+        Game game = Game.create(true, 5, 4, participants);
         game.play();
     }
 
@@ -31,7 +33,7 @@ public class TestGame {
     public void autoPlayRandomized() {
         List<Player> participants = new ArrayList<>();
 
-        int randomPlayerCount = (int) Math.floor(Math.random() * 6) + 3; // between 3 and 8
+        int randomPlayerCount = (int) Math.floor(Math.random() * 3) + 3; // between 3 and 5
 
         for(int i = 1; i <= randomPlayerCount; i ++)
             participants.add(new Player("Player" + i));

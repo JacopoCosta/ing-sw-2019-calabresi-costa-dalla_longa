@@ -51,7 +51,7 @@ public class SocketClientHandler implements Runnable {
     private ObjectInputStream in;
 
     /**
-     * The output method to print any possible error that can occur during the life of this {@code SocketClientHandler}.
+     * The output method to printOpponents any possible error that can occur during the life of this {@code SocketClientHandler}.
      */
     private Console console;
 

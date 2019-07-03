@@ -5,6 +5,9 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
+import it.polimi.ingsw.model.cell.SpawnCell;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.weaponry.Weapon;
 import it.polimi.ingsw.util.Color;
 import it.polimi.ingsw.util.ColoredString;
 
@@ -14,28 +17,24 @@ import java.util.List;
 
 import static it.polimi.ingsw.util.UTF.*;
 
-public class Cli2 {
+public class CliBoard {
     private static final int cellWidth = 27;
     private static final int cellHeight = 13;
     
     private static final int doorWidth = 9;
     private static final int doorHeight = 5;
 
-    public static void main(String[] args) {
-        System.out.println(block.length());
+    private static ColoredString[][] grid;
 
-        printBoard(Game.create(false, 0, 2, new ArrayList<>()).getBoard());
-    }
-
-    public static void printBoard(Board board) {
+    public static void print(Board board) {
 
         final int totalWidth = cellWidth * board.getWidth();
         final int totalHeight = cellHeight * board.getHeight();
 
-        ColoredString[][] grid = new ColoredString[totalHeight][totalWidth];
+        grid = new ColoredString[totalHeight][totalWidth];
 
         for(Cell cell : board.getCells())
-            writeCell(grid, cell);
+            writeCell(cell);
 
         ConsoleOptimizer.print(grid);
     }
@@ -46,7 +45,7 @@ public class Cli2 {
         OPEN
     }
 
-    private static void writeCell(ColoredString[][] grid, Cell cell) {
+    private static void writeCell(Cell cell) {
         int cellX = cell.getXCoord();
         int cellY = cell.getYCoord();
 
@@ -59,20 +58,35 @@ public class Cli2 {
                                              getWall(cell, northNeighbour), getWall(cell, westNeighbour));
 
         for(int i = 1; i <= 4; i ++)
-            buildWallCounterclockwise(grid, cellX, cellY, i, walls.get(i - 1), cell.getRoom().getColor());
+            buildWallCounterclockwise(cellX, cellY, i, walls.get(i - 1), cell.getRoom().getColor());
 
         List<ColoredString> cellName = Arrays.asList(new ColoredString("Cell " + cell.getId(), null));
-        writeOnCell(grid, cellX, cellY, 1, cellName);
+        writeOnCell(cellX, cellY, 1, cellName);
 
         if(cell.isSpawnPoint()) {
-
+            List<Weapon> weapons = ((SpawnCell) cell).getWeaponShop();
+            int row = 2;
+            for(Weapon weapon : weapons) {
+                writeOnCell(cellX, cellY, row, weapon.toColoredStrings());
+                row ++;
+            }
         }
         else {
             AmmoTile ammoTile = ((AmmoCell) cell).getAmmoTile();
             if(ammoTile != null) {
                 List<ColoredString> ammo = ammoTile.toColoredStrings();
-                writeOnCell(grid, cellX, cellY, 2, ammo);
+                writeOnCell(cellX, cellY, 2, ammo);
             }
+        }
+
+        int row = cellHeight - 3;
+        for(Player p : cell.getPlayers()) {
+            String playerAnsiColor = CliCommon.toAnsiColor(p);
+            List<ColoredString> playerToken = new ArrayList<>();
+            playerToken.add(new ColoredString(block + " ", playerAnsiColor));
+            playerToken.add(new ColoredString(CliCommon.nameOf(p), Color.ANSI_RESET));
+            writeOnCell(cellX, cellY, row, playerToken);
+            row --;
         }
     }
     
@@ -90,14 +104,10 @@ public class Cli2 {
         }
     }
 
-    private static void writeOnCell(ColoredString[][] grid, int cellX, int cellY, int row, List<ColoredString> coloredStrings) {
+    private static void writeOnCell(int cellX, int cellY, int row, List<ColoredString> coloredStrings) {
         int caret = 0;
 
         for(ColoredString cs : coloredStrings) {
-
-            if (cs.content().length() > cellWidth - 4)
-                cs = new ColoredString(cs.content().substring(0, cellWidth - 7) + "...", cs.color());
-
             for (int i = 0; i < cs.content().length(); i++) {
                 grid[cellY * cellHeight + row][cellX * cellWidth + 2 + caret] = new ColoredString(cs.content().substring(i, i + 1), cs.color());
                 caret ++;
@@ -105,7 +115,7 @@ public class Cli2 {
         }
     }
 
-    private static void buildWallCounterclockwise(ColoredString[][] grid, int cellX, int cellY, int cornerId, WallType type, String color) {
+    private static void buildWallCounterclockwise(int cellX, int cellY, int cornerId, WallType type, String color) {
         int i = cellY * cellHeight + (cornerId == 1 || cornerId == 2 ? cellHeight - 1 : 0);
         int j = cellX * cellWidth + (cornerId == 2 || cornerId == 3 ? cellWidth - 1 : 0);
 

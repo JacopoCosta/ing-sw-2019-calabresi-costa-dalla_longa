@@ -32,7 +32,7 @@ public class Server {
     private final int port;
 
     /**
-     * The output method to print any possible error that can occur during the life of this {@code Server}.
+     * The output method to printOpponents any possible error that can occur during the life of this {@code Server}.
      */
     protected final Console console;
 
@@ -72,7 +72,7 @@ public class Server {
         this.executor.execute(socketServer);
 
         try {
-            Thread.sleep(100); //to allow a correct print of server CLI
+            Thread.sleep(100); //to allow a correct printOpponents of server CLI
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

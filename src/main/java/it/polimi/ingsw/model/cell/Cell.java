@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.exceptions.NullCellOperationException;
 import it.polimi.ingsw.model.exceptions.SelfAdjacentCellException;
+import it.polimi.ingsw.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -107,6 +108,18 @@ public abstract class Cell {
      */
     public void setRoom(Room room) {
         this.room = room;
+    }
+
+    /**
+     * Returns a list containing all the {@link Player}s on the {@code Cell}.
+     * @return the list.
+     */
+    public List<Player> getPlayers() {
+        return board.getGame()
+                .getParticipants()
+                .stream()
+                .filter(p -> this.equals(p.getPosition()))
+                .collect(Collectors.toList());
     }
 
     /**

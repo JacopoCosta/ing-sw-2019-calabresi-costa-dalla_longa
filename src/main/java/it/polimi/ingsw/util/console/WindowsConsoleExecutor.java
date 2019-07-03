@@ -4,7 +4,7 @@ import java.io.IOException;
 
 /**
  * This is a concrete implementation of the {@link ConsoleExecutor} interface. Its only purpose is to interface with
- * the Microsoft Windows command prompt (CMD) and print any given input onto that specific environment.
+ * the Microsoft Windows command prompt (CMD) and printOpponents any given input onto that specific environment.
  *
  * @see ConsoleExecutor
  */

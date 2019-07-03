@@ -15,6 +15,8 @@ import it.polimi.ingsw.util.json.JsonPathGenerator;
 import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.network.server.VirtualClient;
 import it.polimi.ingsw.network.server.lobby.Lobby;
+import it.polimi.ingsw.view.remote.cli2.CliToaster;
+import it.polimi.ingsw.view.remote.cli2.CliTracks;
 import it.polimi.ingsw.view.virtual.VirtualView;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.player.*;
@@ -166,6 +168,14 @@ public class Game {
      */
     public int getBoardType() {
         return boardType;
+    } //TODO this was for gui
+
+    /**
+     * Gets the number of {@link #roundsLeft}.
+     * @return the number of rounds left to play.
+     */
+    public int getRoundsLeft() {
+        return roundsLeft;
     }
 
     /**
@@ -368,7 +378,6 @@ public class Game {
 
         while (!gameOver) {
             this.playTurn();
-            //Cli2.printBoard(board);
         }
         board.scoreUponGameOver();
 

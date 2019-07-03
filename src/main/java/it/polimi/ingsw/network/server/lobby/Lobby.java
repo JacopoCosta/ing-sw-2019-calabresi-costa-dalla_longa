@@ -116,7 +116,7 @@ public class Lobby implements Observer {
     private GameProperty gameProperty;
 
     /**
-     * The {@link Console} used to print any kind of information needed to the server command prompt.
+     * The {@link Console} used to printOpponents any kind of information needed to the server command prompt.
      */
     private final Console console;
 
