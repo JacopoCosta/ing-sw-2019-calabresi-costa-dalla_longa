@@ -136,8 +136,9 @@ public class Console {
      */
     public void ANSIPrintln(String textColor, String utf8Message) {
         if (textColor != null)
-            executor.ANSIPrint(textColor);
-        System.out.print(utf8Message);
+            executor.ANSIPrintln(textColor + utf8Message);
+        else
+            executor.ANSIPrintln(utf8Message);
     }
 
     /**

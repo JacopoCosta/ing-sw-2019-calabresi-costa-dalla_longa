@@ -9,16 +9,10 @@ import java.io.IOException;
  * @see ConsoleExecutor
  */
 class WindowsConsoleExecutor implements ConsoleExecutor {
-    /**
-     * The initialization command to allow UTF-8 characters to be printed under CMD.
-     */
-    private static final String INIT_COMMAND = "chcp >nul";
-
     private final ProcessBuilder pb;
 
     WindowsConsoleExecutor() {
         pb = new ProcessBuilder();
-        execute(INIT_COMMAND);
     }
 
     /**
@@ -27,9 +21,9 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      *
      * @param command the directive to be executed.
      */
-    private synchronized void execute(String command) {
+    private synchronized void execute(String command){
         try {
-            pb.command("cmd.exe", "/c", command).inheritIO().start().waitFor();
+            pb.command("powershell.exe", "-Command", command).inheritIO().start().waitFor();
         } catch (IOException | InterruptedException ignored) {
         }
     }
@@ -72,6 +66,6 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      */
     @Override
     public void ANSIPrintln(String ansiMessage) {
-        execute("<nul set /p =\"" + ansiMessage + "\" & echo.");
+        execute("write-host \"" + ansiMessage + "\" -nonewline");
     }
 }

@@ -70,6 +70,13 @@ public class Server {
         this.console.stat("Running on " + this.console.getOsName() + "...");
 
         this.executor.execute(socketServer);
+
+        try {
+            Thread.sleep(100); //to allow a correct print of server CLI
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         this.executor.execute(rmiServer);
     }
 }
