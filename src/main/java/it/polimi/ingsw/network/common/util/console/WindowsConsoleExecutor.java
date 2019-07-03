@@ -14,7 +14,10 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      */
     private static final String INIT_COMMAND = "chcp >nul";
 
+    private final ProcessBuilder pb;
+
     WindowsConsoleExecutor() {
+        pb = new ProcessBuilder();
         execute(INIT_COMMAND);
     }
 
@@ -25,11 +28,8 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      * @param command the directive to be executed.
      */
     private synchronized void execute(String command) {
-        ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", (command));
-
         try {
-            Process p = pb.inheritIO().start();
-            p.waitFor();
+            pb.command("cmd.exe", "/c", command).inheritIO().start().waitFor();
         } catch (IOException | InterruptedException ignored) {
         }
     }

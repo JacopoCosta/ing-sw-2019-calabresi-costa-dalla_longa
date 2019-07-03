@@ -121,7 +121,6 @@ public class Console {
         if (textColor != null)
             executor.ANSIPrint(textColor);
         System.out.print(utf8Message);
-        executor.ANSIPrint(Color.ANSI_RESET);
     }
 
     /**
@@ -137,7 +136,6 @@ public class Console {
         if (textColor != null)
             executor.ANSIPrint(textColor);
         System.out.print(utf8Message);
-        executor.ANSIPrintln(Color.ANSI_RESET);
     }
 
     /**
