@@ -5,8 +5,12 @@ import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.network.common.util.console.Color;
+import it.polimi.ingsw.util.ColoredString;
+import it.polimi.ingsw.util.UTF;
 import it.polimi.ingsw.util.json.DecoratedJsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -277,5 +281,16 @@ public class AmmoCubes {
             return "blue";
         }
         return super.toString();
+    }
+
+    public List<ColoredString> toColoredStrings() {
+        List<ColoredString> coloredStrings = new ArrayList<>();
+        if(red > 0)
+            coloredStrings.add(new ColoredString(UTF.block.repeat(red), Color.ANSI_RED));
+        if(yellow > 0)
+            coloredStrings.add(new ColoredString(UTF.block.repeat(yellow), Color.ANSI_YELLOW));
+        if(blue > 0)
+            coloredStrings.add(new ColoredString(UTF.block.repeat(blue), Color.ANSI_BLUE));
+        return coloredStrings;
     }
 }

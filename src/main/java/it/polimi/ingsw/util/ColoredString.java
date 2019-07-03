@@ -1,16 +1,16 @@
 package it.polimi.ingsw.util;
 
 public class ColoredString {
-    private String mono;
+    private String content;
     private String ansiColor;
 
-    public ColoredString(String mono, String ansiColor) {
-        this.mono = mono;
+    public ColoredString(String content, String ansiColor) {
+        this.content = content;
         this.ansiColor = ansiColor;
     }
 
-    public String mono() {
-        return mono;
+    public String content() {
+        return content;
     }
 
     public String color() {

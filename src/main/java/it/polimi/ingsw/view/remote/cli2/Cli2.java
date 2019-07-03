@@ -8,6 +8,8 @@ import it.polimi.ingsw.util.Table;
 import it.polimi.ingsw.network.common.util.console.Color;
 import it.polimi.ingsw.network.common.util.console.Console;
 
+import static it.polimi.ingsw.util.UTF.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,13 +17,6 @@ import java.util.stream.Collectors;
 
 public class Cli2 {
     private static final Console console = Console.getInstance();
-
-    private static final String vertical = "\u2551";
-    private static final String horizontal = "\u2550";
-    private static final String corner1 = "\u255a";
-    private static final String corner2 = "\u255d";
-    private static final String corner3 = "\u2557";
-    private static final String corner4 = "\u2554";
 
     private static final int cellWidth = 27;
     private static final int cellHeight = 13;
@@ -60,11 +55,11 @@ public class Cli2 {
                     accumulator.append(" ");
                 }
                 else if(cs.color() == null || cs.color().equals(lastColor)) {
-                    accumulator.append(cs.mono());
+                    accumulator.append(cs.content());
                 }
                 else {
                     if(firstColor) {
-                        accumulator.append(cs.mono());
+                        accumulator.append(cs.content());
                         lastColor = cs.color();
                         firstColor = false;
                     }
@@ -73,7 +68,7 @@ public class Cli2 {
                             line.add(new ColoredString(accumulator.toString(), lastColor));
                         }
                         accumulator = new StringBuilder();
-                        accumulator.append(cs.mono());
+                        accumulator.append(cs.content());
                         lastColor = cs.color();
                     }
                 }
@@ -86,7 +81,7 @@ public class Cli2 {
             lines.add(line);
 
             System.out.println(Table.list(line.stream()
-                    .map(cs -> cs.mono().length())
+                    .map(cs -> cs.content().length())
                     .collect(Collectors.toList())));
         }
 
@@ -98,7 +93,7 @@ public class Cli2 {
         for(List<ColoredString> line : lines) {
             for(ColoredString cs : line) {
                 tally ++;
-                console.ANSIPrint(cs.color(), cs.mono());
+                console.ANSIPrint(cs.color(), cs.content());
             }
             console.tinyPrintln("");
         }
