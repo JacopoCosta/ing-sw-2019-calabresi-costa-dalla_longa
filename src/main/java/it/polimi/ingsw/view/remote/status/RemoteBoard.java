@@ -18,7 +18,7 @@ public abstract class RemoteBoard {
      */
     private static List<RemotePlayer> participants;
 
-    private static String Username;
+    private static String username;
 
     /**
      * The index for the user's token in {@link this.participants} list.
@@ -74,7 +74,7 @@ public abstract class RemoteBoard {
     }
 
     public static String getUsername() {
-        return Username;
+        return username;
     }
 
     /**
@@ -173,7 +173,7 @@ public abstract class RemoteBoard {
     }
 
     public static void setUsername(String username) {
-        Username = username;
+        RemoteBoard.username = username;
     }
 
     /**

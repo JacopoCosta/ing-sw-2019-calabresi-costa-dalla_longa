@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.util.json.DecoratedJsonArray;
 import it.polimi.ingsw.model.util.json.DecoratedJsonObject;
+import it.polimi.ingsw.model.util.json.JsonObjectGenerator;
 import it.polimi.ingsw.model.util.json.JsonPathGenerator;
 import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.network.server.VirtualClient;
@@ -524,15 +525,15 @@ public class Game {
 
     /**
      * This factory method creates a new {@code Game} based on a save state retrieved from a {@code .json} file.
-     *
-     * @param jSaveState           The {@link DecoratedJsonObject} parsed from the file.
      * @param shuffledParticipants The list of {@link Player}s attempting to join the reloaded {@code Game}.
      * @return The {@code Game}.
      * @throws InvalidSaveStateException           when attempting to load from an invalidated save state.
      * @throws UnmatchedSavedParticipantsException when the list of joining {@link Player}s is not a permutation
      *                                             of the list of {@link Player}s found in the save state.
      */
-    public static Game load(DecoratedJsonObject jSaveState, List<Player> shuffledParticipants) throws InvalidSaveStateException, UnmatchedSavedParticipantsException {
+    public static Game load(List<Player> shuffledParticipants) throws InvalidSaveStateException, UnmatchedSavedParticipantsException {
+        DecoratedJsonObject jSaveState = JsonObjectGenerator.getSavedGameBuilder();
+
         if (shuffledParticipants == null)
             throw new NullPointerException("Tried to load a game with participants set to null.");
         DecoratedJsonObject jSaved;

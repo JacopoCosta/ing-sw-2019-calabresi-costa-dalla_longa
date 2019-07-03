@@ -58,7 +58,7 @@ public abstract class BoardGraph {
                     BoardGraph.printSeventhLine(h, w);
 
                 for (int w = 0; w < schemeWidth; w++)
-                    BoardGraph.printEightLine(h, w);
+                    BoardGraph.printEighthLine(h, w);
 
                 for (int w = 0; w < schemeWidth; w++)
                     BoardGraph.printNinthLine(h, w);
@@ -456,7 +456,7 @@ public abstract class BoardGraph {
         }
     }
 
-    private static void printEightLine(int h, int w) {
+    private static void printEighthLine(int h, int w) {
         int schemeWidth = RemoteBoard.getWidth()*2 +1;
         int index = h*schemeWidth + w;   //index for current morphology element
 

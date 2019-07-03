@@ -69,7 +69,7 @@ public class RMIServer implements Runnable {
         }
 
         console.log("binding RMI protocol implementation to registry...");
-        String bindingName = "rmi://" + this.ipAddress + ":" + this.port + "/RMIController";
+        String bindingName = "rmi://" + this.ipAddress + ":" + this.port + "/common/rmi/RMIController";
         try {
             registry.rebind(bindingName, serverController);
         } catch (RemoteException e) {

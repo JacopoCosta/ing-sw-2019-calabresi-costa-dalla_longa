@@ -413,8 +413,7 @@ public class Lobby implements Observer {
             //start a new game or load an existing one
             new Thread(() -> {
                 try {
-                    //FIXME remove NullPointerException and adjust Game.load mechanic
-                    this.game = Game.load(null, this.players);
+                    this.game = Game.load(this.players);
                     this.console.mexG("previous Game loaded from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
                 } catch (InvalidSaveStateException | UnmatchedSavedParticipantsException | NullPointerException ignored) {
                     this.game = Game.create(this.gameProperty.finalFrenzy(), this.gameProperty.roundsToPlay(),

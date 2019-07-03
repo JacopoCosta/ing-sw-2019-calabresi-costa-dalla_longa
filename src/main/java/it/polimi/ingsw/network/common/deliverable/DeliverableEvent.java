@@ -45,10 +45,10 @@ public enum DeliverableEvent implements Serializable {
     UPDATE_MARKING(""),     //Bulk, contains a list of players
     UPDATE_MOVE(""),        //Bulk, contains the new position of a player
     UPDATE_SCORE(""),       //Bulk, contains a new value for a player's score
-    UPDATE_DEATHCOUNT(""),   //Bulk, contains a new value for a player's number of death
+    UPDATE_DEATH_COUNT(""),   //Bulk, contains a new value for a player's number of death
     UPDATE_INVENTORY(""),   //Bulk, contains player's weapons, ammo and powerup
-    UPDATE_BOARDKILL(""),   //Bulk, contains a new value for List<RemotePlayers> killers
-    UPDATE_BOARDDOUBLEKILL(""), //as above, but for doublekillers
+    UPDATE_BOARD_KILL(""),   //Bulk, contains a new value for List<RemotePlayers> killers
+    UPDATE_BOARD_DOUBLE_KILL(""), //as above, but for doublekillers
     UPDATE_FRENZY(""),      //Info
     UPDATE_WINNER(""),      //Info
     UPDATE_DISCONNECT(""),  //Info
