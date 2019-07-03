@@ -7,8 +7,6 @@ import it.polimi.ingsw.model.exceptions.FullHandException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.weaponry.Weapon;
-import it.polimi.ingsw.network.common.util.console.Color;
-import it.polimi.ingsw.network.common.util.console.Console;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,10 +4,15 @@ import it.polimi.ingsw.model.ammo.AmmoCubes;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.util.Color;
+import it.polimi.ingsw.util.ColoredString;
 import it.polimi.ingsw.util.json.DecoratedJsonObject;
 import it.polimi.ingsw.model.weaponry.effects.Damage;
 import it.polimi.ingsw.model.weaponry.effects.Mark;
 import it.polimi.ingsw.model.weaponry.effects.Move;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@code Weapon}s are a special type of card used by the {@link Player} to {@link Move}, {@link Damage} and {@link Mark} other {@link Player}s.
@@ -171,5 +176,14 @@ public class Weapon {
      */
     public String getDescription() {
         return name + ":" + attackPattern.toString();
+    }
+
+    public List<ColoredString> toColoredStrings() {
+        List<ColoredString> coloredStrings = new ArrayList<>();
+        try {
+            coloredStrings.add(new ColoredString(name, Color.toAnsi((reloadCost.take(purchaseCost)).toStringAsColor())));
+        } catch (CannotAffordException ignored) { }
+        coloredStrings.addAll(reloadCost.toColoredStrings());
+        return coloredStrings;
     }
 }

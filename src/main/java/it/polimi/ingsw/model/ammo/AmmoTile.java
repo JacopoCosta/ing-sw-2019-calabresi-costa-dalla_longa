@@ -6,7 +6,12 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.powerups.PowerUp;
+import it.polimi.ingsw.util.Color;
+import it.polimi.ingsw.util.ColoredString;
 import it.polimi.ingsw.util.json.DecoratedJsonObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link AmmoTile}s are tokens spread on the {@link Cell}s that are not {@link SpawnCell}s.
@@ -80,5 +85,14 @@ public class AmmoTile {
     @Override
     public String toString() {
         return ammoCubes.toString() + (includesPowerUp ? "+P" : "");
+    }
+
+    public List<ColoredString> toColoredStrings() {
+        List<ColoredString> coloredStrings = new ArrayList<>();
+        coloredStrings.add(new ColoredString("Ammo:", Color.ANSI_RESET));
+        coloredStrings.addAll(ammoCubes.toColoredStrings());
+        if(includesPowerUp)
+            coloredStrings.add(new ColoredString(" +Powerup", Color.ANSI_RESET));
+        return coloredStrings;
     }
 }

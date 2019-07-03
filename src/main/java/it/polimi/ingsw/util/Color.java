@@ -1,4 +1,7 @@
-package it.polimi.ingsw.network.common.util.console;
+package it.polimi.ingsw.util;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class contains all the possible text colors available via the ANSI escape characters.
@@ -48,4 +51,16 @@ public class Color {
      * The white text ANSI escape {@code String}.
      */
     public static final String ANSI_WHITE = "\u001B[37m";
+
+    /**
+     * Converts a color's name into an ANSI escape {@code String}.
+     * @param color the color's name.
+     * @return the ANSI escape.
+     */
+    public static String toAnsi(String color) {
+        List<String> colors = Arrays.asList("white", "red", "yellow", "green", "blue", "purple");
+        List<String> ansiColors = Arrays.asList(Color.ANSI_WHITE, Color.ANSI_RED, Color.ANSI_YELLOW, Color.ANSI_GREEN, Color.ANSI_BLUE, Color.ANSI_PURPLE);
+
+        return ansiColors.get(colors.indexOf(color));
+    }
 }

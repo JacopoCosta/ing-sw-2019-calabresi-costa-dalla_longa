@@ -1,11 +1,13 @@
 package it.polimi.ingsw.view.remote.cli2;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.Board;
+import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.util.ColoredString;
 import it.polimi.ingsw.util.Table;
-import it.polimi.ingsw.network.common.util.console.Color;
+import it.polimi.ingsw.util.Color;
 import it.polimi.ingsw.network.common.util.console.Console;
 
 import static it.polimi.ingsw.util.UTF.*;
@@ -28,7 +30,7 @@ public class Cli2 {
         printBoard(Game.create(false, 0, 2, new ArrayList<>()).getBoard());
     }
 
-    private static void printBoard(Board board) {
+    public static void printBoard(Board board) {
 
         final int totalWidth = cellWidth * board.getWidth();
         final int totalHeight = cellHeight * board.getHeight();
@@ -121,7 +123,19 @@ public class Cli2 {
         for(int i = 1; i <= 4; i ++)
             buildWallCounterclockwise(grid, cellX, cellY, i, walls.get(i - 1), cell.getRoom().getColor());
 
-        writeOnCell(grid, cellX, cellY, 1, "Cell " + cell.getId(), null);
+        List<ColoredString> cellName = Arrays.asList(new ColoredString("Cell " + cell.getId(), null));
+        writeOnCell(grid, cellX, cellY, 1, cellName);
+
+        if(cell.isSpawnPoint()) {
+
+        }
+        else {
+            AmmoTile ammoTile = ((AmmoCell) cell).getAmmoTile();
+            if(ammoTile != null) {
+                List<ColoredString> ammo = ammoTile.toColoredStrings();
+                writeOnCell(grid, cellX, cellY, 2, ammo);
+            }
+        }
     }
     
     private static WallType getWall(Cell cell, Cell neighbour) {
@@ -138,12 +152,19 @@ public class Cli2 {
         }
     }
 
-    private static void writeOnCell(ColoredString[][] grid, int cellX, int cellY, int row, String string, String ansiColor) {
-        if(string.length() > cellWidth - 4)
-            string = string.substring(0, cellWidth - 7) + "...";
+    private static void writeOnCell(ColoredString[][] grid, int cellX, int cellY, int row, List<ColoredString> coloredStrings) {
+        int caret = 0;
 
-        for(int i = 0; i < string.length(); i ++)
-            grid[cellY * cellHeight + row][cellX * cellWidth + 2 + i] = new ColoredString(string.substring(i, i + 1), ansiColor);
+        for(ColoredString cs : coloredStrings) {
+
+            if (cs.content().length() > cellWidth - 4)
+                cs = new ColoredString(cs.content().substring(0, cellWidth - 7) + "...", cs.color());
+
+            for (int i = 0; i < cs.content().length(); i++) {
+                grid[cellY * cellHeight + row][cellX * cellWidth + 2 + caret] = new ColoredString(cs.content().substring(i, i + 1), cs.color());
+                caret ++;
+            }
+        }
     }
 
     private static void buildWallCounterclockwise(ColoredString[][] grid, int cellX, int cellY, int cornerId, WallType type, String color) {
@@ -163,7 +184,7 @@ public class Cli2 {
         int doorSize = cornerId % 2 == 0 ? doorHeight : doorWidth;
         int doorHalfSize = (doorSize + 1) / 2;
 
-        String ansiColor = ansifyColor(color);
+        String ansiColor = Color.toAnsi(color);
 
         grid[i][j] = new ColoredString(startingCorner, ansiColor);
         for(int k = 1; k < limit - 1; k ++) {
@@ -190,12 +211,5 @@ public class Cli2 {
                         grid[i][j] = new ColoredString(gapClose, ansiColor);
             }
         }
-    }
-
-    private static String ansifyColor(String color) {
-        List<String> colors = Arrays.asList("white", "red", "yellow", "green", "blue", "purple");
-        List<String> ansiColors = Arrays.asList(Color.ANSI_WHITE, Color.ANSI_RED, Color.ANSI_YELLOW, Color.ANSI_GREEN, Color.ANSI_BLUE, Color.ANSI_PURPLE);
-
-        return ansiColors.get(colors.indexOf(color));
     }
 }

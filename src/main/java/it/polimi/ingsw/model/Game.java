@@ -15,6 +15,7 @@ import it.polimi.ingsw.util.json.JsonPathGenerator;
 import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.network.server.VirtualClient;
 import it.polimi.ingsw.network.server.lobby.Lobby;
+import it.polimi.ingsw.view.remote.cli2.Cli2;
 import it.polimi.ingsw.view.virtual.VirtualView;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.player.*;
@@ -368,6 +369,7 @@ public class Game {
 
         while (!gameOver) {
             this.playTurn();
+            //Cli2.printBoard(board);
         }
         board.scoreUponGameOver();
 
