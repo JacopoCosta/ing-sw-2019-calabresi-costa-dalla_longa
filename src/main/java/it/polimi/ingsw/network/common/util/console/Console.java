@@ -109,31 +109,35 @@ public class Console {
     }
 
     /**
-     * Writes the given {@code message} on the underlying command line environment on a single line, ignoring escape
-     * characters without a new line at the end. This method supports ANSI escape characters.
-     *
-     * <p>Note that calling {@code ANSIPrint("message\n")} does NOT behaves the same as {@code ANSIPrintln("message")}
-     * as this method does not support regular escape characters and every given one will be ignored and printed as plain text.
+     * Writes the given {@code message} on the underlying command line environment on a single line, including escape
+     * characters without a new line at the end.
+     * This method supports ANSI escape characters.
      *
      * @param message the {@code String} value to be printed.
-     * @see #ANSIPrintln(String)
+     * @param color   the message {@link Color}.
+     * @see #ANSIPrintln(String, String)
      */
-    public void ANSIPrint(String message) {
-        executor.ANSIPrint(message);
+    public void ANSIPrint(String color, String message) {
+        if (color != null)
+            executor.ANSIPrint(color);
+        System.out.print(message);
+        executor.ANSIPrint(Color.ANSI_RESET);
     }
 
     /**
-     * Writes the given {@code message} on the underlying command line environment on a single line, ignoring escape
-     * characters and then a new line sequence at the end. This method supports ANSI escape characters.
-     *
-     * <p>Note that calling {@code ANSIPrint("message\n")} does NOT behaves the same as {@code ANSIPrintln("message")}
-     * as this method does not support regular escape characters and every given one will be ignored and printed as plain text.
+     * Writes the given {@code message} on the underlying command line environment on a single line, including escape
+     * characters and then a new line sequence at the end.
+     * This method supports ANSI escape characters.
      *
      * @param message the {@code String} value to be printed.
-     * @see #ANSIPrint(String)
+     * @param color   the message {@link Color}.
+     * @see #ANSIPrint(String, String)
      */
-    public void ANSIPrintln(String message) {
-        executor.ANSIPrintln(message);
+    public void ANSIPrintln(String color, String message) {
+        if (color != null)
+            executor.ANSIPrint(color);
+        System.out.print(message);
+        executor.ANSIPrintln(Color.ANSI_RESET);
     }
 
     /**
@@ -142,7 +146,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void mexS(String message) {
-        ANSIPrintln(Color.ANSI_CYAN + "[MESSAGE] " + message + Color.ANSI_RESET);
+        ANSIPrintln(Color.ANSI_CYAN, "[MESSAGE] " + message);
     }
 
     /**
@@ -151,7 +155,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void mexC(String message) {
-        ANSIPrintln(Color.ANSI_YELLOW + "[MESSAGE] " + message + Color.ANSI_RESET);
+        ANSIPrintln(Color.ANSI_YELLOW, "[MESSAGE] " + message);
     }
 
     /**
@@ -160,7 +164,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void log(String message) {
-        ANSIPrintln("[LOG] " + message);
+        ANSIPrintln(null, "[LOG] " + message);
     }
 
     /**
@@ -169,7 +173,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void stat(String message) {
-        ANSIPrintln(Color.ANSI_GREEN + "[STATUS] " + message + Color.ANSI_RESET);
+        ANSIPrintln(Color.ANSI_GREEN, "[STATUS] " + message);
     }
 
     /**
@@ -178,7 +182,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void err(String message) {
-        ANSIPrintln(Color.ANSI_RED + "[ERROR] " + message + Color.ANSI_RESET);
+        ANSIPrintln(Color.ANSI_RED, "[ERROR] " + message);
     }
 
     /**
