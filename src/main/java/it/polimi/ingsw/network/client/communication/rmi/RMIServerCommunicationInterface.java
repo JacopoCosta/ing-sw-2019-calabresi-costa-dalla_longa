@@ -20,12 +20,12 @@ public class RMIServerCommunicationInterface implements ServerCommunicationInter
     public RMIServerCommunicationInterface(String hostAddress, int port) throws ConnectionException {
         try {
             Registry remoteRegistry = LocateRegistry.getRegistry(hostAddress, Registry.REGISTRY_PORT);
-            serverController = (RMIController) remoteRegistry.lookup("rmi://" + hostAddress + ":" + Registry.REGISTRY_PORT + "/common/rmi/RMIController");
+            serverController = (RMIController) remoteRegistry.lookup("rmi://" + hostAddress + ":" + Registry.REGISTRY_PORT + "/RMIController");
 
             clientController = new ClientController();
             RMIController controller = (RMIController) UnicastRemoteObject.exportObject(clientController, port);
 
-            Registry localRegistry = LocateRegistry.createRegistry(1098); //TODO change this back to port
+            Registry localRegistry = LocateRegistry.createRegistry(port);
             localRegistry.rebind("rmi://" + "127.0.0.1" + ":" + port + "/RMIController", controller);
         } catch (RemoteException | NotBoundException e) {
             throw new ConnectionException(e);
