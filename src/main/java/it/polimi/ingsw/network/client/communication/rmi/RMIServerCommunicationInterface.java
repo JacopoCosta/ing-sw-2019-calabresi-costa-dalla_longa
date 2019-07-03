@@ -23,7 +23,7 @@ public class RMIServerCommunicationInterface implements ServerCommunicationInter
             serverController = (RMIController) remoteRegistry.lookup("rmi://" + hostAddress + ":" + Registry.REGISTRY_PORT + "/RMIController");
 
             clientController = new ClientController();
-            RMIController controller = (RMIController) UnicastRemoteObject.exportObject(clientController, 0);
+            RMIController controller = (RMIController) UnicastRemoteObject.exportObject(clientController, port);
 
             Registry localRegistry = LocateRegistry.createRegistry(port);
             localRegistry.rebind("rmi://" + "127.0.0.1" + ":" + port + "/ClientController", controller);

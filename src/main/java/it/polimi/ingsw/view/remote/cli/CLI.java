@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @SuppressWarnings({"unchecked", "FieldCanBeLocal"})
 public class CLI implements GraphicalInterface {
     private final List<String> lobbies = Collections.synchronizedList(new ArrayList<>());
+    private List<String> opponents;
 
     private final Scanner in = new Scanner(System.in);
 
@@ -324,8 +325,6 @@ public class CLI implements GraphicalInterface {
         stopCountDownPrint();
     }
 
-    private List<String> opponents;
-
     private void printCountDown(int startingSeconds) {
         AtomicInteger timeLeft = new AtomicInteger(startingSeconds);
         Runnable printCountDownTask = () -> {
@@ -343,7 +342,7 @@ public class CLI implements GraphicalInterface {
         futureUpdate.cancel(true);
     }
 
-    private void printPauseMessage(){
+    private void printPauseMessage() {
         printOpponents();
         console.tinyPrintln("Too many players left the lobby, countdown suspended.");
     }

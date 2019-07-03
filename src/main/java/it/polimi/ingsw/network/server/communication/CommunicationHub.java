@@ -45,6 +45,8 @@ public class CommunicationHub {
                                 String lobbyName = this.lobbyManager.getLobbyNameByPlayer(player);
                                 this.lobbyManager.remove(lobbyName, player);
                                 this.console.log("Client \"" + player.getName() + "\" successfully logged out from Lobby \"" + lobbyName + "\"");
+
+                                this.lobbyManager.notifyOpponentsUpdate(lobbyName);
                             } catch (LobbyNotFoundException e) {
                                 this.console.log(e.getMessage());
                             } catch (PlayerNotFoundException | LobbyEmptyException e) {
@@ -359,7 +361,7 @@ public class CommunicationHub {
 
     private void sendOpponentsUpdate(Player player) {
         try {
-            lobbyManager.notifyOpponentsUpdate(player);
+            lobbyManager.notifyOpponentsUpdate(lobbyManager.getLobbyNameByPlayer(player));
         } catch (LobbyNotFoundException | PlayerNotFoundException e) {
             //this.console.err(e.getMessage());
             e.printStackTrace();
