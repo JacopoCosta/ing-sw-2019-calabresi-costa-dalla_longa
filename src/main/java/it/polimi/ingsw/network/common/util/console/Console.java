@@ -116,12 +116,9 @@ public class Console {
      * This method supports ANSI escape characters.
      *
      * @param utf8Message the {@code String} value to be printed.
-     * @param textColor   the message text {@link Color}.
-     * @see #ANSIPrintln(String, String)
+     * @see #ANSIPrintln(String)
      */
-    public void ANSIPrint(String textColor, String utf8Message) {
-        if (textColor != null)
-            executor.ANSIPrint(textColor);
+    public void ANSIPrint(String utf8Message) {
         System.out.print(utf8Message);
     }
 
@@ -131,14 +128,10 @@ public class Console {
      * This method supports ANSI escape characters.
      *
      * @param utf8Message the {@code String} value to be printed.
-     * @param textColor   the message text {@link Color}.
-     * @see #ANSIPrint(String, String)
+     * @see #ANSIPrint(String)
      */
-    public void ANSIPrintln(String textColor, String utf8Message) {
-        if (textColor != null)
-            executor.ANSIPrintln(textColor + utf8Message);
-        else
-            executor.ANSIPrintln(utf8Message);
+    public void ANSIPrintln(String utf8Message) {
+        executor.ANSIPrintln(utf8Message);
     }
 
     /**
@@ -147,7 +140,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void mexS(String message) {
-        ANSIPrintln(Color.ANSI_CYAN, "[MESSAGE] " + message);
+        ANSIPrintln(Color.ANSI_CYAN + "[MESSAGE] " + message + Color.ANSI_RESET);
     }
 
     /**
@@ -156,7 +149,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void mexC(String message) {
-        ANSIPrintln(Color.ANSI_YELLOW, "[MESSAGE] " + message);
+        ANSIPrintln(Color.ANSI_YELLOW + "[MESSAGE] " + message + Color.ANSI_RESET);
     }
 
     /**
@@ -165,7 +158,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void log(String message) {
-        ANSIPrintln(null, "[LOG] " + message);
+        ANSIPrintln("[LOG] " + message);
     }
 
     /**
@@ -174,7 +167,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void stat(String message) {
-        ANSIPrintln(Color.ANSI_GREEN, "[STATUS] " + message);
+        ANSIPrintln(Color.ANSI_GREEN + "[STATUS] " + message + Color.ANSI_RESET);
     }
 
     /**
@@ -183,7 +176,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void err(String message) {
-        ANSIPrintln(Color.ANSI_RED, "[ERROR] " + message);
+        ANSIPrintln(Color.ANSI_RED + "[ERROR] " + message + Color.ANSI_RESET);
     }
 
     /**

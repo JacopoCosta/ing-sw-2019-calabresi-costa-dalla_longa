@@ -51,7 +51,7 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      */
     @Override
     public void ANSIPrint(String ansiMessage) {
-        execute("<nul set /p =\"" + ansiMessage + "\"");
+        execute("write-host \"" + ansiMessage + "\" -nonewline");
     }
 
     /**
