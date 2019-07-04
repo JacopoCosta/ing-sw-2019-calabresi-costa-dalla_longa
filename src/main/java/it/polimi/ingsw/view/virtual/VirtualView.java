@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.powerups.*;
+import it.polimi.ingsw.model.weaponry.effects.Mark;
 import it.polimi.ingsw.util.Dispatcher;
 import it.polimi.ingsw.util.Table;
 import it.polimi.ingsw.model.weaponry.AttackModule;
@@ -164,8 +165,7 @@ public class VirtualView {
                     DeliverableEvent.UPDATE_VIEW,
                     CliTracks.build(game),
                     CliBoard.build(game.getBoard()),
-                    CliToaster.buildOpponents(player),
-                    CliToaster.buildOwn(player)
+                    CliToaster.build(game)
             ));
         } catch (AbortedTurnException e) {
             throw new AbortedTurnException("");
@@ -178,9 +178,6 @@ public class VirtualView {
      * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
      */
     public void spawn(Player subject) throws AbortedTurnException {
-
-        updateView(subject);
-
         List<String> options = subject.getPowerUps()
                 .stream()
                 .map(PowerUp::toString)
@@ -234,6 +231,8 @@ public class VirtualView {
      * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
      */
     public Execution chooseExecution(Player subject, List<Execution> executions) throws AbortedTurnException {
+        updateView(subject);
+
         List<String> options = executions.stream()
                 .map(Execution::toString)
                 .collect(Collectors.toList());
@@ -326,6 +325,8 @@ public class VirtualView {
      * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
      */
     public void shoot(Player subject) throws AbortedTurnException {
+        updateView(subject);
+
         List<Weapon> availableWeapons = subject.getWeapons()
                 .stream()
                 .filter(Weapon::isLoaded)
@@ -734,17 +735,36 @@ public class VirtualView {
      * @param subject the player who just began their turn.
      */
     public void announceTurn(Player subject) {
+        for(Player p : game.getParticipants()) {
+            try {
+                updateView(p);
+            } catch (AbortedTurnException ignored) {
+            }
+        }
+
         Deliverable deliverable = new Info(DeliverableEvent.UPDATE_TURN);
         deliverable.overwriteMessage("It is now " + subject.getName() + "'s turn.");
         broadcast(deliverable);
     }
 
+    /**
+     * Announces when a {@link Player} takes {@link Damage}.
+     * @param author The source of the damage.
+     * @param target The victim.
+     * @param amount The amount of damage.
+     */
     public void announceDamage(Player author, Player target, int amount) {
         Deliverable deliverable = new Info(DeliverableEvent.UPDATE_DAMAGE);
         deliverable.overwriteMessage(author.getName() + " dealt " + amount + " damage to " + target.getName() + ".");
         broadcast(deliverable);
     }
 
+    /**
+     * Announces when a {@link Player} is {@link Mark}ed.
+     * @param author The source of the mark.
+     * @param target The victim.
+     * @param amount The number of marks.
+     */
     public void announceMarking(Player author, Player target, int amount) {
         String lexeme = amount > 1 ? "marks" : "mark";
         Deliverable deliverable = new Info(DeliverableEvent.UPDATE_MARKING);
@@ -752,6 +772,12 @@ public class VirtualView {
         broadcast(deliverable);
     }
 
+    /**
+     * Announces when a {@link Player} moves either themselves or an opponent.
+     * @param author the player who decided the destination.
+     * @param target the player being moved,
+     * @param destination the destination.
+     */
     public void announceMove(Player author, Player target, Cell destination) {
         Deliverable deliverable = new Info(DeliverableEvent.UPDATE_MOVE);
         String message = author.getName() + " moved";
@@ -761,6 +787,11 @@ public class VirtualView {
         broadcast(deliverable);
     }
 
+    /**
+     * Announces when a {@link Player} is killed.
+     * @param author The killer.
+     * @param target The victim.
+     */
     public void announceKill(Player author, Player target) {
         Deliverable deliverable = new Info(DeliverableEvent.UPDATE_KILL);
         String message = author.getName() +  " ";
@@ -771,6 +802,13 @@ public class VirtualView {
         broadcast(deliverable);
     }
 
+    /**
+     * Announces when a {@link Player} gains points.
+     * @param source The player who yielded points.
+     * @param creditor The player who earned points.
+     * @param amount The amount of points.
+     * @param firstBloodOrDoubleKill Whether or not it's extra points either from a first blood or a double kill.
+     */
     public void announceScore(Player source, Player creditor, int amount, boolean firstBloodOrDoubleKill) {
         Deliverable deliverable = new Info(DeliverableEvent.UPDATE_SCORE);
         String lexeme = amount == 1 ? "point" : "points";

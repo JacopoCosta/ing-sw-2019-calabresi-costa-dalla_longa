@@ -1,15 +1,14 @@
 package it.polimi.ingsw.view.virtual.cli;
 
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ScoreList;
 import it.polimi.ingsw.util.Color;
 import it.polimi.ingsw.util.ColoredString;
-import it.polimi.ingsw.view.remote.cli.ConsoleOptimizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.util.UTF.*;
 
@@ -19,27 +18,14 @@ public abstract class CliToaster {
 
     private static ColoredString[][] toasterField;
 
-    public static ColoredString[][] buildOpponents(Player player) {
-        List<Player> opponents = player.getGame()
-                .getParticipants()
-                .stream()
-                .filter(p -> !p.equals(player))
-                .collect(Collectors.toList());
-
-        toasterField = new ColoredString[toasterHeight][toasterWidth * opponents.size()];
+    public static ColoredString[][] build(Game game) {
+        toasterField = new ColoredString[toasterHeight][toasterWidth * game.getParticipants().size()];
 
         int index = 0;
-        for(Player o : opponents) {
-            writeToaster(index, o);
+        for(Player p : game.getParticipants()) {
+            writeToaster(index, p);
             index ++;
         }
-
-        return toasterField;
-    }
-
-    public static ColoredString[][] buildOwn(Player player) {
-        toasterField = new ColoredString[toasterHeight][toasterWidth];
-        writeToaster(0, player);
 
         return toasterField;
     }

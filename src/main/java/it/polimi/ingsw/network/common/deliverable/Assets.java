@@ -12,27 +12,22 @@ import it.polimi.ingsw.util.ColoredString;
 //  ^ Footnote: IntelliJ's scrubby vocabulary thinks that "unbeknownst" is a typo, but it's not. It's a valid word.
 public class Assets extends Deliverable {
 
-    private static final String tracksHeader = "Kills:" + " ".repeat(21) + "Double Kills";
+    private static final String tracksHeader = "Kills:";
 
     private ColoredString[][] tracks;
 
     private ColoredString[][] board;
 
-    private static final String opponentToasterHeader = "Your opponents:";
+    private static final String toasterHeader = "Players:";
 
-    private ColoredString[][] opponentToasters;
+    private ColoredString[][] toasters;
 
-    private static final String ownToasterHeader = "Your situation";
-
-    private ColoredString[][] ownToaster;
-
-    public Assets(DeliverableEvent event, ColoredString[][] tracks, ColoredString[][] board, ColoredString[][] opponentToasters, ColoredString[][] ownToaster) {
+    public Assets(DeliverableEvent event, ColoredString[][] tracks, ColoredString[][] board, ColoredString[][] toasters) {
         super(event);
         this.type = DeliverableType.ASSETS;
         this.tracks = tracks;
         this.board = board;
-        this.opponentToasters = opponentToasters;
-        this.ownToaster = ownToaster;
+        this.toasters = toasters;
     }
 
     public static String getTracksHeader() {
@@ -47,19 +42,11 @@ public class Assets extends Deliverable {
         return board;
     }
 
-    public static String getOpponentToasterHeader() {
-        return opponentToasterHeader;
+    public static String getToasterHeader() {
+        return toasterHeader;
     }
 
     public ColoredString[][] getOpponentToasters() {
-        return opponentToasters;
-    }
-
-    public static String getOwnToasterHeader() {
-        return ownToasterHeader;
-    }
-
-    public ColoredString[][] getOwnToaster() {
-        return ownToaster;
+        return toasters;
     }
 }
