@@ -3,8 +3,8 @@ package it.polimi.ingsw.view.virtual.cli;
 import it.polimi.ingsw.model.exceptions.CannotAffordException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.Weapon;
-import it.polimi.ingsw.util.Color;
-import it.polimi.ingsw.util.ColoredString;
+import it.polimi.ingsw.util.printer.Color;
+import it.polimi.ingsw.util.printer.ColoredString;
 
 import java.util.List;
 
@@ -22,13 +22,13 @@ public abstract class CliWeapons {
             writeWeapon(weapons.get(i), i);
 
         if(player.getWeapons().size() > 0)
-            CliCommon.write(top + 1, left - 9, new ColoredString("Weapons:", Color.ANSI_RESET));
+            CliCommon.write(top + 1, left - 9, new ColoredString("Weapons:", Color.RESET));
     }
 
     private static void writeWeapon(Weapon weapon, int index) {
         String weaponColor = "";
         try {
-            weaponColor = weapon.isLoaded() ? Color.toAnsi((weapon.getReloadCost().take(weapon.getPurchaseCost())).toStringAsColor()) : Color.ANSI_BLACK;
+            weaponColor = weapon.isLoaded() ? Color.toAnsi((weapon.getReloadCost().take(weapon.getPurchaseCost())).toStringAsColor()) : Color.BLACK;
         } catch (CannotAffordException ignored) { }
         CliCommon.frame(top + index * height, left, width, height, weaponColor);
 
@@ -42,12 +42,12 @@ public abstract class CliWeapons {
             CliCommon.write(top + height * index + row, left + 2, headers.get(i));
             row ++;
             for(int j = 0; j < descriptions.get(i).size(); j ++) {
-                CliCommon.write(top + height * index + row, left + 2, new ColoredString(descriptions.get(i).get(j), Color.ANSI_RESET));
+                CliCommon.write(top + height * index + row, left + 2, new ColoredString(descriptions.get(i).get(j), Color.RESET));
                 row ++;
             }
         }
 
         if(!weapon.isLoaded())
-            CliCommon.write(top + index * height + 1, left + width - 12, new ColoredString("[UNLOADED]", Color.ANSI_WHITE));
+            CliCommon.write(top + index * height + 1, left + width - 12, new ColoredString("[UNLOADED]", Color.WHITE));
     }
 }

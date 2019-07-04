@@ -28,13 +28,4 @@ public class TestCountDownTimer {
         Thread.sleep(1000 + 25);
         assertEquals(1, timer.getTime());
     }
-
-    /*@Test
-    public void loop() throws InterruptedException {
-        int MAX = 1000;
-
-        for (int i = 0; i < MAX; i++) {
-            //test here
-        }
-    }*/
 }

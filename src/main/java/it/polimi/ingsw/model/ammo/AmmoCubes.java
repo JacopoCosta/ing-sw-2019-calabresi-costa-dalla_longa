@@ -5,8 +5,8 @@ import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.util.Color;
-import it.polimi.ingsw.util.ColoredString;
+import it.polimi.ingsw.util.printer.Color;
+import it.polimi.ingsw.util.printer.ColoredString;
 import it.polimi.ingsw.util.UTF;
 import it.polimi.ingsw.util.json.DecoratedJsonObject;
 
@@ -262,8 +262,7 @@ public class AmmoCubes {
         final int[] values = {red, yellow, blue};
         final String[] names = {"R", "Y", "B"};
         for(int i = 0; i < 3; i ++) {
-            for(int j = 0; j < values[i]; j ++)
-                s.append(names[i]);
+            s.append(names[i].repeat(Math.max(0, values[i])));
         }
         return s.toString();
     }
@@ -286,22 +285,22 @@ public class AmmoCubes {
     public List<ColoredString> toColoredStrings() {
         List<ColoredString> coloredStrings = new ArrayList<>();
         if(red > 0)
-            coloredStrings.add(new ColoredString((" " + UTF.block).repeat(red), Color.ANSI_RED));
+            coloredStrings.add(new ColoredString((" " + UTF.block).repeat(red), Color.RED));
         if(yellow > 0)
-            coloredStrings.add(new ColoredString((" " + UTF.block).repeat(yellow), Color.ANSI_YELLOW));
+            coloredStrings.add(new ColoredString((" " + UTF.block).repeat(yellow), Color.YELLOW));
         if(blue > 0)
-            coloredStrings.add(new ColoredString((" " + UTF.block).repeat(blue), Color.ANSI_BLUE));
+            coloredStrings.add(new ColoredString((" " + UTF.block).repeat(blue), Color.BLUE));
         return coloredStrings;
     }
 
     public List<ColoredString> toColoredStringsWithNumbers() {
-        List<ColoredString> coloredStrings = new ArrayList();
-        coloredStrings.add(new ColoredString(" "+ red, Color.ANSI_RESET));
-        coloredStrings.add(new ColoredString(UTF.block, Color.ANSI_RED));
-        coloredStrings.add(new ColoredString(" "+ yellow, Color.ANSI_RESET));
-        coloredStrings.add(new ColoredString(UTF.block, Color.ANSI_YELLOW));
-        coloredStrings.add(new ColoredString(" "+ blue, Color.ANSI_RESET));
-        coloredStrings.add(new ColoredString(UTF.block, Color.ANSI_BLUE));
+        List<ColoredString> coloredStrings = new ArrayList<>();
+        coloredStrings.add(new ColoredString(" "+ red, Color.RESET));
+        coloredStrings.add(new ColoredString(UTF.block, Color.RED));
+        coloredStrings.add(new ColoredString(" "+ yellow, Color.RESET));
+        coloredStrings.add(new ColoredString(UTF.block, Color.YELLOW));
+        coloredStrings.add(new ColoredString(" "+ blue, Color.RESET));
+        coloredStrings.add(new ColoredString(UTF.block, Color.BLUE));
         return coloredStrings;
     }
 }

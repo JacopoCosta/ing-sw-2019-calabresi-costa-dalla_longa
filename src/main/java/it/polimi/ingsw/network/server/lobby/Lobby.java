@@ -10,10 +10,10 @@ import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.common.observer.Observer;
 import it.polimi.ingsw.network.common.observer.Observable;
-import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.network.common.util.timer.CountDownTimer;
 import it.polimi.ingsw.network.common.util.property.GameProperty;
 import it.polimi.ingsw.network.server.VirtualClient;
+import it.polimi.ingsw.util.printer.ColorPrinter;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -118,11 +118,6 @@ public class Lobby implements Observer {
     private GameProperty gameProperty;
 
     /**
-     * The {@link Console} used to printOpponents any kind of information needed to the server command prompt.
-     */
-    private final Console console;
-
-    /**
      * This is the only constructor. It create a {@code Lobby} from a given {@code name} and {@code password}.
      *
      * @param name     the new {@code Lobby} name.
@@ -139,8 +134,6 @@ public class Lobby implements Observer {
         this.timer = new CountDownTimer(this.WAITING_TIME_FULL);
         this.timerStarted = false;
         this.timer.addObserver(this);
-
-        this.console = Console.getInstance();
 
         this.notify = true;
     }
@@ -337,7 +330,7 @@ public class Lobby implements Observer {
                 .forEach(player -> {
                     try {
                         player.sendMessage(NetworkMessage.simpleServerMessage(MessageType.COUNTDOWN_EXPIRED));
-                        this.console.mexS("message " + MessageType.COUNTDOWN_EXPIRED + " sent to client \"" + player.getName() + "\"");
+                        ColorPrinter.mexS("message " + MessageType.COUNTDOWN_EXPIRED + " sent to client \"" + player.getName() + "\"");
                     } catch (ConnectionException ignored) {
                     }
                 });
@@ -354,7 +347,7 @@ public class Lobby implements Observer {
                 .forEach(player -> {
                     try {
                         player.sendMessage(NetworkMessage.completeServerMessage(MessageType.COUNTDOWN_UPDATE, seconds));
-                        this.console.mexS("message " + MessageType.COUNTDOWN_UPDATE + " sent to client \"" + player.getName() + "\"");
+                        ColorPrinter.mexS("message " + MessageType.COUNTDOWN_UPDATE + " sent to client \"" + player.getName() + "\"");
                     } catch (ConnectionException ignored) {
                     }
                 });
@@ -367,7 +360,7 @@ public class Lobby implements Observer {
                     .forEach(player -> {
                         try {
                             player.sendMessage(NetworkMessage.completeServerMessage(MessageType.COUNTDOWN_UPDATE, this.timer.getTime()));
-                            this.console.mexS("message " + MessageType.COUNTDOWN_UPDATE + " sent to client \"" + player.getName() + "\"");
+                            ColorPrinter.mexS("message " + MessageType.COUNTDOWN_UPDATE + " sent to client \"" + player.getName() + "\"");
                         } catch (ConnectionException ignored) {
                         }
                     });
@@ -383,7 +376,7 @@ public class Lobby implements Observer {
                 .forEach(player -> {
                     try {
                         player.sendMessage(NetworkMessage.simpleServerMessage(MessageType.COUNTDOWN_STOPPED));
-                        this.console.mexS("message " + MessageType.COUNTDOWN_STOPPED + " sent to client \"" + player.getName() + "\"");
+                        ColorPrinter.mexS("message " + MessageType.COUNTDOWN_STOPPED + " sent to client \"" + player.getName() + "\"");
                     } catch (ConnectionException ignored) {
                     }
                 });
@@ -404,7 +397,7 @@ public class Lobby implements Observer {
                                             .filter(p -> !p.equals(player))
                                             .map(VirtualClient::getName)
                                             .collect(Collectors.toList())));
-                            this.console.mexS("message " + MessageType.OPPONENTS_LIST_UPDATE + " sent to client \"" + player.getName() + "\"");
+                            ColorPrinter.mexS("message " + MessageType.OPPONENTS_LIST_UPDATE + " sent to client \"" + player.getName() + "\"");
                         } catch (ConnectionException ignored) {
                         }
                     });
@@ -431,11 +424,11 @@ public class Lobby implements Observer {
             new Thread(() -> {
                 try {
                     this.game = Game.load(this.players);
-                    this.console.mexG("previous Game loaded from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
+                    ColorPrinter.mexG("previous Game loaded from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
                 } catch (InvalidSaveStateException | UnmatchedSavedParticipantsException | NullPointerException ignored) {
                     this.game = Game.create(this.gameProperty.finalFrenzy(), this.gameProperty.roundsToPlay(),
                             this.gameProperty.boardType(), this.players);
-                    this.console.stat("new Game started from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
+                    ColorPrinter.stat("new Game started from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
                 }
                 this.game.play();
             }).start();

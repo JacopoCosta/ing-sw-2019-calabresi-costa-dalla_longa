@@ -2,8 +2,8 @@ package it.polimi.ingsw.view.virtual.cli;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.util.Color;
-import it.polimi.ingsw.util.ColoredString;
+import it.polimi.ingsw.util.printer.Color;
+import it.polimi.ingsw.util.printer.ColoredString;
 
 public class CliPowerUps {
     private static final int top = 31;
@@ -17,7 +17,7 @@ public class CliPowerUps {
             writePowerUp(player.getPowerUps().get(i), i);
 
         if(player.getPowerUps().size() > 0)
-            CliCommon.write(top + 2, left - 10, new ColoredString("Powerups:", Color.ANSI_RESET));
+            CliCommon.write(top + 2, left - 10, new ColoredString("Powerups:", Color.RESET));
     }
 
     private static void writePowerUp(PowerUp powerUp, int index) {

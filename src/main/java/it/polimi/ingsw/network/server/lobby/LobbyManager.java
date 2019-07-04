@@ -2,9 +2,9 @@ package it.polimi.ingsw.network.server.lobby;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.*;
-import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.network.common.util.property.GameProperty;
 import it.polimi.ingsw.network.common.util.property.GamePropertyLoader;
+import it.polimi.ingsw.util.printer.ColorPrinter;
 
 import java.util.Map;
 import java.util.Queue;
@@ -43,8 +43,7 @@ public class LobbyManager {
         try {
             this.gameProperty = loader.readGameProperties();
         } catch (InvalidPropertyException e) {
-            Console console = Console.getInstance();
-            console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             System.exit(-1);
         }
     }

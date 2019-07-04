@@ -1,6 +1,5 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.network.server.executable.RMIServer;
 import it.polimi.ingsw.network.server.executable.SocketServer;
 
@@ -32,11 +31,6 @@ public class Server {
     private final int port;
 
     /**
-     * The output method to printOpponents any possible error that can occur during the life of this {@code Server}.
-     */
-    protected final Console console;
-
-    /**
      * The {@link ExecutorService} responsible for the execution of the two server instances.
      */
     private ExecutorService executor;
@@ -52,7 +46,6 @@ public class Server {
         this.ipAddress = ipAddress;
         this.port = port;
 
-        this.console = Console.getInstance();
         this.executor = Executors.newFixedThreadPool(2);
     }
 
@@ -66,17 +59,7 @@ public class Server {
         SocketServer socketServer = new SocketServer(this.ipAddress, socketPort);
         RMIServer rmiServer = new RMIServer(this.ipAddress, rmiPort);
 
-        this.console.clear();
-        this.console.stat("Running on " + this.console.getOsName() + "...");
-
         this.executor.execute(socketServer);
-
-        try {
-            Thread.sleep(100); //to allow a correct printOpponents of server CLI
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         this.executor.execute(rmiServer);
     }
 }

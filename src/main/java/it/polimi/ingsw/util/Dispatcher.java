@@ -1,6 +1,6 @@
 package it.polimi.ingsw.util;
 
-import it.polimi.ingsw.util.console.Console;
+import it.polimi.ingsw.util.printer.ColorPrinter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,16 +15,11 @@ import java.util.List;
 public abstract class Dispatcher {
 
     /**
-     * The {@link Console} singleton is used for printing messages and requests.
-     */
-    private static Console console = Console.getInstance();
-
-    /**
      * Outputs a string to the end user.
      * @param message the string.
      */
     public static void sendMessage(String message) {
-        console.tinyPrint(message);
+        ColorPrinter.println(message);
     }
 
     /**

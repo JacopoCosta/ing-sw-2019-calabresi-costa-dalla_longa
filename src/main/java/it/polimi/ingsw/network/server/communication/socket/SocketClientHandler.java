@@ -3,14 +3,10 @@ package it.polimi.ingsw.network.server.communication.socket;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
-import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.network.server.communication.ClientCommunicationInterface;
 import it.polimi.ingsw.network.server.communication.CommunicationHub;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 
@@ -51,11 +47,6 @@ public class SocketClientHandler implements Runnable {
     private ObjectInputStream in;
 
     /**
-     * The output method to printOpponents any possible error that can occur during the life of this {@code SocketClientHandler}.
-     */
-    private Console console;
-
-    /**
      * This is the only constructor used to create a new {@code SocketClientHandler} with the given {@code socket} argument.
      * This is used to create the input and output channels to instantiate a bi-directional communication to the
      * client-side application.
@@ -66,11 +57,9 @@ public class SocketClientHandler implements Runnable {
         this.communicationHub = CommunicationHub.getInstance();
         this.socket = socket;
 
-        this.console = Console.getInstance();
-
         try {
-            this.out = new ObjectOutputStream(socket.getOutputStream());
-            this.in = new ObjectInputStream(socket.getInputStream());
+            this.out = new ObjectOutputStream(this.socket.getOutputStream());
+            this.in = new ObjectInputStream(this.socket.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
             //this.console.err(e.getClass() + ": " + e.getMessage());
@@ -130,7 +119,7 @@ public class SocketClientHandler implements Runnable {
             //Client unexpectedly quit: the CommunicationHub will unregister it
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-            //this.console.err(e.getClass() + ": " + e.getMessage());
+            //ColorPrinter.err(e.getClass() + ": " + e.getMessage());
         } finally {
             this.closeConnection();
         }

@@ -3,14 +3,13 @@ package it.polimi.ingsw.model.weaponry;
 import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.util.Color;
-import it.polimi.ingsw.util.ColoredString;
+import it.polimi.ingsw.util.printer.Color;
+import it.polimi.ingsw.util.printer.ColoredString;
 import it.polimi.ingsw.util.json.DecoratedJsonObject;
 import it.polimi.ingsw.view.virtual.cli.CliWeapons;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * An {@code AttackPattern} is a directional network of {@link AttackModule}s, fully describing the working
@@ -148,9 +147,9 @@ public class AttackPattern {
 
         for(AttackModule a : showableModules) {
             List<ColoredString> module = new ArrayList<>();
-            module.add(new ColoredString(" >", Color.ANSI_RESET));
+            module.add(new ColoredString(" >", Color.RESET));
             module.addAll(a.getSummonCost().toColoredStrings());
-            module.add(new ColoredString(" " + a.getName() + ":", Color.ANSI_RESET));
+            module.add(new ColoredString(" " + a.getName() + ":", Color.RESET));
 
             coloredStrings.add(module);
         }

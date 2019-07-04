@@ -2,11 +2,11 @@ package it.polimi.ingsw.view.virtual.cli;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ScoreList;
-import it.polimi.ingsw.util.Color;
-import it.polimi.ingsw.util.ColoredString;
+import it.polimi.ingsw.util.printer.Color;
+import it.polimi.ingsw.util.printer.ColoredString;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static it.polimi.ingsw.util.UTF.*;
@@ -23,8 +23,8 @@ public abstract class CliToasters {
         for(Player p : player.getGame().getParticipants())
             writeToaster(p);
 
-        CliCommon.write(top - 1, 0, new ColoredString("Players:", Color.ANSI_RESET));
-        CliCommon.write(top + toasterHeight, (player.getId() - 1) * toasterWidth + (toasterWidth - 1) / 2 - 5, new ColoredString("^^^ YOU ^^^", Color.ANSI_RESET));
+        CliCommon.write(top - 1, 0, new ColoredString("Players:", Color.RESET));
+        CliCommon.write(top + toasterHeight, (player.getId() - 1) * toasterWidth + (toasterWidth - 1) / 2 - 5, new ColoredString("^^^ YOU ^^^", Color.RESET));
     }
 
     private static void writeToaster(Player player) {
@@ -41,22 +41,22 @@ public abstract class CliToasters {
         writeOnToaster(index, 1, nameAndAmmo);
 
         List<ColoredString> markStrip = new ArrayList<>();
-        markStrip.add(new ColoredString(" Marks:", Color.ANSI_RESET));
+        markStrip.add(new ColoredString(" Marks:", Color.RESET));
         for(Player p : player.getMarkingsAsList())
             markStrip.add(new ColoredString(" " + full, CliCommon.toAnsiColor(p)));
         writeOnToaster(index, 3, markStrip);
 
         List<ColoredString> damageStrip = new ArrayList<>();
-        damageStrip.add(new ColoredString("Damage:", Color.ANSI_RESET));
+        damageStrip.add(new ColoredString("Damage:", Color.RESET));
         for(int i = 0; i <= 11; i ++) {
             if(i < player.getDamageAsList().size())
                 damageStrip.add(new ColoredString(" " + full, CliCommon.toAnsiColor(player.getDamageAsList().get(i))));
             else
-                damageStrip.add(new ColoredString(" " + empty, Color.ANSI_RESET));
+                damageStrip.add(new ColoredString(" " + empty, Color.RESET));
         }
         writeOnToaster(index, 5, damageStrip);
 
-        List<ColoredString> damageMeasure = Arrays.asList(new ColoredString(" ".repeat(8) + "1  |" + " ".repeat(5) + "|" + " ".repeat(9) + "|K O", Color.ANSI_RESET));
+        List<ColoredString> damageMeasure = Collections.singletonList(new ColoredString(" ".repeat(8) + "1  |" + " ".repeat(5) + "|" + " ".repeat(9) + "|K O", Color.RESET));
         writeOnToaster(index, 6, damageMeasure);
 
         int indent = player.isOnFrenzy() ? 15 : 13;
@@ -65,9 +65,9 @@ public abstract class CliToasters {
         deathTrack.add(new ColoredString(" ".repeat(indent), null));
         for(int i = 0; i < numberCount; i ++) {
             if(i >= player.getDeathCount())
-                deathTrack.add(new ColoredString(" " + ScoreList.get(i, player.isOnFrenzy()), Color.ANSI_RESET));
+                deathTrack.add(new ColoredString(" " + ScoreList.get(i, player.isOnFrenzy()), Color.RESET));
             else
-                deathTrack.add(new ColoredString(" " + skull, Color.ANSI_RED));
+                deathTrack.add(new ColoredString(" " + skull, Color.RED));
         }
         writeOnToaster(index, 8, deathTrack);
     }

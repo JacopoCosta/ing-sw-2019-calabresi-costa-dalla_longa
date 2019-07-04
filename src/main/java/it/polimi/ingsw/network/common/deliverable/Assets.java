@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.common.deliverable;
 
-import it.polimi.ingsw.util.ColoredString;
+import it.polimi.ingsw.util.printer.ColoredString;
 
 public class Assets extends Deliverable {
 

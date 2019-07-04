@@ -2,7 +2,6 @@ package it.polimi.ingsw.network.client.executable;
 
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
-import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.view.remote.GraphicsManager;
 
 
@@ -33,11 +32,6 @@ public class Client {
     private final GraphicsManager.Interface graphicalInterface;
 
     /**
-     * The {@link Console} used to print any kind of errors that may occur during the client execution.
-     */
-    private final Console console;
-
-    /**
      * This is the only constructor. It creates a new {@code Client} from the given information.
      *
      * @param hostAddress            the server ip address to connect to.
@@ -50,8 +44,6 @@ public class Client {
         this.port = port;
         this.communicationInterface = communicationInterface;
         this.graphicalInterface = graphicalInterface;
-
-        console = Console.getInstance();
     }
 
     /**
@@ -62,7 +54,7 @@ public class Client {
         try {
             communicationHandler = new CommunicationHandler(hostAddress, port, communicationInterface);
         } catch (ConnectionException e) {
-            //console.err("connection to the server is lost, cause: " + e.getMessage());
+            //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
             e.printStackTrace();
             System.exit(-1);
             return;

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.network.client.executable;
 
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
-import it.polimi.ingsw.util.console.Console;
+import it.polimi.ingsw.util.printer.ColorPrinter;
 import it.polimi.ingsw.view.remote.GraphicsManager;
 
 /**
@@ -10,11 +10,6 @@ import it.polimi.ingsw.view.remote.GraphicsManager;
  */
 @SuppressWarnings("FieldCanBeLocal")
 public class ClientLauncher {
-    /**
-     * The {@link Console} used to print any kind of errors that may occur during the client execution.
-     */
-    private static Console console;
-
     /**
      * The server host address to connect to.
      */
@@ -68,21 +63,21 @@ public class ClientLauncher {
      * @return the corresponding {@link Client} {@link Configuration} or an error one if parameters are incorrect or missing.
      */
     private static Configuration config(String[] args) {
-        console.clear();
+        ColorPrinter.clear();
 
         if (args.length == 0) {
-            console.tinyPrint(helpString);
+            ColorPrinter.println(helpString);
             return Configuration.ERROR;
         }
 
         if (args[0].equals("-help")) {
-            console.tinyPrint(helpString);
+            ColorPrinter.println(helpString);
             return Configuration.ERROR;
 
         }
 
         if (args.length < 2) {
-            console.err("insufficient arguments, required: <ip address> <port>");
+            ColorPrinter.err("insufficient arguments, required: <ip address> <port>");
             return Configuration.ERROR;
         }
 
@@ -90,7 +85,7 @@ public class ClientLauncher {
 
         String[] subs = ipAddress.split("\\.");
         if (subs.length != 4) {
-            console.err("invalid IP address");
+            ColorPrinter.err("invalid IP address");
             return Configuration.ERROR;
         }
 
@@ -99,11 +94,11 @@ public class ClientLauncher {
                 int val = Integer.parseInt(sub);
 
                 if (val < 0 || val > 255) {
-                    console.err("invalid IP address");
+                    ColorPrinter.err("invalid IP address");
                     return Configuration.ERROR;
                 }
             } catch (NumberFormatException ignored) {
-                console.err("invalid IP address");
+                ColorPrinter.err("invalid IP address");
                 return Configuration.ERROR;
             }
         }
@@ -111,16 +106,16 @@ public class ClientLauncher {
         try {
             port = Integer.parseInt(args[1]);
             if (port < CommunicationHandler.LOWERBOUD_PORT || port > CommunicationHandler.UPPERBOUND_PORT) {
-                console.err("port not int range [1024-65535]");
+                ColorPrinter.err("port not int range [1024-65535]");
                 return Configuration.ERROR;
             }
         } catch (NumberFormatException ignored) {
-            console.err("provide an integer value for parameter <port>");
+            ColorPrinter.err("provide an integer value for parameter <port>");
             return Configuration.ERROR;
         }
 
         if (args.length == 2) {
-            return Configuration.CLIENT_SOCKET_GUI;
+            return Configuration.CLIENT_SOCKET_CLI;
         } else if (args.length == 4) {
             String argument = args[2];
             String connectionType;
@@ -133,7 +128,7 @@ public class ClientLauncher {
                 } else if (connectionType.equals("r")) {
                     return Configuration.CLIENT_RMI_GUI;
                 } else {
-                    console.err("parameter for argument \"-conn\" must be [s|r]. Type \"-help\" to see more.");
+                    ColorPrinter.err("parameter for argument \"-conn\" must be [s|r]. Type \"-help\" to see more.");
                     return Configuration.ERROR;
                 }
             } else if (argument.equals("-int")) {
@@ -144,11 +139,11 @@ public class ClientLauncher {
                 } else if (interfaceType.equals("g")) {
                     return Configuration.CLIENT_SOCKET_GUI;
                 } else {
-                    console.err("parameter for argument \"-int\" must be [c|g]. Type \"-help\" to see more.");
+                    ColorPrinter.err("parameter for argument \"-int\" must be [c|g]. Type \"-help\" to see more.");
                     return Configuration.ERROR;
                 }
             } else {
-                console.err("invalid argument, type \"-help\" to see more.");
+                ColorPrinter.err("invalid argument, type \"-help\" to see more.");
                 return Configuration.ERROR;
             }
         } else if (args.length == 6) {
@@ -159,13 +154,13 @@ public class ClientLauncher {
                 connectionType = args[3];
 
                 if (!connectionType.equals("s") && !connectionType.equals("r")) {
-                    console.err("parameter for argument \"-conn\" must be [s|r]. Type \"-help\" to see more.");
+                    ColorPrinter.err("parameter for argument \"-conn\" must be [s|r]. Type \"-help\" to see more.");
                     return Configuration.ERROR;
                 }
 
                 String secondArgument = args[4];
                 if (!secondArgument.equals("-int")) {
-                    console.err("invalid second argument, type \"-help\" to see more.");
+                    ColorPrinter.err("invalid second argument, type \"-help\" to see more.");
                     return Configuration.ERROR;
                 }
 
@@ -179,20 +174,20 @@ public class ClientLauncher {
                         return Configuration.CLIENT_SOCKET_GUI;
                     return Configuration.CLIENT_RMI_GUI;
                 } else {
-                    console.err("parameter for argument \"-int\" must be [c|g]. Type \"-help\" to see more.");
+                    ColorPrinter.err("parameter for argument \"-int\" must be [c|g]. Type \"-help\" to see more.");
                     return Configuration.ERROR;
                 }
             } else if (firstArgument.equals("-int")) {
                 String interfaceType = args[3];
 
                 if (!interfaceType.equals("c") && !interfaceType.equals("g")) {
-                    console.err("parameter for argument \"-int\" must be [c|g]. Type \"-help\" to see more.");
+                    ColorPrinter.err("parameter for argument \"-int\" must be [c|g]. Type \"-help\" to see more.");
                     return Configuration.ERROR;
                 }
 
                 String secondArgument = args[4];
                 if (!secondArgument.equals("-conn")) {
-                    console.err("invalid second argument, type \"-help\" to see more.");
+                    ColorPrinter.err("invalid second argument, type \"-help\" to see more.");
                     return Configuration.ERROR;
                 }
 
@@ -206,15 +201,15 @@ public class ClientLauncher {
                         return Configuration.CLIENT_RMI_CLI;
                     return Configuration.CLIENT_RMI_GUI;
                 } else {
-                    console.err("parameter for argument \"-conn\" must be [s|r]. Type \"-help\" to see more.");
+                    ColorPrinter.err("parameter for argument \"-conn\" must be [s|r]. Type \"-help\" to see more.");
                     return Configuration.ERROR;
                 }
             } else {
-                console.err("invalid first argument, type \"-help\" to see more.");
+                ColorPrinter.err("invalid first argument, type \"-help\" to see more.");
                 return Configuration.ERROR;
             }
         } else {
-            console.err("invalid arguments, type \"-help\" to see more.");
+            ColorPrinter.err("invalid arguments, type \"-help\" to see more.");
             return Configuration.ERROR;
         }
     }
@@ -225,7 +220,6 @@ public class ClientLauncher {
      * @param args the command line arguments.
      */
     public static void main(String[] args) {
-        console = Console.getInstance();
         Configuration configuration = config(args);
 
         switch (configuration) {

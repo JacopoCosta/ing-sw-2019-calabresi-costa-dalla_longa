@@ -6,8 +6,8 @@ import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.powerups.PowerUp;
-import it.polimi.ingsw.util.Color;
-import it.polimi.ingsw.util.ColoredString;
+import it.polimi.ingsw.util.printer.Color;
+import it.polimi.ingsw.util.printer.ColoredString;
 import it.polimi.ingsw.util.json.DecoratedJsonObject;
 
 import java.util.ArrayList;
@@ -89,10 +89,10 @@ public class AmmoTile {
 
     public List<ColoredString> toColoredStrings() {
         List<ColoredString> coloredStrings = new ArrayList<>();
-        coloredStrings.add(new ColoredString("Ammo:", Color.ANSI_RESET));
+        coloredStrings.add(new ColoredString("Ammo:", Color.RESET));
         coloredStrings.addAll(ammoCubes.toColoredStrings());
         if(includesPowerUp)
-            coloredStrings.add(new ColoredString(" +Powerup", Color.ANSI_RESET));
+            coloredStrings.add(new ColoredString(" +Powerup", Color.RESET));
         return coloredStrings;
     }
 }

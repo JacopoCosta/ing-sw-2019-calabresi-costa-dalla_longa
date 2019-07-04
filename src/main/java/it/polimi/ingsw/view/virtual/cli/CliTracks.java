@@ -2,8 +2,8 @@ package it.polimi.ingsw.view.virtual.cli;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.util.Color;
-import it.polimi.ingsw.util.ColoredString;
+import it.polimi.ingsw.util.printer.Color;
+import it.polimi.ingsw.util.printer.ColoredString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +24,11 @@ public abstract class CliTracks {
         writeKillerTrack(game.getBoard().getKillers(), game.getRoundsLeft());
         writeDoubleKillerTrack(doubleKillers);
 
-        CliCommon.write(top + 1, 0, new ColoredString("Kills:", Color.ANSI_RESET));
+        CliCommon.write(top + 1, 0, new ColoredString("Kills:", Color.RESET));
     }
 
     private static void writeKillerTrack(List<Player> rawKillers, int roundsLeft) {
-        CliCommon.frame(top, left, trackWidth, trackHeight, Color.ANSI_BLACK);
+        CliCommon.frame(top, left, trackWidth, trackHeight, Color.BLACK);
 
         List<Player> killers = new ArrayList<>();
         List<Boolean> overKill = new ArrayList<>();
@@ -48,11 +48,11 @@ public abstract class CliTracks {
             roundsLeft = 0;
 
         for(int k = 0; k < 8 - roundsLeft; k ++) {
-            canvas[top + 1][left + 2 + 3 * k] = new ColoredString(skull, Color.ANSI_WHITE);
+            canvas[top + 1][left + 2 + 3 * k] = new ColoredString(skull, Color.WHITE);
         }
 
         for(int k = 8 - roundsLeft; k < 8; k ++) {
-            canvas[top + 1][left + 2 + 3 * k] = new ColoredString(skull, Color.ANSI_RED);
+            canvas[top + 1][left + 2 + 3 * k] = new ColoredString(skull, Color.RED);
         }
 
         for(int i = 0; i < killers.size(); i ++)
@@ -60,7 +60,7 @@ public abstract class CliTracks {
     }
 
     private static void writeDoubleKillerTrack(List<Player> doubleKillers) {
-        CliCommon.frame(top, left + trackWidth, 3 + 2 * doubleKillers.size(), trackHeight, Color.ANSI_BLACK);
+        CliCommon.frame(top, left + trackWidth, 3 + 2 * doubleKillers.size(), trackHeight, Color.BLACK);
         for(int i = 0; i < doubleKillers.size(); i ++)
             writeOnDoubleKillerTrack(i, doubleKillers.get(i));
 

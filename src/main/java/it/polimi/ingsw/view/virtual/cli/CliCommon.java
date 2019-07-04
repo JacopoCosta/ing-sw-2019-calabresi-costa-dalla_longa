@@ -1,8 +1,8 @@
 package it.polimi.ingsw.view.virtual.cli;
 
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.util.Color;
-import it.polimi.ingsw.util.ColoredString;
+import it.polimi.ingsw.util.printer.Color;
+import it.polimi.ingsw.util.printer.ColoredString;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +12,7 @@ import static it.polimi.ingsw.util.UTF.horizontal;
 
 public abstract class CliCommon {
     private static final List<String> playerAnsiColors = Arrays.asList(
-            Color.ANSI_YELLOW, Color.ANSI_CYAN, Color.ANSI_GREEN, Color.ANSI_WHITE, Color.ANSI_PURPLE
+            Color.YELLOW, Color.CYAN, Color.GREEN, Color.WHITE, Color.PURPLE
     );
     static final int nameLengthLimit = 20;
 

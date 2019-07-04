@@ -1,7 +1,7 @@
 package it.polimi.ingsw.network.server.executable;
 
-import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.network.server.communication.socket.SocketClientHandler;
+import it.polimi.ingsw.util.printer.ColorPrinter;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -43,12 +43,10 @@ public class SocketServer implements Runnable {
     @SuppressWarnings("InfiniteLoopStatement")
     @Override
     public void run() {
-        Console console = Console.getInstance();
-
         try (ServerSocket socket = new ServerSocket(this.port, 0, InetAddress.getByName(this.ipAddress))) {
-            console.log("socket server configured on " + this.ipAddress + ":" + this.port);
-            console.log("socket server bounded on " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
-            console.stat("socket server running...");
+            ColorPrinter.log("socket server configured on " + this.ipAddress + ":" + this.port);
+            ColorPrinter.log("socket server bounded on " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
+            ColorPrinter.stat("socket server running...");
             ExecutorService executor = Executors.newCachedThreadPool();
             while (true) {
                 SocketClientHandler clientHandler = new SocketClientHandler(socket.accept()); //create a User thread to represent the Client
@@ -56,7 +54,7 @@ public class SocketServer implements Runnable {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            //console.err(e.getClass() + ": " + e.getMessage());
+            //ColorPrinter.err(e.getClass() + ": " + e.getMessage());
         }
     }
 }

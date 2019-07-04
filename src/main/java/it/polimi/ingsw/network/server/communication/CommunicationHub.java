@@ -4,8 +4,8 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
-import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.network.server.lobby.LobbyManager;
+import it.polimi.ingsw.util.printer.ColorPrinter;
 
 import java.util.Map;
 import java.util.Queue;
@@ -56,11 +56,6 @@ public class CommunicationHub {
     private final int CHECK_PERIOD = 5;
 
     /**
-     * The {@link Console} used to print any kind of errors that may occur during the client execution.
-     */
-    private final Console console = Console.getInstance();
-
-    /**
      * This is the only constructor. It creates a new {@code CommunicationHub} and the relative connection check task.
      */
     private CommunicationHub() {
@@ -72,31 +67,31 @@ public class CommunicationHub {
             for (Player player : this.players) {
                 if (player.isConnected()) {
                     try {
-                        this.console.mexS(("message " + ping.getType().toString() + " sent to Client \"" + player.getName() + "\""));
+                        ColorPrinter.mexS(("message " + ping.getType().toString() + " sent to Client \"" + player.getName() + "\""));
                         player.sendMessage(ping);
                     } catch (ConnectionException ignored) {
-                        this.console.err("Client \"" + player.getName() + "\" lost connection, logging out from his lobby...");
+                        ColorPrinter.err("Client \"" + player.getName() + "\" lost connection, logging out from his lobby...");
                         try {
                             try {
                                 String lobbyName = this.lobbyManager.getLobbyNameByPlayer(player);
                                 this.lobbyManager.remove(lobbyName, player);
-                                this.console.log("Client \"" + player.getName() + "\" successfully logged out from Lobby \"" + lobbyName + "\"");
+                                ColorPrinter.log("Client \"" + player.getName() + "\" successfully logged out from Lobby \"" + lobbyName + "\"");
 
                                 this.lobbyManager.notifyOpponentsUpdate(lobbyName);
                             } catch (LobbyNotFoundException e) {
-                                this.console.log(e.getMessage());
+                                ColorPrinter.log(e.getMessage());
                             } catch (PlayerNotFoundException | LobbyEmptyException e) {
                                 e.printStackTrace();
-                                //this.console.err(e.getMessage());
+                                //ColorPrinter.err(e.getMessage());
                             }
-                            this.console.log("unregistering Client \"" + player.getName() + "\"...");
+                            ColorPrinter.log("unregistering Client \"" + player.getName() + "\"...");
                             this.unregister(player);
 
                         } catch (ClientNotRegisteredException e) {
                             e.printStackTrace();
-                            //this.console.err(e.getMessage());
+                            //ColorPrinter.err(e.getMessage());
                         }
-                        this.console.log("Client \"" + player.getName() + "\" successfully unregistered");
+                        ColorPrinter.log("Client \"" + player.getName() + "\" successfully unregistered");
                     }
                 }
             }
@@ -191,7 +186,7 @@ public class CommunicationHub {
      * @see MessageType
      */
     public synchronized void handleMessage(NetworkMessage message) {
-        this.console.mexC("Message " + message.getType().toString() + " received from Client \"" + message.getAuthor() + "\"");
+        ColorPrinter.mexC("Message " + message.getType().toString() + " received from Client \"" + message.getAuthor() + "\"");
 
         switch (message.getType()) {
             case REGISTER_REQUEST:
@@ -216,7 +211,7 @@ public class CommunicationHub {
                 this.notifyPlayer(message);
                 break;
             default:
-                this.console.err("Message " + message.getType() + " received from Client \"" + message.getAuthor() + "\": ignored");
+                ColorPrinter.err("Message " + message.getType() + " received from Client \"" + message.getAuthor() + "\": ignored");
         }
     }
 
@@ -230,16 +225,16 @@ public class CommunicationHub {
     private void handleRegistration(NetworkMessage message) {
         Player player = (Player) message.getContent();
 
-        this.console.log("registering Client \"" + player.getName() + "\"...");
+        ColorPrinter.log("registering Client \"" + player.getName() + "\"...");
         try {
             if (!this.register(player))
-                this.console.log("Client \"" + player.getName() + "\" successfully registered");
+                ColorPrinter.log("Client \"" + player.getName() + "\" successfully registered");
             else
-                this.console.log("Client \"" + player.getName() + "\" already found in server, rejoin successful");
+                ColorPrinter.log("Client \"" + player.getName() + "\" already found in server, rejoin successful");
             message = NetworkMessage.simpleServerMessage(MessageType.REGISTER_SUCCESS);
         } catch (ClientAlreadyRegisteredException e) {
             message = NetworkMessage.simpleServerMessage(MessageType.CLIENT_ALREADY_REGISTERED_ERROR);
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
         }
         sendMessage(player, message);
     }
@@ -258,18 +253,18 @@ public class CommunicationHub {
             player = (this.getPlayerByName(message.getAuthor()));
         } catch (PlayerNotFoundException e) {
             e.printStackTrace();
-            //this.console.err(e.getMessage());
+            //ColorPrinter.err(e.getMessage());
             return;
         }
 
-        this.console.log("unregistering Client \"" + player.getName() + "\"...");
+        ColorPrinter.log("unregistering Client \"" + player.getName() + "\"...");
         try {
             this.unregister(player);
             message = NetworkMessage.simpleServerMessage(MessageType.UNREGISTER_SUCCESS);
-            this.console.log("Client \"" + player.getName() + "\" successfully unregistered");
+            ColorPrinter.log("Client \"" + player.getName() + "\" successfully unregistered");
         } catch (ClientNotRegisteredException e) {
             message = NetworkMessage.simpleServerMessage(MessageType.CLIENT_NOT_REGISTERED_ERROR);
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
         }
         sendMessage(player, message);
     }
@@ -288,7 +283,7 @@ public class CommunicationHub {
 
             sendMessage(player, NetworkMessage.completeServerMessage(MessageType.LOBBY_LIST_UPDATE_RESPONSE, lobbies));
         } catch (PlayerNotFoundException e) {
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
         }
     }
 
@@ -308,39 +303,39 @@ public class CommunicationHub {
         try {
             player = (this.getPlayerByName(message.getAuthor()));
         } catch (PlayerNotFoundException e) {
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             return;
         }
 
         try {
             this.lobbyManager.newLobby(lobbyName, lobbyPassword);
-            this.console.log("Client \"" + message.getAuthor() + "\" created new Lobby \"" + lobbyName + "\" with password \"" + lobbyPassword + "\"");
+            ColorPrinter.log("Client \"" + message.getAuthor() + "\" created new Lobby \"" + lobbyName + "\" with password \"" + lobbyPassword + "\"");
 
             try {
                 this.lobbyManager.add(lobbyName, player, lobbyPassword);
 
-                this.console.log("Client \"" + message.getAuthor() + "\" logged into Lobby \"" + lobbyName + "\"");
+                ColorPrinter.log("Client \"" + message.getAuthor() + "\" logged into Lobby \"" + lobbyName + "\"");
                 sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.LOBBY_CREATE_SUCCESS));
 
                 this.sendOpponentsUpdate(player);
             } catch (LobbyNotFoundException e) {
-                this.console.err(e.getMessage());
+                ColorPrinter.err(e.getMessage());
                 sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.LOBBY_NOT_FOUND_ERROR));
             } catch (LobbyFullException e) {
-                this.console.err(e.getMessage());
+                ColorPrinter.err(e.getMessage());
                 sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.LOBBY_FULL_ERROR));
             } catch (PlayerAlreadyAddedException e) {
-                this.console.err(e.getMessage());
+                ColorPrinter.err(e.getMessage());
                 sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.PLAYER_ALREADY_ADDED_ERROR));
             } catch (InvalidPasswordException e) {
-                this.console.err(e.getMessage());
+                ColorPrinter.err(e.getMessage());
                 sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.PASSWORD_NOT_VALID_ERROR));
             } catch (GameAlreadyStartedException e) {
-                this.console.err(e.getMessage());
+                ColorPrinter.err(e.getMessage());
                 sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.GAME_ALREADY_STARTED_ERROR));
             }
         } catch (LobbyAlreadyExistsException e) {
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.LOBBY_ALREADY_EXISTS_ERROR));
         }
     }
@@ -361,32 +356,32 @@ public class CommunicationHub {
         try {
             player = this.getPlayerByName(message.getAuthor());
         } catch (PlayerNotFoundException e) {
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             return;
         }
 
         try {
             this.lobbyManager.add(lobbyName, player, lobbyPassword);
-            this.console.log("Client \"" + message.getAuthor() + "\" logged into Lobby \"" + lobbyName + "\"");
+            ColorPrinter.log("Client \"" + message.getAuthor() + "\" logged into Lobby \"" + lobbyName + "\"");
 
             sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.LOBBY_LOGIN_SUCCESS));
 
             this.sendOpponentsUpdate(player);
             this.sendTimerUpdate(player);
         } catch (LobbyNotFoundException e) {
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.LOBBY_NOT_FOUND_ERROR));
         } catch (LobbyFullException e) {
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.LOBBY_FULL_ERROR));
         } catch (PlayerAlreadyAddedException e) {
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.PLAYER_ALREADY_ADDED_ERROR));
         } catch (InvalidPasswordException e) {
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.PASSWORD_NOT_VALID_ERROR));
         } catch (GameAlreadyStartedException e) {
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.GAME_ALREADY_STARTED_ERROR));
         }
     }
@@ -405,27 +400,27 @@ public class CommunicationHub {
         try {
             player = this.getPlayerByName(message.getAuthor());
         } catch (PlayerNotFoundException e) {
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             return;
         }
         player.notifyDisconnected(); //to stop the Player from waiting a message while nextMessage() is called.
 
-        this.console.log("logging Client \"" + player.getName() + "\" out of Lobby \"" + lobbyName + "\"...");
+        ColorPrinter.log("logging Client \"" + player.getName() + "\" out of Lobby \"" + lobbyName + "\"...");
         try {
             this.lobbyManager.remove(lobbyName, player);
 
             sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.LOBBY_LOGOUT_SUCCESS));
-            this.console.log("Client \"" + player.getName() + "\" successfully log out of Lobby \"" + lobbyName + "\"");
+            ColorPrinter.log("Client \"" + player.getName() + "\" successfully log out of Lobby \"" + lobbyName + "\"");
 
             this.sendOpponentsUpdate(player);
         } catch (LobbyNotFoundException e) {
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.LOBBY_NOT_FOUND_ERROR));
         } catch (PlayerNotFoundException e) {
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.PLAYER_NOT_FOUND_ERROR));
         } catch (LobbyEmptyException e) {
-            this.console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             sendMessage(player, NetworkMessage.simpleServerMessage(MessageType.LOBBY_EMPTY_ERROR));
         }
     }
@@ -440,7 +435,7 @@ public class CommunicationHub {
         try {
             this.lobbyManager.notifyOpponentsUpdate(this.lobbyManager.getLobbyNameByPlayer(player));
         } catch (LobbyNotFoundException | PlayerNotFoundException e) {
-            //this.console.err(e.getMessage());
+            //ColorPrinter.err(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -449,7 +444,7 @@ public class CommunicationHub {
         try {
             this.lobbyManager.notifyTimeUpdate(this.lobbyManager.getLobbyNameByPlayer(player));
         } catch (LobbyNotFoundException | PlayerNotFoundException e) {
-            //this.console.err(e.getMessage());
+            //ColorPrinter.err(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -468,20 +463,20 @@ public class CommunicationHub {
             player = this.getPlayerByName(message.getAuthor());
         } catch (PlayerNotFoundException e) {
             e.printStackTrace();
-            //this.console.err(e.getMessage());
+            //ColorPrinter.err(e.getMessage());
             return;
         }
         player.notifyReceived(message);
-        this.console.mexS("message " + message.getType() + " forwarded to Player \"" + player.getName() + "\"");
+        ColorPrinter.mexS("message " + message.getType() + " forwarded to Player \"" + player.getName() + "\"");
     }
 
     private void sendMessage(Player player, NetworkMessage message) {
         try {
             player.sendMessage(message);
-            this.console.mexS("message " + message.getType() + " sent to Client \"" + player.getName() + "\"");
+            ColorPrinter.mexS("message " + message.getType() + " sent to Client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
             e.printStackTrace();
-            //this.console.err(e.getClass() + ": " + e.getMessage());
+            //ColorPrinter.err(e.getClass() + ": " + e.getMessage());
         }
     }
 }

@@ -5,11 +5,10 @@ import it.polimi.ingsw.network.common.deliverable.*;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
-import it.polimi.ingsw.util.Color;
+import it.polimi.ingsw.util.printer.Color;
+import it.polimi.ingsw.util.printer.ColorPrinter;
 import it.polimi.ingsw.util.Dispatcher;
-import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.view.remote.GraphicalInterface;
-import org.fusesource.jansi.AnsiConsole;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -17,6 +16,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.fusesource.jansi.AnsiConsole;
 
 @SuppressWarnings({"unchecked", "FieldCanBeLocal"})
 public class CLI implements GraphicalInterface {
@@ -32,10 +33,7 @@ public class CLI implements GraphicalInterface {
 
     private CommunicationHandler communicationHandler;
 
-    private final Console console;
-
     public CLI() {
-        console = Console.getInstance();
         AnsiConsole.systemInstall();
     }
 
@@ -63,30 +61,32 @@ public class CLI implements GraphicalInterface {
 
         if (choice.equals("n")) //Client wants to create a new Lobby
             initLobby();
-        else { //Client wants to join an existing Lobby (choice is the lobby name)
+        else //Client wants to join an existing Lobby (choice is the lobby name)
             loginToLobby(choice);
-        }
 
         //display the pre-game information: timer countdown and opponents list
         printPreGameInfo();
 
-        //TODO: note: from here client is registered, logged into a specific Lobby and the game is starting
-
+        //here the game starts //TODO determine exit conditions
         while (true) {
             try {
                 Deliverable deliverable = communicationHandler.nextDeliverable();
                 if (deliverable != null)
                     manageArrivals(deliverable);
             } catch (ConnectionException e) {
+                e.printStackTrace();
                 System.exit(-1);
             }
         }
+
+        /*logoutFromLobby();
+        unregister();*/
     }
 
     private void manageArrivals(Deliverable deliverable) throws ConnectionException {
         switch (deliverable.getType()) {
             case INFO:
-                ColorPrinter.print(deliverable.getMessage());
+                ColorPrinter.println(deliverable.getMessage());
                 break;
             case DUAL:
                 communicationHandler.deliver(new Response(Dispatcher.requestBoolean(deliverable.getMessage()) ? 1 : 0));
@@ -96,7 +96,7 @@ public class CLI implements GraphicalInterface {
                 break;
             case ASSETS:
                 ColorPrinter.print(((Assets) deliverable).unpack());
-                ColorPrinter.print(Color.ANSI_RESET);
+                ColorPrinter.println(Color.RESET);
             default:
                 break;
         }
@@ -122,11 +122,11 @@ public class CLI implements GraphicalInterface {
                 communicationHandler.register(username);
                 valid = true;
             } catch (ConnectionException e) {
-                //console.err("connection to the server is lost, cause: " + e.getMessage());
+                //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
                 e.printStackTrace();
                 System.exit(-1);
             } catch (ClientAlreadyRegisteredException e) {
-                console.err(e.getMessage());
+                ColorPrinter.err(e.getMessage());
             }
         } while (!valid);
     }
@@ -136,7 +136,7 @@ public class CLI implements GraphicalInterface {
         try {
             communicationHandler.unregister();
         } catch (ConnectionException | ClientNotRegisteredException e) {
-            //console.err("connection to the server is lost, cause: " + e.getMessage());
+            //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
             e.printStackTrace();
             System.exit(-1);
         }
@@ -145,7 +145,7 @@ public class CLI implements GraphicalInterface {
 
     //update the Lobby list and printOpponents them
     private void startLobbyUpdateAndPrint() {
-        //console.err("connection to the server is lost, cause: " + e.getMessage());
+        //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
         Runnable updateTask = () -> {
 
             Map<String, String> lobbyInfo;
@@ -153,7 +153,7 @@ public class CLI implements GraphicalInterface {
             try {
                 lobbyInfo = communicationHandler.requestLobbyUpdate();
             } catch (ConnectionException e) {
-                //console.err("connection to the server is lost, cause: " + e.getMessage());
+                //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
                 e.printStackTrace();
                 System.exit(-1);
                 return;
@@ -184,13 +184,13 @@ public class CLI implements GraphicalInterface {
             try {
                 communicationHandler.initLobby(lobbyName, lobbyPassword);
                 valid = true;
-                console.tinyPrintln("Lobby creation success!\n");
+                ColorPrinter.println("Lobby creation success!\n");
             } catch (ConnectionException e) {
-                //console.err("connection to the server is lost, cause: " + e.getMessage());
+                //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
                 e.printStackTrace();
                 System.exit(-1);
             } catch (LobbyAlreadyExistsException e) {
-                console.err(e.getMessage());
+                ColorPrinter.err(e.getMessage());
             }
         } while (!valid);
     }
@@ -201,16 +201,16 @@ public class CLI implements GraphicalInterface {
 
         try {
             communicationHandler.login(lobbyName, lobbyPassword);
-            console.tinyPrintln("Lobby login success!");
+            ColorPrinter.println("Lobby login success!");
         } catch (ConnectionException e) {
-            //console.err("connection to the server is lost, cause: " + e.getMessage());
+            //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
             e.printStackTrace();
             System.exit(-1);
         } catch (LobbyNotFoundException | LobbyFullException | InvalidPasswordException | PlayerAlreadyAddedException e) {
-            console.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             System.exit(-1);
         } catch (GameAlreadyStartedException e) {
-            console.err("can't login, game already started");
+            ColorPrinter.err("can't login, game already started");
             System.exit(-1);
         }
     }
@@ -218,37 +218,18 @@ public class CLI implements GraphicalInterface {
     private void logoutFromLobby() {
         try {
             communicationHandler.logout();
-            console.tinyPrintln("Lobby logout success!");
+            ColorPrinter.println("Lobby logout success!");
         } catch (ConnectionException e) {
-            //console.err("connection to the server is lost, cause: " + e.getMessage());
+            //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
             e.printStackTrace();
             System.exit(-1);
         }
     }
 
-    //ask the user to perform an action (for now 0 = logout is the only one)
-    private int requestAction() {
-        int action = 0;
-        boolean valid = false;
-        console.clear();
-        console.tinyPrintln("Choose an action:\n");
-        console.tinyPrintln("[0] Logout\n");
-        do {
-            console.tinyPrint("Action: ");
-            try {
-                action = Integer.parseInt(in());
-                if (action == 0)
-                    valid = true;
-            } catch (NumberFormatException ignored) {
-            }
-        } while (!valid);
-        return action;
-    }
-
     private String requestUsername() {
         String name;
         do {
-            console.tinyPrint("Username: ");
+            ColorPrinter.print("Username: ");
             name = in();
         } while (name == null || name.isBlank());
         return name;
@@ -258,7 +239,7 @@ public class CLI implements GraphicalInterface {
     private String requestLobbyName() {
         String name;
         do {
-            console.tinyPrint("Lobby name: ");
+            ColorPrinter.print("Lobby name: ");
             name = in();
         } while (name == null || name.isBlank());
         return name;
@@ -266,7 +247,7 @@ public class CLI implements GraphicalInterface {
 
     //request a Lobby password
     private String requestLobbyPassword() {
-        console.tinyPrint("Password: ");
+        ColorPrinter.print("Password: ");
         return in();
     }
 
@@ -275,7 +256,7 @@ public class CLI implements GraphicalInterface {
         String choice; //the Client choice
         boolean valid = false;
         do {
-            console.tinyPrint("Choice: ");
+            ColorPrinter.print("Choice: ");
             choice = in();
 
             if (choice.equals("n")) {
@@ -295,23 +276,23 @@ public class CLI implements GraphicalInterface {
 
     //prints a welcome screen
     private void printWelcomeScreen() {
-        console.clear();
-        console.tinyPrintln("Welcome to Adrenaline !");
+        ColorPrinter.clear();
+        ColorPrinter.println("Welcome to Adrenaline !");
     }
 
     //printOpponents the given Lobbies and some other commands
     private void printAll(Map<String, String> lobbies) {
-        console.clear();
+        ColorPrinter.clear();
 
-        console.tinyPrintln("Welcome to Adrenaline, " + communicationHandler.getUsername() + " !");
-        console.tinyPrintln("List of all Lobbies:\n");
+        ColorPrinter.println("Welcome to Adrenaline, " + communicationHandler.getUsername() + " !");
+        ColorPrinter.println("List of all Lobbies:\n");
 
         int i = 0;
         for (Map.Entry<String, String> lobby : lobbies.entrySet())
-            console.tinyPrintln("[" + i++ + "] " + lobby.getValue() + " " + lobby.getKey());
+            ColorPrinter.println("[" + i++ + "] " + lobby.getValue() + " " + lobby.getKey());
 
-        console.tinyPrintln("[n] to create a new lobby\n");
-        console.tinyPrint("Choice: ");
+        ColorPrinter.println("[n] to create a new lobby\n");
+        ColorPrinter.print("Choice: ");
     }
 
     private void printPreGameInfo() {
@@ -320,7 +301,7 @@ public class CLI implements GraphicalInterface {
             try {
                 message = communicationHandler.getPreGameInfoUpdate();
             } catch (ConnectionException e) {
-                //console.err(e.getMessage());
+                //ColorPrinter.err(e.getMessage());
                 e.printStackTrace();
                 System.exit(-1);
                 return;
@@ -353,7 +334,7 @@ public class CLI implements GraphicalInterface {
             printOpponents();
 
             if (timeLeft.decrementAndGet() >= 0) {
-                console.tinyPrintln("Game starts in " + timeLeft.get());
+                ColorPrinter.println("Game starts in " + timeLeft.get());
             } else {
                 stopCountDownPrint();
             }
@@ -368,20 +349,20 @@ public class CLI implements GraphicalInterface {
 
     private void printPauseMessage() {
         printOpponents();
-        console.tinyPrintln("Too many players left the lobby, countdown suspended.");
+        ColorPrinter.println("Too many players left the lobby, countdown suspended.");
         executor = Executors.newSingleThreadScheduledExecutor();
     }
 
     private void printOpponents() {
-        console.clear();
+        ColorPrinter.clear();
 
         if (opponents.size() == 0)
-            console.tinyPrintln("Waiting for opponents to join...");
+            ColorPrinter.println("Waiting for opponents to join...");
         else {
-            console.tinyPrintln("Your opponents for this game:\n");
-            opponents.forEach(console::tinyPrintln);
+            ColorPrinter.println("Your opponents for this game:\n");
+            opponents.forEach(ColorPrinter::println);
         }
 
-        console.tinyPrintln("");
+        ColorPrinter.println("");
     }
 }

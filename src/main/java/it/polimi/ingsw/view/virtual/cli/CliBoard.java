@@ -7,11 +7,12 @@ import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.Weapon;
-import it.polimi.ingsw.util.Color;
-import it.polimi.ingsw.util.ColoredString;
+import it.polimi.ingsw.util.printer.Color;
+import it.polimi.ingsw.util.printer.ColoredString;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static it.polimi.ingsw.util.UTF.*;
@@ -47,7 +48,7 @@ public abstract class CliBoard {
         for(int i = 1; i <= 4; i ++)
             buildWallCounterclockwise(cellX, cellY, i, walls.get(i - 1), cell.getRoom().getColor());
 
-        List<ColoredString> cellName = Arrays.asList(new ColoredString("Cell " + cell.getId(), null));
+        List<ColoredString> cellName = Collections.singletonList(new ColoredString("Cell " + cell.getId(), null));
         CliCommon.write(top + cellHeight * cellY + 1, 2 + cellWidth * cellX, cellName);
 
         if(cell.isSpawnPoint()) {
@@ -71,7 +72,7 @@ public abstract class CliBoard {
             String playerAnsiColor = CliCommon.toAnsiColor(p);
             List<ColoredString> playerToken = new ArrayList<>();
             playerToken.add(new ColoredString(block + " ", playerAnsiColor));
-            playerToken.add(new ColoredString(CliCommon.nameOf(p), Color.ANSI_RESET));
+            playerToken.add(new ColoredString(CliCommon.nameOf(p), Color.RESET));
             CliCommon.write(top + cellHeight * cellY + row, 2 + cellWidth * cellX, playerToken);
             row --;
         }
