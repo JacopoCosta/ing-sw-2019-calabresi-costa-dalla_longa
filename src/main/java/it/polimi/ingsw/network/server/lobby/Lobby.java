@@ -67,6 +67,8 @@ public class Lobby implements Observer {
      */
     private final CountDownTimer timer;
 
+    private boolean timerStarted;
+
     /**
      * The {@link List} containing all of the {@link Player}s currently logged into the {@code Lobby}.
      * This is a real time up-to-date {@link Player}s list until the {@link Game} starts. After that the list became
@@ -135,6 +137,7 @@ public class Lobby implements Observer {
         this.previousPlayersAmount = 0;
         this.timeMargin = this.WAITING_TIME_MARGIN;
         this.timer = new CountDownTimer(this.WAITING_TIME_FULL);
+        this.timerStarted = false;
         this.timer.addObserver(this);
 
         this.console = Console.getInstance();
@@ -202,16 +205,16 @@ public class Lobby implements Observer {
      * and reconnects after a certain amount of time.
      *
      * <p>The insertion criteria (that applies before the {@link Game} starts) are:
-     *      1 - there must be a space left in the {@code Lobby}. This is true if {@code players.size()} is less than
-     *          {@link #MAX_PLAYERS}.
-     *      2 - the {@code player} can't be {@code null}.
-     *      3 - the {@code Lobby} can't contain another instance of {@link Player} {@code p}, so that {@code player.equals(p)}.
-     *      4- ether only one of the following conditions must be satisfied:
-     *          a - the given {@code password} must be the same a {@code this.password}, so that
-     *              {@code password.equals(this.password)}.
-     *          b - both the given {@code password} and {@code this.password} must be null simultaneously.
-     *          c - {@code this.password} must be either {@code null} or such that {@code this.password.isEmpty()} and
-     *              {@code password } must be either {@code null} or such that {@code password.isBlank()}.
+     * 1 - there must be a space left in the {@code Lobby}. This is true if {@code players.size()} is less than
+     * {@link #MAX_PLAYERS}.
+     * 2 - the {@code player} can't be {@code null}.
+     * 3 - the {@code Lobby} can't contain another instance of {@link Player} {@code p}, so that {@code player.equals(p)}.
+     * 4- ether only one of the following conditions must be satisfied:
+     * a - the given {@code password} must be the same a {@code this.password}, so that
+     * {@code password.equals(this.password)}.
+     * b - both the given {@code password} and {@code this.password} must be null simultaneously.
+     * c - {@code this.password} must be either {@code null} or such that {@code this.password.isEmpty()} and
+     * {@code password } must be either {@code null} or such that {@code password.isBlank()}.
      *
      * @param player   the {@link Player} to insert into the {@code Lobby}.
      * @param password the authentication password to allow {@code player} to be inserted into this {@code Lobby}.
@@ -312,6 +315,7 @@ public class Lobby implements Observer {
             // if, instead, there were only 2 players, there are now enough players for a game, so the timer shall start.
             else {
                 this.timer.start();
+                this.timerStarted = true;
             }
         }
 
@@ -320,6 +324,7 @@ public class Lobby implements Observer {
         else if (this.players.size() < Game.MINIMUM_PLAYER_COUNT && this.previousPlayersAmount >= Game.MINIMUM_PLAYER_COUNT) {
             this.timer.stop();
             this.timer.setTime(this.WAITING_TIME_FULL);
+            this.timerStarted = false;
         }
     }
 
@@ -353,6 +358,19 @@ public class Lobby implements Observer {
                     } catch (ConnectionException ignored) {
                     }
                 });
+    }
+
+    void notifyTimeUpdate() {
+        if (timerStarted)
+            this.players.stream()
+                    .filter(VirtualClient::isConnected)
+                    .forEach(player -> {
+                        try {
+                            player.sendMessage(NetworkMessage.completeServerMessage(MessageType.COUNTDOWN_UPDATE, this.timer.getTime()));
+                            this.console.mexS("message " + MessageType.COUNTDOWN_UPDATE + " sent to client \"" + player.getName() + "\"");
+                        } catch (ConnectionException ignored) {
+                        }
+                    });
     }
 
     /**

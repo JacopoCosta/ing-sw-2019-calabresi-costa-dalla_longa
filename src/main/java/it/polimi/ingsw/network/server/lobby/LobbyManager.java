@@ -167,9 +167,13 @@ public class LobbyManager {
      * Notifies the {@link Player}s in the {@link Lobby} corresponding to the given {@code lobbyName} about the update in his opponents list.
      *
      * @param lobbyName the {@link Lobby} whose {@link Player}s have to be notified.
-     * @throws LobbyNotFoundException  if no {@link Lobby} containing the given {@code player }can be found.
+     * @throws LobbyNotFoundException if no {@link Lobby} containing the given {@code player }can be found.
      */
     public void notifyOpponentsUpdate(String lobbyName) throws LobbyNotFoundException {
         this.getLobbyByName(lobbyName).notifyOpponentUpdate();
+    }
+
+    public void notifyTimeUpdate(String lobbyName) throws LobbyNotFoundException {
+        this.getLobbyByName(lobbyName).notifyTimeUpdate();
     }
 }

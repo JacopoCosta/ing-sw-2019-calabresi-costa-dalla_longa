@@ -73,7 +73,7 @@ public class CLI implements GraphicalInterface {
         while (true) {
             try {
                 Deliverable deliverable = communicationHandler.nextDeliverable();
-                if(deliverable != null)
+                if (deliverable != null)
                     manageArrivals(deliverable);
             } catch (ConnectionException e) {
                 System.exit(-1);
@@ -82,7 +82,7 @@ public class CLI implements GraphicalInterface {
     }
 
     private void manageArrivals(Deliverable deliverable) throws ConnectionException {
-        switch(deliverable.getType()) {
+        switch (deliverable.getType()) {
             case INFO:
                 console.tinyPrintln(deliverable.getMessage());
                 break;
@@ -322,7 +322,6 @@ public class CLI implements GraphicalInterface {
 
     private void printPreGameInfo() {
         NetworkMessage message;
-
         do {
             try {
                 message = communicationHandler.getPreGameInfoUpdate();
@@ -344,6 +343,7 @@ public class CLI implements GraphicalInterface {
                 case OPPONENTS_LIST_UPDATE:
                     opponents = (List<String>) message.getContent();
                     printOpponents();
+                    break;
                 default:
                     break;
             }
@@ -352,25 +352,30 @@ public class CLI implements GraphicalInterface {
     }
 
     private void printCountDown(int startingSeconds) {
+        futureUpdate.cancel(true);
+
         AtomicInteger timeLeft = new AtomicInteger(startingSeconds);
         Runnable printCountDownTask = () -> {
             printOpponents();
 
             if (timeLeft.decrementAndGet() >= 0) {
                 console.tinyPrintln("Game starts in " + timeLeft.get());
-            } else
+            } else {
                 stopCountDownPrint();
+            }
         };
         futureUpdate = executor.scheduleAtFixedRate(printCountDownTask, 0, 1, TimeUnit.SECONDS);
     }
 
     private void stopCountDownPrint() {
         futureUpdate.cancel(true);
+        executor.shutdown();
     }
 
     private void printPauseMessage() {
         printOpponents();
         console.tinyPrintln("Too many players left the lobby, countdown suspended.");
+        executor = Executors.newSingleThreadScheduledExecutor();
     }
 
     private void printOpponents() {

@@ -425,6 +425,7 @@ public class CommunicationHub {
             //this.console.err(e.getClass() + ": " + e.getMessage());
         }
         this.sendOpponentsUpdate(player);
+        this.sendTimerUpdate(player);
     }
 
     /**
@@ -484,9 +485,16 @@ public class CommunicationHub {
         } catch (LobbyNotFoundException | PlayerNotFoundException e) {
             //this.console.err(e.getMessage());
             e.printStackTrace();
-            return;
         }
-        this.console.mexS("message " + MessageType.OPPONENTS_LIST_UPDATE + " sent to Client \"" + player.getName() + "\"");
+    }
+
+    private void sendTimerUpdate(Player player){
+        try {
+            this.lobbyManager.notifyTimeUpdate(this.lobbyManager.getLobbyNameByPlayer(player));
+        } catch (LobbyNotFoundException | PlayerNotFoundException e) {
+            //this.console.err(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
