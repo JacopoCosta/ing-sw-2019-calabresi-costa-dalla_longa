@@ -32,7 +32,7 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      * Clears the Windows command prompt by executing the appropriate command.
      */
     @Override
-    public synchronized void clear() {
+    public void clear() {
         this.execute("clear");
     }
 
@@ -46,7 +46,7 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      * @param ansiMessage the ANSI message to be printed.
      */
     @Override
-    public synchronized void ANSIPrint(String ansiMessage) {
+    public void ANSIPrint(String ansiMessage) {
         this.execute("write-host \"" + ansiMessage + "\" -nonewline");
     }
 }

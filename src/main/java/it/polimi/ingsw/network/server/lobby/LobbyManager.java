@@ -73,7 +73,7 @@ public class LobbyManager {
      * @throws LobbyAlreadyExistsException if another {@link Lobby} having the same {@code lobbyName} is already present
      *                                     into {@link #lobbies} list.
      */
-    public synchronized void newLobby(String lobbyName, String password) throws LobbyAlreadyExistsException {
+    public void newLobby(String lobbyName, String password) throws LobbyAlreadyExistsException {
         if (lobbyName == null)
             throw new NullPointerException("Lobby name is null");
 
@@ -99,7 +99,7 @@ public class LobbyManager {
      * @throws PlayerAlreadyAddedException if another instance of {@link Player} has been already added to the chosen {@link Lobby}.
      * @throws InvalidPasswordException    if the given {@code password} does not correspond to the password for the chosen {@link Lobby}.
      */
-    public synchronized void add(String lobbyName, Player player, String password)
+    public void add(String lobbyName, Player player, String password)
             throws LobbyNotFoundException, LobbyFullException, PlayerAlreadyAddedException, InvalidPasswordException, GameAlreadyStartedException {
         if (lobbyName == null)
             throw new NullPointerException("Lobby name is null");
@@ -117,7 +117,7 @@ public class LobbyManager {
      * @throws PlayerNotFoundException if the given {@link Player} can't be found into the chosen {@link Lobby}.
      * @throws LobbyEmptyException     if an attempt to remove a {@link Player} from an empty {@link Lobby} has been made.
      */
-    public synchronized void remove(String lobbyName, Player player)
+    public void remove(String lobbyName, Player player)
             throws LobbyNotFoundException, PlayerNotFoundException, LobbyEmptyException {
         if (lobbyName == null)
             throw new NullPointerException("Lobby name is null");
@@ -142,7 +142,7 @@ public class LobbyManager {
      * @return the name of the {@link Lobby} containing the given {@link Player}.
      * @throws PlayerNotFoundException if the given {@link Player} can't be found into the chosen {@link Lobby}.
      */
-    public synchronized String getLobbyNameByPlayer(Player player) throws PlayerNotFoundException {
+    public String getLobbyNameByPlayer(Player player) throws PlayerNotFoundException {
         for (Lobby lobby : this.lobbies)
             if (lobby.contains(player))
                 return lobby.getName();
