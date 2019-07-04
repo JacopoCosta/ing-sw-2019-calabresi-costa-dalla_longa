@@ -11,7 +11,7 @@
 | Complete rules | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
 | Socket | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
 | RMI | [![YELLOW](https://placehold.it/15/ffdd00/ffdd00)](#) |
-| GUI | [![YELLOW](https://placehold.it/15/ffdd00/ffdd00)](#) |
+| GUI | [![YELLOW](http://placehold.it/15/BD6738E6/BD6738E6)](#) |
 | CLI | [![YELLOW](https://placehold.it/15/ffdd00/ffdd00)](#) |
 | Multiple games | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
 | Persistence | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
