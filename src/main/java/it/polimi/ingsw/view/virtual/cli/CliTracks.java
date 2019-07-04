@@ -17,7 +17,7 @@ public abstract class CliTracks {
 
     private static ColoredString[][] grid;
 
-    public static ColoredString[][] print(Game game) {
+    public static ColoredString[][] build(Game game) {
         List<Player> doubleKillers = game.getBoard().getDoubleKillers();
         grid = new ColoredString[trackHeight][trackWidth + 3 + 2 * doubleKillers.size()];
 

@@ -1,6 +1,8 @@
 package it.polimi.ingsw.util;
 
-public class ColoredString {
+import java.io.Serializable;
+
+public class ColoredString implements Serializable {
     private String content;
     private String ansiColor;
 

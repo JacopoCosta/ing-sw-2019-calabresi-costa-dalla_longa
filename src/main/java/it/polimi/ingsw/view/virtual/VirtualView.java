@@ -24,6 +24,9 @@ import it.polimi.ingsw.network.common.deliverable.*;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.network.server.VirtualClient;
 import it.polimi.ingsw.view.remote.Dispatcher;
+import it.polimi.ingsw.view.virtual.cli.CliBoard;
+import it.polimi.ingsw.view.virtual.cli.CliToaster;
+import it.polimi.ingsw.view.virtual.cli.CliTracks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,8 +158,18 @@ public class VirtualView {
         }
     }
 
-    private void updateView() {
-
+    private void updateView(Player player) throws AbortedTurnException {
+        try {
+            send(player, new Assets(
+                    DeliverableEvent.UPDATE_VIEW,
+                    CliTracks.build(game),
+                    CliBoard.build(game.getBoard()),
+                    CliToaster.buildOpponents(player),
+                    CliToaster.buildOwn(player)
+            ));
+        } catch (AbortedTurnException e) {
+            throw new AbortedTurnException("");
+        }
     }
 
     /**
@@ -165,6 +178,8 @@ public class VirtualView {
      * @throws AbortedTurnException when the player loses connection. This will prematurely end, and skip, the player's turn.
      */
     public void spawn(Player subject) throws AbortedTurnException {
+
+        updateView(subject);
 
         List<String> options = subject.getPowerUps()
                 .stream()

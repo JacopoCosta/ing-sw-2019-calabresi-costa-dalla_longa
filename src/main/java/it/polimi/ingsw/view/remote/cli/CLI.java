@@ -5,6 +5,7 @@ import it.polimi.ingsw.network.common.deliverable.*;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
+import it.polimi.ingsw.util.Color;
 import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.view.remote.Dispatcher;
 import it.polimi.ingsw.view.remote.GraphicalInterface;
@@ -71,7 +72,9 @@ public class CLI implements GraphicalInterface {
 
         while (true) {
             try {
-                manageArrivals(communicationHandler.nextDeliverable());
+                Deliverable deliverable = communicationHandler.nextDeliverable();
+                if(deliverable != null)
+                    manageArrivals(deliverable);
             } catch (ConnectionException e) {
                 System.exit(-1);
             }
@@ -91,7 +94,17 @@ public class CLI implements GraphicalInterface {
                 break;
             case ASSETS:
                 console.clear();
-                ConsoleOptimizer.print(((Assets) deliverable).unpack());
+                Assets assets = (Assets) deliverable;
+                console.ANSIPrintln(Color.ANSI_RESET + Assets.getTracksHeader());
+                ConsoleOptimizer.print(assets.getTracks());
+                ConsoleOptimizer.print(assets.getBoard());
+                console.ANSIPrintln(Color.ANSI_RESET + Assets.getOpponentToasterHeader());
+                ConsoleOptimizer.print(assets.getOpponentToasters());
+                console.ANSIPrintln(Color.ANSI_RESET + Assets.getOwnToasterHeader());
+                ConsoleOptimizer.print(assets.getOwnToaster());
+                console.ANSIPrintln(Color.ANSI_RESET);
+            default:
+                break;
         }
     }
 

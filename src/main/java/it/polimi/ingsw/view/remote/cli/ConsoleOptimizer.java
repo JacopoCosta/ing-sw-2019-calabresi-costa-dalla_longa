@@ -57,14 +57,11 @@ public abstract class ConsoleOptimizer {
     }
 
     private static void printAccumulatedLines(List<List<ColoredString>> lines) {
-        int tally = 0;
         for(List<ColoredString> line : lines) {
             for(ColoredString cs : line) {
-                tally ++;
                 console.ANSIPrint(cs.color() + cs.content());
             }
             console.tinyPrintln("");
         }
-        System.out.println("called ANSIprint " + tally + " times");
     }
 }

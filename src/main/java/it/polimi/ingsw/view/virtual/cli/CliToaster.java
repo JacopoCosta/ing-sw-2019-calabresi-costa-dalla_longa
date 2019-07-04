@@ -19,7 +19,7 @@ public abstract class CliToaster {
 
     private static ColoredString[][] toasterField;
 
-    public static ColoredString[][] printOpponents(Player player) {
+    public static ColoredString[][] buildOpponents(Player player) {
         List<Player> opponents = player.getGame()
                 .getParticipants()
                 .stream()
@@ -37,10 +37,11 @@ public abstract class CliToaster {
         return toasterField;
     }
 
-    public static void printSelf(Player player) {
+    public static ColoredString[][] buildOwn(Player player) {
         toasterField = new ColoredString[toasterHeight][toasterWidth];
         writeToaster(0, player);
-        ConsoleOptimizer.print(toasterField);
+
+        return toasterField;
     }
 
     private static void writeToaster(int index, Player player) {

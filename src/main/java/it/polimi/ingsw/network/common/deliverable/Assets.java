@@ -12,27 +12,54 @@ import it.polimi.ingsw.util.ColoredString;
 //  ^ Footnote: IntelliJ's scrubby vocabulary thinks that "unbeknownst" is a typo, but it's not. It's a valid word.
 public class Assets extends Deliverable {
 
-    /**
-     * A field in which to put the body of the {@code Assets} to be sent.
-     */
-    private ColoredString[][] graphicalMatrix;
+    private static final String tracksHeader = "Kills:" + " ".repeat(21) + "Double Kills";
 
-    /**
-     * This is the only constructor.
-     * @param graphicalMatrix the content of the {@code Assets}.
-     */
-    public Assets(ColoredString[][] graphicalMatrix) {
-        super(DeliverableEvent.UPDATE_VIEW);
+    private ColoredString[][] tracks;
+
+    private ColoredString[][] board;
+
+    private static final String opponentToasterHeader = "Your opponents:";
+
+    private ColoredString[][] opponentToasters;
+
+    private static final String ownToasterHeader = "Your situation";
+
+    private ColoredString[][] ownToaster;
+
+    public Assets(DeliverableEvent event, ColoredString[][] tracks, ColoredString[][] board, ColoredString[][] opponentToasters, ColoredString[][] ownToaster) {
+        super(event);
         this.type = DeliverableType.ASSETS;
-        this.graphicalMatrix = graphicalMatrix;
+        this.tracks = tracks;
+        this.board = board;
+        this.opponentToasters = opponentToasters;
+        this.ownToaster = ownToaster;
     }
 
-    /**
-     * Gets the {@code Assets}'s {@link #graphicalMatrix}
-     * @return the object.
-     */
-    public ColoredString[][] unpack() {
-        return graphicalMatrix;
+    public static String getTracksHeader() {
+        return tracksHeader;
     }
 
+    public ColoredString[][] getTracks() {
+        return tracks;
+    }
+
+    public ColoredString[][] getBoard() {
+        return board;
+    }
+
+    public static String getOpponentToasterHeader() {
+        return opponentToasterHeader;
+    }
+
+    public ColoredString[][] getOpponentToasters() {
+        return opponentToasters;
+    }
+
+    public static String getOwnToasterHeader() {
+        return ownToasterHeader;
+    }
+
+    public ColoredString[][] getOwnToaster() {
+        return ownToaster;
+    }
 }
