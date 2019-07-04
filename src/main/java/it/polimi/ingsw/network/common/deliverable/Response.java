@@ -13,13 +13,29 @@ public class Response extends Deliverable {
     private int number;
 
     /**
-     * This is the only constructor.
+     * Whether or not the {@link #number} is valid.
+     */
+    private boolean valid;
+
+    /**
+     * This is constructor produces a valid {@code Response} with the given number.
      * @param number the end user's response.
      */
     public Response(int number) {
         super(DeliverableEvent.RESPONSE);
         this.type = DeliverableType.RESPONSE;
+        this.valid = true;
         this.number = number;
+    }
+
+    /**
+     * This method creates a tainted {@code Response}, with its {@link #valid} flag set to {@code false}.
+     * @return the {@code Response}.
+     */
+    public static Response taint() {
+        Response response = new Response(0);
+        response.valid = false;
+        return response;
     }
 
     /**
@@ -28,5 +44,13 @@ public class Response extends Deliverable {
      */
     public int getNumber() {
         return number;
+    }
+
+    /**
+     * Gets the {@code Response}'s {@link #valid} flag.
+     * @return the flag's value.
+     */
+    public boolean isValid() {
+        return valid;
     }
 }

@@ -89,10 +89,20 @@ public class CLI implements GraphicalInterface {
                 ColorPrinter.println(deliverable.getMessage());
                 break;
             case DUAL:
-                communicationHandler.deliver(new Response(Dispatcher.requestBoolean(deliverable.getMessage()) ? 1 : 0));
+                try {
+                    boolean res = Dispatcher.requestBoolean(deliverable.getMessage());
+                    communicationHandler.deliver(new Response(res ? 1 : 0));
+                } catch (ClientTimeOutException e) {
+                    communicationHandler.deliver(Response.taint());
+                }
                 break;
             case MAPPED:
-                communicationHandler.deliver(new Response(Dispatcher.requestMappedOption(deliverable.getMessage(), ((Mapped) deliverable).getOptions(), ((Mapped) deliverable).getKeys())));
+                try {
+                    int res = Dispatcher.requestMappedOption(deliverable.getMessage(), ((Mapped) deliverable).getOptions(), ((Mapped) deliverable).getKeys());
+                    communicationHandler.deliver(new Response(res));
+                } catch (ClientTimeOutException e) {
+                    communicationHandler.deliver(Response.taint());
+                }
                 break;
             case ASSETS:
                 ColorPrinter.print(((Assets) deliverable).unpack());

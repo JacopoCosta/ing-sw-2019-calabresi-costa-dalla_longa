@@ -186,6 +186,10 @@ public class Game {
         return this.started;
     }
 
+    private void advanceTurn() {
+        this.currentTurnPlayer = (this.currentTurnPlayer + 1) % this.participants.size(); // pass the turn on to the next player
+    }
+
     /**
      * Executes a sequence of internal methods that form one complete turn.
      */
@@ -206,6 +210,13 @@ public class Game {
 
         if (!enoughPlayers && !offlineMode) { // end game if there are not enough participants
             gameOver = true;
+            virtualView.announceInsufficientPlayers();
+            return;
+        }
+
+        if(!subject.isConnected() && !offlineMode) {
+            virtualView.announceDisconnect(subject);
+            advanceTurn();
             return;
         }
 
@@ -219,18 +230,12 @@ public class Game {
                 } // discarding will be part of the respawn mechanic
             });
 
-            if (subject.getDeathCount() == 0) // if subject hasn't died yet -- it's the entry spawn, draw twice
-                board.getPowerUpDeck().smartDraw(true).ifPresent(c -> {
-                    try {
-                        subject.givePowerUp(c);
-                    } catch (FullHandException ignored) {
-                    } // discarding will be part of the respawn mechanic
-                });
-
             try {
                 virtualView.spawn(subject);
             } catch (AbortedTurnException ignored) { // in case of aborted turn, return to the caller
+                subject.discardPowerUp(subject.getPowerUps().get(0)); // also remove a powerUp
                 virtualView.announceDisconnect(subject);
+                advanceTurn();
                 return;
             }
         }
@@ -241,6 +246,7 @@ public class Game {
                 virtualView.usePowerUp(subject);
             } catch (AbortedTurnException e) {
                 virtualView.announceDisconnect(subject);
+                advanceTurn();
                 return;
             }
             List<Execution> options = Execution.getOptionsForPlayer(subject);
@@ -249,6 +255,7 @@ public class Game {
                 choice = virtualView.chooseExecution(subject, options);
             } catch (AbortedTurnException e) {
                 virtualView.announceDisconnect(subject);
+                advanceTurn();
                 return;
             }
 
@@ -270,6 +277,7 @@ public class Game {
                             virtualView.move(subject, validDestinations);
                         } catch (AbortedTurnException e) {
                             virtualView.announceDisconnect(subject);
+                            advanceTurn();
                             return;
                         }
                         break;
@@ -281,6 +289,7 @@ public class Game {
                                 virtualView.grabWeapon(subject);
                             } catch (AbortedTurnException e) {
                                 virtualView.announceDisconnect(subject);
+                                advanceTurn();
                                 return;
                             }
                         } else {
@@ -288,6 +297,7 @@ public class Game {
                                 virtualView.grabAmmo(subject);
                             } catch (AbortedTurnException e) {
                                 virtualView.announceDisconnect(subject);
+                                advanceTurn();
                                 return;
                             }
                         }
@@ -298,6 +308,7 @@ public class Game {
                             virtualView.shoot(subject);
                         } catch (AbortedTurnException e) {
                             virtualView.announceDisconnect(subject);
+                            advanceTurn();
                             return;
                         }
                         break;
@@ -307,6 +318,7 @@ public class Game {
                             virtualView.reload(subject);
                         } catch (AbortedTurnException e) {
                             virtualView.announceDisconnect(subject);
+                            advanceTurn();
                             return;
                         }
                         break;
@@ -338,6 +350,7 @@ public class Game {
                     try {
                         virtualView.spawn(p);
                     } catch (AbortedTurnException ignored) {
+                        p.discardPowerUp(p.getPowerUps().get(0));
                     } // in case of lost connection, don't spawn
                 });
 
@@ -355,7 +368,7 @@ public class Game {
             }
         }
 
-        this.currentTurnPlayer = (this.currentTurnPlayer + 1) % this.participants.size(); // pass the turn on to the next player
+        advanceTurn();
         save(); // save the game state at the end of each turn
     }
 
@@ -364,6 +377,12 @@ public class Game {
      */
     public void play() {
         this.started = true;
+
+        participants.forEach(p -> board.getPowerUpDeck().smartDraw(true).ifPresent(c -> {
+            try {
+                p.givePowerUp(c);
+            } catch (FullHandException ignored) { }
+        }));
 
         while (!gameOver) {
             this.playTurn();

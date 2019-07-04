@@ -20,7 +20,7 @@ public class TestGame {
 
     @Test
     public void autoPlay() {
-        List<String> participantNames = Arrays.asList("Aldo", "Mariassuntaconcettina", "Giacomo", "Luca", "Paolo");
+        List<String> participantNames = Arrays.asList("Aldo", "Giovanni", "Giacomo", "Luca", "Paolo");
         List<Player> participants = participantNames.stream()
                 .map(Player::new)
                 .collect(Collectors.toList());

@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.powerups.*;
 import it.polimi.ingsw.model.weaponry.effects.Mark;
+import it.polimi.ingsw.network.common.exceptions.ClientTimeOutException;
 import it.polimi.ingsw.util.Dispatcher;
 import it.polimi.ingsw.util.Table;
 import it.polimi.ingsw.model.weaponry.AttackModule;
@@ -25,10 +26,7 @@ import it.polimi.ingsw.model.weaponry.targets.TargetRoom;
 import it.polimi.ingsw.network.common.deliverable.*;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.network.server.VirtualClient;
-import it.polimi.ingsw.view.virtual.cli.CliBoard;
 import it.polimi.ingsw.view.virtual.cli.CliCommon;
-import it.polimi.ingsw.view.virtual.cli.CliToasters;
-import it.polimi.ingsw.view.virtual.cli.CliTracks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,30 +87,36 @@ public class VirtualView {
                     return 0;
 
                 case DUAL:
-                    if(enableQuery)
-                        return Dispatcher.requestBoolean(stampedMessage) ? 1 : 0;
-                    else {
-                        int response = (int) Math.round(Math.random()); // either 0 or 1
-                        if(enableDispatch) {
-                            Dispatcher.sendMessage(stampedMessage);
-                            Dispatcher.sendMessage(stampedResponse + (response == 1 ? "y" : "n"));
+                    if(enableQuery) {
+                        try {
+                            return Dispatcher.requestBoolean(stampedMessage) ? 1 : 0;
+                        } catch (ClientTimeOutException ignored) {
+                            throw new AbortedTurnException("Timed out.");
                         }
-                        return response;
                     }
+                    int response = (int) Math.round(Math.random()); // either 0 or 1
+                    if(enableDispatch) {
+                        Dispatcher.sendMessage(stampedMessage);
+                        Dispatcher.sendMessage(stampedResponse + (response == 1 ? "y" : "n"));
+                    }
+                    return response;
 
                 case MAPPED:
                     List<String> options = ((Mapped) deliverable).getOptions();
                     List<Integer> keys = ((Mapped) deliverable).getKeys();
-                    if(enableQuery)
-                        return Dispatcher.requestMappedOption(stampedMessage, options, keys);
-                    else {
-                        int response = (int) (Math.random() * keys.size()); // a random index
-                        if(enableDispatch) {
-                            Dispatcher.sendMessage(stampedMessage);
-                            Dispatcher.sendMessage(stampedResponse + response);
+                    if(enableQuery) {
+                        try {
+                            return Dispatcher.requestMappedOption(stampedMessage, options, keys);
+                        } catch (ClientTimeOutException ignored) {
+                            throw new AbortedTurnException("Timed out.");
                         }
-                        return response;
                     }
+                    response = (int) (Math.random() * keys.size()); // a random index
+                    if(enableDispatch) {
+                        Dispatcher.sendMessage(stampedMessage);
+                        Dispatcher.sendMessage(stampedResponse + response);
+                    }
+                    return response;
 
                 case ASSETS:
                     if(enableDispatch)
@@ -129,7 +133,10 @@ public class VirtualView {
             }
             if(deliverable.getType().equals(DeliverableType.DUAL) || deliverable.getType().equals(DeliverableType.MAPPED)) {
                 try {
-                    return ((Response) recipient.nextDeliverable()).getNumber();
+                    Response response = (Response) recipient.nextDeliverable();
+                    if(response.isValid())
+                        return response.getNumber();
+                    throw new AbortedTurnException("Timed out.");
                 } catch (ConnectionException e) {
                     throw new AbortedTurnException("");
                 }
@@ -865,7 +872,18 @@ public class VirtualView {
      */
     public void announceDisconnect(Player disconnectedPlayer) {
         Deliverable deliverable = new Info(DeliverableEvent.UPDATE_DISCONNECT);
-        String message = disconnectedPlayer + " has lost connection. Skipping to the next turn...";
+        String message = disconnectedPlayer + " has lost connection or waited too long to answer. Skipping to the next turn...";
+        deliverable.overwriteMessage(message);
+        broadcast(deliverable);
+    }
+
+    /**
+     * Broadcasts about a {@link Player}'s disconnection. This warns other players in the same {@link Game} that
+     * the disconnected player's turn will be prematurely ended and skipped.
+     */
+    public void announceInsufficientPlayers() {
+        Deliverable deliverable = new Info(DeliverableEvent.UPDATE_DISCONNECT);
+        String message = "Looks like there are not enough players left to continue. The game ends here.";
         deliverable.overwriteMessage(message);
         broadcast(deliverable);
     }

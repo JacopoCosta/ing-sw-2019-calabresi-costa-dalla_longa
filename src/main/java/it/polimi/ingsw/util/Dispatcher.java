@@ -1,11 +1,13 @@
 package it.polimi.ingsw.util;
 
+import it.polimi.ingsw.network.common.exceptions.ClientTimeOutException;
 import it.polimi.ingsw.util.printer.ColorPrinter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * This class offers the final delivery of a message and/or a request to the end user.
@@ -13,6 +15,9 @@ import java.util.List;
  * inputs a response that is considered valid.
  */
 public abstract class Dispatcher {
+    private static final int ANSWER_TIME_LIMIT = 12000;
+    private static final int INTERVAL = 100;
+    private static final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
     /**
      * Outputs a string to the end user.
@@ -30,16 +35,61 @@ public abstract class Dispatcher {
      */
     private static String requestRoutine(String message) {
         sendMessage("\n" + message);
-        String response;
+
+        int timeLeft = ANSWER_TIME_LIMIT;
         try {
-            BufferedReader bufferedRead = new BufferedReader(new InputStreamReader(System.in));
-            response = bufferedRead.readLine();
-        }
-        catch(IOException e) {
-            e.printStackTrace();
+            while (timeLeft > 0 && !bufferedReader.ready()) {
+                try {
+                    Thread.sleep(INTERVAL);
+                } catch (InterruptedException e) {
+                    return null;
+                }
+                timeLeft -= INTERVAL;
+            }
+        } catch (IOException e) {
             return null;
         }
-        return response;
+        if(timeLeft > 0) {
+            try {
+                return bufferedReader.readLine();
+            } catch (IOException ignored) { }
+        }
+        return null;
+
+        /*Thread timeout = new Thread(() -> {
+            try {
+                Thread.sleep(ANSWER_TIME_LIMIT); // wait a certain period of time
+                synchronized (open) {
+                    if(open.get()) { // if the timeout gets here first
+                        open.set(false); // unblock the request routine
+                        try {
+                            sendMessage("Timed out.");
+                            bufferedReader.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            } catch (InterruptedException ignored) { }
+        });
+
+        try {
+            responseString = null; // this indicates no action by the client
+            open.set(true);
+            String response = bufferedReader.readLine(); // wait for the client's response
+            synchronized (open) {
+                timeout.interrupt();
+                if(open.get()) { // if the reader gets here first
+                    open.set(false); // unblock the request routine
+                    responseString = response; // publish the response
+                }
+            }
+        } catch (IOException ignored) { }
+
+        timeout.start();
+
+        while(open.get()) // as soon as the first thread finishes
+            Thread.onSpinWait(); */
     }
 
     /**
@@ -70,7 +120,7 @@ public abstract class Dispatcher {
      * @return The index of the selected option inside {@code options}. Please note that, in general, the number inputted by
      * the user and the number returned by this method are different.
      */
-    public static int requestMappedOption(String message, List<String> options, List<Integer> numbers) {
+    public static int requestMappedOption(String message, List<String> options, List<Integer> numbers) throws ClientTimeOutException {
         int length = options.size();
 
         StringBuilder messageBuilder = new StringBuilder(message);
@@ -83,7 +133,10 @@ public abstract class Dispatcher {
 
         int value = numbers.stream().reduce(0, Math::min) - 1;
         do {
-            value = Dispatcher.safeIntegerConversion(Dispatcher.requestRoutine(message), value);
+            String s = Dispatcher.requestRoutine(message);
+            if(s == null)
+                throw new ClientTimeOutException("Timed out.");
+            value = Dispatcher.safeIntegerConversion(s, value);
         } while(!numbers.contains(value));
         return numbers.indexOf(value);
     }
@@ -94,12 +147,12 @@ public abstract class Dispatcher {
      * @param message the question.
      * @return {@code true} if the answer is yes.
      */
-    public static boolean requestBoolean(String message) {
+    public static boolean requestBoolean(String message) throws ClientTimeOutException {
         String s;
         do {
             s = Dispatcher.requestRoutine(message + " [y|n]");
             if(s == null)
-                return false;
+                throw new ClientTimeOutException("Timed out.");
         } while(!s.equals("y") && !s.equals("n"));
         return s.equals("y");
     }

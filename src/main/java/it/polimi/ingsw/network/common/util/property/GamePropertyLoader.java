@@ -193,7 +193,8 @@ public class GamePropertyLoader {
      * @see #getIntegerProperty(String, String, int, int)
      */
     private int getTurnDurationProperty(String description) throws InvalidPropertyException {
-        return this.getIntegerProperty(description, TURN_DURATION_SEQUENCE, MAXIMUM_TURN_DURATION_VALUE, MINIMUM_TURN_DURATION_VALUE);
+        return this.getIntegerProperty(description, TURN_DURATION_SEQUENCE, MINIMUM_TURN_DURATION_VALUE, MAXIMUM_TURN_DURATION_VALUE);
+        // I swapped the last two arguments (hoping it would help)
     }
 
     /**
