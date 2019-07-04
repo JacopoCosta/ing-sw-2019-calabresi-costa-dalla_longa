@@ -5,9 +5,7 @@ import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 
 /**

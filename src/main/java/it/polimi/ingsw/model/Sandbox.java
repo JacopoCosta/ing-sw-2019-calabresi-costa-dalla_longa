@@ -7,14 +7,19 @@ import it.polimi.ingsw.model.exceptions.FullHandException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.model.weaponry.Weapon;
+import it.polimi.ingsw.util.Color;
+import it.polimi.ingsw.util.UTF;
+import org.fusesource.jansi.AnsiConsole;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.fusesource.jansi.Ansi.ansi;
+
 public class Sandbox {
     public static void main(String[] args) {
         Game.offlineMode = true;
-        consoleSandbox();
+        utfTest();
     }
 
     private static void play() {
@@ -97,8 +102,18 @@ public class Sandbox {
         }
     }
 
-    private static void consoleSandbox() {
+    private static void utfTest() { // java -cp ;.;C:\Users\entit\Documents\Code\Java\IntelliJ\ing-sw-2019-calabresi-costa-dalla_longa\src\resources\cli\jansi-1.18.jar it.polimi.ingsw.model.Sandbox
 
-
+        AnsiConsole.systemInstall();
+        System.out.println(Color.ANSI_RED + "block " + UTF.block);
+        System.out.println("horizontal " + UTF.horizontal);
+        System.out.println("vertical " + UTF.vertical);
+        System.out.println("corner1 " + UTF.corner1);
+        System.out.println("corner2 " + UTF.corner2);
+        System.out.println("corner3 " + UTF.corner3);
+        System.out.println("corner4 " + UTF.corner4);
+        System.out.println("full " + UTF.full);
+        System.out.println("empty " + UTF.empty);
+        System.out.println("skull " + UTF.skull);
     }
 }

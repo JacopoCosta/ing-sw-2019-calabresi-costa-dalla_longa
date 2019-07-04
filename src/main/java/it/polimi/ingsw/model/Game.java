@@ -15,7 +15,7 @@ import it.polimi.ingsw.util.json.JsonPathGenerator;
 import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.network.server.VirtualClient;
 import it.polimi.ingsw.network.server.lobby.Lobby;
-import it.polimi.ingsw.view.remote.cli.ConsoleOptimizer;
+import it.polimi.ingsw.view.remote.cli.ColorPrinter;
 import it.polimi.ingsw.view.virtual.VirtualView;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.player.*;

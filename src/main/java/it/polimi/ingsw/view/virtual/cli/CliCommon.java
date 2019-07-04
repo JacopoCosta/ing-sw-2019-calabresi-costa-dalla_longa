@@ -11,7 +11,9 @@ import static it.polimi.ingsw.util.UTF.*;
 import static it.polimi.ingsw.util.UTF.horizontal;
 
 public abstract class CliCommon {
-    private static final List<String> playerAnsiColors = Arrays.asList(Color.ANSI_YELLOW, Color.ANSI_CYAN, Color.ANSI_GREEN, Color.ANSI_WHITE, Color.ANSI_PURPLE);
+    private static final List<String> playerAnsiColors = Arrays.asList(
+            Color.ANSI_YELLOW, Color.ANSI_CYAN, Color.ANSI_GREEN, Color.ANSI_WHITE, Color.ANSI_PURPLE
+    );
     static final int nameLengthLimit = 20;
 
     private static final int canvasWidth = 175;

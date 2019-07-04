@@ -9,6 +9,7 @@ import it.polimi.ingsw.util.Color;
 import it.polimi.ingsw.util.Dispatcher;
 import it.polimi.ingsw.util.console.Console;
 import it.polimi.ingsw.view.remote.GraphicalInterface;
+import org.fusesource.jansi.AnsiConsole;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -35,6 +36,7 @@ public class CLI implements GraphicalInterface {
 
     public CLI() {
         console = Console.getInstance();
+        AnsiConsole.systemInstall();
     }
 
     @Override
@@ -84,7 +86,7 @@ public class CLI implements GraphicalInterface {
     private void manageArrivals(Deliverable deliverable) throws ConnectionException {
         switch (deliverable.getType()) {
             case INFO:
-                console.tinyPrintln(deliverable.getMessage());
+                ColorPrinter.print(deliverable.getMessage());
                 break;
             case DUAL:
                 communicationHandler.deliver(new Response(Dispatcher.requestBoolean(deliverable.getMessage()) ? 1 : 0));
@@ -93,9 +95,8 @@ public class CLI implements GraphicalInterface {
                 communicationHandler.deliver(new Response(Dispatcher.requestMappedOption(deliverable.getMessage(), ((Mapped) deliverable).getOptions(), ((Mapped) deliverable).getKeys())));
                 break;
             case ASSETS:
-                console.clear();
-                ConsoleOptimizer.print(((Assets) deliverable).unpack());
-                console.ANSIPrintln(Color.ANSI_RESET);
+                ColorPrinter.print(((Assets) deliverable).unpack());
+                ColorPrinter.print(Color.ANSI_RESET);
             default:
                 break;
         }

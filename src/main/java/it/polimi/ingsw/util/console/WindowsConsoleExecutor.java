@@ -22,10 +22,10 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      * @param command the directive to be executed.
      */
     private void execute(String command){
-        try {
+        /*try {
             this.pb.command("powershell.exe", "-Command", command).inheritIO().start().waitFor();
         } catch (IOException | InterruptedException ignored) {
-        }
+        }*/
     }
 
     /**
