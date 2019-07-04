@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.virtual.cli;
 
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.ScoreList;
 import it.polimi.ingsw.util.Color;
@@ -14,26 +13,26 @@ import static it.polimi.ingsw.util.UTF.*;
 import static it.polimi.ingsw.view.virtual.cli.CliCommon.canvas;
 
 public abstract class CliToasters {
-    private static final int top = 36;
+    private static final int top = 37;
     private static final int left = 0;
 
     private static final int toasterWidth = 35;
     private static final int toasterHeight = 10;
 
-    public static void build(Game game) {
-        int index = 0;
-        for(Player p : game.getParticipants()) {
-            writeToaster(index, p);
-            index ++;
-        }
+    public static void build(Player player) {
+        for(Player p : player.getGame().getParticipants())
+            writeToaster(p);
+
+        CliCommon.write(top - 1, 0, new ColoredString("Players:", Color.ANSI_RESET));
+        CliCommon.write(top + toasterHeight, (player.getId() - 1) * toasterWidth + (toasterWidth - 1) / 2 - 5, new ColoredString("^^^ YOU ^^^", Color.ANSI_RESET));
     }
 
-    private static void writeToaster(int index, Player player) {
+    private static void writeToaster(Player player) {
+        int index = player.getId() - 1;
         String ansiColor = CliCommon.toAnsiColor(player);
         String name = CliCommon.nameOf(player);
 
-        for(int i = 1; i <= 4; i ++)
-            buildBorderCounterclockwise(i, index, ansiColor);
+        CliCommon.frame(top, left + index * toasterWidth, toasterWidth, toasterHeight, CliCommon.toAnsiColor(player));
 
         List<ColoredString> nameAndAmmo = new ArrayList<>();
         nameAndAmmo.add(new ColoredString(name, ansiColor));
@@ -81,26 +80,6 @@ public abstract class CliToasters {
                 canvas[row + top][index * toasterWidth + 2 + caret + left] = new ColoredString(cs.content().substring(i, i + 1), cs.color());
                 caret ++;
             }
-        }
-    }
-
-    private static void buildBorderCounterclockwise(int cornerId, int index, String ansiColor) {
-        int i = top + cornerId == 1 || cornerId == 2 ? (toasterHeight - 1) : 0;
-        int j = left + index * toasterWidth + (cornerId == 1 || cornerId == 4 ? 0 : toasterWidth - 1);
-
-        String startingCorner = Arrays.asList(corner1, corner2, corner3, corner4).get(cornerId - 1);
-        String line = cornerId % 2 == 0 ? vertical : horizontal;
-
-        int limit = cornerId % 2 == 0 ? toasterHeight : toasterWidth;
-
-        int di = Arrays.asList(0, -1, 0, 1).get(cornerId - 1);
-        int dj = Arrays.asList(1, 0, -1, 0).get(cornerId - 1);
-
-        canvas[i][j] = new ColoredString(startingCorner, ansiColor);
-        for(int k = 1; k < limit - 1; k ++) {
-            i += di;
-            j += dj;
-            canvas[i][j] = new ColoredString(line, ansiColor);
         }
     }
 }

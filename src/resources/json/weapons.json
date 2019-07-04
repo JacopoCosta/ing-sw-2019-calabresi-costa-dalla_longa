@@ -444,7 +444,7 @@
                     {
                         "id": 1,
                         "name": "Chain Reaction",
-                        "description": "Deal 1 damage to a second target that your first target can see.",
+                        "description": "Deal 1 damage to a second target your first target can see.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -502,7 +502,7 @@
                     {
                         "id": 2,
                         "name": "High Voltage",
-                        "description": "Deal 2 damage to a third target that your second target can see.",
+                        "description": "Deal 2 damage to a third target your second target can see.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -1164,7 +1164,7 @@
                     {
                         "id": 1,
                         "name": "Black Hole",
-                        "description": "Choose up to 2 other targets that are up to 1 move away from the vortex. Move them both to the vortex and deal 1 damage to each.",
+                        "description": "Choose up to 2 other targets up to 1 move away from the vortex. Move them to the vortex and deal 1 damage to each.",
                         "summonCost": {
                             "red": 1,
                             "yellow": 0,
@@ -1539,7 +1539,7 @@
                     {
                         "id": 1,
                         "name": "Basic Mode",
-                        "description": "Deal 1 damage to a target you can see, at least 1 move away. Then give 1 mark to your target and everyone else on that cell.",
+                        "description": "Deal 1 damage to a target you can see, at least 1 move away. Then give 1 mark to everyone on that cell.",
                         "summonCost": {
                             "red": 0,
                             "yellow": 0,
@@ -1610,7 +1610,7 @@
                     {
                         "id": 0,
                         "name": "Nano-Tracer Mode",
-                        "description": "Deal 1 damage to a target you can see, at least 1 move away. Then give 2 marks to your target and everyone else on that cell.",
+                        "description": "Deal 1 damage to a target you can see, at least 1 move away. Then give 2 marks to everyone on that cell.",
                         "summonCost": {
                             "red": 1,
                             "yellow": 0,

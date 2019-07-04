@@ -152,7 +152,6 @@ public class CommunicationHandler {
     public void register(String username) throws ConnectionException, ClientAlreadyRegisteredException {
         this.sendMessage(NetworkMessage.simpleClientMessage(username, MessageType.REGISTER_REQUEST));
         NetworkMessage message = this.nextMessage();
-
         switch (message.getType()) {
             case REGISTER_SUCCESS:
                 this.username = username;

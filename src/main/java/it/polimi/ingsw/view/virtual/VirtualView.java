@@ -162,7 +162,7 @@ public class VirtualView {
 
     private void updateView(Player player) throws AbortedTurnException {
         try {
-            send(player, new Assets(DeliverableEvent.UPDATE_VIEW, CliCommon.getCanvas()));
+            send(player, new Assets(DeliverableEvent.UPDATE_VIEW, CliCommon.getCanvas(player)));
         } catch (AbortedTurnException e) {
             throw new AbortedTurnException("");
         }

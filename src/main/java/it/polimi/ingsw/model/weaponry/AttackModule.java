@@ -158,6 +158,14 @@ public class AttackModule {
     }
 
     /**
+     * Gets the {@code AttackModule}'s {@link AttackModule#description}.
+     * @return the description.
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
      * Gets the {@code AttackModule}'s {@link AttackModule#summonCost}.
      * @return the summon cost.
      */

@@ -18,8 +18,8 @@ import static it.polimi.ingsw.util.UTF.*;
 import static it.polimi.ingsw.view.virtual.cli.CliCommon.canvas;
 
 public abstract class CliBoard {
-    private static final int top = 5;
-    private static final int left = 4;
+    private static final int top = 3;
+    private static final int left = 0;
 
     private static final int cellWidth = 25;
     private static final int cellHeight = 11;
@@ -30,12 +30,6 @@ public abstract class CliBoard {
     public static void build(Board board) {
         for(Cell cell : board.getCells())
             writeCell(cell);
-    }
-
-    private enum WallType {
-        FULL,
-        DOOR,
-        OPEN
     }
 
     private static void writeCell(Cell cell) {
@@ -54,13 +48,13 @@ public abstract class CliBoard {
             buildWallCounterclockwise(cellX, cellY, i, walls.get(i - 1), cell.getRoom().getColor());
 
         List<ColoredString> cellName = Arrays.asList(new ColoredString("Cell " + cell.getId(), null));
-        writeOnCell(cellX, cellY, 1, cellName);
+        CliCommon.write(top + cellHeight * cellY + 1, 2 + cellWidth * cellX, cellName);
 
         if(cell.isSpawnPoint()) {
             List<Weapon> weapons = ((SpawnCell) cell).getWeaponShop();
             int row = 2;
             for(Weapon weapon : weapons) {
-                writeOnCell(cellX, cellY, row, weapon.toColoredStrings());
+                CliCommon.write(top + cellHeight * cellY + row, 2 + cellWidth * cellX, weapon.toColoredStrings());
                 row ++;
             }
         }
@@ -68,7 +62,7 @@ public abstract class CliBoard {
             AmmoTile ammoTile = ((AmmoCell) cell).getAmmoTile();
             if(ammoTile != null) {
                 List<ColoredString> ammo = ammoTile.toColoredStrings();
-                writeOnCell(cellX, cellY, 2, ammo);
+                CliCommon.write(top + cellHeight * cellY + 2, 2 + cellWidth * cellX, ammo);
             }
         }
 
@@ -78,9 +72,15 @@ public abstract class CliBoard {
             List<ColoredString> playerToken = new ArrayList<>();
             playerToken.add(new ColoredString(block + " ", playerAnsiColor));
             playerToken.add(new ColoredString(CliCommon.nameOf(p), Color.ANSI_RESET));
-            writeOnCell(cellX, cellY, row, playerToken);
+            CliCommon.write(top + cellHeight * cellY + row, 2 + cellWidth * cellX, playerToken);
             row --;
         }
+    }
+
+    private enum WallType {
+        FULL,
+        DOOR,
+        OPEN
     }
     
     private static WallType getWall(Cell cell, Cell neighbour) {
@@ -94,17 +94,6 @@ public abstract class CliBoard {
             
         } catch (Throwable e) {
             throw new NullPointerException();
-        }
-    }
-
-    private static void writeOnCell(int cellX, int cellY, int row, List<ColoredString> coloredStrings) {
-        int caret = 0;
-
-        for(ColoredString cs : coloredStrings) {
-            for (int i = 0; i < cs.content().length(); i++) {
-                canvas[cellY * cellHeight + row + top][cellX * cellWidth + 2 + caret + left] = new ColoredString(cs.content().substring(i, i + 1), cs.color());
-                caret ++;
-            }
         }
     }
 

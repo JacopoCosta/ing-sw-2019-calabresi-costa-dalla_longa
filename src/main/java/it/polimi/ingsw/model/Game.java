@@ -15,12 +15,14 @@ import it.polimi.ingsw.util.json.JsonPathGenerator;
 import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.network.server.VirtualClient;
 import it.polimi.ingsw.network.server.lobby.Lobby;
+import it.polimi.ingsw.view.remote.cli.ConsoleOptimizer;
 import it.polimi.ingsw.view.virtual.VirtualView;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.powerups.PowerUp;
 import it.polimi.ingsw.util.Table;
 import it.polimi.ingsw.model.weaponry.Weapon;
+import it.polimi.ingsw.view.virtual.cli.CliCommon;
 
 import java.util.Comparator;
 import java.util.List;

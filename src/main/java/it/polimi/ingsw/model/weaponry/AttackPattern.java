@@ -3,10 +3,14 @@ package it.polimi.ingsw.model.weaponry;
 import it.polimi.ingsw.model.exceptions.JsonException;
 import it.polimi.ingsw.model.exceptions.JullPointerException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.util.Color;
+import it.polimi.ingsw.util.ColoredString;
 import it.polimi.ingsw.util.json.DecoratedJsonObject;
+import it.polimi.ingsw.view.virtual.cli.CliWeapons;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * An {@code AttackPattern} is a directional network of {@link AttackModule}s, fully describing the working
@@ -130,5 +134,60 @@ public class AttackPattern {
             }
         }
         return s.toString();
+    }
+
+    public List<List<ColoredString>> getHeaders() {
+        List<List<ColoredString>> coloredStrings = new ArrayList<>();
+
+        List<AttackModule> showableModules = new ArrayList<>();
+
+        for(AttackModule a : content) {
+            if(showableModules.stream().noneMatch(a2 -> a.getName().equals(a2.getName())))
+                showableModules.add(a);
+        }
+
+        for(AttackModule a : showableModules) {
+            List<ColoredString> module = new ArrayList<>();
+            module.add(new ColoredString(" >", Color.ANSI_RESET));
+            module.addAll(a.getSummonCost().toColoredStrings());
+            module.add(new ColoredString(" " + a.getName() + ":", Color.ANSI_RESET));
+
+            coloredStrings.add(module);
+        }
+
+        return coloredStrings;
+    }
+
+    public List<List<String>> getDescriptions() {
+        List<List<String>> descriptions = new ArrayList<>();
+
+        List<AttackModule> showableModules = new ArrayList<>();
+
+        for(AttackModule a : content) {
+            if(showableModules.stream().noneMatch(a2 -> a.getName().equals(a2.getName())))
+                showableModules.add(a);
+        }
+
+        for(AttackModule a : showableModules) {
+            String description = a.getDescription();
+
+            List<String> brokenDescription = new ArrayList<>();
+
+            while(description.length() > CliWeapons.width - 4) {
+                int caret = CliWeapons.width - 4;
+                while (caret >= CliWeapons.width - 12 && description.charAt(caret) != ' ')
+                    caret --;
+                brokenDescription.add(description.substring(0, caret));
+                if(caret + 1 < description.length())
+                    description = description.substring(caret + 1);
+                else
+                    description = "";
+            }
+            if(description.length() > 0)
+                brokenDescription.add(description);
+            descriptions.add(brokenDescription);
+        }
+
+        return descriptions;
     }
 }
