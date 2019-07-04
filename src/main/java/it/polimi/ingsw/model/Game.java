@@ -160,16 +160,8 @@ public class Game {
     }
 
     /**
-     * Gets the {@link Game#boardType} the {@code Board} uses as map.
-     *
-     * @return the {@link Game#boardType}
-     */
-    public int getBoardType() {
-        return boardType;
-    } //TODO this was for gui
-
-    /**
      * Gets the number of {@link #roundsLeft}.
+     *
      * @return the number of rounds left to play.
      */
     public int getRoundsLeft() {
@@ -513,7 +505,7 @@ public class Game {
 
         DecoratedJsonObject tl = new DecoratedJsonObject();
         tl.putObject("saved", jSaved);
-        tl.writeToFile(JsonPathGenerator.getPath("saved.json"));
+        tl.writeToFile(JsonPathGenerator.getFile("saved.json"));
     }
 
     /**
@@ -527,11 +519,12 @@ public class Game {
 
         DecoratedJsonObject tl = new DecoratedJsonObject();
         tl.putObject("saved", jSaved);
-        tl.writeToFile(JsonPathGenerator.getPath("saved.json"));
+        tl.writeToFile(JsonPathGenerator.getFile("saved.json"));
     }
 
     /**
      * This factory method creates a new {@code Game} based on a save state retrieved from a {@code .json} file.
+     *
      * @param shuffledParticipants The list of {@link Player}s attempting to join the reloaded {@code Game}.
      * @return The {@code Game}.
      * @throws InvalidSaveStateException           when attempting to load from an invalidated save state.

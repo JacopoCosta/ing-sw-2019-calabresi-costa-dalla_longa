@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.client.communication.rmi;
 
+import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.client.communication.ServerCommunicationInterface;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.network.common.message.MessageType;
@@ -11,6 +12,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
@@ -43,10 +45,22 @@ public class RMIServerCommunicationInterface implements ServerCommunicationInter
             this.serverController = (RMIController) remoteRegistry.lookup("rmi://" + hostAddress + ":" + Registry.REGISTRY_PORT + "/RMIController");
 
             this.clientController = new ClientController();
-            RMIController controller = (RMIController) UnicastRemoteObject.exportObject(this.clientController, port);
 
-            Registry localRegistry = LocateRegistry.createRegistry(port);
-            localRegistry.rebind("rmi://" + "127.0.0.1" + ":" + port + "/RMIController", controller);
+            Registry localRegistry;
+            boolean registered = false;
+            do {
+                try {
+                    RMIController controller = (RMIController) UnicastRemoteObject.exportObject(this.clientController, port);
+                    localRegistry = LocateRegistry.createRegistry(port);
+                    localRegistry.rebind("rmi://" + "127.0.0.1" + ":" + port + "/RMIController", controller);
+                    registered = true;
+                } catch (ExportException ignored) { //port is already in use: local server or other RMi client runs on "port"
+                    if (port < CommunicationHandler.UPPERBOUND_PORT)
+                        port++;
+                    else
+                        port = CommunicationHandler.LOWERBOUD_PORT;
+                }
+            } while (!registered);
         } catch (RemoteException | NotBoundException e) {
             throw new ConnectionException(e);
         }
@@ -96,7 +110,7 @@ public class RMIServerCommunicationInterface implements ServerCommunicationInter
         do message = this.clientController.nextMessage();
         while (message.getType().equals(MessageType.PING_MESSAGE));
 
-        if (message.getType() == MessageType.UNREGISTER_SUCCESS)
+        if (message.getType().equals(MessageType.UNREGISTER_SUCCESS))
             this.closeConnection();
 
         return message;

@@ -7,13 +7,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * A {@code DecoratedJsonObject} wraps a {@code JSONObject} and decorates it with some methods.
  */
+@SuppressWarnings("unchecked")
 public class DecoratedJsonObject {
     /**
      * The wrapped {@code JSONObject}.
@@ -59,14 +58,14 @@ public class DecoratedJsonObject {
     /**
      * Creates and returns a new {@code DecoratedJsonObject} by opening a {@code .json} file
      * found at a specific location, and parsing it.
-     * @param path the location at which the {@code .json} file is found.
+     * @param file the {@code .json} file ito read from.
      * @return a new {@code DecoratedJsonObject} with all the content read from the file.
      */
-    static DecoratedJsonObject getFromFile(String path) {
+    static DecoratedJsonObject getFromFile(File file) {
         JSONParser parser = new JSONParser();
 
         try {
-            return new DecoratedJsonObject((JSONObject) parser.parse(new FileReader(path)));
+            return new DecoratedJsonObject((JSONObject) parser.parse(new FileReader(file)));
         } catch (ParseException | IOException e) {
             e.printStackTrace();
             throw new JsonException("Could not find file to read.");
@@ -76,10 +75,10 @@ public class DecoratedJsonObject {
     /**
      * Overwrites a {@code .json} file at a specific location with the content of the {@code JSONObject}
      * using {@code json} syntax.
-     * @param path the directory at which the file is found.
+     * @param file the file to write to.
      */
-    public void writeToFile(String path) {
-        try (FileWriter fileWriter = new FileWriter(path)) {
+    public void writeToFile(File file) {
+        try (FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write(content.toJSONString());
         } catch (IOException e) {
             e.printStackTrace();

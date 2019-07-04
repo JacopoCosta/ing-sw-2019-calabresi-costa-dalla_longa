@@ -18,6 +18,9 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 public class CommunicationHandler {
+    public static final int UPPERBOUND_PORT = 65535; //maximum acceptable port
+    public static final int LOWERBOUD_PORT = 1024; //minimum acceptable port
+
     /**
      * The communication {@code Interface} type available to interact with the remote {@code Server}.
      */

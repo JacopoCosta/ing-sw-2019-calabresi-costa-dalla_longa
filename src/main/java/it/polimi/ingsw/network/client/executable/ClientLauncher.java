@@ -110,7 +110,7 @@ public class ClientLauncher {
 
         try {
             port = Integer.parseInt(args[1]);
-            if (port < 1024 || port > 65535) {
+            if (port < CommunicationHandler.LOWERBOUD_PORT || port > CommunicationHandler.UPPERBOUND_PORT) {
                 console.err("port not int range [1024-65535]");
                 return Configuration.ERROR;
             }

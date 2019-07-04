@@ -2,8 +2,6 @@ package it.polimi.ingsw.network.common.util.property;
 
 import it.polimi.ingsw.network.common.exceptions.InvalidPropertyException;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 /**
@@ -15,11 +13,7 @@ public class GamePropertyLoader {
     /**
      * The {@code game.cfg} file path.
      */
-    private static final String CONFIG_FILE_PATH = System.getProperty("user.dir") +
-            File.separator + "src" +
-            File.separator + "resources" +
-            File.separator + "config" +
-            File.separator + "game.cfg";
+    private static final String CONFIG_FILE_PATH = "/config/game.cfg";
 
     /**
      * The sequence of characters representing a start of line to be ignored. Any line starting with this exact
@@ -87,14 +81,7 @@ public class GamePropertyLoader {
      * read the configuration file.
      */
     public GamePropertyLoader() {
-        File file = new File(CONFIG_FILE_PATH);
-
-        try {
-            this.scanner = new Scanner(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+        this.scanner = new Scanner(GamePropertyLoader.class.getResourceAsStream(CONFIG_FILE_PATH));
     }
 
     /**
