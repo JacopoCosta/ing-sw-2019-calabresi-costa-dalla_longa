@@ -114,13 +114,13 @@ public class GamePropertyLoader {
 
                 switch (prefix) {
                     case FINAL_FRENZY_SEQUENCE:
-                        this.finalFrenzy = getFinalFrenzyProperty(description);
+                        this.finalFrenzy = this.getFinalFrenzyProperty(description);
                         break;
                     case ROUNDS_TO_PLAY_SEQUENCE:
-                        this.roundsToPlay = getRoundsToPlayProperty(description);
+                        this.roundsToPlay = this.getRoundsToPlayProperty(description);
                         break;
                     case BOARD_TYPE_SEQUENCE:
-                        this.boardType = getBoardTypeProperty(description);
+                        this.boardType = this.getBoardTypeProperty(description);
                         break;
                     default:
                         throw new InvalidPropertyException("\"" + prefix + "\" is not a valid property.");
@@ -157,7 +157,7 @@ public class GamePropertyLoader {
      * @see #getIntegerProperty(String, String, int, int)
      */
     private int getRoundsToPlayProperty(String description) throws InvalidPropertyException {
-        return getIntegerProperty(description, ROUNDS_TO_PLAY_SEQUENCE, MINIMUM_ROUNDS_TO_PLAY_VALUE, MAXIMUM_ROUNDS_TO_PLAY_VALUE);
+        return this.getIntegerProperty(description, ROUNDS_TO_PLAY_SEQUENCE, MINIMUM_ROUNDS_TO_PLAY_VALUE, MAXIMUM_ROUNDS_TO_PLAY_VALUE);
     }
 
     /**
@@ -170,7 +170,7 @@ public class GamePropertyLoader {
      * @see #getIntegerProperty(String, String, int, int)
      */
     private int getBoardTypeProperty(String description) throws InvalidPropertyException {
-        return getIntegerProperty(description, BOARD_TYPE_SEQUENCE, MINIMUM_BOARD_TYPE_VALUE, MAXIMUM_BOARD_TYPE_VALUE);
+        return this.getIntegerProperty(description, BOARD_TYPE_SEQUENCE, MINIMUM_BOARD_TYPE_VALUE, MAXIMUM_BOARD_TYPE_VALUE);
     }
 
     /**

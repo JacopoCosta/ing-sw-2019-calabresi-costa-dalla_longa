@@ -142,7 +142,7 @@ public abstract class VirtualClient {
      * @throws ConnectionException if any exception is thrown at a lower level.
      */
     public void deliver(Deliverable deliverable) throws ConnectionException {
-        sendMessage(NetworkMessage.completeServerMessage(MessageType.CLIENT_MESSAGE, deliverable));
+        this.sendMessage(NetworkMessage.completeServerMessage(MessageType.CLIENT_MESSAGE, deliverable));
     }
 
     /**
@@ -176,7 +176,7 @@ public abstract class VirtualClient {
      * @throws ConnectionException if any exception is thrown at a lower level.
      */
     public Deliverable nextDeliverable() throws ConnectionException {
-        return (Deliverable) nextMessage().getContent();
+        return (Deliverable) this.nextMessage().getContent();
     }
 
     /**

@@ -97,7 +97,7 @@ public class NetworkMessage implements Serializable {
      * @return the {@code NetworkMessage} author.
      */
     public String getAuthor() {
-        return author;
+        return this.author;
     }
 
     /**
@@ -106,7 +106,7 @@ public class NetworkMessage implements Serializable {
      * @return the {@code NetworkMessage} type.
      */
     public MessageType getType() {
-        return type;
+        return this.type;
     }
 
     /**
@@ -115,6 +115,6 @@ public class NetworkMessage implements Serializable {
      * @return the {@code NetworkMessage} content.
      */
     public Object getContent() {
-        return content;
+        return this.content;
     }
 }

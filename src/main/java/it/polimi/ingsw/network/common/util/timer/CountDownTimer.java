@@ -94,10 +94,10 @@ public class CountDownTimer implements Observable {
         this.executor = Executors.newSingleThreadScheduledExecutor();
         this.tick = () -> {
             if (this.currentSeconds.decrementAndGet() <= 0) {
-                stop();
-                notifyObservers(STATUS_EXPIRED, -1); //-1: no valuable information given when the timer expires
+                this.stop();
+                this.notifyObservers(STATUS_EXPIRED, -1); //-1: no valuable information given when the timer expires
             } else if (this.sendTimeUpdate.get()) { //a time update is triggered only when a setTime() call is performed
-                notifyObservers(STATUS_TIME_UPDATE, this.currentSeconds.get());
+                this.notifyObservers(STATUS_TIME_UPDATE, this.currentSeconds.get());
                 this.sendTimeUpdate.set(false);
             }
         };
@@ -150,8 +150,8 @@ public class CountDownTimer implements Observable {
      */
     public void stop() {
         this.future.cancel(true);
-        if (currentSeconds.get() > 0) //otherwise a STATUS_EXPIRED has already been sent
-            notifyObservers(STATUS_STOPPED, -1); //-1: no valuable information given when the timer stops
+        if (this.currentSeconds.get() > 0) //otherwise a STATUS_EXPIRED has already been sent
+            this.notifyObservers(STATUS_STOPPED, -1); //-1: no valuable information given when the timer stops
     }
 
     /**

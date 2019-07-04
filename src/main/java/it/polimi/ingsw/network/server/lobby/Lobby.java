@@ -133,7 +133,7 @@ public class Lobby implements Observer {
         this.players = new ArrayList<>();
 
         this.previousPlayersAmount = 0;
-        this.timeMargin = WAITING_TIME_MARGIN;
+        this.timeMargin = this.WAITING_TIME_MARGIN;
         this.timer = new CountDownTimer(this.WAITING_TIME_FULL);
         this.timer.addObserver(this);
 
@@ -202,16 +202,16 @@ public class Lobby implements Observer {
      * and reconnects after a certain amount of time.
      *
      * <p>The insertion criteria (that applies before the {@link Game} starts) are:
-     * 1 - there must be a space left in the {@code Lobby}. This is true if {@code players.size()} is less than
-     * {@link #MAX_PLAYERS}.
-     * 2 - the {@code player} can't be {@code null}.
-     * 3 - the {@code Lobby} can't contain another instance of {@link Player} {@code p}, so that {@code player.equals(p)}.
-     * 4- ether only one of the following conditions must be satisfied:
-     * a - the given {@code password} must be the same a {@code this.password}, so that
-     * {@code password.equals(this.password)}.
-     * b - both the given {@code password} and {@code this.password} must be null simultaneously.
-     * c - {@code this.password} must be either {@code null} or such that {@code this.password.isEmpty()} and
-     * {@code password } must be either {@code null} or such that {@code password.isBlank()}.
+     *      1 - there must be a space left in the {@code Lobby}. This is true if {@code players.size()} is less than
+     *          {@link #MAX_PLAYERS}.
+     *      2 - the {@code player} can't be {@code null}.
+     *      3 - the {@code Lobby} can't contain another instance of {@link Player} {@code p}, so that {@code player.equals(p)}.
+     *      4- ether only one of the following conditions must be satisfied:
+     *          a - the given {@code password} must be the same a {@code this.password}, so that
+     *              {@code password.equals(this.password)}.
+     *          b - both the given {@code password} and {@code this.password} must be null simultaneously.
+     *          c - {@code this.password} must be either {@code null} or such that {@code this.password.isEmpty()} and
+     *              {@code password } must be either {@code null} or such that {@code password.isBlank()}.
      *
      * @param player   the {@link Player} to insert into the {@code Lobby}.
      * @param password the authentication password to allow {@code player} to be inserted into this {@code Lobby}.
@@ -222,7 +222,7 @@ public class Lobby implements Observer {
      */
     void add(Player player, String password)
             throws LobbyFullException, PlayerAlreadyAddedException, InvalidPasswordException, GameAlreadyStartedException {
-        if (this.players.size() == MAX_PLAYERS)
+        if (this.players.size() == this.MAX_PLAYERS)
             throw new LobbyFullException("Lobby \"" + this.name + "\" is full");
 
         if (player == null)
@@ -233,16 +233,16 @@ public class Lobby implements Observer {
             throw new InvalidPasswordException("password \"" + password + "\" invalid for Lobby \"" + this.name + "\"");
 
         //could be a new Player or an old one previously disconnected
-        if (game == null || !game.isStarted()) {
+        if (this.game == null || !this.game.isStarted()) {
             //can add other players
             if (this.players.contains(player))
                 throw new PlayerAlreadyAddedException("Player \"" + player.getName() + "\" already found into Lobby \"" + this.name + "\"");
-            this.previousPlayersAmount = players.size();
+            this.previousPlayersAmount = this.players.size();
             this.players.add(player);
-            adjustTimer();
+            this.adjustTimer();
             return;
         }
-        if (!players.contains(player))
+        if (!this.players.contains(player))
             throw new GameAlreadyStartedException(); //this is a new Player: too late to join this Lobby
         //this is an old Player disconnected: he is already inside his Lobby (and Game)
     }
@@ -276,7 +276,7 @@ public class Lobby implements Observer {
         if (this.game == null || !this.game.isStarted()) {
             this.previousPlayersAmount = this.players.size();
             this.players.removeIf(p -> p.equals(player));
-            adjustTimer();
+            this.adjustTimer();
         }
     }
 
@@ -291,35 +291,35 @@ public class Lobby implements Observer {
      */
     private void adjustTimer() {
         // When the capacity limit is reached, drop the waiting time by WAITING_TIME_REDUCED, but not below timeMargin
-        if (players.size() == MAX_PLAYERS) {
-            int time = timer.getTime();
-            int newTime = Math.max(time - WAITING_TIME_REDUCED, this.timeMargin);
-            timer.setTime(newTime);
+        if (this.players.size() == this.MAX_PLAYERS) {
+            int time = this.timer.getTime();
+            int newTime = Math.max(time - this.WAITING_TIME_REDUCED, this.timeMargin);
+            this.timer.setTime(newTime);
         }
 
         // When there is the bare minimum amount of players
-        else if (players.size() == Game.MINIMUM_PLAYER_COUNT) {
+        else if (this.players.size() == Game.MINIMUM_PLAYER_COUNT) {
 
             // if there was an additional player who left, increase the time by timeMargin, but not above WAITING_TIME_REDUCED
             // any subsequent take of this branch will decrease the effect of timeMargin, as it decrements each time
             // this branch is entered (lower bound is 1);
-            if (previousPlayersAmount > Game.MINIMUM_PLAYER_COUNT) {
-                int time = timer.getTime();
-                int newTime = Math.min(time + this.timeMargin, WAITING_TIME_REDUCED);
+            if (this.previousPlayersAmount > Game.MINIMUM_PLAYER_COUNT) {
+                int time = this.timer.getTime();
+                int newTime = Math.min(time + this.timeMargin, this.WAITING_TIME_REDUCED);
                 this.timeMargin = Math.max(1, this.timeMargin - 1);
-                timer.setTime(newTime);
+                this.timer.setTime(newTime);
             }
             // if, instead, there were only 2 players, there are now enough players for a game, so the timer shall start.
             else {
-                timer.start();
+                this.timer.start();
             }
         }
 
         // When the number of players drops just below the threshold, stop the timer and reset it to the maximum value
         // Note that this does not reset timeMargin
-        else if (players.size() < Game.MINIMUM_PLAYER_COUNT && previousPlayersAmount >= Game.MINIMUM_PLAYER_COUNT) {
-            timer.stop();
-            timer.setTime(WAITING_TIME_FULL);
+        else if (this.players.size() < Game.MINIMUM_PLAYER_COUNT && this.previousPlayersAmount >= Game.MINIMUM_PLAYER_COUNT) {
+            this.timer.stop();
+            this.timer.setTime(this.WAITING_TIME_FULL);
         }
     }
 
@@ -327,7 +327,7 @@ public class Lobby implements Observer {
      * Notifies all the {@link #players} that the {@link #timer} has been expired.
      */
     private void notifyExpired() {
-        players.stream()
+        this.players.stream()
                 .filter(VirtualClient::isConnected)
                 .forEach(player -> {
                     try {
@@ -344,7 +344,7 @@ public class Lobby implements Observer {
      * @param seconds the new amount of time left to count down from.
      */
     private void notifyTimeUpdate(int seconds) {
-        players.stream()
+        this.players.stream()
                 .filter(VirtualClient::isConnected)
                 .forEach(player -> {
                     try {
@@ -360,7 +360,7 @@ public class Lobby implements Observer {
      * left in the {@code Lobby}.
      */
     private void notifyStopped() {
-        players.stream()
+        this.players.stream()
                 .filter(VirtualClient::isConnected)
                 .forEach(player -> {
                     try {
@@ -376,13 +376,13 @@ public class Lobby implements Observer {
      * except himself.
      */
     void notifyOpponentUpdate() {
-        if (notify)
-            players.stream()
+        if (this.notify)
+            this.players.stream()
                     .filter(VirtualClient::isConnected)
                     .forEach(player -> {
                         try {
                             player.sendMessage(NetworkMessage.completeServerMessage(MessageType.OPPONENTS_LIST_UPDATE,
-                                    players.stream()
+                                    this.players.stream()
                                             .filter(p -> !p.equals(player))
                                             .map(VirtualClient::getName)
                                             .collect(Collectors.toList())));
@@ -407,7 +407,7 @@ public class Lobby implements Observer {
             this.timer.removeObserver(this);
 
             //notify Clients the Game is about to start
-            notifyExpired();
+            this.notifyExpired();
 
             //start a new game or load an existing one
             new Thread(() -> {
@@ -419,12 +419,12 @@ public class Lobby implements Observer {
                             this.gameProperty.boardType(), this.players);
                     this.console.stat("new Game started from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
                 }
-                game.play();
+                this.game.play();
             }).start();
-            notify = false;
+            this.notify = false;
         } else if (eventStatus == CountDownTimer.STATUS_TIME_UPDATE)
-            notifyTimeUpdate(value);
+            this.notifyTimeUpdate(value);
         else if (eventStatus == CountDownTimer.STATUS_STOPPED) //else should be enough but, just in case...
-            notifyStopped();
+            this.notifyStopped();
     }
 }

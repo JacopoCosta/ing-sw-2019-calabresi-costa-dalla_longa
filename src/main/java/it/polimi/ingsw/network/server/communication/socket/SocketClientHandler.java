@@ -66,7 +66,7 @@ public class SocketClientHandler implements Runnable {
         this.communicationHub = CommunicationHub.getInstance();
         this.socket = socket;
 
-        console = Console.getInstance();
+        this.console = Console.getInstance();
 
         try {
             this.out = new ObjectOutputStream(socket.getOutputStream());
@@ -74,7 +74,7 @@ public class SocketClientHandler implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
             //this.console.err(e.getClass() + ": " + e.getMessage());
-            closeConnection();
+            this.closeConnection();
         }
     }
 
@@ -116,7 +116,7 @@ public class SocketClientHandler implements Runnable {
 
                 if (message.getType().equals(MessageType.REGISTER_REQUEST)) {
                     //reformat the message to add the proper information before forwarding it to the communicationHub
-                    ClientCommunicationInterface clientInterface = new SocketClientCommunicationInterface(out);
+                    ClientCommunicationInterface clientInterface = new SocketClientCommunicationInterface(this.out);
                     String playerName = message.getAuthor();
                     Player player = new Player(playerName);
                     player.setCommunicationInterface(clientInterface);
@@ -132,7 +132,7 @@ public class SocketClientHandler implements Runnable {
             e.printStackTrace();
             //this.console.err(e.getClass() + ": " + e.getMessage());
         } finally {
-            closeConnection();
+            this.closeConnection();
         }
     }
 }

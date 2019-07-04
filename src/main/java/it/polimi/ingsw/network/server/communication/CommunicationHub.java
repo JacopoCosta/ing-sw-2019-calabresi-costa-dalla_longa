@@ -14,19 +14,55 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * A {@code CommunicationHub} represents the intermediate class between a {@code ClientCommunicationInterface} and the
+ * more abstract {@link Player}.
+ * This class collects all the {@link NetworkMessage}s received from the {@code Server} and process them. Messages that
+ * does not compete to it, are forwarded to the corresponding {@link Player}.
+ * Also the {@code CommunicationHub} is responsible for the continuous connection check for each client connected. After
+ * a disconnection has been detected, the proper procedures of logout and unregistering are performed in order to guarantee
+ * the integrity of this ecosystem.
+ */
 @SuppressWarnings("FieldCanBeLocal")
 public class CommunicationHub {
+    /**
+     * The {@code CommunicationHub} unique instance.
+     */
     private static CommunicationHub instance;
 
+    /**
+     * A {@code List} of all the {@link Player}s connected to te {@code Server}.
+     */
     private final Queue<Player> players;
+
+    /**
+     * A reference to the {@link LobbyManager} responsible for the {@code Lobby} handling.
+     */
     private final LobbyManager lobbyManager;
 
+    /**
+     * The {@link ScheduledExecutorService} responsible for the continuous connection check among all the clients.
+     */
     private final ScheduledExecutorService checkConnectionExecutor;
+
+    /**
+     * The task to be performed every time a connection check is required.
+     */
     private final Runnable connectionCheckTask;
+
+    /**
+     * The delay between subsequent connection check tasks.
+     */
     private final int CHECK_PERIOD = 5;
 
+    /**
+     * The {@link Console} used to print any kind of errors that may occur during the client execution.
+     */
     private final Console console = Console.getInstance();
 
+    /**
+     * This is the only constructor. It creates a new {@code CommunicationHub} and the relative connection check task.
+     */
     private CommunicationHub() {
         this.players = new ConcurrentLinkedQueue<>();
         this.lobbyManager = new LobbyManager();
@@ -54,7 +90,7 @@ public class CommunicationHub {
                                 //this.console.err(e.getMessage());
                             }
                             this.console.log("unregistering Client \"" + player.getName() + "\"...");
-                            unregister(player);
+                            this.unregister(player);
 
                         } catch (ClientNotRegisteredException e) {
                             e.printStackTrace();
@@ -70,31 +106,51 @@ public class CommunicationHub {
         this.checkConnectionExecutor.scheduleAtFixedRate(this.connectionCheckTask, 0, this.CHECK_PERIOD, TimeUnit.SECONDS);
     }
 
+    /**
+     * Return the {@code CommunicationHub} unique instance.
+     *
+     * @return the {@code CommunicationHub} unique instance.
+     */
     public static CommunicationHub getInstance() {
         if (instance == null)
             instance = new CommunicationHub();
         return instance;
     }
 
-    private Player getPlayerByName(String name) throws ClientNotRegisteredException {
+    /**
+     * Returns a {@link Player} that corresponds to the given {@code name}, if any.
+     *
+     * @param name the name of the {@link Player} to find.
+     * @return the {@link Player} whose name corresponds to the given {@code name}.
+     * @throws PlayerNotFoundException if no {@link Player} can be found whose name matches the given {@code name};
+     */
+    private Player getPlayerByName(String name) throws PlayerNotFoundException {
         if (name == null)
             throw new NullPointerException("Client name is null");
 
         for (Player player : this.players)
             if (player.getName().equals(name))
                 return player;
-        throw new ClientNotRegisteredException("Client \"" + name + "\" not registered");
+        throw new PlayerNotFoundException("Client \"" + name + "\" not registered");
     }
 
-    //returns true if the player was already found into the server and is has simply rejoined, false if the player is a new one
+    /**
+     * Register the given {@link Player} into the {@code Server}.
+     *
+     * @param player the {@link Player} to be registered.
+     * @return {@code true} if the {@link Player} was already found into the {@code Server} and is has simply rejoined,
+     * {@code false} if the {@link Player} is a new one.
+     * @throws ClientAlreadyRegisteredException if another {@link Player} with the same name of the {@link Player} given
+     *                                          has already been registered to the {@code Server}.
+     */
     private boolean register(Player player) throws ClientAlreadyRegisteredException {
         if (player == null)
             throw new NullPointerException("Client is null");
 
         Player dormantPlayer;
         try {
-            dormantPlayer = getPlayerByName(player.getName());
-        } catch (ClientNotRegisteredException ignored) {
+            dormantPlayer = this.getPlayerByName(player.getName());
+        } catch (PlayerNotFoundException ignored) {
             //this is a new Player with a unique name
             this.players.add(player);
             player.notifyConnected();
@@ -111,6 +167,13 @@ public class CommunicationHub {
         return true;
     }
 
+    /**
+     * Unregister the given {@link Player} from the {@code Server}.
+     *
+     * @param player the {@link Player} to be unregistered.
+     * @throws ClientNotRegisteredException if no {@link Player} whose name equals the name of the given {@link Player}
+     *                                      has been previously registered into the {@code Server}.
+     */
     private void unregister(Player player) throws ClientNotRegisteredException {
         if (player == null)
             throw new NullPointerException("Player is null");
@@ -119,42 +182,57 @@ public class CommunicationHub {
         this.players.remove(player);
     }
 
+    /**
+     * This method is the core of all the {@code CommunicationHub} logic. it is called every time the underlying network
+     * level receives a {@link NetworkMessage} from the remote {@code Client}. Its only task is to classify the message
+     * received and forward it to the corresponding handler method.
+     *
+     * @param message the {@link NetworkMessage} to be classified.
+     * @see MessageType
+     */
     public synchronized void handleMessage(NetworkMessage message) {
         this.console.mexC("Message " + message.getType().toString() + " received from Client \"" + message.getAuthor() + "\"");
 
         switch (message.getType()) {
             case REGISTER_REQUEST:
-                handleRegistration(message);
+                this.handleRegistration(message);
                 break;
             case UNREGISTER_REQUEST:
-                handleUnregistering(message);
+                this.handleUnregistering(message);
                 break;
             case LOBBY_LIST_UPDATE_REQUEST:
-                handleUpdateRequest(message);
+                this.handleUpdateRequest(message);
                 break;
             case LOBBY_CREATE_REQUEST:
-                handleLobbyCreation(message);
+                this.handleLobbyCreation(message);
                 break;
             case LOBBY_LOGIN_REQUEST:
-                handleLobbyLogin(message);
+                this.handleLobbyLogin(message);
                 break;
             case LOBBY_LOGOUT_REQUEST:
-                handleLobbyLogout(message);
+                this.handleLobbyLogout(message);
                 break;
             case CLIENT_MESSAGE:
-                notifyPlayer(message);
+                this.notifyPlayer(message);
                 break;
             default:
                 this.console.err("Message " + message.getType() + " received from Client \"" + message.getAuthor() + "\": ignored");
         }
     }
 
+    /**
+     * This method handles the {@link NetworkMessage}s of type {@code REGISTER_REQUEST}. It is responsible for the proper
+     * registering procedure of the {@link NetworkMessage} author into the {@code Server}.
+     *
+     * @param message the {@link NetworkMessage} to be handled.
+     * @see MessageType
+     */
     private void handleRegistration(NetworkMessage message) {
         Player player = (Player) message.getContent();
 
         this.console.log("registering Client \"" + player.getName() + "\"...");
         try {
-            if (!register(player))
+            if (!this.register(player))
                 this.console.log("Client \"" + player.getName() + "\" successfully registered");
             else
                 this.console.log("Client \"" + player.getName() + "\" already found in server, rejoin successful");
@@ -173,12 +251,19 @@ public class CommunicationHub {
         }
     }
 
+    /**
+     * This method handles the {@link NetworkMessage}s of type {@code UNREGISTER_REQUEST}. It is responsible for the proper
+     * unregistering procedure of the {@link NetworkMessage} author out of the {@code Server}.
+     *
+     * @param message the {@link NetworkMessage} to be handled.
+     * @see MessageType
+     */
     private void handleUnregistering(NetworkMessage message) {
         Player player;
 
         try {
-            player = (getPlayerByName(message.getAuthor()));
-        } catch (ClientNotRegisteredException e) {
+            player = (this.getPlayerByName(message.getAuthor()));
+        } catch (PlayerNotFoundException e) {
             e.printStackTrace();
             //this.console.err(e.getMessage());
             return;
@@ -186,7 +271,7 @@ public class CommunicationHub {
 
         this.console.log("unregistering Client \"" + player.getName() + "\"...");
         try {
-            unregister(player);
+            this.unregister(player);
             message = NetworkMessage.simpleServerMessage(MessageType.UNREGISTER_SUCCESS);
             this.console.log("Client \"" + player.getName() + "\" successfully unregistered");
         } catch (ClientNotRegisteredException e) {
@@ -203,12 +288,19 @@ public class CommunicationHub {
         }
     }
 
+    /**
+     * This method handles the {@link NetworkMessage}s of type {@code LOBBY_UPDATE_REQUEST}. It is responsible for the correct
+     * send of the updated {@code Lobby} list to the {@link NetworkMessage} author.
+     *
+     * @param message the {@link NetworkMessage} to be handled.
+     * @see MessageType
+     */
     private void handleUpdateRequest(NetworkMessage message) {
         Player player;
 
         try {
-            player = getPlayerByName(message.getAuthor());
-        } catch (ClientNotRegisteredException e) {
+            player = this.getPlayerByName(message.getAuthor());
+        } catch (PlayerNotFoundException e) {
             this.console.err(e.getMessage());
             return;
         }
@@ -225,6 +317,13 @@ public class CommunicationHub {
         }
     }
 
+    /**
+     * This method handles the {@link NetworkMessage}s of type {@code LOBBY_CREATE_REQUEST}. It is responsible for the
+     * proper creation of a new {@code Lobby}. All the information needed are stored into the message {@code content} field.
+     *
+     * @param message the {@link NetworkMessage} to be handled.
+     * @see MessageType
+     */
     private void handleLobbyCreation(NetworkMessage message) {
         String[] lobbyInfo = ((String[]) (message.getContent()));
         String lobbyName = lobbyInfo[0];
@@ -232,8 +331,8 @@ public class CommunicationHub {
         Player player;
 
         try {
-            player = (getPlayerByName(message.getAuthor()));
-        } catch (ClientNotRegisteredException e) {
+            player = (this.getPlayerByName(message.getAuthor()));
+        } catch (PlayerNotFoundException e) {
             this.console.err(e.getMessage());
             return;
         }
@@ -274,9 +373,16 @@ public class CommunicationHub {
             e.printStackTrace();
             //this.console.err(e.getClass() + ": " + e.getMessage());
         }
-        sendOpponentsUpdate(player);
+        this.sendOpponentsUpdate(player);
     }
 
+    /**
+     * This method handles the {@link NetworkMessage}s of type {@code LOBBY_LOGIN_REQUEST}. It is responsible for the
+     * proper login of the {@link NetworkMessage} author into the {@code Lobby} whose name can be found into the given message.
+     *
+     * @param message the {@link NetworkMessage} to be handled.
+     * @see MessageType
+     */
     private void handleLobbyLogin(NetworkMessage message) {
         String[] lobbyInfo = ((String[]) (message.getContent()));
         String lobbyName = lobbyInfo[0];
@@ -284,8 +390,8 @@ public class CommunicationHub {
         Player player;
 
         try {
-            player = getPlayerByName(message.getAuthor());
-        } catch (ClientNotRegisteredException e) {
+            player = this.getPlayerByName(message.getAuthor());
+        } catch (PlayerNotFoundException e) {
             this.console.err(e.getMessage());
             return;
         }
@@ -318,16 +424,23 @@ public class CommunicationHub {
             e.printStackTrace();
             //this.console.err(e.getClass() + ": " + e.getMessage());
         }
-        sendOpponentsUpdate(player);
+        this.sendOpponentsUpdate(player);
     }
 
+    /**
+     * This method handles the {@link NetworkMessage}s of type {@code LOBBY_LOGOUT_REQUEST}. It is responsible for the
+     * proper logout procedure of the {@link NetworkMessage} author.
+     *
+     * @param message the {@link NetworkMessage} to be handled.
+     * @see MessageType
+     */
     private void handleLobbyLogout(NetworkMessage message) {
         String lobbyName = (String) message.getContent();
         Player player;
 
         try {
-            player = getPlayerByName(message.getAuthor());
-        } catch (ClientNotRegisteredException e) {
+            player = this.getPlayerByName(message.getAuthor());
+        } catch (PlayerNotFoundException e) {
             this.console.err(e.getMessage());
             return;
         }
@@ -356,12 +469,18 @@ public class CommunicationHub {
             e.printStackTrace();
             //this.console.err(e.getClass() + ": " + e.getMessage());
         }
-        sendOpponentsUpdate(player);
+        this.sendOpponentsUpdate(player);
     }
 
+    /**
+     * This method is responsible for the proper send of the updated list of {@link Player}s in the same {@code lobby}
+     * of the given {@code player}.
+     *
+     * @param player the {@link Player} to send the update to.
+     */
     private void sendOpponentsUpdate(Player player) {
         try {
-            lobbyManager.notifyOpponentsUpdate(lobbyManager.getLobbyNameByPlayer(player));
+            this.lobbyManager.notifyOpponentsUpdate(this.lobbyManager.getLobbyNameByPlayer(player));
         } catch (LobbyNotFoundException | PlayerNotFoundException e) {
             //this.console.err(e.getMessage());
             e.printStackTrace();
@@ -370,12 +489,19 @@ public class CommunicationHub {
         this.console.mexS("message " + MessageType.OPPONENTS_LIST_UPDATE + " sent to Client \"" + player.getName() + "\"");
     }
 
+    /**
+     * This method handles the {@link NetworkMessage}s of type {@code CLIENT_MESSAGE}. It is responsible for the correct
+     * forward of the given {@link NetworkMessage} to the {@link Player} counterpart of the message author.
+     *
+     * @param message the {@link NetworkMessage} to be handled.
+     * @see MessageType
+     */
     private void notifyPlayer(NetworkMessage message) {
         Player player;
 
         try {
-            player = getPlayerByName(message.getAuthor());
-        } catch (ClientNotRegisteredException e) {
+            player = this.getPlayerByName(message.getAuthor());
+        } catch (PlayerNotFoundException e) {
             e.printStackTrace();
             //this.console.err(e.getMessage());
             return;

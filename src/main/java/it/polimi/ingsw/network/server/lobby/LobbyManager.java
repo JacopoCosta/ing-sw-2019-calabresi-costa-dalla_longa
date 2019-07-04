@@ -78,7 +78,7 @@ public class LobbyManager {
             throw new NullPointerException("Lobby name is null");
 
         try {
-            getLobbyByName(lobbyName);
+            this.getLobbyByName(lobbyName);
             throw new LobbyAlreadyExistsException("Lobby\"" + lobbyName + "\" already exists");
         } catch (LobbyNotFoundException ignored) {
         }
@@ -104,7 +104,7 @@ public class LobbyManager {
         if (lobbyName == null)
             throw new NullPointerException("Lobby name is null");
 
-        getLobbyByName(lobbyName).add(player, password);
+        this.getLobbyByName(lobbyName).add(player, password);
     }
 
     /**
@@ -125,7 +125,7 @@ public class LobbyManager {
         if (player == null)
             throw new NullPointerException("Player is null");
 
-        Lobby lobby = getLobbyByName(lobbyName);
+        Lobby lobby = this.getLobbyByName(lobbyName);
 
         lobby.remove(player);
         if (lobby.getCurrentPlayers() == 0) {
@@ -170,6 +170,6 @@ public class LobbyManager {
      * @throws LobbyNotFoundException  if no {@link Lobby} containing the given {@code player }can be found.
      */
     public void notifyOpponentsUpdate(String lobbyName) throws LobbyNotFoundException {
-        getLobbyByName(lobbyName).notifyOpponentUpdate();
+        this.getLobbyByName(lobbyName).notifyOpponentUpdate();
     }
 }

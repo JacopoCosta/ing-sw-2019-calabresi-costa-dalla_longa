@@ -12,7 +12,7 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
     private final ProcessBuilder pb;
 
     WindowsConsoleExecutor() {
-        pb = new ProcessBuilder();
+        this.pb = new ProcessBuilder();
     }
 
     /**
@@ -23,7 +23,7 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      */
     private void execute(String command){
         try {
-            pb.command("powershell.exe", "-Command", command).inheritIO().start().waitFor();
+            this.pb.command("powershell.exe", "-Command", command).inheritIO().start().waitFor();
         } catch (IOException | InterruptedException ignored) {
         }
     }
@@ -33,7 +33,7 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      */
     @Override
     public synchronized void clear() {
-        execute("clear");
+        this.execute("clear");
     }
 
     /**
@@ -47,6 +47,6 @@ class WindowsConsoleExecutor implements ConsoleExecutor {
      */
     @Override
     public synchronized void ANSIPrint(String ansiMessage) {
-        execute("write-host \"" + ansiMessage + "\" -nonewline");
+        this.execute("write-host \"" + ansiMessage + "\" -nonewline");
     }
 }

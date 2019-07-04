@@ -27,12 +27,12 @@ public class Console {
      * This is the only constructor. It creates a new {@code Console} instance to run on the underlying Operative System.
      */
     private Console() {
-        osName = System.getProperty("os.name").toLowerCase();
+        this.osName = System.getProperty("os.name").toLowerCase();
 
-        if (isWindowsOS())
-            executor = new WindowsConsoleExecutor();
-        else if (isUnixOS() || isMacOS())
-            executor = new UnixConsoleExecutor();
+        if (this.isWindowsOS())
+            this.executor = new WindowsConsoleExecutor();
+        else if (this.isUnixOS() || this.isMacOS())
+            this.executor = new UnixConsoleExecutor();
         else
             throw new RuntimeException("invalid OS: unable to execute console commands");
     }
@@ -55,7 +55,7 @@ public class Console {
      * Operative System, {@code false} otherwise.
      */
     private boolean isWindowsOS() {
-        return (osName.contains("win"));
+        return (this.osName.contains("win"));
     }
 
     /**
@@ -66,7 +66,7 @@ public class Console {
      * Linux Operative System, or a Unix environment excluding Mac OS, {@code false} otherwise.
      */
     private boolean isUnixOS() {
-        return (osName.contains("nix") || osName.contains("nux") || osName.indexOf("aix") > 0);
+        return (this.osName.contains("nix") || this.osName.contains("nux") || this.osName.indexOf("aix") > 0);
     }
 
     /**
@@ -76,7 +76,7 @@ public class Console {
      * System, {@code false} otherwise.
      */
     private boolean isMacOS() {
-        return (osName.contains("mac"));
+        return (this.osName.contains("mac"));
     }
 
     /**
@@ -85,7 +85,7 @@ public class Console {
      * @return the name of the Operative System this console instance is running on.
      */
     public String getOsName() {
-        return osName;
+        return this.osName;
     }
 
     /**
@@ -131,8 +131,8 @@ public class Console {
      * @see #ANSIPrint(String)
      */
     public void ANSIPrintln(String utf8Message) {
-        executor.ANSIPrint(utf8Message);
-        tinyPrintln("");
+        this.executor.ANSIPrint(utf8Message);
+        this.tinyPrintln("");
     }
 
     /**
@@ -141,7 +141,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void mexS(String message) {
-        ANSIPrintln(Color.ANSI_CYAN + "[MESSAGE] " + message + Color.ANSI_RESET);
+        this.ANSIPrintln(Color.ANSI_CYAN + "[MESSAGE] " + message + Color.ANSI_RESET);
     }
 
     /**
@@ -150,7 +150,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void mexC(String message) {
-        ANSIPrintln(Color.ANSI_YELLOW + "[MESSAGE] " + message + Color.ANSI_RESET);
+        this.ANSIPrintln(Color.ANSI_YELLOW + "[MESSAGE] " + message + Color.ANSI_RESET);
     }
 
     /**
@@ -159,7 +159,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void log(String message) {
-        tinyPrintln("[LOG] " + message);
+        this.tinyPrintln("[LOG] " + message);
     }
 
     /**
@@ -168,7 +168,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void stat(String message) {
-        ANSIPrintln(Color.ANSI_GREEN + "[STATUS] " + message + Color.ANSI_RESET);
+        this.ANSIPrintln(Color.ANSI_GREEN + "[STATUS] " + message + Color.ANSI_RESET);
     }
 
     /**
@@ -177,7 +177,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void err(String message) {
-        ANSIPrintln(Color.ANSI_RED + "[ERROR] " + message + Color.ANSI_RESET);
+        this.ANSIPrintln(Color.ANSI_RED + "[ERROR] " + message + Color.ANSI_RESET);
     }
 
     /**
@@ -186,7 +186,7 @@ public class Console {
      * @param message the {@code String} value to be printed.
      */
     public void mexG(String message) {
-        tinyPrintln("[GAME] " + message);
+        this.tinyPrintln("[GAME] " + message);
     }
 
     /**
@@ -194,6 +194,6 @@ public class Console {
      * being cleared.
      */
     public void clear() {
-        executor.clear();
+        this.executor.clear();
     }
 }

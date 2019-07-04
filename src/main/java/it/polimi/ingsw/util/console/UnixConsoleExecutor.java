@@ -33,7 +33,7 @@ class UnixConsoleExecutor implements ConsoleExecutor {
     @Override
     public void clear() {
         try {
-            execute("clear");
+            this.execute("clear");
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -51,7 +51,7 @@ class UnixConsoleExecutor implements ConsoleExecutor {
     @Override
     public void ANSIPrint(String ansiMessage) {
         try {
-            execute("echo -n \"" + ansiMessage.replace("\"", "\\\"") + "\"");
+            this.execute("echo -n \"" + ansiMessage.replace("\"", "\\\"") + "\"");
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

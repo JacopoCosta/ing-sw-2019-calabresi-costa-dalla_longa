@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.remote;
+package it.polimi.ingsw.util;
 
 import it.polimi.ingsw.util.console.Console;
 
