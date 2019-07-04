@@ -13,7 +13,7 @@ import static it.polimi.ingsw.util.UTF.*;
 
 public abstract class CliTracks {
     private static final int trackWidth = 27;
-    private static final int trackHeight = 6;
+    private static final int trackHeight = 3;
 
     private static ColoredString[][] grid;
 
@@ -49,11 +49,11 @@ public abstract class CliTracks {
             roundsLeft = 0;
 
         for(int k = 0; k < 8 - roundsLeft; k ++) {
-            grid[2][2 + 3 * k] = new ColoredString(skull, Color.ANSI_WHITE);
+            grid[1][2 + 3 * k] = new ColoredString(skull, Color.ANSI_WHITE);
         }
 
         for(int k = 8 - roundsLeft; k < 8; k ++) {
-            grid[2][2 + 3 * k] = new ColoredString(skull, Color.ANSI_RED);
+            grid[1][2 + 3 * k] = new ColoredString(skull, Color.ANSI_RED);
         }
 
         for(int i = 0; i < killers.size(); i ++)
@@ -70,16 +70,16 @@ public abstract class CliTracks {
     }
 
     private static void writeOnKillerTrack(int index, Player player, boolean overKill) {
-        int i = 2;
+        int i = 1;
         int j = 2 + 3 * index;
 
         grid[i][j] = new ColoredString(full, CliCommon.toAnsiColor(player));
         if(overKill)
-            grid[i + 1][j + 1] = new ColoredString(full, CliCommon.toAnsiColor(player));
+            grid[i][j + 1] = new ColoredString(full, CliCommon.toAnsiColor(player));
     }
 
     private static void writeOnDoubleKillerTrack(int index, Player player) {
-        int i = 2;
+        int i = 1;
         int j = 2 + 2 * index;
 
         grid[i][j] = new ColoredString(full, CliCommon.toAnsiColor(player));

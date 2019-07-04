@@ -183,7 +183,7 @@ public class Weapon {
         try {
             coloredStrings.add(new ColoredString(name, Color.toAnsi((reloadCost.take(purchaseCost)).toStringAsColor())));
         } catch (CannotAffordException ignored) { }
-        coloredStrings.addAll(reloadCost.toColoredStrings());
+        coloredStrings.addAll(purchaseCost.toColoredStrings());
         return coloredStrings;
     }
 }

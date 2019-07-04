@@ -98,10 +98,8 @@ public class CLI implements GraphicalInterface {
                 console.ANSIPrintln(Color.ANSI_RESET + Assets.getTracksHeader());
                 ConsoleOptimizer.print(assets.getTracks());
                 ConsoleOptimizer.print(assets.getBoard());
-                console.ANSIPrintln(Color.ANSI_RESET + Assets.getOpponentToasterHeader());
+                console.ANSIPrintln(Color.ANSI_RESET + Assets.getToasterHeader());
                 ConsoleOptimizer.print(assets.getOpponentToasters());
-                console.ANSIPrintln(Color.ANSI_RESET + Assets.getOwnToasterHeader());
-                ConsoleOptimizer.print(assets.getOwnToaster());
                 console.ANSIPrintln(Color.ANSI_RESET);
             default:
                 break;

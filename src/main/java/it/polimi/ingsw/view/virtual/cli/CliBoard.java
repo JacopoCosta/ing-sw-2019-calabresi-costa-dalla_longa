@@ -17,11 +17,11 @@ import java.util.List;
 import static it.polimi.ingsw.util.UTF.*;
 
 public abstract class CliBoard {
-    private static final int cellWidth = 27;
-    private static final int cellHeight = 13;
+    private static final int cellWidth = 25;
+    private static final int cellHeight = 11;
     
     private static final int doorWidth = 9;
-    private static final int doorHeight = 5;
+    private static final int doorHeight = 3;
 
     private static ColoredString[][] grid;
 
@@ -78,7 +78,7 @@ public abstract class CliBoard {
             }
         }
 
-        int row = cellHeight - 3;
+        int row = cellHeight - 2;
         for(Player p : cell.getPlayers()) {
             String playerAnsiColor = CliCommon.toAnsiColor(p);
             List<ColoredString> playerToken = new ArrayList<>();
