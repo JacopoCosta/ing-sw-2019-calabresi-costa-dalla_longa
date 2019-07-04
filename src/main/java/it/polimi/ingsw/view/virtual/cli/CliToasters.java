@@ -11,23 +11,21 @@ import java.util.Arrays;
 import java.util.List;
 
 import static it.polimi.ingsw.util.UTF.*;
+import static it.polimi.ingsw.view.virtual.cli.CliCommon.canvas;
 
-public abstract class CliToaster {
+public abstract class CliToasters {
+    private static final int top = 36;
+    private static final int left = 0;
+
     private static final int toasterWidth = 35;
     private static final int toasterHeight = 10;
 
-    private static ColoredString[][] toasterField;
-
-    public static ColoredString[][] build(Game game) {
-        toasterField = new ColoredString[toasterHeight][toasterWidth * game.getParticipants().size()];
-
+    public static void build(Game game) {
         int index = 0;
         for(Player p : game.getParticipants()) {
             writeToaster(index, p);
             index ++;
         }
-
-        return toasterField;
     }
 
     private static void writeToaster(int index, Player player) {
@@ -80,15 +78,15 @@ public abstract class CliToaster {
 
         for(ColoredString cs : coloredStrings) {
             for (int i = 0; i < cs.content().length(); i++) {
-                toasterField[row][index * toasterWidth + 2 + caret] = new ColoredString(cs.content().substring(i, i + 1), cs.color());
+                canvas[row + top][index * toasterWidth + 2 + caret + left] = new ColoredString(cs.content().substring(i, i + 1), cs.color());
                 caret ++;
             }
         }
     }
 
     private static void buildBorderCounterclockwise(int cornerId, int index, String ansiColor) {
-        int i = cornerId == 1 || cornerId == 2 ? (toasterHeight - 1) : 0;
-        int j = index * toasterWidth + (cornerId == 1 || cornerId == 4 ? 0 : toasterWidth - 1);
+        int i = top + cornerId == 1 || cornerId == 2 ? (toasterHeight - 1) : 0;
+        int j = left + index * toasterWidth + (cornerId == 1 || cornerId == 4 ? 0 : toasterWidth - 1);
 
         String startingCorner = Arrays.asList(corner1, corner2, corner3, corner4).get(cornerId - 1);
         String line = cornerId % 2 == 0 ? vertical : horizontal;
@@ -98,11 +96,11 @@ public abstract class CliToaster {
         int di = Arrays.asList(0, -1, 0, 1).get(cornerId - 1);
         int dj = Arrays.asList(1, 0, -1, 0).get(cornerId - 1);
 
-        toasterField[i][j] = new ColoredString(startingCorner, ansiColor);
+        canvas[i][j] = new ColoredString(startingCorner, ansiColor);
         for(int k = 1; k < limit - 1; k ++) {
             i += di;
             j += dj;
-            toasterField[i][j] = new ColoredString(line, ansiColor);
+            canvas[i][j] = new ColoredString(line, ansiColor);
         }
     }
 }

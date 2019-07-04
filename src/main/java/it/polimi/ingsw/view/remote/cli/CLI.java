@@ -94,12 +94,7 @@ public class CLI implements GraphicalInterface {
                 break;
             case ASSETS:
                 console.clear();
-                Assets assets = (Assets) deliverable;
-                console.ANSIPrintln(Color.ANSI_RESET + Assets.getTracksHeader());
-                ConsoleOptimizer.print(assets.getTracks());
-                ConsoleOptimizer.print(assets.getBoard());
-                console.ANSIPrintln(Color.ANSI_RESET + Assets.getToasterHeader());
-                ConsoleOptimizer.print(assets.getOpponentToasters());
+                ConsoleOptimizer.print(((Assets) deliverable).unpack());
                 console.ANSIPrintln(Color.ANSI_RESET);
             default:
                 break;

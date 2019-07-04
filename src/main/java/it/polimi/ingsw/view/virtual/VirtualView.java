@@ -26,7 +26,8 @@ import it.polimi.ingsw.network.common.deliverable.*;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
 import it.polimi.ingsw.network.server.VirtualClient;
 import it.polimi.ingsw.view.virtual.cli.CliBoard;
-import it.polimi.ingsw.view.virtual.cli.CliToaster;
+import it.polimi.ingsw.view.virtual.cli.CliCommon;
+import it.polimi.ingsw.view.virtual.cli.CliToasters;
 import it.polimi.ingsw.view.virtual.cli.CliTracks;
 
 import java.util.ArrayList;
@@ -161,12 +162,7 @@ public class VirtualView {
 
     private void updateView(Player player) throws AbortedTurnException {
         try {
-            send(player, new Assets(
-                    DeliverableEvent.UPDATE_VIEW,
-                    CliTracks.build(game),
-                    CliBoard.build(game.getBoard()),
-                    CliToaster.build(game)
-            ));
+            send(player, new Assets(DeliverableEvent.UPDATE_VIEW, CliCommon.getCanvas()));
         } catch (AbortedTurnException e) {
             throw new AbortedTurnException("");
         }

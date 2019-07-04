@@ -10,21 +10,20 @@ import java.util.Arrays;
 import java.util.List;
 
 import static it.polimi.ingsw.util.UTF.*;
+import static it.polimi.ingsw.view.virtual.cli.CliCommon.canvas;
 
 public abstract class CliTracks {
+    private static final int top = 0;
+    private static final int left = 8;
+
     private static final int trackWidth = 27;
     private static final int trackHeight = 3;
 
-    private static ColoredString[][] grid;
-
-    public static ColoredString[][] build(Game game) {
+    public static void build(Game game) {
         List<Player> doubleKillers = game.getBoard().getDoubleKillers();
-        grid = new ColoredString[trackHeight][trackWidth + 3 + 2 * doubleKillers.size()];
 
         writeKillerTrack(game.getBoard().getKillers(), game.getRoundsLeft());
         writeDoubleKillerTrack(doubleKillers);
-
-        return grid;
     }
 
     private static void writeKillerTrack(List<Player> rawKillers, int roundsLeft) {
@@ -49,11 +48,11 @@ public abstract class CliTracks {
             roundsLeft = 0;
 
         for(int k = 0; k < 8 - roundsLeft; k ++) {
-            grid[1][2 + 3 * k] = new ColoredString(skull, Color.ANSI_WHITE);
+            canvas[top + 1][left + 2 + 3 * k] = new ColoredString(skull, Color.ANSI_WHITE);
         }
 
         for(int k = 8 - roundsLeft; k < 8; k ++) {
-            grid[1][2 + 3 * k] = new ColoredString(skull, Color.ANSI_RED);
+            canvas[top + 1][left + 2 + 3 * k] = new ColoredString(skull, Color.ANSI_RED);
         }
 
         for(int i = 0; i < killers.size(); i ++)
@@ -70,27 +69,27 @@ public abstract class CliTracks {
     }
 
     private static void writeOnKillerTrack(int index, Player player, boolean overKill) {
-        int i = 1;
-        int j = 2 + 3 * index;
+        int i = top + 1;
+        int j = left + 2 + 3 * index;
 
-        grid[i][j] = new ColoredString(full, CliCommon.toAnsiColor(player));
+        canvas[i][j] = new ColoredString(full, CliCommon.toAnsiColor(player));
         if(overKill)
-            grid[i][j + 1] = new ColoredString(full, CliCommon.toAnsiColor(player));
+            canvas[i][j + 1] = new ColoredString(full, CliCommon.toAnsiColor(player));
     }
 
     private static void writeOnDoubleKillerTrack(int index, Player player) {
-        int i = 1;
-        int j = 2 + 2 * index;
+        int i = top + 1;
+        int j = left + 2 + 2 * index;
 
-        grid[i][j] = new ColoredString(full, CliCommon.toAnsiColor(player));
+        canvas[i][j] = new ColoredString(full, CliCommon.toAnsiColor(player));
     }
 
     private static void buildBorderCounterclockwise(int cornerId, boolean doubleKillerTrack, int doubleKillerCount) {
         int width = doubleKillerTrack ? 3 + 2 * doubleKillerCount : trackWidth;
         int base = doubleKillerTrack ? trackWidth : 0;
 
-        int i = cornerId == 1 || cornerId == 2 ? (trackHeight - 1) : 0;
-        int j = base + (cornerId == 1 || cornerId == 4 ? 0 : (width - 1));
+        int i = top + (cornerId == 1 || cornerId == 2 ? (trackHeight - 1) : 0);
+        int j = left + base + (cornerId == 1 || cornerId == 4 ? 0 : (width - 1));
 
         String startingCorner = Arrays.asList(corner1, corner2, corner3, corner4).get(cornerId - 1);
         String line = cornerId % 2 == 0 ? vertical : horizontal;
@@ -100,11 +99,11 @@ public abstract class CliTracks {
         int di = Arrays.asList(0, -1, 0, 1).get(cornerId - 1);
         int dj = Arrays.asList(1, 0, -1, 0).get(cornerId - 1);
 
-        grid[i][j] = new ColoredString(startingCorner, Color.ANSI_BLACK);
+        canvas[i][j] = new ColoredString(startingCorner, Color.ANSI_BLACK);
         for(int k = 1; k < limit - 1; k ++) {
             i += di;
             j += dj;
-            grid[i][j] = new ColoredString(line, Color.ANSI_BLACK);
+            canvas[i][j] = new ColoredString(line, Color.ANSI_BLACK);
         }
     }
 }

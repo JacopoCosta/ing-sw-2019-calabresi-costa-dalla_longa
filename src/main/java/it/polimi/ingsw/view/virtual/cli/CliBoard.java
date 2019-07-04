@@ -15,27 +15,21 @@ import java.util.Arrays;
 import java.util.List;
 
 import static it.polimi.ingsw.util.UTF.*;
+import static it.polimi.ingsw.view.virtual.cli.CliCommon.canvas;
 
 public abstract class CliBoard {
+    private static final int top = 5;
+    private static final int left = 4;
+
     private static final int cellWidth = 25;
     private static final int cellHeight = 11;
     
     private static final int doorWidth = 9;
     private static final int doorHeight = 3;
 
-    private static ColoredString[][] grid;
-
-    public static ColoredString[][] build(Board board) {
-
-        final int totalWidth = cellWidth * board.getWidth();
-        final int totalHeight = cellHeight * board.getHeight();
-
-        grid = new ColoredString[totalHeight][totalWidth];
-
+    public static void build(Board board) {
         for(Cell cell : board.getCells())
             writeCell(cell);
-
-        return grid;
     }
 
     private enum WallType {
@@ -108,15 +102,15 @@ public abstract class CliBoard {
 
         for(ColoredString cs : coloredStrings) {
             for (int i = 0; i < cs.content().length(); i++) {
-                grid[cellY * cellHeight + row][cellX * cellWidth + 2 + caret] = new ColoredString(cs.content().substring(i, i + 1), cs.color());
+                canvas[cellY * cellHeight + row + top][cellX * cellWidth + 2 + caret + left] = new ColoredString(cs.content().substring(i, i + 1), cs.color());
                 caret ++;
             }
         }
     }
 
     private static void buildWallCounterclockwise(int cellX, int cellY, int cornerId, WallType type, String color) {
-        int i = cellY * cellHeight + (cornerId == 1 || cornerId == 2 ? cellHeight - 1 : 0);
-        int j = cellX * cellWidth + (cornerId == 2 || cornerId == 3 ? cellWidth - 1 : 0);
+        int i = top + cellY * cellHeight + (cornerId == 1 || cornerId == 2 ? cellHeight - 1 : 0);
+        int j = left + cellX * cellWidth + (cornerId == 2 || cornerId == 3 ? cellWidth - 1 : 0);
 
         String startingCorner = Arrays.asList(corner1, corner2, corner3, corner4).get(cornerId - 1);
         String full = cornerId % 2 == 0 ? vertical : horizontal;
@@ -133,29 +127,29 @@ public abstract class CliBoard {
 
         String ansiColor = Color.toAnsi(color);
 
-        grid[i][j] = new ColoredString(startingCorner, ansiColor);
+        canvas[i][j] = new ColoredString(startingCorner, ansiColor);
         for(int k = 1; k < limit - 1; k ++) {
             i += di;
             j += dj;
 
             switch(type) {
                 case FULL:
-                    grid[i][j] = new ColoredString(full, ansiColor);
+                    canvas[i][j] = new ColoredString(full, ansiColor);
                     break;
 
                 case DOOR:
                     int distanceFromMiddle = Math.abs(k - middle);
                     if(distanceFromMiddle == doorHalfSize)
-                        grid[i][j] = new ColoredString(k < middle ? gapOpen : gapClose, ansiColor);
+                        canvas[i][j] = new ColoredString(k < middle ? gapOpen : gapClose, ansiColor);
                     else if(distanceFromMiddle > doorHalfSize)
-                        grid[i][j] = new ColoredString(full, ansiColor);
+                        canvas[i][j] = new ColoredString(full, ansiColor);
                     break;
 
                 case OPEN:
                     if(k == 1)
-                        grid[i][j] = new ColoredString(gapOpen, ansiColor);
+                        canvas[i][j] = new ColoredString(gapOpen, ansiColor);
                     else if(k == limit - 2)
-                        grid[i][j] = new ColoredString(gapClose, ansiColor);
+                        canvas[i][j] = new ColoredString(gapClose, ansiColor);
             }
         }
     }
