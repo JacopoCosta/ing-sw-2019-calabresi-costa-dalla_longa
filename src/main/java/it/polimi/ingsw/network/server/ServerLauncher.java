@@ -3,16 +3,35 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.util.printer.ColorPrinter;
 import org.fusesource.jansi.AnsiConsole;
 
+/**
+ * This class is used to properly launch a {@link Server} application. Its main purpose is to check whether the specific
+ * parameters are correct and notify them to the {@link Server}, so that he can start as desired.
+ */
 public class ServerLauncher {
 
+    /**
+     * The {@code Server} ip address from which it can be reached by {@code Client}s
+     */
     private static String ipAddress;
+
+    /**
+     * The {@code Server} port to listen to.
+     */
     private static int port;
 
+    /**
+     * The default {@code String} to display when the user inputs wrong or insufficient arguments, or simply asks for help.
+     */
     private static final String helpString = "Adrenaline server.\n\n" +
             "Usage:\n" +
             "Server.jar -help\n" +
             "Server.jar <ip address> <port>";
 
+    /**
+     * Process the given set of {@code args}  to start the {@link Server} with the proper configuration.
+     *
+     * @param args the parameters to start the client with.
+     */
     private static void init(String[] args) {
         AnsiConsole.systemInstall();
         ColorPrinter.clear();
@@ -66,6 +85,11 @@ public class ServerLauncher {
         }
     }
 
+    /**
+     * Launches the {@code ServerLauncher} application.
+     *
+     * @param args the command line arguments.
+     */
     public static void main(String[] args) {
         init(args);
 

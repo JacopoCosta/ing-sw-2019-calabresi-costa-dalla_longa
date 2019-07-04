@@ -28,16 +28,24 @@ public class GameProperty {
     private final int boardType;
 
     /**
+     * The {@code GameProperty} representing the maximum amount of time in seconds a {@link Game} turn can last,
+     * as described in the {@link Game} //TODO attribute.
+     */
+    private final int turnDuration;
+
+    /**
      * This is the only constructor. It creates a new {@code GameProperty} with the given property values
      *
      * @param finalFrenzy  the {@link Game} {@code finalFrenzy} flag.
      * @param roundsToPlay the {@link Game} {@code roundsToPlay} attribute.
      * @param boardType    the {@link Game} {@code boardType} attribute.
+     * @param turnDuration the {@link Game} {@code turnDuration} attribute.
      */
-    GameProperty(boolean finalFrenzy, int roundsToPlay, int boardType) {
+    GameProperty(boolean finalFrenzy, int roundsToPlay, int boardType, int turnDuration) {
         this.finalFrenzy = finalFrenzy;
         this.roundsToPlay = roundsToPlay;
         this.boardType = boardType;
+        this.turnDuration = turnDuration;
     }
 
     /**
@@ -65,5 +73,14 @@ public class GameProperty {
      */
     public int boardType() {
         return this.boardType;
+    }
+
+    /**
+     * Returns the {@link #turnDuration} current value.
+     *
+     * @return the {@link #turnDuration} current value.
+     */
+    public int turnDuration() {
+        return this.turnDuration;
     }
 }

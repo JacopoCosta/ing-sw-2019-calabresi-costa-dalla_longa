@@ -37,6 +37,11 @@ public class GamePropertyLoader {
     private static final String BOARD_TYPE_SEQUENCE = "board type";
 
     /**
+     * The prefix indicating the {@link #turnDuration} attribute.
+     */
+    private static final String TURN_DURATION_SEQUENCE = "turn duration";
+
+    /**
      * The lower bound for the {@link #roundsToPlay} attribute.
      */
     private static final int MINIMUM_ROUNDS_TO_PLAY_VALUE = 5;
@@ -57,6 +62,16 @@ public class GamePropertyLoader {
     private static final int MAXIMUM_BOARD_TYPE_VALUE = 4;
 
     /**
+     * The upper bound for the {@link #turnDuration} attribute.
+     */
+    private static final int MAXIMUM_TURN_DURATION_VALUE = 180;
+
+    /**
+     * The lower bound for the {@link #turnDuration} attribute.
+     */
+    private static final int MINIMUM_TURN_DURATION_VALUE = 10;
+
+    /**
      * The flag containing the {@link GameProperty} {@code finalFrenzy} value.
      */
     private boolean finalFrenzy;
@@ -70,6 +85,11 @@ public class GamePropertyLoader {
      * The attribute containing the {@link GameProperty} {@code boardType} value.
      */
     private int boardType;
+
+    /**
+     * The attribute containing the {@link GameProperty} {@code turnDuration} value.
+     */
+    private int turnDuration;
 
     /**
      * The {@link Scanner} responsible for the actual reading of the {@link GameProperty} values from the configuration file.
@@ -109,13 +129,16 @@ public class GamePropertyLoader {
                     case BOARD_TYPE_SEQUENCE:
                         this.boardType = this.getBoardTypeProperty(description);
                         break;
+                    case TURN_DURATION_SEQUENCE:
+                        this.turnDuration = this.getTurnDurationProperty(description);
+                        break;
                     default:
                         throw new InvalidPropertyException("\"" + prefix + "\" is not a valid property.");
                 }
             }
         }
 
-        return new GameProperty(this.finalFrenzy, this.roundsToPlay, this.boardType);
+        return new GameProperty(this.finalFrenzy, this.roundsToPlay, this.boardType, this.turnDuration);
     }
 
     /**
@@ -158,6 +181,19 @@ public class GamePropertyLoader {
      */
     private int getBoardTypeProperty(String description) throws InvalidPropertyException {
         return this.getIntegerProperty(description, BOARD_TYPE_SEQUENCE, MINIMUM_BOARD_TYPE_VALUE, MAXIMUM_BOARD_TYPE_VALUE);
+    }
+
+    /**
+     * Returns the integer value corresponding to the given {@code String} representation for the {@link #turnDuration} property,
+     * after verifying that the given {@code description} satisfies all the corresponding requirements.
+     *
+     * @param description the {@code String} representation of the {@link #turnDuration} property.
+     * @return the corresponding {@link #turnDuration} property.
+     * @throws InvalidPropertyException if the corresponding requirements are not satisfied.
+     * @see #getIntegerProperty(String, String, int, int)
+     */
+    private int getTurnDurationProperty(String description) throws InvalidPropertyException {
+        return this.getIntegerProperty(description, TURN_DURATION_SEQUENCE, MAXIMUM_TURN_DURATION_VALUE, MINIMUM_TURN_DURATION_VALUE);
     }
 
     /**

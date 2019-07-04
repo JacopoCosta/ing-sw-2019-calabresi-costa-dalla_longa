@@ -106,7 +106,7 @@ public class ClientLauncher {
         try {
             port = Integer.parseInt(args[1]);
             if (port < CommunicationHandler.LOWERBOUD_PORT || port > CommunicationHandler.UPPERBOUND_PORT) {
-                ColorPrinter.err("port not int range [1024-65535]");
+                ColorPrinter.err("port not int range [" + CommunicationHandler.LOWERBOUD_PORT + "-" + CommunicationHandler.UPPERBOUND_PORT + "]");
                 return Configuration.ERROR;
             }
         } catch (NumberFormatException ignored) {

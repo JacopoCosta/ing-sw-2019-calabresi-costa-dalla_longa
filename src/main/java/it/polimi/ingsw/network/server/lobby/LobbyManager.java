@@ -172,6 +172,13 @@ public class LobbyManager {
         this.getLobbyByName(lobbyName).notifyOpponentUpdate();
     }
 
+    /**
+     * Notifies the {@link Player}s in the {@link Lobby} corresponding to the given {@code lobbyName} about the update of the
+     * countdown state.
+     *
+     * @param lobbyName he {@link Lobby} whose {@link Player}s have to be notified.
+     * @throws LobbyNotFoundException if no {@link Lobby} containing the given {@code player} can be found.
+     */
     public void notifyTimeUpdate(String lobbyName) throws LobbyNotFoundException {
         this.getLobbyByName(lobbyName).notifyTimeUpdate();
     }

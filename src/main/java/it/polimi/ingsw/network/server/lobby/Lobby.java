@@ -67,6 +67,11 @@ public class Lobby implements Observer {
      */
     private final CountDownTimer timer;
 
+    /**
+     * This flag indicates whether or not the {@link CountDownTimer} has already started his countdown. This flag is
+     * active only when the timer is actually performing its task, meaning that if a "pause", "stop" or "expired" event
+     * occurs, it is immediately deactivated.
+     */
     private boolean timerStarted;
 
     /**
@@ -198,16 +203,16 @@ public class Lobby implements Observer {
      * and reconnects after a certain amount of time.
      *
      * <p>The insertion criteria (that applies before the {@link Game} starts) are:
-     * 1 - there must be a space left in the {@code Lobby}. This is true if {@code players.size()} is less than
-     * {@link #MAX_PLAYERS}.
-     * 2 - the {@code player} can't be {@code null}.
-     * 3 - the {@code Lobby} can't contain another instance of {@link Player} {@code p}, so that {@code player.equals(p)}.
-     * 4- ether only one of the following conditions must be satisfied:
-     * a - the given {@code password} must be the same a {@code this.password}, so that
-     * {@code password.equals(this.password)}.
-     * b - both the given {@code password} and {@code this.password} must be null simultaneously.
-     * c - {@code this.password} must be either {@code null} or such that {@code this.password.isEmpty()} and
-     * {@code password } must be either {@code null} or such that {@code password.isBlank()}.
+     *      1 - there must be a space left in the {@code Lobby}. This is true if {@code players.size()} is less than
+     *          {@link #MAX_PLAYERS}.
+     *      2 - the {@code player} can't be {@code null}.
+     *      3 - the {@code Lobby} can't contain another instance of {@link Player} {@code p}, so that {@code player.equals(p)}.
+     *      4- ether only one of the following conditions must be satisfied:
+     *          a - the given {@code password} must be the same a {@code this.password}, so that
+     *              {@code password.equals(this.password)}.
+     *          b - both the given {@code password} and {@code this.password} must be null simultaneously.
+     *          c - {@code this.password} must be either {@code null} or such that {@code this.password.isEmpty()} and
+     *              {@code password } must be either {@code null} or such that {@code password.isBlank()}.
      *
      * @param player   the {@link Player} to insert into the {@code Lobby}.
      * @param password the authentication password to allow {@code player} to be inserted into this {@code Lobby}.
@@ -245,9 +250,9 @@ public class Lobby implements Observer {
 
     /**
      * Removes the given {@link Player} from the {@code Lobby} if all of the following criteria are satisfied:
-     * 1 - the {@code Lobby} can't be empty.
-     * 2 - the {@code player} argument can't be null.
-     * 3 - the {@code Lobby} must contain an instance {@code p} of the given {@code player}, so that {@code p.equals(player)}.
+     *      1 - the {@code Lobby} can't be empty.
+     *      2 - the {@code player} argument can't be null.
+     *      3 - the {@code Lobby} must contain an instance {@code p} of the given {@code player}, so that {@code p.equals(player)}.
      *
      * <p>This behavior applies until a new {@link Game} is started. Since that, no other {@link Player}s can be removed
      * due to the fact that a disconnected {@link Player} must be recognizable at the moment he decides to join again the
@@ -353,6 +358,10 @@ public class Lobby implements Observer {
                 });
     }
 
+    /**
+     * Notifies all the {@link #players} that the {@link #timer} has been updated with a value new value and therefore
+     * the {@link Player}s should be notified.
+     */
     void notifyTimeUpdate() {
         if (timerStarted)
             this.players.stream()

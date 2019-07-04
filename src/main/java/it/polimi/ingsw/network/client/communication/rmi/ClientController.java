@@ -25,10 +25,6 @@ public class ClientController implements RMIController {
         messages = new ConcurrentLinkedQueue<>();
     }
 
-    /*
-     *
-     * */
-
     /**
      * This method is called when a new {@link NetworkMessage} has been received from the remote {@code Server}.
      *

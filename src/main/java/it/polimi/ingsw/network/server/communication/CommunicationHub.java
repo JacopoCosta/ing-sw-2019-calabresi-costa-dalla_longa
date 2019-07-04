@@ -443,6 +443,12 @@ public class CommunicationHub {
         }
     }
 
+    /**
+     * This method is responsible for the proper send of the updated timer countdown to each {@link Player} in the same
+     * {@code Lobby} of the given {@code player}.
+     *
+     * @param player the {@link Player} whose {@code Lobby} has been chosen to receive the countdown update.
+     */
     private void sendTimerUpdate(Player player) {
         try {
             this.lobbyManager.notifyTimeUpdate(this.lobbyManager.getLobbyNameByPlayer(player));
@@ -473,6 +479,11 @@ public class CommunicationHub {
         ColorPrinter.mexS("message " + message.getType() + " forwarded to Player \"" + player.getName() + "\"");
     }
 
+    /**
+     * Sends a given {@link NetworkMessage} to the remote {@code Client} referenced to the given {@link Player}.
+     * @param player the {@link Player} whose remote {@code client} is desired to be sent the {@link NetworkMessage} to.
+     * @param message the {@link NetworkMessage} to be sent to the remote {@code Client}.
+     */
     private void sendMessage(Player player, NetworkMessage message) {
         try {
             player.sendMessage(message);
