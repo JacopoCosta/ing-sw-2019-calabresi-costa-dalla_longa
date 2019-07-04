@@ -75,6 +75,9 @@ public class CommunicationHub {
                             try {
                                 String lobbyName = this.lobbyManager.getLobbyNameByPlayer(player);
                                 this.lobbyManager.remove(lobbyName, player);
+
+                                player.notifyDisconnected();
+
                                 ColorPrinter.log("Client \"" + player.getName() + "\" successfully logged out from Lobby \"" + lobbyName + "\"");
 
                                 this.lobbyManager.notifyOpponentsUpdate(lobbyName);
