@@ -46,6 +46,7 @@ public abstract class CliCommon {
 
     /**
      * Tells which colour a {@link Player}'s token is.
+     *
      * @param player the player.
      * @return the {@code ANSI} escape sequence for that colour.
      */
@@ -56,6 +57,7 @@ public abstract class CliCommon {
     /**
      * Returns a string containing the name of a {@link Player}. If the name is longer than {@link #nameLengthLimit},
      * a truncated version with ellipses is returned instead.
+     *
      * @param player the player.
      * @return the string.
      */
@@ -68,43 +70,46 @@ public abstract class CliCommon {
 
     /**
      * Adds a coloured writing to the interface.
-     * @param i the vertical position, from the top.
-     * @param j the horizontal position, from the left.
+     *
+     * @param i       the vertical position, from the top.
+     * @param j       the horizontal position, from the left.
      * @param message the string to write.
      */
     static void write(int i, int j, ColoredString message) {
-        for(int k = 0; k < message.content().length(); k ++) {
+        for (int k = 0; k < message.content().length(); k++) {
             canvas[i][j + k] = new ColoredString(message.content().substring(k, k + 1), message.color());
         }
     }
 
     /**
      * Adds a series of coloured writings to the interface.
-     * @param i the vertical position, from the top.
-     * @param j the horizontal position, from the left.
+     *
+     * @param i       the vertical position, from the top.
+     * @param j       the horizontal position, from the left.
      * @param message a collection of {@link ColoredString}s. These will be concatenated but each
      *                will retain its colour.
      */
     static void write(int i, int j, List<ColoredString> message) {
         int caret = 0;
-        for(ColoredString cs : message) {
-            for (int k = 0; k < cs.content().length(); k ++) {
+        for (ColoredString cs : message) {
+            for (int k = 0; k < cs.content().length(); k++) {
                 canvas[i][caret + j] = new ColoredString(cs.content().substring(k, k + 1), cs.color());
-                caret ++;
+                caret++;
             }
         }
     }
 
     /**
      * Builds a coloured rectangular frame on the interface.
-     * @param i the vertical position, from the top, of the top-left corner of the frame.
-     * @param j the horizontal position, from the left, of the top-left corner of the frame.
-     * @param width the external width of the frame, expressed in characters.
-     * @param height the external height of the frame, expressed in characters.
+     *
+     * @param i         the vertical position, from the top, of the top-left corner of the frame.
+     * @param j         the horizontal position, from the left, of the top-left corner of the frame.
+     * @param width     the external width of the frame, expressed in characters.
+     * @param height    the external height of the frame, expressed in characters.
      * @param ansiColor the {@code ANSI} escape sequence of the colour to make the frame out of.
      */
     static void frame(int i, int j, int width, int height, String ansiColor) {
-        for(int cornerId = 1; cornerId <= 4; cornerId ++) {
+        for (int cornerId = 1; cornerId <= 4; cornerId++) {
             int ti = cornerId < 3 ? (i + height - 1) : i;
             int tj = cornerId == 2 || cornerId == 3 ? (j + width - 1) : j;
 
@@ -127,6 +132,7 @@ public abstract class CliCommon {
 
     /**
      * Creates a grid of {@link ColoredString}s depicting the {@link Game} status from a {@link Player}'s perspective.
+     *
      * @param player the player.
      * @return the grid.
      */

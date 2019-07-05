@@ -14,7 +14,7 @@ import static it.polimi.ingsw.view.virtual.cli.CliCommon.canvas;
 /**
  * This class is used for drawing the killshot track and double-kill track of a {@link Game}.
  */
-public abstract class CliTracks {
+abstract class CliTracks {
     /**
      * The top margin of the tracks.
      */
@@ -37,6 +37,7 @@ public abstract class CliTracks {
 
     /**
      * Draws the two tracks on {@link CliCommon}'s grid.
+     *
      * @param game the {@link Game} described by the tracks.
      */
     static void build(Game game) {
@@ -50,6 +51,7 @@ public abstract class CliTracks {
 
     /**
      * Draws the killshot track.
+     *
      * @param rawKillers a list containing the {@link Player} who scored kills. The value {@code null} after a {@link Player}
      *                   indicates an overkill by that player.
      * @param roundsLeft the number of rounds left to play in the {@link Game}.
@@ -60,47 +62,49 @@ public abstract class CliTracks {
         List<Player> killers = new ArrayList<>();
         List<Boolean> overKill = new ArrayList<>();
 
-        for(int i = 0; i < rawKillers.size(); i ++) {
+        for (int i = 0; i < rawKillers.size(); i++) {
             boolean tail = i == rawKillers.size() - 1;
             Player current = rawKillers.get(i);
             Player next = tail ? null : rawKillers.get(i + 1);
 
-            if(current != null) {
+            if (current != null) {
                 killers.add(current);
                 overKill.add(next == null && !tail);
             }
         }
 
-        if(roundsLeft < 0)
+        if (roundsLeft < 0)
             roundsLeft = 0;
 
-        for(int k = 0; k < 8 - roundsLeft; k ++) {
+        for (int k = 0; k < 8 - roundsLeft; k++) {
             canvas[top + 1][left + 2 + 3 * k] = new ColoredString(skull, Color.WHITE);
         }
 
-        for(int k = 8 - roundsLeft; k < 8; k ++) {
+        for (int k = 8 - roundsLeft; k < 8; k++) {
             canvas[top + 1][left + 2 + 3 * k] = new ColoredString(skull, Color.RED);
         }
 
-        for(int i = 0; i < killers.size(); i ++)
+        for (int i = 0; i < killers.size(); i++)
             writeOnKillerTrack(8 - killers.size() + i - roundsLeft, killers.get(i), overKill.get(i));
     }
 
     /**
      * Draws the double-killer track.
+     *
      * @param doubleKillers a list containing all the {@link Player}s who scored a double-kill.
      */
     private static void writeDoubleKillerTrack(List<Player> doubleKillers) {
         CliCommon.frame(top, left + trackWidth, 3 + 2 * doubleKillers.size(), trackHeight, Color.BLACK);
-        for(int i = 0; i < doubleKillers.size(); i ++)
+        for (int i = 0; i < doubleKillers.size(); i++)
             writeOnDoubleKillerTrack(i, doubleKillers.get(i));
 
     }
 
     /**
      * Adds a {@link Player}'s token to the killshot track.
-     * @param index the position in which to put the token.
-     * @param player the {@link Player} the token represents.
+     *
+     * @param index    the position in which to put the token.
+     * @param player   the {@link Player} the token represents.
      * @param overKill whether or not a double token should be used instead.
      */
     private static void writeOnKillerTrack(int index, Player player, boolean overKill) {
@@ -108,13 +112,14 @@ public abstract class CliTracks {
         int j = left + 2 + 3 * index;
 
         canvas[i][j] = new ColoredString(full, CliCommon.toAnsiColor(player));
-        if(overKill)
+        if (overKill)
             canvas[i][j + 1] = new ColoredString(full, CliCommon.toAnsiColor(player));
     }
 
     /**
      * Adds a {@link Player}'s token to the double-kill track.
-     * @param index the position in which to put the token.
+     *
+     * @param index  the position in which to put the token.
      * @param player the {@link Player} the token represents.
      */
     private static void writeOnDoubleKillerTrack(int index, Player player) {

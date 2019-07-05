@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * This class collects all the {@link NetworkMessage}s received from the {@code Server} and process them. Messages that
  * does not compete to it, are forwarded to the corresponding {@link Player}.
  * Also the {@code CommunicationHub} is responsible for the continuous connection check for each client connected. After
- * a disconnection has been detected, the proper procedures of logout and unregistering are performed in order to guarantee
+ * a disconnection has been detected, the proper procedures of logout and unregistration is performed in order to guarantee
  * the integrity of this ecosystem.
  */
 @SuppressWarnings("FieldCanBeLocal")
@@ -197,7 +197,7 @@ public class CommunicationHub {
                 this.handleRegistration(message);
                 break;
             case UNREGISTER_REQUEST:
-                this.handleUnregistering(message);
+                this.handleUnregistration(message);
                 break;
             case LOBBY_LIST_UPDATE_REQUEST:
                 this.handleUpdateRequest(message);
@@ -250,7 +250,7 @@ public class CommunicationHub {
      * @param message the {@link NetworkMessage} to be handled.
      * @see MessageType
      */
-    private void handleUnregistering(NetworkMessage message) {
+    private void handleUnregistration(NetworkMessage message) {
         Player player;
 
         try {

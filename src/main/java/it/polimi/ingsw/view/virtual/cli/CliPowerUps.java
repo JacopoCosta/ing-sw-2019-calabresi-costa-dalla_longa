@@ -8,7 +8,7 @@ import it.polimi.ingsw.util.printer.ColoredString;
 /**
  * When drawing the {@link Player}'s hand, this class is responsible of depicting the {@link PowerUp} cards.
  */
-public class CliPowerUps {
+class CliPowerUps {
     /**
      * The top margin of the first card.
      */
@@ -31,20 +31,22 @@ public class CliPowerUps {
 
     /**
      * Draws a {@link Player}'s {@link PowerUp} hand on {@link CliCommon}'s grid.
+     *
      * @param player the player.
      */
     static void build(Player player) {
-        for(int i = 0; i < player.getPowerUps().size(); i ++)
+        for (int i = 0; i < player.getPowerUps().size(); i++)
             writePowerUp(player.getPowerUps().get(i), i);
 
-        if(player.getPowerUps().size() > 0)
+        if (player.getPowerUps().size() > 0)
             CliCommon.write(top + 2, left - 10, new ColoredString("Powerups:", Color.RESET));
     }
 
     /**
      * Draws a single {@link PowerUp} card.
+     *
      * @param powerUp the card.
-     * @param index its position in the {@link Player}'s hand.
+     * @param index   its position in the {@link Player}'s hand.
      */
     private static void writePowerUp(PowerUp powerUp, int index) {
         String name = powerUp.getType().toString();

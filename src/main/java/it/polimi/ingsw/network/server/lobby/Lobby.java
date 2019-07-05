@@ -111,12 +111,6 @@ public class Lobby implements Observer {
     private Game game;
 
     /**
-     * Whether or not the {@link Player}s should be notified about opponents update. This is necessary until the {@link Game}
-     * starts. After that no more notifications are desirable.
-     */
-    private boolean notify;
-
-    /**
      * The properties needed in order to play a new {@link Game}.
      *
      * @see GameProperty
@@ -140,8 +134,6 @@ public class Lobby implements Observer {
         this.timer = new CountDownTimer(this.WAITING_TIME_FULL);
         this.timerStarted = false;
         this.timer.addObserver(this);
-
-        this.notify = true;
     }
 
     /**
@@ -235,7 +227,7 @@ public class Lobby implements Observer {
             throw new InvalidPasswordException("password \"" + password + "\" invalid for Lobby \"" + this.name + "\"");
 
         //could be a new Player or an old one previously disconnected
-        if (this.game == null || !this.game.isStarted()) {
+        if (this.game == null) {
             //can add other players
             if (this.players.contains(player))
                 throw new PlayerAlreadyAddedException("Player \"" + player.getName() + "\" already found into Lobby \"" + this.name + "\"");
@@ -275,7 +267,7 @@ public class Lobby implements Observer {
             throw new PlayerNotFoundException("Player \"" + player.getName() + "\" not found into Lobby \"" + this.name + "\"");
 
         //a Player can be removed only while the Game is not started
-        if (this.game == null || !this.game.isStarted()) {
+        if (this.game == null) {
             this.previousPlayersAmount = this.players.size();
             this.players.removeIf(p -> p.equals(player));
             this.adjustTimer();
@@ -397,7 +389,7 @@ public class Lobby implements Observer {
      * except himself.
      */
     void notifyOpponentUpdate() {
-        if (this.notify)
+        if (game == null)
             this.players.stream()
                     .filter(VirtualClient::isConnected)
                     .forEach(player -> {
@@ -443,7 +435,6 @@ public class Lobby implements Observer {
                 }
                 this.game.play();
             }).start();
-            this.notify = false;
         } else if (eventStatus == CountDownTimer.STATUS_TIME_UPDATE)
             this.notifyTimeUpdate(value);
         else if (eventStatus == CountDownTimer.STATUS_STOPPED) //else should be enough but, just in case...

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.util.json;
 
 import java.io.File;
-import java.net.URISyntaxException;
+import java.io.InputStream;
 
 /**
  * This class is used to generated adaptive paths to the {@code .json} files.
@@ -18,12 +18,17 @@ public abstract class JsonPathGenerator {
      * @param fileName the name of the {@code .json} file.
      * @return the path to the file in the resources directory.
      */
+    static InputStream getInputStream(String fileName) {
+        return (JsonPathGenerator.class.getResourceAsStream(folderPath + fileName));
+    }
+
+    /**
+     * Returns a {@code File} from the given {@code fileName}.
+     *
+     * @param fileName the name of the {@code File} to return.
+     * @return a {@code File} from the given {@code fileName}.
+     */
     public static File getFile(String fileName) {
-        try {
-            return new File((JsonPathGenerator.class.getResource(folderPath + fileName)).toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return new File(System.getProperty("user.dir") + File.separator + "target" + File.separator + "classes" + File.separator + "json" + File.separator + fileName);
     }
 }

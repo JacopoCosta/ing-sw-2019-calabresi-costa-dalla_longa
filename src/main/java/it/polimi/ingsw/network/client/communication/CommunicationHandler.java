@@ -188,7 +188,7 @@ public class CommunicationHandler {
                 this.username = null;
                 return;
             case CLIENT_NOT_REGISTERED_ERROR:
-                throw new ClientNotRegisteredException("client not registered, unregistering failed");
+                throw new ClientNotRegisteredException("client not registered, unregistration failed");
             default:
                 throw new ConnectionException("expected: " + MessageType.UNREGISTER_SUCCESS + ", " +
                         MessageType.CLIENT_NOT_REGISTERED_ERROR + ", found: " + message.getType());

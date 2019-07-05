@@ -15,7 +15,7 @@ import static it.polimi.ingsw.view.virtual.cli.CliCommon.canvas;
 /**
  * This class is in charge of drawing the small status boards (also known as {@code Toaster}s) for each {@link Player}.
  */
-public abstract class CliToasters {
+abstract class CliToasters {
     /**
      * The top margin of the first toaster.
      */
@@ -38,10 +38,11 @@ public abstract class CliToasters {
 
     /**
      * Depicts all the toasters, indicating which one belongs to a given {@link Player}.
+     *
      * @param player the player.
      */
     static void build(Player player) {
-        for(Player p : player.getGame().getParticipants())
+        for (Player p : player.getGame().getParticipants())
             writeToaster(p);
 
         CliCommon.write(top - 1, 0, new ColoredString("Players:", Color.RESET));
@@ -50,6 +51,7 @@ public abstract class CliToasters {
 
     /**
      * Draws a single toaster, belonging to a player.
+     *
      * @param player the player.
      */
     private static void writeToaster(Player player) {
@@ -67,14 +69,14 @@ public abstract class CliToasters {
 
         List<ColoredString> markStrip = new ArrayList<>();
         markStrip.add(new ColoredString(" Marks:", Color.RESET));
-        for(Player p : player.getMarkingsAsList())
+        for (Player p : player.getMarkingsAsList())
             markStrip.add(new ColoredString(" " + full, CliCommon.toAnsiColor(p)));
         writeOnToaster(index, 3, markStrip);
 
         List<ColoredString> damageStrip = new ArrayList<>();
         damageStrip.add(new ColoredString("Damage:", Color.RESET));
-        for(int i = 0; i <= 11; i ++) {
-            if(i < player.getDamageAsList().size())
+        for (int i = 0; i <= 11; i++) {
+            if (i < player.getDamageAsList().size())
                 damageStrip.add(new ColoredString(" " + full, CliCommon.toAnsiColor(player.getDamageAsList().get(i))));
             else
                 damageStrip.add(new ColoredString(" " + empty, Color.RESET));
@@ -88,8 +90,8 @@ public abstract class CliToasters {
         int numberCount = player.isOnFrenzy() ? 4 : 6;
         List<ColoredString> deathTrack = new ArrayList<>();
         deathTrack.add(new ColoredString(" ".repeat(indent), null));
-        for(int i = 0; i < numberCount; i ++) {
-            if(i >= player.getDeathCount())
+        for (int i = 0; i < numberCount; i++) {
+            if (i >= player.getDeathCount())
                 deathTrack.add(new ColoredString(" " + ScoreList.get(i, player.isOnFrenzy()), Color.RESET));
             else
                 deathTrack.add(new ColoredString(" " + skull, Color.RED));
@@ -97,14 +99,21 @@ public abstract class CliToasters {
         writeOnToaster(index, 8, deathTrack);
     }
 
-    // TODO remove this method - use CliCommon.write instead
+    /**
+     * Adds a series of coloured writings to the {@code Toaster}.
+     *
+     * @param index          the index of the {@code Toaster} to write on.
+     * @param row            the number of the row at which to write, starting from the top.
+     * @param coloredStrings a collection of {@link ColoredString}s. These will be concatenated but each
+     *                       will retain its colour.
+     */
     private static void writeOnToaster(int index, int row, List<ColoredString> coloredStrings) {
         int caret = 0;
 
-        for(ColoredString cs : coloredStrings) {
+        for (ColoredString cs : coloredStrings) {
             for (int i = 0; i < cs.content().length(); i++) {
                 canvas[row + top][index * toasterWidth + 2 + caret + left] = new ColoredString(cs.content().substring(i, i + 1), cs.color());
-                caret ++;
+                caret++;
             }
         }
     }

@@ -23,7 +23,7 @@ import static it.polimi.ingsw.view.virtual.cli.CliCommon.canvas;
 /**
  * This class is responsible of depicting the {@link Board} on the {@link CLI} interface.
  */
-public abstract class CliBoard {
+abstract class CliBoard {
     /**
      * The top margin of the top-left corner of this area.
      */
@@ -56,15 +56,17 @@ public abstract class CliBoard {
 
     /**
      * Adds the board's area to the {@link CliCommon}'s grid.
+     *
      * @param board the {@link Board} to depict.
      */
     static void build(Board board) {
-        for(Cell cell : board.getCells())
+        for (Cell cell : board.getCells())
             writeCell(cell);
     }
 
     /**
      * Writes a single {@link Cell} on the grid.
+     *
      * @param cell the cell.
      */
     private static void writeCell(Cell cell) {
@@ -77,38 +79,37 @@ public abstract class CliBoard {
         Cell westNeighbour = cell.getBoard().getCellByCoordinates(cellX - 1, cellY);
 
         List<WallType> walls = Arrays.asList(getWall(cell, southNeighbour), getWall(cell, eastNeighbour),
-                                             getWall(cell, northNeighbour), getWall(cell, westNeighbour));
+                getWall(cell, northNeighbour), getWall(cell, westNeighbour));
 
-        for(int i = 1; i <= 4; i ++)
+        for (int i = 1; i <= 4; i++)
             buildWallCounterclockwise(cellX, cellY, i, walls.get(i - 1), cell.getRoom().getColor());
 
         List<ColoredString> cellName = Collections.singletonList(new ColoredString("Cell " + cell.getId(), null));
         CliCommon.write(top + cellHeight * cellY + 1, 2 + cellWidth * cellX, cellName);
 
-        if(cell.isSpawnPoint()) {
+        if (cell.isSpawnPoint()) {
             List<Weapon> weapons = ((SpawnCell) cell).getWeaponShop();
             int row = 2;
-            for(Weapon weapon : weapons) {
+            for (Weapon weapon : weapons) {
                 CliCommon.write(top + cellHeight * cellY + row, 2 + cellWidth * cellX, weapon.toColoredStrings());
-                row ++;
+                row++;
             }
-        }
-        else {
+        } else {
             AmmoTile ammoTile = ((AmmoCell) cell).getAmmoTile();
-            if(ammoTile != null) {
+            if (ammoTile != null) {
                 List<ColoredString> ammo = ammoTile.toColoredStrings();
                 CliCommon.write(top + cellHeight * cellY + 2, 2 + cellWidth * cellX, ammo);
             }
         }
 
         int row = cellHeight - 2;
-        for(Player p : cell.getPlayers()) {
+        for (Player p : cell.getPlayers()) {
             String playerAnsiColor = CliCommon.toAnsiColor(p);
             List<ColoredString> playerToken = new ArrayList<>();
             playerToken.add(new ColoredString(block + " ", playerAnsiColor));
             playerToken.add(new ColoredString(CliCommon.nameOf(p), Color.RESET));
             CliCommon.write(top + cellHeight * cellY + row, 2 + cellWidth * cellX, playerToken);
-            row --;
+            row--;
         }
     }
 
@@ -134,7 +135,8 @@ public abstract class CliBoard {
 
     /**
      * Returns the type of wall separating a {@link Cell} from its neighbour.
-     * @param cell the cell.
+     *
+     * @param cell      the cell.
      * @param neighbour its neighbouring cell.
      * @return the appropriate {@link WallType}.
      */
@@ -145,7 +147,7 @@ public abstract class CliBoard {
             if (!neighbour.getRoom().equals(cell.getRoom()))
                 return WallType.DOOR;
             return WallType.OPEN;
-            
+
         } catch (Throwable e) {
             throw new NullPointerException();
         }
@@ -153,12 +155,13 @@ public abstract class CliBoard {
 
     /**
      * Builds the border of a {@link Cell}, minding the surroundings.
-     * @param cellX the {@link Cell}'s horizontal position.
-     * @param cellY the {@link Cell}'s vertical position.
+     *
+     * @param cellX    the {@link Cell}'s horizontal position.
+     * @param cellY    the {@link Cell}'s vertical position.
      * @param cornerId a number (1~4) identifying one of the corners. They are numbered in ascending order
      *                 starting at the bottom-left corner and proceeding counter-clockwise.
-     * @param type the wall found next to the specified corner.
-     * @param color the {@code ANSI} escape for the {@link Cell}'s colour.
+     * @param type     the wall found next to the specified corner.
+     * @param color    the {@code ANSI} escape for the {@link Cell}'s colour.
      */
     private static void buildWallCounterclockwise(int cellX, int cellY, int cornerId, WallType type, String color) {
         int i = top + cellY * cellHeight + (cornerId == 1 || cornerId == 2 ? cellHeight - 1 : 0);
@@ -180,27 +183,27 @@ public abstract class CliBoard {
         String ansiColor = Color.toAnsi(color);
 
         canvas[i][j] = new ColoredString(startingCorner, ansiColor);
-        for(int k = 1; k < limit - 1; k ++) {
+        for (int k = 1; k < limit - 1; k++) {
             i += di;
             j += dj;
 
-            switch(type) {
+            switch (type) {
                 case FULL:
                     canvas[i][j] = new ColoredString(full, ansiColor);
                     break;
 
                 case DOOR:
                     int distanceFromMiddle = Math.abs(k - middle);
-                    if(distanceFromMiddle == doorHalfSize)
+                    if (distanceFromMiddle == doorHalfSize)
                         canvas[i][j] = new ColoredString(k < middle ? gapOpen : gapClose, ansiColor);
-                    else if(distanceFromMiddle > doorHalfSize)
+                    else if (distanceFromMiddle > doorHalfSize)
                         canvas[i][j] = new ColoredString(full, ansiColor);
                     break;
 
                 case OPEN:
-                    if(k == 1)
+                    if (k == 1)
                         canvas[i][j] = new ColoredString(gapOpen, ansiColor);
-                    else if(k == limit - 2)
+                    else if (k == limit - 2)
                         canvas[i][j] = new ColoredString(gapClose, ansiColor);
             }
         }

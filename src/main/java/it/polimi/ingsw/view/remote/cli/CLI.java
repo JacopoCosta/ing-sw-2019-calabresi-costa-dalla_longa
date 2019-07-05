@@ -113,7 +113,6 @@ public class CLI implements GraphicalInterface {
                 System.exit(-1);
             }
         }
-
         logoutFromLobby();
         unregister();
     }
@@ -204,6 +203,7 @@ public class CLI implements GraphicalInterface {
     private void unregister() {
         try {
             communicationHandler.unregister();
+            ColorPrinter.println("Unregistration success");
         } catch (ConnectionException | ClientNotRegisteredException e) {
             //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
             e.printStackTrace();

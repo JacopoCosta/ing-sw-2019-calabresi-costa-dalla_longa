@@ -58,14 +58,14 @@ public class DecoratedJsonObject {
     /**
      * Creates and returns a new {@code DecoratedJsonObject} by opening a {@code .json} file
      * found at a specific location, and parsing it.
-     * @param file the {@code .json} file ito read from.
+     * @param inputStream the {@code .json} file ito read from.
      * @return a new {@code DecoratedJsonObject} with all the content read from the file.
      */
-    static DecoratedJsonObject getFromFile(File file) {
+    static DecoratedJsonObject getFromStream(InputStream inputStream) {
         JSONParser parser = new JSONParser();
 
         try {
-            return new DecoratedJsonObject((JSONObject) parser.parse(new FileReader(file)));
+            return new DecoratedJsonObject((JSONObject) parser.parse(new InputStreamReader(inputStream)));
         } catch (ParseException | IOException e) {
             e.printStackTrace();
             throw new JsonException("Could not find file to read.");

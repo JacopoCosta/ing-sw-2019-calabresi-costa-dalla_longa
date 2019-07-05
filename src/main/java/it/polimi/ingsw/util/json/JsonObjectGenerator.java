@@ -15,7 +15,7 @@ public abstract class JsonObjectGenerator {
      * @return a {@link DecoratedJsonObject} containing all the information necessary to build it.
      */
     public static DecoratedJsonObject getWeaponDeckBuilder() {
-        return DecoratedJsonObject.getFromFile(JsonPathGenerator.getFile("weapons.json"));
+        return DecoratedJsonObject.getFromStream(JsonPathGenerator.getInputStream("weapons.json"));
     }
 
     /**
@@ -23,7 +23,7 @@ public abstract class JsonObjectGenerator {
      * @return a {@link DecoratedJsonObject} containing all the information necessary to build it.
      */
     public static DecoratedJsonObject getBoardBuilder() {
-        return DecoratedJsonObject.getFromFile(JsonPathGenerator.getFile("boards.json"));
+        return DecoratedJsonObject.getFromStream(JsonPathGenerator.getInputStream("boards.json"));
     }
 
     /**
@@ -31,6 +31,6 @@ public abstract class JsonObjectGenerator {
      * @return a {@link DecoratedJsonObject} containing all the information necessary to restore the game status.
      */
     public static DecoratedJsonObject getSavedGameBuilder() {
-        return DecoratedJsonObject.getFromFile(JsonPathGenerator.getFile("saved.json"));
+        return DecoratedJsonObject.getFromStream(JsonPathGenerator.getInputStream("saved.json"));
     }
 }

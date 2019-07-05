@@ -14,7 +14,6 @@ import it.polimi.ingsw.util.json.JsonObjectGenerator;
 import it.polimi.ingsw.util.json.JsonPathGenerator;
 import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.network.server.VirtualClient;
-import it.polimi.ingsw.network.server.lobby.Lobby;
 import it.polimi.ingsw.view.virtual.VirtualView;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.player.*;
@@ -68,12 +67,6 @@ public class Game {
     private int roundsLeft;
 
     /**
-     * Whether or not the game has already started. This allows the {@link Lobby} to know that a game has
-     * started, so as not to modify the list of {@link Game#participants}.
-     */
-    private boolean started;
-
-    /**
      * Whether or not the game has ended. This occurs after {@link Game#roundsLeft} drops to {@code 0} in Sudden Death
      * mode, or after a full round is played in Final Frenzy mode.
      */
@@ -122,7 +115,6 @@ public class Game {
         this.boardType = boardType;
         this.board = Board.generate(this, boardType);
         this.virtualView = new VirtualView(this);
-        this.started = false;
     }
 
     /**
@@ -175,15 +167,6 @@ public class Game {
      */
     public VirtualView getVirtualView() {
         return virtualView;
-    }
-
-    /**
-     * Tells whether the game has {@link Game#started}.
-     *
-     * @return {@code true} if it has.
-     */
-    public boolean isStarted() {
-        return this.started;
     }
 
     /**
@@ -379,20 +362,18 @@ public class Game {
      * Starts the game.
      */
     public void play() {
-        this.started = true;
 
         participants.forEach(p -> board.getPowerUpDeck().smartDraw(true).ifPresent(c -> {
             try {
                 p.givePowerUp(c);
-            } catch (FullHandException ignored) { }
+            } catch (FullHandException ignored) {
+            }
         }));
 
         while (!gameOver) {
             this.playTurn();
         }
         board.scoreUponGameOver();
-
-        this.started = false;
 
         // now to declare the winner
         List<Player> ranking = participants.stream()
