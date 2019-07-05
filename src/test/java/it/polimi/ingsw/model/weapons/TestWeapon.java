@@ -22,19 +22,22 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * This class tests {@link Weapon} methods.
+ */
 public class TestWeapon {
 
     private Board board;
     private Controller controller;
 
-    private Player author = new Player("Aldo");
-    private Player targetSameCell = new Player("Giovanni sulla stessa cella");
-    private Player targetAdjacent = new Player("Giovanni adiacente");
-    private Player targetSameRoom = new Player("Giovanni nella stessa stanza");
-    private Player targetOtherRoom = new Player("Giovanni nell'altra stanza");
-    private Player targetAlignedNotVisible = new Player("Giovanni allineato ma non visibile");
-    private Player targetFarAway = new Player("Giovanni molto lontano");
-    private Player targetNullPosition = new Player("Giacomo");
+    private Player author = new Player("Aldo"); //EN: Al
+    private Player targetSameCell = new Player("Giovanni sulla stessa cella");  //EN: John on the same cell
+    private Player targetAdjacent = new Player("Giovanni adiacente");           //EN: Adjacent John
+    private Player targetSameRoom = new Player("Giovanni nella stessa stanza"); //EN: Roommate John
+    private Player targetOtherRoom = new Player("Giovanni nell'altra stanza");  //EN: Next door John
+    private Player targetAlignedNotVisible = new Player("Giovanni allineato ma non visibile"); //EN: Aligned, yet not visible John
+    private Player targetFarAway = new Player("Giovanni molto lontano");        //EN: Far away John
+    private Player targetNullPosition = new Player("Giacomo");                  //EN: Jack
 
     private Cell authorStartingPosition;
     private Cell targetSameCellStartingPosition;
@@ -49,6 +52,7 @@ public class TestWeapon {
     public void setUp() {
 
         Game.offlineMode = true;
+        Game.silent = true;
         List<Player> participants = new ArrayList<>();
         participants.add(author);
         participants.add(targetSameCell);
@@ -77,6 +81,10 @@ public class TestWeapon {
         targetNullPositionStartingPosition = targetNullPosition.getPosition();
     }
 
+    /**
+     * This method tests the {@code "Lock Rifle"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void lockRifle() {
         Weapon weapon = null;
@@ -182,6 +190,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Machine Gun"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void machineGun() {
         Weapon weapon = null;
@@ -371,6 +383,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Thor"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void thor() {
         Weapon weapon = null;
@@ -521,6 +537,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Plasma Gun"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void plasmaGun() {
         Weapon weapon = null;
@@ -667,6 +687,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Whisper"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void whisper() {
         Weapon weapon = null;
@@ -723,6 +747,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Electroscythe"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void electroscythe() {
         Weapon weapon = null;
@@ -811,6 +839,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Tractor Beam"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void tractorBeam() {
         Weapon weapon = null;
@@ -931,6 +963,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Vortex Cannon"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void vortexCannon() {
         Weapon weapon = null;
@@ -1090,6 +1126,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Furnace"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void furnace() {
         Weapon weapon = null;
@@ -1192,6 +1232,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Heatseeker"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void heatseeker() {
         Weapon weapon = null;
@@ -1249,6 +1293,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Hellion"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void hellion() {
         Weapon weapon = null;
@@ -1357,6 +1405,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Flamethrower"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void flamethrower() {
         Weapon weapon = null;
@@ -1541,6 +1593,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Grenade Launcher"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void grenadeLauncher() {
         Weapon weapon = null;
@@ -1658,6 +1714,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Rocket Launcher"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void rocketLauncher() {
         Weapon weapon = null;
@@ -1836,6 +1896,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Railgun"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void railgun() {
         Weapon weapon = null;
@@ -1956,6 +2020,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Cyberblade"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void cyberblade() {
         Weapon weapon = null;
@@ -2101,6 +2169,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "ZX-2"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void zx2() {
         Weapon weapon = null;
@@ -2298,6 +2370,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Shotgun"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void shotgun() {
         Weapon weapon = null;
@@ -2411,6 +2487,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Power Glove"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void powerGlove() {
         Weapon weapon = null;
@@ -2563,6 +2643,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Shockwave"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void shockwave() {
         Weapon weapon = null;
@@ -2747,6 +2831,10 @@ public class TestWeapon {
         assertEquals(targetNullPositionStartingPosition, targetNullPosition.getPosition());
     }
 
+    /**
+     * This method tests the {@code "Sledgehammer"} shooting behaviour, by trying to shoot every player in all of its
+     * possible configurations.
+     */
     @Test
     public void sledgehammer() {
         Weapon weapon = null;
