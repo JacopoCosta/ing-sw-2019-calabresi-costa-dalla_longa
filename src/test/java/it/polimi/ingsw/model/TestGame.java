@@ -9,6 +9,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This class makes possible an integration test of the {@link Game} behaviour. There are no {@code Assert}, but
+ * no exception must be thrown by neither of its tests in a correct game round.
+ * Also, every new game is completely randomized in its parameters (such as "Final Frenzy" mode or number of players)
+ * in order to ensure the most robust behaviour.
+ */
 public class TestGame {
 
     @Before
@@ -18,6 +24,9 @@ public class TestGame {
         Game.silent = true;
     }
 
+    /**
+     * This test runs a game with specified parameters: five players, largest possible map, Final Frenzy rule, five rounds.
+     */
     @Test
     public void autoPlay() {
         List<String> participantNames = Arrays.asList("Aldo", "Giovanni", "Giacomo", "Luca", "Paolo");
@@ -25,10 +34,14 @@ public class TestGame {
                 .map(Player::new)
                 .collect(Collectors.toList());
 
+        //Change these parameters
         Game game = Game.create(true, 5, 4, participants);
         game.play();
     }
 
+    /**
+     * This test runs a game with runtime randomized parameters: 3-5 players, random map, randomized Final Frenzy rule, 1-8 rounds.
+     */
     @Test
     public void autoPlayRandomized() {
         List<Player> participants = new ArrayList<>();
@@ -46,6 +59,9 @@ public class TestGame {
         game.play();
     }
 
+    /**
+     * This test runs for 16 times {@link TestGame#autoPlayRandomized()} test.
+     */
     @Test
     public void autoPlayLargeNumbers() {
         for(int i = 0; i < 16; i ++)

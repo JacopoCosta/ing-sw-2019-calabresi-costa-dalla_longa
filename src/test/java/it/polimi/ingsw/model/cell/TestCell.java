@@ -10,6 +10,9 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
+/**
+ * This class tests {@link Cell} methods.
+ */
 public class TestCell {
     private Cell cell1;
     private Cell cell2;
@@ -40,7 +43,9 @@ public class TestCell {
         cell11 = board.getCells().get(10);
     }
 
-
+    /**
+     * This method tests {@link Cell#distance(Cell)} method.
+     */
     @Test
     public void distance() {
         try {
@@ -61,6 +66,9 @@ public class TestCell {
         }
     }
 
+    /**
+     * This method tests {@link Cell#canSee(Cell)} method.
+     */
     @Test
     public void canSee() {
         try {
@@ -83,6 +91,9 @@ public class TestCell {
         }
     }
 
+    /**
+     * This method tests {@link Cell#isAligned(Cell)} method.
+     */
     @Test
     public void isAligned() {
         try {
@@ -95,6 +106,9 @@ public class TestCell {
         }
     }
 
+    /**
+     * This method tests {@link Cell#isBetween(Cell, Cell)} method.
+     */
     @Test
     public void isBetween() {
         try {
