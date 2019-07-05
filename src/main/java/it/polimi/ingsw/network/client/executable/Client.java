@@ -9,7 +9,7 @@ import it.polimi.ingsw.view.remote.GraphicsManager;
  * This class represent the {@code Client} application that is executed. Its purpose is to start the client application
  * with the correct configuration retrieved from the {@link ClientLauncher}.
  */
-@SuppressWarnings("FieldCanBeLocal")
+
 public class Client {
     /**
      * The server host address to connect to.

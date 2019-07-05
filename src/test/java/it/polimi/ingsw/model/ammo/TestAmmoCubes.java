@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * This class tests {@link AmmoCubes} methods.
+ * This class tests {@link AmmoCubes} methods and constructors.
  */
 public class TestAmmoCubes {
 

@@ -60,11 +60,11 @@ public class TestGame {
     }
 
     /**
-     * This test runs for 16 times {@link TestGame#autoPlayRandomized()} test.
+     * This test runs for 12 times {@link TestGame#autoPlayRandomized()} test.
      */
     @Test
     public void autoPlayLargeNumbers() {
-        for(int i = 0; i < 16; i ++)
+        for(int i = 0; i < 12; i ++)
             autoPlayRandomized();
     }
 }
