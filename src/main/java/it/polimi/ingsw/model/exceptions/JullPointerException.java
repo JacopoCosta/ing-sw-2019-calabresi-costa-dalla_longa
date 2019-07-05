@@ -8,6 +8,7 @@ package it.polimi.ingsw.model.exceptions;
  * * It is a checked exception, allowing the use of a {@code try}/{@code catch} block without falling in the
  * bad practice of catching runtime exceptions. <br>
  * In case of failed management of this exception, or unexpected missing value, a new runtime exception, {@code JsonException}, is thrown.
+ *
  * @see JsonException
  */
 public class JullPointerException extends Exception {

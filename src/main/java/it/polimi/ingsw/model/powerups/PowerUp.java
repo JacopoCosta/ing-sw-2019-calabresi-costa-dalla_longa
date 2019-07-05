@@ -23,12 +23,14 @@ public abstract class PowerUp {
 
     /**
      * A set of {@link AmmoCubes} containing only one cube equivalent to the {@link SpawnCell} the {@code PowerUp} is linked to.
+     *
      * @see PowerUp#getSpawnPoint(Board)
      */
     protected AmmoCubes ammoCubes;
 
     /**
      * This is the only constructor.
+     *
      * @param ammoCubes a set of {@link AmmoCubes} containing only one cube of the colour of the {@code PowerUp}.
      */
     public PowerUp(AmmoCubes ammoCubes) {
@@ -37,10 +39,11 @@ public abstract class PowerUp {
 
     /**
      * This factory method constructs a {@code PowerUp} card, with the properties found inside the JSON object passed as argument.
+     *
      * @param jPowerUp the JSON object containing the desired properties.
      * @return an instance of this class in accordance with the specified properties.
      * @throws InvalidPowerUpTypeException when attempting to instantiate a new {@code PowerUp} whose type is not in the
-     * enumeration of possible {@code PowerUp} types.
+     *                                     enumeration of possible {@code PowerUp} types.
      */
     public static PowerUp build(DecoratedJsonObject jPowerUp) throws InvalidPowerUpTypeException {
         String type;
@@ -69,6 +72,7 @@ public abstract class PowerUp {
 
     /**
      * Returns the type of the {@code PowerUp}.
+     *
      * @return the type of the {@code PowerUp}.
      */
     public PowerUpType getType() {
@@ -77,6 +81,7 @@ public abstract class PowerUp {
 
     /**
      * Returns a set of {@link AmmoCubes} containing one cube of the colour of the {@code PowerUp}.
+     *
      * @return the set.
      */
     public AmmoCubes getAmmoCubes() {
@@ -85,6 +90,7 @@ public abstract class PowerUp {
 
     /**
      * Looks for the {@link SpawnCell} whose colour is the same as the {@code PowerUp}'s.
+     *
      * @param board the {@link Board} in which to search for the {@link SpawnCell}.
      * @return the {@link SpawnCell}.
      */
@@ -99,6 +105,7 @@ public abstract class PowerUp {
 
     /**
      * Generates a string containing a short description of the {@code PowerUp}.
+     *
      * @return the string.
      */
     @Override

@@ -24,6 +24,7 @@ public class TargetPlayer extends Target {
 
     /**
      * Returns the chosen {@link TargetPlayer#player}.
+     *
      * @return the {@link Player}.
      */
     @Override
@@ -33,6 +34,7 @@ public class TargetPlayer extends Target {
 
     /**
      * Returns the {@link Cell} containing the chosen {@link TargetPlayer#player}.
+     *
      * @return the {@link Cell}.
      */
     @Override
@@ -42,6 +44,7 @@ public class TargetPlayer extends Target {
 
     /**
      * Returns the {@link Room} containing the {@link Cell} containing the chosen {@link TargetPlayer#player}.
+     *
      * @return the {@link Room}.
      */
     @Override
@@ -54,6 +57,7 @@ public class TargetPlayer extends Target {
     /**
      * Creates a list containing all the {@link Player}s available to choose as {@code TargetPlayer}s
      * that respect all of the {@link Target#constraints}.
+     *
      * @return the list.
      */
     public List<Player> filter() {

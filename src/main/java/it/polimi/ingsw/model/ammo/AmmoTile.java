@@ -17,6 +17,7 @@ import java.util.List;
  * {@link AmmoTile}s are tokens spread on the {@link Cell}s that are not {@link SpawnCell}s.
  * Each {@link AmmoTile} allows for the collection of 2~3 {@link AmmoCubes}, and may include the ability to draw once
  * from the {@link PowerUp} {@link Deck}.
+ *
  * @see it.polimi.ingsw.model.cell.AmmoCell
  */
 public class AmmoTile {
@@ -32,7 +33,8 @@ public class AmmoTile {
 
     /**
      * This is the only constructor.
-     * @param ammoCubes the {@link AmmoCubes} set included.
+     *
+     * @param ammoCubes       the {@link AmmoCubes} set included.
      * @param includesPowerUp whether or not to include a {@link PowerUp}.
      */
     public AmmoTile(AmmoCubes ammoCubes, boolean includesPowerUp) {
@@ -42,6 +44,7 @@ public class AmmoTile {
 
     /**
      * This factory method constructs an object with the properties found inside the JSON object passed as argument.
+     *
      * @param jAmmoTile the JSON object containing the desired properties.
      * @return an instance of this class in accordance with the specified properties.
      */
@@ -64,6 +67,7 @@ public class AmmoTile {
 
     /**
      * Returns the amount of {@link AmmoCubes} included in the {@link AmmoTile}.
+     *
      * @return that amount.
      */
     public AmmoCubes getAmmoCubes() {
@@ -72,6 +76,7 @@ public class AmmoTile {
 
     /**
      * Returns whether or not a {@link PowerUp} is included in the {@link AmmoTile}.
+     *
      * @return true if it is included.
      */
     public boolean includesPowerUp() {
@@ -80,6 +85,7 @@ public class AmmoTile {
 
     /**
      * Creates a short description of the ammo tile.
+     *
      * @return the description.
      */
     @Override

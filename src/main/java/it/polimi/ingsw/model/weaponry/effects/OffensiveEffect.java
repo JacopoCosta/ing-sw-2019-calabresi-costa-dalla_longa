@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.weaponry.effects;
 
 import it.polimi.ingsw.model.weaponry.constraints.Constraint;
+
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ public abstract class OffensiveEffect extends Effect {
     protected int amount;
 
     /**
-     * The list of all requirements a player must meet in order to be affercted.
+     * The list of all requirements a player must meet in order to be affected.
      */
     protected List<Constraint> constraints;
 }

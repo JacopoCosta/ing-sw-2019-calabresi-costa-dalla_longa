@@ -7,8 +7,14 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * This class tests the {@link LobbyManager} integrity after certain operation on the {@link Lobby} are asked do be done.
+ */
 public class TestLobbyManager {
 
+    /**
+     * Tests the creation of a new {@link Lobby}, the creation of a {@link Lobby} with the same name of an already created one.
+     */
     @Test
     public void newLobby() {
         String lobbyName = "SampleLobby0Name";
@@ -36,14 +42,18 @@ public class TestLobbyManager {
         assertTrue(catchTaken);
     }
 
+    /**
+     * Tests the addition of {@link Player}s into a new {@link Lobby}, the addition of a {@link Player} to a non existing
+     * {@link Lobby}.
+     */
     @Test
     public void add() {
         String lobby1Name = "SampleLobby1Name";
         String lobby2Name = "SampleLobby2Name";
         String lobby2Password = "SampleLobby2Password";
 
-        String playername = "SamplePlayername";
-        Player player = new Player(playername);
+        String playerName = "SamplePlayerName";
+        Player player = new Player(playerName);
 
         LobbyManager manager = new LobbyManager();
 
@@ -77,13 +87,17 @@ public class TestLobbyManager {
         assertTrue(catchTaken);
     }
 
+    /**
+     * Tests the removal of a {@link Player} from an existing {@link Lobby}, the removal of a {@link Player} from a non
+     * existing {@link Lobby}.
+     */
     @Test
     public void remove() {
         String lobby1Name = "SampleLobby3Name";
         String lobby2Name = "SampleLobby4Name";
 
-        String playername = "SamplePlayername";
-        Player player = new Player(playername);
+        String playerName = "SamplePlayerName";
+        Player player = new Player(playerName);
 
         LobbyManager manager = new LobbyManager();
 

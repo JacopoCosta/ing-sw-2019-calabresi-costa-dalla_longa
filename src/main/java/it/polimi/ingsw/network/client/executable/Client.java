@@ -37,7 +37,7 @@ public class Client {
      * @param hostAddress            the server ip address to connect to.
      * @param port                   the server port to listen from.
      * @param communicationInterface the communication agent to interact to.
-     * @param graphicalInterface     the preferred graphical interfac to start the client with.
+     * @param graphicalInterface     the preferred graphical interface to start the client with.
      */
     public Client(String hostAddress, int port, CommunicationHandler.Interface communicationInterface, GraphicsManager.Interface graphicalInterface) {
         this.hostAddress = hostAddress;

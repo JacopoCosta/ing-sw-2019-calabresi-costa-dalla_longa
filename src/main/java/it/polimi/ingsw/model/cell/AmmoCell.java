@@ -14,6 +14,7 @@ public class AmmoCell extends Cell {
 
     /**
      * This is the only constructor.
+     *
      * @param xCoord the x (horizontal) coordinate in the 2-dimensional discrete space this {@link Cell} will be put at.
      * @param yCoord the y (vertical) coordinate in the 2-dimensional discrete space this {@link Cell} will be put at.
      */
@@ -24,6 +25,7 @@ public class AmmoCell extends Cell {
 
     /**
      * Returns the {@link AmmoTile} hosted on the {@link Cell}.
+     *
      * @return the {@link AmmoTile}.
      */
     public AmmoTile getAmmoTile() {
@@ -32,6 +34,7 @@ public class AmmoCell extends Cell {
 
     /**
      * Sets the {@link AmmoTile} hosted on the {@link Cell} to the {@link AmmoTile} passed in as argument.
+     *
      * @param ammoTile the new {@link AmmoTile}.
      */
     public void setAmmoTile(AmmoTile ammoTile) {

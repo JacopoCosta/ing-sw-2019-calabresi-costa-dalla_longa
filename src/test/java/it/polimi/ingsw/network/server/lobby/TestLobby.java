@@ -7,8 +7,17 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * This class tests the {@link Lobby} integrity after certain basic I/O operation are performed.
+ */
 public class TestLobby {
 
+    /**
+     * Tests the insertion of a regular {@link Player}, a regular {@link Player} with wrong password, the same
+     * {@link Player} again, another {@link Player} with with the same name of an already added one, a regular {@link Player}
+     * with the {@link Lobby} being full, the fact that that the {@code blank} and {@code space} characters are
+     * interchangeable as password.
+     */
     @Test
     public void add() {
         String lobby1Name = "SampleLobby1Name";
@@ -27,7 +36,7 @@ public class TestLobby {
 
         boolean catchTaken;
 
-        //add regular Users: OK
+        //add regular Player: OK
         try {
             lobby1.add(p1, lobby1Password);
             lobby1.add(p3, lobby1Password);
@@ -120,6 +129,10 @@ public class TestLobby {
         assertFalse(catchTaken);
     }
 
+    /**
+     * Tests the removal of a {@link Player} from an empty {@link Lobby}, a {@link Player} not logged into the {@link Lobby},
+     * a different {@link Player} with the same name of an already added one, a regular {@link Player}.
+     */
     @Test
     public void remove() {
         String lobbyName = "SampleLobbyName";
@@ -153,7 +166,7 @@ public class TestLobby {
         }
         assertFalse(catchTaken);
 
-        //remove a different Player with a different playername: KO
+        //remove a different Player with a different name: KO
         try {
             lobby.remove(p3);
             catchTaken = false;
@@ -164,7 +177,7 @@ public class TestLobby {
         }
         assertTrue(catchTaken);
 
-        //remove a different Player with the same playername: OK
+        //remove a different Player with the same name: OK
         try {
             lobby.remove(p2);
             catchTaken = false;

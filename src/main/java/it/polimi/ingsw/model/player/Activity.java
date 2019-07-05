@@ -11,6 +11,7 @@ public abstract class Activity {
 
     /**
      * Returns the type of the {@code Activity}.
+     *
      * @return the type of the {@code Activity}.
      */
     public ActivityType getType() {
@@ -19,6 +20,7 @@ public abstract class Activity {
 
     /**
      * Creates a string containing a brief description of the activity.
+     *
      * @return the string.
      */
     @Override

@@ -24,6 +24,7 @@ public class Execution {
     /**
      * The maximum number of {@link Move}s before grabbing in enhanced conditions,
      * i.e. after taking a certain amount of {@link Damage}.
+     *
      * @see Execution#GRAB_ENHANCE_THRESHOLD
      */
     private static final int MAX_MOVES_ON_GRAB_ENHANCED = 2; // max number of moves before grabbing in enhanced conditions (enhanced: after taking a set amount of {@link Damage})
@@ -31,6 +32,7 @@ public class Execution {
     /**
      * The maximum number of {@link Move}s before {@link Shoot}ing in enhanced conditions,
      * i.e. after taking a certain amount of {@link Damage}.
+     *
      * @see Execution#SHOOT_ENHANCE_THRESHOLD
      */
     private static final int MAX_MOVES_ON_SHOOT_ENHANCED = 1; // max number of moves before shooting in enhanced conditions
@@ -67,12 +69,14 @@ public class Execution {
 
     /**
      * The amount of {@link Damage} a {@link Player} must take before being able to use the enhanced version of the {@link Grab}.
+     *
      * @see Execution#MAX_MOVES_ON_GRAB_ENHANCED
      */
     private static final int GRAB_ENHANCE_THRESHOLD = 3; // the amount of damage a player must take before being able to use the enhanced version of grab
 
     /**
      * The amount of {@link Damage} a {@link Player} must take before being able to {@link Move} before using the {@link Shoot}.
+     *
      * @see Execution#MAX_MOVES_ON_SHOOT_ENHANCED
      */
     private static final int SHOOT_ENHANCE_THRESHOLD = 6; // the amount of damage a player must take before being able to use the enhanced version of shoot
@@ -84,6 +88,7 @@ public class Execution {
 
     /**
      * This is the only constructor.
+     *
      * @param activities the list of {@link Activity}s the {@code Execution} will be made out of.
      */
     private Execution(List<Activity> activities) {
@@ -92,6 +97,7 @@ public class Execution {
 
     /**
      * Returns the list of {@link Activity}s composing the {@code Execution}.
+     *
      * @return the list.
      */
     public List<Activity> getActivities() {
@@ -101,6 +107,7 @@ public class Execution {
     /**
      * Generates an {@code Execution} using the {@code Move} {@link Activity},
      * based on the condition of the {@link Player} passed as argument.
+     *
      * @param subject The {@link Player} for whom this method needs to generate the {@code Execution}.
      * @return The {@code Execution} deemed correct for the {@link Player}, given their status.
      * @see Move
@@ -117,6 +124,7 @@ public class Execution {
     /**
      * Generates an {@code Execution} using the {@code Move} and {@code Grab} {@link Activity}s,
      * based on the condition of the {@link Player} passed as argument.
+     *
      * @param subject The {@link Player} for whom this method needs to generate the {@code Execution}.
      * @return The {@code Execution} deemed correct for the {@link Player}, given their status.
      * @see Move
@@ -138,6 +146,7 @@ public class Execution {
      * Generates an {@code Execution} using the {@code Shoot} {@link Activity},
      * occasionally coupled with the {@code Move} and/or {@code Reload} {@link Activity}s,
      * based on the condition of the {@link Player} passed as argument.
+     *
      * @param subject The {@link Player} for whom this methods needs to generate the {@code Execution}.
      * @return The {@code Execution} deemed correct for the {@link Player}, given their status.
      * @see Move
@@ -168,8 +177,9 @@ public class Execution {
      * of the list of {@link Activity}s passed in as argument.
      * Should the {@link Player} not meet the requirements to be able to {@link Reload}
      * at the end of the {@code Execution}, this method will have no effect on the {@link Activity} list.
+     *
      * @param activityList The list of {@link Activity}s that will shortly be turned into an {@code Execution}.
-     * @param subject The {@link Player} for whom to evaluate whether or not to allow a {@link Reload} at the end of their turn.
+     * @param subject      The {@link Player} for whom to evaluate whether or not to allow a {@link Reload} at the end of their turn.
      */
     private static void concatenateReload(List<Activity> activityList, Player subject) { // each last execution of a non-frenzy turn also offers a reload at the end
         if(!subject.isOnFrenzy() && subject.getRemainingExecutions() == 1) // this is the last execution of a non-frenzy turn
@@ -178,6 +188,7 @@ public class Execution {
 
     /**
      * Generates a list of {@code Execution}s based on a {@link Player}'s current condition.
+     *
      * @param subject The {@link Player} for whom to generate a list of options.
      * @return A list of {@code Execution}s from which the {@link Player} will pick one to perform.
      */
@@ -193,6 +204,7 @@ public class Execution {
 
     /**
      * Generates a string containing a short description of the execution.
+     *
      * @return the string.
      */
     @Override

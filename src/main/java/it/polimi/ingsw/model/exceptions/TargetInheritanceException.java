@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.weaponry.targets.Target;
  * it was defined on. For example: distance is a property defined on {@link Cell}s, but can be extended to {@link Player}s,
  * since each {@link Player} uniquely identifies a {@link Cell} with their position. However it cannot be extended to {@link Room}s, since
  * it is not true that each {@link Room} uniquely identifies a {@link Cell}, and in such case this exception would be thrown.
+ *
  * @see Target
  */
 public class TargetInheritanceException extends RuntimeException {

@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 /**
  * A {@link VisibilityConstraint} requires that a cell be visible from another. More specifically,
  * the drain must be visible from the source.
+ *
  * @see Cell#canSee(Cell)
  */
 public class VisibilityConstraint extends Constraint {
@@ -22,11 +23,12 @@ public class VisibilityConstraint extends Constraint {
 
     /**
      * This is the only constructor.
+     *
      * @param sourceAttackModuleId the id of the {@link AttackModule} containing the source {@link Target}.
-     * @param sourceTargetId the id of the source {@link Target}.
-     * @param drainAttackModuleId the id of the {@link AttackModule} containing the drain {@link Target}.
-     * @param drainTargetId the id of the drain {@link Target}.
-     * @param truth the truth value needed from the visibility predicate, in order to satisfy the {@link Constraint}.
+     * @param sourceTargetId       the id of the source {@link Target}.
+     * @param drainAttackModuleId  the id of the {@link AttackModule} containing the drain {@link Target}.
+     * @param drainTargetId        the id of the drain {@link Target}.
+     * @param truth                the truth value needed from the visibility predicate, in order to satisfy the {@link Constraint}.
      */
     VisibilityConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
         this.sourceAttackModuleId = sourceAttackModuleId;
@@ -39,8 +41,9 @@ public class VisibilityConstraint extends Constraint {
 
     /**
      * Tells if the {@link Constraint} is satisfied by two given cells.
+     *
      * @param sourceCell the source cell.
-     * @param drainCell the drain cell.
+     * @param drainCell  the drain cell.
      * @return true if the cells satisfy the {@link Constraint}, false if they don't or if any of them is null.
      */
     private boolean verify(Cell sourceCell, Cell drainCell) {
@@ -55,8 +58,9 @@ public class VisibilityConstraint extends Constraint {
 
     /**
      * Tells if the {@link Constraint} is satisfied by a cell and any other cell found inside a {@link Room}.
+     *
      * @param sourceCell the cell.
-     * @param drainRoom the {@link Room}.
+     * @param drainRoom  the {@link Room}.
      * @return true if and only if the cell satisfies the {@link Constraint} as the source, with any of the cells inside the {@link Room}
      * acting as the drain.
      */
@@ -74,6 +78,7 @@ public class VisibilityConstraint extends Constraint {
 
     /**
      * Creates a list of all {@link Player}s that satisfy the {@link Constraint}.
+     *
      * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return the list of {@link Player}s.
      */
@@ -108,6 +113,7 @@ public class VisibilityConstraint extends Constraint {
 
     /**
      * Creates a list of all cells that satisfy the {@link Constraint}.
+     *
      * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return the list of cells.
      */
@@ -142,6 +148,7 @@ public class VisibilityConstraint extends Constraint {
 
     /**
      * Creates a list of all {@link Room}s that satisfy the {@link Constraint}.
+     *
      * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return the list of {@link Room}s.
      */

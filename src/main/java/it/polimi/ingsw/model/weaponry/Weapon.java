@@ -46,9 +46,10 @@ public class Weapon {
 
     /**
      * This is the only constructor.
-     * @param name the {@code Weapon}'s {@link Weapon#name}.
-     * @param purchaseCost its {@link Weapon#purchaseCost}.
-     * @param reloadCost its {@link Weapon#reloadCost}.
+     *
+     * @param name          the {@code Weapon}'s {@link Weapon#name}.
+     * @param purchaseCost  its {@link Weapon#purchaseCost}.
+     * @param reloadCost    its {@link Weapon#reloadCost}.
      * @param attackPattern its {@link Weapon#attackPattern}.
      */
     private Weapon(String name, AmmoCubes purchaseCost, AmmoCubes reloadCost, AttackPattern attackPattern) {
@@ -61,6 +62,7 @@ public class Weapon {
 
     /**
      * Gets the {@code Weapon}'s {@link Weapon#name}.
+     *
      * @return the name.
      */
     public String getName() {
@@ -69,6 +71,7 @@ public class Weapon {
 
     /**
      * Gets the {@code Weapon}'s {@link Weapon#purchaseCost}.
+     *
      * @return the purchase cost.
      */
     public AmmoCubes getPurchaseCost() {
@@ -77,6 +80,7 @@ public class Weapon {
 
     /**
      * Gets the {@code Weapon}'s {@link Weapon#reloadCost}.
+     *
      * @return the reload cost.
      */
     public AmmoCubes getReloadCost() {
@@ -85,6 +89,7 @@ public class Weapon {
 
     /**
      * Gets the {@code Weapon}'s {@link Weapon#attackPattern}.
+     *
      * @return the attack pattern.
      */
     public AttackPattern getPattern() {
@@ -93,6 +98,7 @@ public class Weapon {
 
     /**
      * Tells whether or not the {@code Weapon} is {@link Weapon#loaded}.
+     *
      * @return {@code true} if it is.
      */
     public boolean isLoaded() {
@@ -101,6 +107,7 @@ public class Weapon {
 
     /**
      * Reloads the {@code Weapon}.
+     *
      * @throws WeaponAlreadyLoadedException upon attempting to reload a loaded {@code Weapon}.
      */
     public void reload() throws WeaponAlreadyLoadedException {
@@ -111,6 +118,7 @@ public class Weapon {
 
     /**
      * Unloads the {@code Weapon}.
+     *
      * @throws WeaponAlreadyUnloadedException upon attempting to unloaded an unloaded {@code Weapon}.
      */
     public void unload() throws WeaponAlreadyUnloadedException {
@@ -121,6 +129,7 @@ public class Weapon {
 
     /**
      * This factory method instantiates and returns a {@code Weapon}, with the properties found inside the JSON object passed as argument.
+     *
      * @param jWeapon the JSON object containing the desired properties.
      * @return an instance of this class in accordance with the specified properties.
      */
@@ -155,7 +164,8 @@ public class Weapon {
 
     /**
      * Generates a string containing a short description of the {@code Weapon} and its {@link AttackModule}s.
-     * @return
+     *
+     * @return the {@code Weapon} description.
      */
     @Override
     public String toString() {
@@ -172,6 +182,7 @@ public class Weapon {
 
     /**
      * This is an alternate, more user-friendly version of {@link Weapon#toString()}.
+     *
      * @return the {@code Weapon}'s description.
      */
     public String getDescription() {
@@ -182,7 +193,8 @@ public class Weapon {
         List<ColoredString> coloredStrings = new ArrayList<>();
         try {
             coloredStrings.add(new ColoredString(name, Color.toAnsi((reloadCost.take(purchaseCost)).toStringAsColor())));
-        } catch (CannotAffordException ignored) { }
+        } catch (CannotAffordException ignored) {
+        }
         coloredStrings.addAll(purchaseCost.toColoredStrings());
         return coloredStrings;
     }

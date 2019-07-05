@@ -1,4 +1,5 @@
 package it.polimi.ingsw.model.weaponry.constraints;
+
 import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.exceptions.NullCellOperationException;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 /**
  * An {@link AlignmentConstraint} requires either that two cells are aligned, or that they are not aligned,
  * in order to be eligible for being the {@link Target} of an {@link Effect}.
+ *
  * @see Cell#isAligned(Cell)
  */
 public class AlignmentConstraint extends Constraint {
@@ -25,11 +27,12 @@ public class AlignmentConstraint extends Constraint {
 
     /**
      * This is the only constructor.
+     *
      * @param sourceAttackModuleId the id of the {@link AttackModule} containing the source {@link Target}.
-     * @param sourceTargetId the id of the source {@link Target}.
-     * @param drainAttackModuleId the id of the {@link AttackModule} containing the drain {@link Target}.
-     * @param drainTargetId the id of the drain {@link Target}.
-     * @param truth the truth value needed from the alignment predicate, in order to satisify the {@link Constraint}.
+     * @param sourceTargetId       the id of the source {@link Target}.
+     * @param drainAttackModuleId  the id of the {@link AttackModule} containing the drain {@link Target}.
+     * @param drainTargetId        the id of the drain {@link Target}.
+     * @param truth                the truth value needed from the alignment predicate, in order to satisfy the {@link Constraint}.
      */
     AlignmentConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
         this.sourceAttackModuleId = sourceAttackModuleId;
@@ -42,8 +45,9 @@ public class AlignmentConstraint extends Constraint {
 
     /**
      * Tells if the {@link Constraint} is satisfied by two given cells.
+     *
      * @param sourceCell the source cell.
-     * @param drainCell the drain cell.
+     * @param drainCell  the drain cell.
      * @return true if the cells satisfy the {@link Constraint}, false if they don't or if any of them is null.
      */
     private boolean verify(Cell sourceCell, Cell drainCell) {
@@ -58,6 +62,7 @@ public class AlignmentConstraint extends Constraint {
 
     /**
      * Creates a list of all players that satisfy the {@link Constraint}.
+     *
      * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return the list of players.
      */
@@ -92,6 +97,7 @@ public class AlignmentConstraint extends Constraint {
 
     /**
      * Creates a list of all cells that satisfy the {@link Constraint}.
+     *
      * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return the list of cells.
      */
@@ -131,6 +137,7 @@ public class AlignmentConstraint extends Constraint {
      * constraint management workflow. This method was implemented anyway in order
      * to reduce the number of explicit casts and to be able to factorize it in
      * the {@code Constraint} superclass, where it is declared as abstract.
+     *
      * @param context the {@link AttackPattern} in which the constraint is relevant.
      * @return nothing.
      */

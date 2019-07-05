@@ -55,10 +55,10 @@ public class RMIServerCommunicationInterface implements ServerCommunicationInter
                     localRegistry.rebind("rmi://" + "127.0.0.1" + ":" + port + "/RMIController", controller);
                     registered = true;
                 } catch (ExportException ignored) { //port is already in use: local server or other RMi client runs on "port"
-                    if (port < CommunicationHandler.UPPERBOUND_PORT)
+                    if (port < CommunicationHandler.UPPER_BOUND_PORT)
                         port++;
                     else
-                        port = CommunicationHandler.LOWERBOUD_PORT;
+                        port = CommunicationHandler.LOWER_BOUND_PORT;
                 }
             } while (!registered);
         } catch (RemoteException | NotBoundException e) {

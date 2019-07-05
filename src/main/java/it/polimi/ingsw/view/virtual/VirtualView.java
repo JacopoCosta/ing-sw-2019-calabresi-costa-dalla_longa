@@ -349,7 +349,7 @@ public class VirtualView {
     }
 
     /**
-     * Queries a {@link Player} aboout which {@link AttackModule} they intend to use to perform a {@link Shoot}.
+     * Queries a {@link Player} about which {@link AttackModule} they intend to use to perform a {@link Shoot}.
      * @param subject the attacker.
      * @param pattern the {@link AttackPattern} of the previously chosen {@link Weapon}.
      * @param next a list containing the numerical ids of the available {@link AttackModule}s inside the {@link AttackPattern}.

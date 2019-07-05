@@ -50,8 +50,9 @@ public abstract class ScoreList {
 
     /**
      * Returns the appropriate amount of points based on the conditions described by the arguments.
-     * @param index the sum of the index of the opponent in the list of opponents who damaged a {@link Player}, and the
-     *              number of times said {@link Player} had died in the past.
+     *
+     * @param index    the sum of the index of the opponent in the list of opponents who damaged a {@link Player}, and the
+     *                 number of times said {@link Player} had died in the past.
      * @param frenetic whether or not the {@link Player} is on final frenzy. Final frenzy kills are worth as many points as a regular kill
      *                 on a {@link Player} killed three ({@link ScoreList#FRENETIC_OFFSET}) additional times, therefore many fewer points.
      * @return the amount of points to give to the opponent who damaged the considered {@link Player}.

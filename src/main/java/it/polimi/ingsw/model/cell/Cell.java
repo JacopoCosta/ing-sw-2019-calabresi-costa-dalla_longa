@@ -19,8 +19,9 @@ import java.util.stream.Collectors;
  * is a clockwise pair of axes with the {@code x} coordinate increasing to the right and the {@code y}
  * coordinate increasing downwards.
  * Cells are grouped into {@link Room}s, this is important when evaluating visibility between two {@code Cell}s.
+ *
  * @see Room
- * @see it.polimi.ingsw.model.board.Board
+ * @see Board
  */
 
 public abstract class Cell {
@@ -52,6 +53,7 @@ public abstract class Cell {
 
     /**
      * Indicates if a {@code Cell} is instance of {@code SpawnCell} (the alternative being {@code AmmoCell}).
+     *
      * @see SpawnCell
      * @see AmmoCell
      */
@@ -59,6 +61,7 @@ public abstract class Cell {
 
     /**
      * This is the only constructor.
+     *
      * @param xCoord the x (horizontal) coordinate in the 2-dimensional discrete space this {@code Cell} will be put at.
      * @param yCoord the y (vertical) coordinate in the 2-dimensional discrete space this {@code Cell} will be put at.
      */
@@ -70,6 +73,7 @@ public abstract class Cell {
 
     /**
      * Returns a number that uniquely identifies the {@code Cell} on the {@link Board}.
+     *
      * @return the {@code Cell}'s id.
      */
     public int getId() {
@@ -78,6 +82,7 @@ public abstract class Cell {
 
     /**
      * This method is used to distinguish between the two possible implementations of this class.
+     *
      * @return whether or not this {@code Cell} acts as a spawn point.
      * @see SpawnCell
      * @see AmmoCell
@@ -88,6 +93,7 @@ public abstract class Cell {
 
     /**
      * Binds the {@code Cell} to a {@link Board}.
+     *
      * @param board the board to bind the {@code Cell} to.
      */
     public void setBoard(Board board) {
@@ -96,6 +102,7 @@ public abstract class Cell {
 
     /**
      * This method tells which {@link Board} a {@code Cell} belongs to.
+     *
      * @return the {@link Board} containing the {@code Cell} this method was called upon.
      */
     public Board getBoard() {
@@ -104,6 +111,7 @@ public abstract class Cell {
 
     /**
      * When constructing a new {@link Room}, this method is called on each cell to set its membership in the {@link Room}.
+     *
      * @param room the {@link Room} needed to contain the cell this method was called upon.
      */
     public void setRoom(Room room) {
@@ -112,6 +120,7 @@ public abstract class Cell {
 
     /**
      * Returns a list containing all the {@link Player}s on the {@code Cell}.
+     *
      * @return the list.
      */
     public List<Player> getPlayers() {
@@ -124,6 +133,7 @@ public abstract class Cell {
 
     /**
      * This method tells which {@link Room} a cell belongs to.
+     *
      * @return the {@link Room} containing the cell this method was called upon.
      */
     public Room getRoom() {
@@ -132,6 +142,7 @@ public abstract class Cell {
 
     /**
      * This method tells the horizontal coordinate of a cell on the {@link Board}.
+     *
      * @return the horizontal coordinate of the cell.
      */
     public int getXCoord() {
@@ -140,6 +151,7 @@ public abstract class Cell {
 
     /**
      * This method tells the vertical coordinate of a cell on the {@link Board}.
+     *
      * @return the vertical coordinate of the cell.
      */
     public int getYCoord() {
@@ -148,6 +160,7 @@ public abstract class Cell {
 
     /**
      * This method sets a cell adjacent to another cell.
+     *
      * @param cell the cell to be declared as adjacent to the cell this method was called upon.
      * @throws SelfAdjacentCellException on an attempt to set a cell adjacent to itself.
      */
@@ -155,13 +168,13 @@ public abstract class Cell {
         if(cell != this) {
             this.adjacentCells.add(cell);
             cell.adjacentCells.add(this);
-        }
-        else
+        } else
             throw new SelfAdjacentCellException("Attempted to set a cell adjacent to itself.");
     }
 
     /**
      * This method is used to get the cells of a cell's neighbourhood.
+     *
      * @return a list containing all of the cells adjacent to the cell this method is called upon.
      * @see Cell#isAdjacent(Cell)
      */
@@ -175,6 +188,7 @@ public abstract class Cell {
      * A walk between cells is a sequence of steps, where every step connects a cell to its neighbour,
      * and two consecutive steps must have a cell in common (i.e. the walk must be unbroken).
      * The distance between a cell and itself overrides the previous definition and is defined to be 0.
+     *
      * @param cell the target cell.
      * @return the distance between the cell this method is called upon and the cell passed as argument.
      */
@@ -208,6 +222,7 @@ public abstract class Cell {
      * An adjacent cell may also be referred to as a neighbour.
      * Note that this relationship is symmetrical (i.e. if cell A is adjacent to cell B, then also cell B
      * is adjacent to cell A).
+     *
      * @param cell the comparison cell.
      * @return whether or not the cell this method is called upon is adjacent to the cell passed as argument.
      * @see Cell#distance(Cell)
@@ -223,9 +238,10 @@ public abstract class Cell {
      * This implies a cell is not {@code ghostlyAdjacent} to itself, and two adjacent cells are also {@code ghostlyAdjacent}
      * (while the vice versa may not be true).
      * Note that, just like {@code isAdjacent} method, this relationship is symmetrical as well.
-     * @see Cell#isAdjacent(Cell)
+     *
      * @param cell te comparison cell
      * @return whether or not the cell is ghostlyAdjacent to the given cell
+     * @see Cell#isAdjacent(Cell)
      */
     public boolean isGhostlyAdjacent(Cell cell) throws NullCellOperationException {
         if(cell == null)
@@ -237,6 +253,7 @@ public abstract class Cell {
      * This method tells if a cell is visible from another cell.
      * A cell can see another cell if and only if it belongs to a {@link Room} containing any of the first cell's neighbours.
      * A cell can always see itself.
+     *
      * @param cell the target cell.
      * @return whether or not the cell this method is called upon is able to see the cell passed as argument.
      */
@@ -265,6 +282,7 @@ public abstract class Cell {
      * In order for the path to be straight, either of its coordinates must remain constant along its span,
      * meaning that any two cells sharing a coordinate are aligned.
      * This implies a cell is aligned to itself.
+     *
      * @param cell the comparison cell.
      * @return whether or not the cell this method is called upon is aligned with the cell passed as argument.
      */
@@ -287,13 +305,13 @@ public abstract class Cell {
      * @see Cell#isAligned(Cell)
      */
     public boolean isBetween(Cell cell1, Cell cell2) throws NullCellOperationException {
-        if(cell1 == null || cell2 == null)
+        if (cell1 == null || cell2 == null)
             throw new NullCellOperationException("Tried to verify alignment with null cells.");
 
-        if(cell1.xCoord == this.xCoord && this.xCoord == cell2.xCoord)
+        if (cell1.xCoord == this.xCoord && this.xCoord == cell2.xCoord)
             return (cell1.yCoord - this.yCoord) * (this.yCoord - cell2.yCoord) >= 0;
 
-        if(cell1.yCoord == this.yCoord && this.yCoord == cell2.yCoord)
+        if (cell1.yCoord == this.yCoord && this.yCoord == cell2.yCoord)
             return (cell1.xCoord - this.xCoord) * (this.xCoord - cell2.xCoord) >= 0;
 
         return false;
@@ -301,6 +319,7 @@ public abstract class Cell {
 
     /**
      * Creates a short string containing a brief description of the cell.
+     *
      * @return the string.
      */
     @Override

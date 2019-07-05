@@ -42,10 +42,11 @@ public abstract class Target {
 
     /**
      * This factory method constructs a {@code Target}, with the properties found inside the JSON object passed as argument.
+     *
      * @param jTarget the JSON object containing the desired properties.
      * @return an instance of this class in accordance with the specified properties.
      * @throws InvalidTargetTypeException when attempting to instantiate a new {@code Target} whose type is not in the
-     * enumeration of possible {@code Target} types.
+     *                                    enumeration of possible {@code Target} types.
      */
     public static Target build(DecoratedJsonObject jTarget) {
         String type;
@@ -86,6 +87,7 @@ public abstract class Target {
 
     /**
      * Tells what {@link Target#type} the {@code Target} is.
+     *
      * @return the type.
      */
     public TargetType getType() {
@@ -94,6 +96,7 @@ public abstract class Target {
 
     /**
      * Tells what the {@code Target}'s {@link Target#message} is.
+     *
      * @return the message.
      */
     public String getMessage() {
@@ -102,6 +105,7 @@ public abstract class Target {
 
     /**
      * Tells what the {@code Target}'s {@link Target#constraints} are.
+     *
      * @return a list containing them.
      */
     public List<Constraint> getConstraints() {
@@ -110,6 +114,7 @@ public abstract class Target {
 
     /**
      * Tells what the {@code Target}'s {@link Target#context} is.
+     *
      * @return the relevant {@link AttackPattern}.
      */
     public Object getContext() {
@@ -118,6 +123,7 @@ public abstract class Target {
 
     /**
      * Sets what the {@code Target}'s {@link Target#context} should be.
+     *
      * @param context the relevant {@link AttackPattern}.
      */
     public void setContext(AttackPattern context) {
@@ -134,6 +140,7 @@ public abstract class Target {
 
     /**
      * Generates a string containing a short description of the {@code Target}.
+     *
      * @return the string.
      */
     @Override

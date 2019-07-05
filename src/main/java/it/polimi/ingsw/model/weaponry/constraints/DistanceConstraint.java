@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 /**
  * A {@link DistanceConstraint} requires that the distance separating two cells be within a specific interval
  * of values in order for either cell to be eligible for being chosen as a {@link Target}.
+ *
  * @see Cell#distance(Cell)
  */
 public class DistanceConstraint extends Constraint {
@@ -31,12 +32,13 @@ public class DistanceConstraint extends Constraint {
 
     /**
      * This is the only constructor.
+     *
      * @param sourceAttackModuleId the id of the {@link AttackModule} containing the source {@link Target}.
-     * @param sourceTargetId the id of the source {@link Target}.
-     * @param drainAttackModuleId the id of the {@link AttackModule} containing the drain {@link Target}.
-     * @param drainTargetId the id of the drain {@link Target}.
-     * @param lowerBound the minimum distance between source and drain, in order to satisfy the {@link Constraint}.
-     * @param upperBound the maximum distance between source and drain, in order to satisfy the {@link Constraint}.
+     * @param sourceTargetId       the id of the source {@link Target}.
+     * @param drainAttackModuleId  the id of the {@link AttackModule} containing the drain {@link Target}.
+     * @param drainTargetId        the id of the drain {@link Target}.
+     * @param lowerBound           the minimum distance between source and drain, in order to satisfy the {@link Constraint}.
+     * @param upperBound           the maximum distance between source and drain, in order to satisfy the {@link Constraint}.
      */
     DistanceConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, int lowerBound, int upperBound) {
         this.sourceAttackModuleId = sourceAttackModuleId;
@@ -50,8 +52,9 @@ public class DistanceConstraint extends Constraint {
 
     /**
      * Tells if the {@link Constraint} is satisfied by two given cells.
+     *
      * @param sourceCell the source cell.
-     * @param drainCell the drain cell.
+     * @param drainCell  the drain cell.
      * @return true if the cells satisfy the {@link Constraint}, false if they don't or if any of them is null.
      */
     private boolean verify(Cell sourceCell, Cell drainCell) {
@@ -68,6 +71,7 @@ public class DistanceConstraint extends Constraint {
 
     /**
      * Creates a list of all players that satisfy the {@link Constraint}.
+     *
      * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return the list of players.
      */
@@ -102,6 +106,7 @@ public class DistanceConstraint extends Constraint {
 
     /**
      * Creates a list of all cells that satisfy the {@link Constraint}.
+     *
      * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return the list of cells.
      */
@@ -141,6 +146,7 @@ public class DistanceConstraint extends Constraint {
      * {@link Constraint} management workflow. This method was implemented anyway in order
      * to reduce the number of explicit casts and to be able to factorize it in
      * the {@code Constraint} superclass, where it is declared as abstract.
+     *
      * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return nothing.
      */

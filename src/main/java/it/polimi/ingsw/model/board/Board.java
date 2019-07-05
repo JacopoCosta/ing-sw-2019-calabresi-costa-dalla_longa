@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 /**
  * The {@code Board} is the space the game is played on.
+ *
  * @see Cell
  */
 public class Board {
@@ -82,6 +83,7 @@ public class Board {
 
     /**
      * This factory method creates a {@code Board}, based on the board type. It then binds the {@code Board} to a {@link Game}.
+     *
      * @param game The {@link Game} the {@code Board} belongs to.
      * @param type The id of the board configuration.
      * @return a newly generated {@code Board}.
@@ -113,6 +115,7 @@ public class Board {
 
     /**
      * This factory method constructs an object with the properties found inside the JSON object passed as argument.
+     *
      * @param jBoardSet the JSON object containing the list of {@code Board}s, each with the desired properties.
      * @param boardType The id of the board configuration.
      * @return an instance of this class in accordance with the specified properties.
@@ -176,7 +179,7 @@ public class Board {
                         throw new JsonException("SpawnPoint flag not found.");
                     }
 
-                    if(spawnPoint) {
+                    if (spawnPoint) {
                         String color;
                         try {
                             color = jc.getString("color");
@@ -186,24 +189,24 @@ public class Board {
 
                         AmmoCubes ammoCubeColor;
 
-                            switch (color) {
-                                case "red":
-                                    ammoCubeColor = AmmoCubes.red();
-                                    break;
-                                case "yellow":
-                                    ammoCubeColor = AmmoCubes.yellow();
-                                    break;
-                                case "blue":
-                                    ammoCubeColor = AmmoCubes.blue();
-                                    break;
-                                default:
-                                    throw new JsonException(color + "is not a valid color for a spawnpoint.");
-                            }
-
-                            return new SpawnCell(x, y, ammoCubeColor);
-                        } else {
-                            return new AmmoCell(x, y);
+                        switch (color) {
+                            case "red":
+                                ammoCubeColor = AmmoCubes.red();
+                                break;
+                            case "yellow":
+                                ammoCubeColor = AmmoCubes.yellow();
+                                break;
+                            case "blue":
+                                ammoCubeColor = AmmoCubes.blue();
+                                break;
+                            default:
+                                throw new JsonException(color + "is not a valid color for a spawnpoint.");
                         }
+
+                        return new SpawnCell(x, y, ammoCubeColor);
+                    } else {
+                        return new AmmoCell(x, y);
+                    }
                 })
                 .collect(Collectors.toList());
 
@@ -268,6 +271,7 @@ public class Board {
 
     /**
      * Finds the {@link Cell} whose coordinates are equal to those passed in as arguments.
+     *
      * @param xCoord The horizontal coordinate of the {@link Cell}.
      * @param yCoord The vertical coordinate of the {@link Cell}.
      * @return the {@link Cell} at the given coordinates, or null if no {@link Cell} is at the given coordinates.
@@ -282,6 +286,7 @@ public class Board {
 
     /**
      * Returns the width of the {@code Board} expressed as number of {@link Cell}s.
+     *
      * @return the {@code Board} width.
      */
     public int getWidth() {
@@ -292,6 +297,7 @@ public class Board {
 
     /**
      * Returns the height of the {@code Board} expressed as number of {@link Cell}s.
+     *
      * @return the {@code Board} height.
      */
     public int getHeight() {
@@ -302,6 +308,7 @@ public class Board {
 
     /**
      * Returns the list of {@link Cell}s composing the {@code Board}.
+     *
      * @return the list of {@link Cell}s composing the {@code Board}.
      */
     public List<Cell> getCells() {
@@ -311,6 +318,7 @@ public class Board {
     /**
      * Adds all {@link Player}s appearing more than once in the {@link Board#turnKillers} list
      * to the {@code doubleKillers} list.
+     *
      * @see Board#turnKillers
      * @see Board#doubleKillers
      */
@@ -329,6 +337,7 @@ public class Board {
 
     /**
      * Adds a {@link Player} to the {@link Board#killers} list.
+     *
      * @param killer the {@link Player} to add.
      */
     public void addKiller(Player killer) {
@@ -338,6 +347,7 @@ public class Board {
 
     /**
      * Returns the list of {@link Board#killers}.
+     *
      * @return the list of {@link Board#killers}.
      */
     public List<Player> getKillers() {
@@ -346,6 +356,7 @@ public class Board {
 
     /**
      * Sets the {@link Board#killers} list to a list passed in as argument.
+     *
      * @param killers the new list of {@link Board#killers}.
      */
     public void setKillers(List<Player> killers) {
@@ -354,6 +365,7 @@ public class Board {
 
     /**
      * Returns the list of {@link Board#doubleKillers}.
+     *
      * @return the list of {@link Board#doubleKillers}.
      */
     public List<Player> getDoubleKillers() {
@@ -362,6 +374,7 @@ public class Board {
 
     /**
      * Sets the {@link Board#doubleKillers} list to a list passed in as argument.
+     *
      * @param doubleKillers the new list of double killers{@link Board#doubleKillers}.
      */
     public void setDoubleKillers(List<Player> doubleKillers) {
@@ -370,6 +383,7 @@ public class Board {
 
     /**
      * Returns the {@link Weapon} {@link Deck}.
+     *
      * @return the {@link Deck}.
      */
     public Deck<Weapon> getWeaponDeck() {
@@ -378,6 +392,7 @@ public class Board {
 
     /**
      * Returns the {@link PowerUp} {@link Deck}.
+     *
      * @return the {@link Deck}.
      */
     public Deck<PowerUp> getPowerUpDeck() {
@@ -386,6 +401,7 @@ public class Board {
 
     /**
      * Returns the {@link AmmoTile} {@link Deck}.
+     *
      * @return the {@link Deck}.
      */
     public Deck<AmmoTile> getAmmoTileDeck() {
@@ -394,6 +410,7 @@ public class Board {
 
     /**
      * Returns the {@link Game} that is being played on the {@code Board}.
+     *
      * @return the {@link Game} that is being played on the {@code Board}.
      */
     public Game getGame() {
@@ -404,6 +421,7 @@ public class Board {
      * Spreads ammo on every {@link AmmoCell} of the {@code Board}.
      * More specifically, for each {@link AmmoCell} that does not contain any {@link AmmoTile}, a new {@link AmmoTile} is drawn from
      * the {@link AmmoTile} {@link Deck} and placed onto that {@link Cell}.
+     *
      * @see Board#ammoTileDeck
      */
     public void spreadAmmo() {
@@ -420,6 +438,7 @@ public class Board {
      * a new {@link Weapon} card is drawn from the {@link Weapon} {@link Deck} for each free slot in the shop, to which
      * the {@link Weapon} is added.
      * This method stops having an effect once the {@link Weapon} {@link Deck} has been depleted.
+     *
      * @see Board#weaponDeck
      * @see Board#MAX_WEAPONS_PER_SPAWNPOINT
      */
@@ -440,6 +459,7 @@ public class Board {
      * to amount of kills (overkills are worth two kills), with ties broken in favour of the {@link Player} who made the first
      * kill the earliest. One additional point is awarded to each {@link Player} for each double kill they were able to
      * perform during the {@link Game}.
+     *
      * @see Board#countKills(Player)
      */
     public void scoreUponGameOver() {
@@ -458,7 +478,7 @@ public class Board {
                 .sorted(better)
                 .collect(Collectors.toList());
 
-        for(int i = 0; i < trueKillers.size(); i ++) {
+        for(int i = 0; i < trueKillers.size(); i++) {
             int points = ScoreList.get(i, false);
             trueKillers.get(i).giveScore(points); // give scores in descending order to the players sorted best to worst
             game.getVirtualView().announceScore(trueKillers.get(i), null, points, false);
@@ -473,6 +493,7 @@ public class Board {
     /**
      * Counts the equivalent number of kills a {@link Player} scored during the {@link Game}.
      * Overkills are counted as two kills.
+     *
      * @param author the {@link Player} on whom to count the kills.
      * @return the number of equivalent kills.
      */
@@ -483,13 +504,14 @@ public class Board {
             if(p != null)
                 lastKiller = p;
             if(lastKiller == author)
-                count ++;
+                count++;
         }
         return count;
     }
 
     /**
      * Searches through the {@link Weapon} {@link Deck} until it finds a {@link Weapon} with the given name.
+     *
      * @param name the name of the {@link Weapon}.
      * @return An optional containing that {@link Weapon}, if found, otherwise an empty optional.
      */
@@ -499,7 +521,8 @@ public class Board {
             do {
                 try {
                     weaponDeck.discard(weapon);
-                } catch (CannotDiscardFirstCardOfDeckException ignored) { }
+                } catch (CannotDiscardFirstCardOfDeckException ignored) {
+                }
                 weapon = weaponDeck.draw();
             } while(!weapon.getName().equals(name));
         } catch (EmptyDeckException e) {
@@ -512,7 +535,8 @@ public class Board {
 
     /**
      * Searches through the {@link PowerUp} {@link Deck} until it finds a {@link PowerUp} with the given type and colour.
-     * @param type the type of the {@link PowerUp}.
+     *
+     * @param type  the type of the {@link PowerUp}.
      * @param color the colour of the {@link PowerUp}.
      * @return An optional containing that {@link PowerUp}, if found, otherwise an empty optional.
      */
@@ -554,7 +578,8 @@ public class Board {
             do {
                 try {
                     powerUpDeck.discard(powerUp);
-                } catch (CannotDiscardFirstCardOfDeckException ignored) { }
+                } catch (CannotDiscardFirstCardOfDeckException ignored) {
+                }
                 powerUp = powerUpDeck.draw();
             } while(!powerUp.getType().equals(comparisonPowerUp.getType()) || !powerUp.getAmmoCubes().equals(comparisonPowerUp.getAmmoCubes()));
         } catch (EmptyDeckException e) {
@@ -567,9 +592,10 @@ public class Board {
 
     /**
      * Searches through the {@link AmmoTile} {@link Deck} until it finds an {@link AmmoTile} with the given properties.
-     * @param red the amount of red cubes on the {@link AmmoTile}.
-     * @param yellow the amount of yellow cubes on the {@link AmmoTile}.
-     * @param blue the amount of blue cubes on the {@link AmmoTile}.
+     *
+     * @param red             the amount of red cubes on the {@link AmmoTile}.
+     * @param yellow          the amount of yellow cubes on the {@link AmmoTile}.
+     * @param blue            the amount of blue cubes on the {@link AmmoTile}.
      * @param includesPowerUp whether or not the {@link AmmoTile} includes a {@link PowerUp}.
      * @return An optional containing that {@link PowerUp}, if found, otherwise an empty optional.
      */

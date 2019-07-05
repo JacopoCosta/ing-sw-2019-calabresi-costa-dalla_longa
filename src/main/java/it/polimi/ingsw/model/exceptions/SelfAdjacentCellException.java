@@ -8,7 +8,8 @@ import it.polimi.ingsw.model.cell.Cell;
  * is generated right at the beginning of the {@link Game}, and since its main cause is a flaw in the game logic, this
  * exception is declared as runtime, since it would be pointless to continue the execution with an obviously incomplete
  * or plain wrong network of adjacencies between cells.
- * @see it.polimi.ingsw.model.cell.Cell#setAdjacent(Cell)
+ *
+ * @see Cell#setAdjacent(Cell)
  */
 public class SelfAdjacentCellException extends RuntimeException {
     public SelfAdjacentCellException(String message) {

@@ -23,11 +23,12 @@ public class RoomConstraint extends Constraint {
 
     /**
      * This is the only constructor.
+     *
      * @param sourceAttackModuleId the id of the {@link AttackModule} containing the source target.
-     * @param sourceTargetId the id of the source target.
-     * @param drainAttackModuleId the id of the {@link AttackModule} containing the drain target.
-     * @param drainTargetId the id of the drain target.
-     * @param truth the truth value needed from the predicate asserting equality between {@link Room}s, in order to satisfy the constraint.
+     * @param sourceTargetId       the id of the source target.
+     * @param drainAttackModuleId  the id of the {@link AttackModule} containing the drain target.
+     * @param drainTargetId        the id of the drain target.
+     * @param truth                the truth value needed from the predicate asserting equality between {@link Room}s, in order to satisfy the constraint.
      */
     RoomConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
         this.sourceAttackModuleId = sourceAttackModuleId;
@@ -40,18 +41,20 @@ public class RoomConstraint extends Constraint {
 
     /**
      * Tells if the constraint is satisfied by two given {@link Room}s.
+     *
      * @param sourceRoom the source {@link Room}.
-     * @param drainRoom the drain {@link Room}.
+     * @param drainRoom  the drain {@link Room}.
      * @return true if the {@link Room}s satisfy the constraint, false if they don't or if any of them is null.
      */
     private boolean verify(Room sourceRoom, Room drainRoom) {
-        if(sourceRoom == null || drainRoom == null)
+        if (sourceRoom == null || drainRoom == null)
             return false;
         return sourceRoom.equals(drainRoom) == truth;
     }
 
     /**
      * Creates a list of all players that satisfy the constraint.
+     *
      * @param context the {@link AttackPattern} in which the constraint is relevant.
      * @return the list of players.
      */
@@ -94,6 +97,7 @@ public class RoomConstraint extends Constraint {
 
     /**
      * Creates a list of all cells that satisfy the constraint.
+     *
      * @param context the {@link AttackPattern} in which the constraint is relevant.
      * @return the list of cells.
      */
@@ -128,6 +132,7 @@ public class RoomConstraint extends Constraint {
 
     /**
      * Creates a list of all {@link Room}s that satisfy the constraint.
+     *
      * @param context the {@link AttackPattern} in which the constraint is relevant.
      * @return the list of {@link Room}s.
      */

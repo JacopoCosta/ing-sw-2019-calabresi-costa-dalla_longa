@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.weaponry.effects.Mark;
 public class Grenade extends PowerUp {
     /**
      * This is the only constructor.
+     *
      * @param ammoCubes a set of {@link AmmoCubes} containing only one cube of the colour of the {@link PowerUp}.
      */
     public Grenade(AmmoCubes ammoCubes) {

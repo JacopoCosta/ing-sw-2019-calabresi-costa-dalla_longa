@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
  * Since this is a ternary {@link Constraint}, it requires an intermediary entity to make a complete statement.
  * It is necessary (but not sufficient) that the intermediary be either in the middle or share at least one
  * extremity with either of the other two cells, or both of them.
+ *
  * @see Cell#isBetween(Cell, Cell)
  */
 public class OrderConstraint extends Constraint {
@@ -32,12 +33,13 @@ public class OrderConstraint extends Constraint {
 
     /**
      * This is the only constructor.
+     *
      * @param sourceAttackModuleId the id of the {@link AttackModule} containing the source {@link Target}.
-     * @param sourceTargetId the id of the source {@link Target}.
-     * @param gateAttackModuleId the id of the {@link AttackModule} containing the gate {@link Target}.
-     * @param gateTargetId the id of the gate {@link Target}.
-     * @param drainAttackModuleId the id of the {@link AttackModule} containing the drain {@link Target}.
-     * @param drainTargetId the id of the drain {@link Target}.
+     * @param sourceTargetId       the id of the source {@link Target}.
+     * @param gateAttackModuleId   the id of the {@link AttackModule} containing the gate {@link Target}.
+     * @param gateTargetId         the id of the gate {@link Target}.
+     * @param drainAttackModuleId  the id of the {@link AttackModule} containing the drain {@link Target}.
+     * @param drainTargetId        the id of the drain {@link Target}.
      */
     OrderConstraint(int sourceAttackModuleId, int sourceTargetId, int gateAttackModuleId, int gateTargetId, int drainAttackModuleId, int drainTargetId) {
         this.sourceAttackModuleId = sourceAttackModuleId;
@@ -51,13 +53,14 @@ public class OrderConstraint extends Constraint {
 
     /**
      * Tells if the {@link Constraint} is satisfied by two given cells.
+     *
      * @param sourceCell the source cell.
-     * @param gateCell the gate cell.
-     * @param drainCell the drain cell.
+     * @param gateCell   the gate cell.
+     * @param drainCell  the drain cell.
      * @return true if the cells satisfy the {@link Constraint}, false if they don't or if any of them is null.
      */
     private boolean verify(Cell sourceCell, Cell gateCell, Cell drainCell) {
-        if(gateCell == null)
+        if (gateCell == null)
             return false;
         try {
             return gateCell.isBetween(sourceCell, drainCell);
@@ -68,6 +71,7 @@ public class OrderConstraint extends Constraint {
 
     /**
      * Creates a list of all {@link Player}s that satisfy the {@link Constraint}.
+     *
      * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return the list of {@link Player}s.
      */
@@ -117,6 +121,7 @@ public class OrderConstraint extends Constraint {
 
     /**
      * Creates a list of all cells that satisfy the {@link Constraint}.
+     *
      * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return the list of cells.
      */
@@ -171,6 +176,7 @@ public class OrderConstraint extends Constraint {
      * {@link Constraint} management workflow. This method was implemented anyway in order
      * to reduce the number of explicit casts and to be able to factorize it in
      * the {@code Constraint} superclass, where it is declared as abstract.
+     *
      * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return nothing.
      */

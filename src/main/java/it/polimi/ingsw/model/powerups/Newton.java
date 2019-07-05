@@ -16,6 +16,7 @@ public class Newton extends PowerUp {
 
     /**
      * This is the only constructor.
+     *
      * @param ammoCubes a set of {@link AmmoCubes} containing only one cube of the colour of the {@link PowerUp}.
      */
     public Newton(AmmoCubes ammoCubes) {
@@ -25,6 +26,7 @@ public class Newton extends PowerUp {
 
     /**
      * Returns the maximum distance the target can be moved.
+     *
      * @return the maximum distance.
      */
     public static int getMaxDistance() {

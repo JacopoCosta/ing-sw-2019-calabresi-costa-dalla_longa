@@ -8,8 +8,9 @@ import it.polimi.ingsw.model.weaponry.targets.TargetType;
  * enumeration of possible {@link TargetType}s. It is declared as a runtime exception because its main
  * cause are spelling mistakes in the JSON files, and attempting to run an application in such conditions
  * makes no sense.
- * @see it.polimi.ingsw.model.weaponry.targets.Target
- * @see it.polimi.ingsw.model.weaponry.targets.TargetType
+ *
+ * @see Target
+ * @see TargetType
  */
 public class InvalidTargetTypeException extends RuntimeException {
     public InvalidTargetTypeException(String message) {

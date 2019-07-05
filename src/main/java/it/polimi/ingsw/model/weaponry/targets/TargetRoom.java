@@ -26,6 +26,7 @@ public class TargetRoom extends Target {
     /**
      * Throws {@link TargetInheritanceException} because it is impossible to uniquely identify
      * a {@link Player} given a {@link Room}.
+     *
      * @return nothing.
      */
     @Override
@@ -36,6 +37,7 @@ public class TargetRoom extends Target {
     /**
      * Throws {@link TargetInheritanceException} because it is impossible to uniquely identify
      * a {@link Cell} given a {@link Room}.
+     *
      * @return nothing.
      */
     @Override
@@ -45,6 +47,7 @@ public class TargetRoom extends Target {
 
     /**
      * Returns the chosen {@link TargetRoom#room}.
+     *
      * @return the {@link Room}.
      */
     @Override
@@ -55,6 +58,7 @@ public class TargetRoom extends Target {
     /**
      * Creates a list containing all the {@link Room}s available to choose as {@code TargetRoom}s
      * that respect all of the {@link Target#constraints}.
+     *
      * @return the list.
      */
     public List<Room> filter() {

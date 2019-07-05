@@ -80,10 +80,7 @@ public abstract class Table {
      * @return the padded string.
      */
     private static String createBlock(String content, int columnWidth) {
-        StringBuilder s = new StringBuilder(content);
-        for(int caret = content.length(); caret < columnWidth; caret ++)
-            s.append(" ");
-        return s.toString();
+        return content + " ".repeat(Math.max(0, columnWidth - content.length()));
     }
 
     /**

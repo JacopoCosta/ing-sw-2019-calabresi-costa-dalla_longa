@@ -101,10 +101,11 @@ public abstract class Constraint {
 
     /**
      * This factory method instantiates and returns a constraint, with the properties found inside the JSON object passed as argument.
+     *
      * @param jConstraint the JSON object containing the desired properties.
      * @return an instance of this class in accordance with the specified properties.
      * @throws InvalidConstraintTypeException when attempting to instantiate a new constraint whose type is not in the
-     * enumeration of possible {@link PowerUp} types.
+     *                                        enumeration of possible {@link PowerUp} types.
      */
     public static Constraint build(DecoratedJsonObject jConstraint) throws InvalidConstraintTypeException {
         int sourceAttackModuleId;
@@ -138,82 +139,83 @@ public abstract class Constraint {
             throw new JsonException("Constraint type not found.");
         }
 
-        if (type.equals("alignment")) {
-                boolean truth;
-                try {
-                    truth = jConstraint.getBoolean("truth");
-                } catch (JullPointerException e) {
-                    throw new JsonException("Distance constraint truth not found.");
-                }
-                return new AlignmentConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
+        if(type.equals("alignment")) {
+            boolean truth;
+            try {
+                truth = jConstraint.getBoolean("truth");
+            } catch (JullPointerException e) {
+                throw new JsonException("Distance constraint truth not found.");
             }
-            if (type.equals("distance")) {
-                int lowerBound;
-                try {
-                    lowerBound = jConstraint.getInt("lowerBound");
-                } catch (JullPointerException e) {
-                    throw new JsonException("Distance constraint lowerBound is null.");
-                }
-                int upperBound;
-                try {
-                    upperBound = jConstraint.getInt("upperBound");
-                } catch (JullPointerException e) {
-                    throw new JsonException("Distance constraint upperBound is null.");
-                }
-                return new DistanceConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, lowerBound, upperBound);
+            return new AlignmentConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
+        }
+        if(type.equals("distance")) {
+            int lowerBound;
+            try {
+                lowerBound = jConstraint.getInt("lowerBound");
+            } catch (JullPointerException e) {
+                throw new JsonException("Distance constraint lowerBound is null.");
             }
-            if (type.equals("identity")) {
-                boolean truth;
-                try {
-                    truth = jConstraint.getBoolean("truth");
-                } catch (JullPointerException e) {
-                    throw new JsonException("Identity constraint truth not found.");
-                }
-                return new IdentityConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
+            int upperBound;
+            try {
+                upperBound = jConstraint.getInt("upperBound");
+            } catch (JullPointerException e) {
+                throw new JsonException("Distance constraint upperBound is null.");
             }
-            if (type.equals("order")) {
-                int gateAttackModuleId;
-                try {
-                    gateAttackModuleId = jConstraint.getInt("gateAttackModuleId");
-                } catch (JullPointerException e) {
-                    throw new JsonException("Order constraint gateAttackModuleId not found.");
-                }
-                int gateTargetId;
-                try {
-                    gateTargetId = jConstraint.getInt("gateTargetId");
-                } catch (JullPointerException e) {
-                    throw new JsonException("Order constraint gateTargetId not found.");
-                }
-                return new OrderConstraint(sourceAttackModuleId, sourceTargetId, gateAttackModuleId, gateTargetId, drainAttackModuleId, drainTargetId);
+            return new DistanceConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, lowerBound, upperBound);
+        }
+        if(type.equals("identity")) {
+            boolean truth;
+            try {
+                truth = jConstraint.getBoolean("truth");
+            } catch (JullPointerException e) {
+                throw new JsonException("Identity constraint truth not found.");
             }
-            if (type.equals("room")) {
-                boolean truth;
-                try {
-                    truth = jConstraint.getBoolean("truth");
-                } catch (JullPointerException e) {
-                    throw new JsonException("Room constraint truth not found.");
-                }
-                return new RoomConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
+            return new IdentityConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
+        }
+        if(type.equals("order")) {
+            int gateAttackModuleId;
+            try {
+                gateAttackModuleId = jConstraint.getInt("gateAttackModuleId");
+            } catch (JullPointerException e) {
+                throw new JsonException("Order constraint gateAttackModuleId not found.");
             }
-            if (type.equals("visibility")) {
-                boolean truth;
-                try {
-                    truth = jConstraint.getBoolean("truth");
-                } catch (JullPointerException e) {
-                    throw new JsonException("Visibility constraint truth not found");
-                }
-                return new VisibilityConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
+            int gateTargetId;
+            try {
+                gateTargetId = jConstraint.getInt("gateTargetId");
+            } catch (JullPointerException e) {
+                throw new JsonException("Order constraint gateTargetId not found.");
             }
-            throw new InvalidEffectTypeException(type + " is not a valid name for a Constraint type. Use \"alignment\", \"distance\", \"identity\", \"order\", \"room\", or \"visibility\"");
+            return new OrderConstraint(sourceAttackModuleId, sourceTargetId, gateAttackModuleId, gateTargetId, drainAttackModuleId, drainTargetId);
+        }
+        if(type.equals("room")) {
+            boolean truth;
+            try {
+                truth = jConstraint.getBoolean("truth");
+            } catch (JullPointerException e) {
+                throw new JsonException("Room constraint truth not found.");
+            }
+            return new RoomConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
+        }
+        if(type.equals("visibility")) {
+            boolean truth;
+            try {
+                truth = jConstraint.getBoolean("truth");
+            } catch (JullPointerException e) {
+                throw new JsonException("Visibility constraint truth not found");
+            }
+            return new VisibilityConstraint(sourceAttackModuleId, sourceTargetId, drainAttackModuleId, drainTargetId, truth);
+        }
+        throw new InvalidEffectTypeException(type + " is not a valid name for a Constraint type. Use \"alignment\", \"distance\", \"identity\", \"order\", \"room\", or \"visibility\"");
     }
 
     /**
      * Given an {@link AttackPattern} to provide a context, it searches for the {@link Target}
      * identified by the {@link AttackModule} id inside the context and the {@link Target} id
      * inside the module.
-     * @param context The {@link AttackPattern} of reference.
+     *
+     * @param context        The {@link AttackPattern} of reference.
      * @param attackModuleId The id of the {@link AttackModule} inside which to look for the {@link Target}.
-     * @param targetId The id of the {@link Target} inside the {@link AttackModule}.
+     * @param targetId       The id of the {@link Target} inside the {@link AttackModule}.
      * @return the {@link Target}.
      */
     public static Target getTarget(AttackPattern context, int attackModuleId, int targetId) {
@@ -245,7 +247,8 @@ public abstract class Constraint {
     /**
      * Given an {@link AttackPattern} to provide a context, it searches for all {@link Player}s
      * that meet the requirements expressed by all of the {@code Constraint}s inside a list.
-     * @param context The {@link AttackPattern} of interest.
+     *
+     * @param context     The {@link AttackPattern} of interest.
      * @param constraints The list of {@code Constraint}s.
      * @return all the {@link Player}s that satisfy every {@code Constraint} in the list.
      */
@@ -275,14 +278,15 @@ public abstract class Constraint {
     /**
      * Given an {@link AttackPattern} to provide a context, it searches for all {@link Cell}s
      * that meet the requirements expressed by all of the {@code Constraint}s inside a list.
-     * @param context The {@link AttackPattern} of interest.
+     *
+     * @param context     The {@link AttackPattern} of interest.
      * @param constraints The list of {@code Constraint}s.
      * @return all the {@link Cell}s that satisfy every {@code Constraint} in the list.
      */
     public static List<Cell> filterCells(AttackPattern context, List<Constraint> constraints) {
         List<List<Cell>> targetTable = new ArrayList<>();
 
-        for(Constraint constraint : constraints) {
+        for (Constraint constraint : constraints) {
             targetTable.add(constraint.filterCells(context));
         }
 
@@ -304,7 +308,8 @@ public abstract class Constraint {
     /**
      * Given an {@link AttackPattern} to provide a context, it searches for all {@link Room}s
      * that meet the requirements expressed by all of the {@code Constraint}s inside a list.
-     * @param context The {@link AttackPattern} of interest.
+     *
+     * @param context     The {@link AttackPattern} of interest.
      * @param constraints The list of {@code Constraint}s.
      * @return all the {@link Room}s that satisfy every {@code Constraint} in the list.
      */
@@ -333,6 +338,7 @@ public abstract class Constraint {
 
     /**
      * Sets the context for the {@code Constraint}.
+     *
      * @param context the {@link AttackPattern} inside which the {@code Constraint} should be evaluated.
      */
     public void setContext(AttackPattern context) {
@@ -345,8 +351,9 @@ public abstract class Constraint {
     /**
      * Creates a string containing a short description of how the {@code Constraint} will
      * work given an id pair.
+     *
      * @param attackModuleId The id of the {@link AttackModule} inside which to look for the {@link Target}.
-     * @param targetId The id of the {@link Target} inside the {@link AttackModule}.
+     * @param targetId       The id of the {@link Target} inside the {@link AttackModule}.
      * @return the string.
      */
     public static String getHumanReadableName(int attackModuleId, int targetId) {

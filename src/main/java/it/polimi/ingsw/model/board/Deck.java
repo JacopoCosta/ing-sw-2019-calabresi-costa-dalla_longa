@@ -15,17 +15,20 @@ import static it.polimi.ingsw.model.Game.autoPilot;
 
 /**
  * {@code Deck}s are ordered collections of objects from which it is only possible to remove, and then read, one object at a time.
+ *
  * @param <T> the type of object that makes up the "cards" of the {@code Deck}.
  */
 public class Deck<T> {
     /**
      * The list of cards inside the {@code Deck} (only the first of which is accessible).
+     *
      * @see Deck#draw()
      */
     private List<T> cards;
 
     /**
      * The list of cards that had been drawn before and then discarded.
+     *
      * @see Deck#discard(Object)
      */
     private List<T> discarded;
@@ -40,20 +43,22 @@ public class Deck<T> {
 
     /**
      * Removes the first card of the {@code Deck} and returns it.
+     *
      * @return the removed card (no longer part of the {@code Deck} once drawn).
      * @throws EmptyDeckException when there are no cards left to draw.
      */
     public T draw() throws EmptyDeckException {
-        if(this.cards.size() == 0)
+        if (this.cards.size() == 0)
             throw new EmptyDeckException("Can't draw from an empty deck.");
         return this.cards.remove(0);
     }
 
     /**
      * Adds a card to the discard pile.
+     *
      * @param card the card to discard.
      * @throws CannotDiscardFirstCardOfDeckException when attempting to discard before having drawn anything,
-     * therefore resulting in an attempt to discard {@code null};
+     *                                               therefore resulting in an attempt to discard {@code null};
      */
     public void discard(T card) throws CannotDiscardFirstCardOfDeckException {
         if(card == null)
@@ -84,6 +89,7 @@ public class Deck<T> {
      * Otherwise, if {@code autoRegenerate} is true, the {@code Deck} is regenerated from the discard pile and shuffled,
      * then a second attempt to draw a card occurs. If the {@code Deck} is empty again, an empty optional is returned, while if
      * a card was successfully drawn, it is returned as optional.
+     *
      * @param autoRegenerate whether or not to regenerate and shuffle for a second attempt after a possible failure.
      * @return Either an empty optional, or an optional containing a card, as described above.
      */
@@ -100,14 +106,14 @@ public class Deck<T> {
                 } catch (EmptyDeckException fatal) { // there is no deck
                     return Optional.empty();
                 }
-            }
-            else return Optional.empty();
+            } else return Optional.empty();
         }
         return Optional.of(card);
     }
 
     /**
      * This factory method constructs a {@code Deck} of {@link Weapon} cards, with the properties found inside the JSON object passed as argument.
+     *
      * @param jDeck the JSON object containing the desired properties.
      * @return an instance of this class in accordance with the specified properties.
      */
@@ -126,6 +132,7 @@ public class Deck<T> {
 
     /**
      * Generates a {@code Deck} of 24 {@link PowerUp} cards: two copies per colour per type (2×3×4=24)
+     *
      * @return a new {@code Deck} of {@link PowerUp}s.
      */
     static Deck<PowerUp> generatePowerUps() {
@@ -157,6 +164,7 @@ public class Deck<T> {
      * Generates a {@code Deck} of 36 {@link AmmoTile} cards:<br>
      * 18 without a {@link PowerUp}: three copies per colour per pair of equal colours (2×3×3=18)<br>
      * 18 with a {@link PowerUp}: two copies per colour per colour (2×3×3=18).
+     *
      * @return a new {@code Deck} of {@link AmmoTile}s.
      */
     static Deck<AmmoTile> generateAmmoTiles() {
@@ -178,7 +186,7 @@ public class Deck<T> {
                 )
                 .map(
                         u -> unitCubes.stream()
-                        .map(u::sum)
+                                .map(u::sum)
                 )
                 .flatMap(Function.identity())
                 .forEach( // two per colour per colour (total 2 * 3 * 3 = 18)
@@ -193,6 +201,7 @@ public class Deck<T> {
 
     /**
      * Creates a string containing a concatenation of the results of calling {@code toString()} on each element in the {@code Deck}.
+     *
      * @return the string.
      */
     @Override

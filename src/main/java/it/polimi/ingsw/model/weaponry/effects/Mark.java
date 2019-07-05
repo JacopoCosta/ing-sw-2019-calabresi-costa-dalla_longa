@@ -11,11 +11,12 @@ import java.util.List;
  * {@link Mark}s are {@link Effect}s inflicted to a {@link Player} that causes them to take increased {@link Damage} the next time they
  * are damaged by the same source as the {@link Mark}.
  */
-public class Mark extends OffensiveEffect{
+public class Mark extends OffensiveEffect {
 
     /**
      * This is the only constructor.
-     * @param amount the amount of {@link Mark}s the {@link Effect} applies.
+     *
+     * @param amount      the amount of {@link Mark}s the {@link Effect} applies.
      * @param constraints the list of requirements each {@link Player} needs to meet in order to be affected.
      */
     public Mark(int amount, List<Constraint> constraints) {
@@ -42,6 +43,7 @@ public class Mark extends OffensiveEffect{
     /**
      * This is a light-weight version of {@code apply()}, since it is used when a {@link Player} is hit by an attack
      * and wants to respond with a tagback {@link Grenade}, dealing 1 {@link Mark} to their original attacker.
+     *
      * @param author the {@link Player} being hit.
      * @param target the original attacker.
      */
@@ -51,6 +53,7 @@ public class Mark extends OffensiveEffect{
 
     /**
      * Creates a short description of the effect.
+     *
      * @return the description.
      */
     @Override

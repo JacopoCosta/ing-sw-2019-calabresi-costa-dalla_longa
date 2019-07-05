@@ -21,12 +21,12 @@ public class CommunicationHandler {
     /**
      * The upper bound port assignable to a host.
      */
-    public static final int UPPERBOUND_PORT = 65535;
+    public static final int UPPER_BOUND_PORT = 65535;
 
     /**
      * The lower bound port assignable to a host.
      */
-    public static final int LOWERBOUD_PORT = 1024;
+    public static final int LOWER_BOUND_PORT = 1024;
 
     /**
      * The communication {@code Interface} type available to interact with the remote {@code Server}.

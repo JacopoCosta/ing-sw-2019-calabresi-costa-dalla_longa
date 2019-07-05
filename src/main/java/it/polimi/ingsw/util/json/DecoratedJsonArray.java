@@ -12,6 +12,7 @@ import java.util.List;
  * {@code JSONArray}, which is a collection of {@code JSONObject}s, and decorates it
  * with methods.
  */
+@SuppressWarnings("unchecked")
 public class DecoratedJsonArray {
     /**
      * The {@code JSONArray} represented by the instance.

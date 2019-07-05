@@ -16,6 +16,7 @@ import java.util.List;
 public class SpawnCell extends Cell {
     /**
      * This attribute is used to determine which {@code SpawnCell} a given {@link PowerUp} refers to as its spawn point.
+     *
      * @see PowerUp#getAmmoCubes()
      */
     private AmmoCubes ammoCubeColor; // this attribute is used to determine which Cell a given PowerUp refers to as its spawnPoint
@@ -27,8 +28,9 @@ public class SpawnCell extends Cell {
 
     /**
      * This is the only constructor.
-     * @param xCoord the x (horizontal) coordinate in the 2-dimensional discrete space this {@link Cell} will be put at.
-     * @param yCoord the y (vertical) coordinate in the 2-dimensional discrete space this {@link Cell} will be put at.
+     *
+     * @param xCoord        the x (horizontal) coordinate in the 2-dimensional discrete space this {@link Cell} will be put at.
+     * @param yCoord        the y (vertical) coordinate in the 2-dimensional discrete space this {@link Cell} will be put at.
      * @param ammoCubeColor the colour of the {@code SpawnCell}.
      */
     public SpawnCell(int xCoord, int yCoord, AmmoCubes ammoCubeColor) {
@@ -40,6 +42,7 @@ public class SpawnCell extends Cell {
 
     /**
      * Returns a set of {@link AmmoCubes} containing only one cube of the colour used to identify the {@code SpawnCell}.
+     *
      * @return the set.
      */
     public AmmoCubes getAmmoCubeColor() {
@@ -48,6 +51,7 @@ public class SpawnCell extends Cell {
 
     /**
      * Returns a list containing the {@link Weapon}s the {@link Cell} offers.
+     *
      * @return a list containing the {@link Weapon}s the {@link Cell} offers.
      */
     public List<Weapon> getWeaponShop() {
@@ -56,7 +60,8 @@ public class SpawnCell extends Cell {
 
     /**
      * Adds a {@link Weapon} to the {@link Weapon} shop.
-     * @param {@link Weapon} the {@link Weapon} to add.
+     *
+     * @param weapon the {@link Weapon} to add.
      */
     public void addToWeaponShop(Weapon weapon) {
         this.weaponShop.add(weapon);
@@ -64,6 +69,7 @@ public class SpawnCell extends Cell {
 
     /**
      * Removes a {@link Weapon} from the {@link Weapon} shop.
+     *
      * @param index the index of the {@link Weapon} to remove in the list of {@link Weapon}s.
      * @return the removed {@link Weapon}.
      */

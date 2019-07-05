@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.exceptions.InvalidSaveStateException;
 import it.polimi.ingsw.model.exceptions.UnmatchedSavedParticipantsException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.util.Dispatcher;
 import it.polimi.ingsw.util.Table;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.message.MessageType;
@@ -432,6 +433,7 @@ public class Lobby implements Observer {
             //start a new game or load an existing one
             new Thread(() -> {
                 try {
+                    Dispatcher.ANSWER_TIME_LIMIT = this.gameProperty.turnDuration();
                     this.game = Game.load(this.players);
                     ColorPrinter.mexG("previous Game loaded from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
                 } catch (InvalidSaveStateException | UnmatchedSavedParticipantsException | NullPointerException ignored) {

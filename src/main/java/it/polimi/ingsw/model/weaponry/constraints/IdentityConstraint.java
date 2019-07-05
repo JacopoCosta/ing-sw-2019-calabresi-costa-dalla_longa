@@ -23,11 +23,12 @@ public class IdentityConstraint extends Constraint {
 
     /**
      * This is the only constructor.
+     *
      * @param sourceAttackModuleId the id of the {@link AttackModule} containing the source {@link Target}.
-     * @param sourceTargetId the id of the source {@link Target}.
-     * @param drainAttackModuleId the id of the {@link AttackModule} containing the drain {@link Target}.
-     * @param drainTargetId the id of the drain {@link Target}.
-     * @param truth the truth value needed from the identity predicate, in order to satisfy the {@link Constraint}.
+     * @param sourceTargetId       the id of the source {@link Target}.
+     * @param drainAttackModuleId  the id of the {@link AttackModule} containing the drain {@link Target}.
+     * @param drainTargetId        the id of the drain {@link Target}.
+     * @param truth                the truth value needed from the identity predicate, in order to satisfy the {@link Constraint}.
      */
     IdentityConstraint(int sourceAttackModuleId, int sourceTargetId, int drainAttackModuleId, int drainTargetId, boolean truth) {
         this.sourceAttackModuleId = sourceAttackModuleId;
@@ -40,8 +41,9 @@ public class IdentityConstraint extends Constraint {
 
     /**
      * Tells if the {@link Constraint} is satisfied by two given {@link Player}s.
+     *
      * @param sourcePlayer the source {@link Player}.
-     * @param drainPlayer the drain {@link Player}.
+     * @param drainPlayer  the drain {@link Player}.
      * @return true if the cells satisfy the {@link Constraint}, false if they don't.
      */
     private boolean verify(Player sourcePlayer, Player drainPlayer) {
@@ -50,6 +52,7 @@ public class IdentityConstraint extends Constraint {
 
     /**
      * Creates a list of all {@link Player}s that satisfy the {@link Constraint}.
+     *
      * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return the list of {@link Player}s.
      */
@@ -89,6 +92,7 @@ public class IdentityConstraint extends Constraint {
      * {@link Constraint} management workflow. This method was implemented anyway in order
      * to reduce the number of explicit casts and to be able to factorize it in
      * the {@code Constraint} superclass, where it is declared as abstract.
+     *
      * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return nothing.
      */
@@ -104,6 +108,7 @@ public class IdentityConstraint extends Constraint {
      * {@link Constraint} management workflow. This method was implemented anyway in order
      * to reduce the number of explicit casts and to be able to factorize it in
      * the {@code Constraint} superclass, where it is declared as abstract.
+     *
      * @param context the {@link AttackPattern} in which the {@link Constraint} is relevant.
      * @return nothing.
      */

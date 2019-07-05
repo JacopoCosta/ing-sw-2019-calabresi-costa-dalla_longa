@@ -20,6 +20,7 @@ public class Room {
 
     /**
      * This is the only constructor.
+     *
      * @param color The colour of the {@link Room}.
      * @param cells The list of {@link Cell}s to be included in the {@link Room}.
      */
@@ -33,6 +34,7 @@ public class Room {
 
     /**
      * Tells whether or not the {@link Room} contains the {@link Cell} passed as argument.
+     *
      * @param cell the {@link Cell} of interest.
      * @return whether or not the {@link Room} contains the {@link Cell}.
      */
@@ -42,6 +44,7 @@ public class Room {
 
     /**
      * Returns the name of the {@code Room}'s {@link #color}.
+     *
      * @return the name of the {@code Room}'s {@link #color}.
      */
     public String getColor() {
@@ -50,6 +53,7 @@ public class Room {
 
     /**
      * Returns the list of {@link Cell}s that make up the {@link Room}.
+     *
      * @return the list.
      */
     public List<Cell> getCells() {
@@ -58,6 +62,7 @@ public class Room {
 
     /**
      * Creates a string with a short description of the room.
+     *
      * @return the string.
      */
     @Override

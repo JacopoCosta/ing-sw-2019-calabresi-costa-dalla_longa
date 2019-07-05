@@ -7,7 +7,8 @@ import it.polimi.ingsw.view.virtual.VirtualView;
 /**
  * This exception is thrown (and caught) internally in the {@link VirtualView}, when it is impossible to provide
  * the {@link Player} with a valid list of {@link Target}s to choose for an attack.
- * @see it.polimi.ingsw.view.virtual.VirtualView
+ *
+ * @see VirtualView
  */
 public class NoValidTargetsException extends Exception {
     public NoValidTargetsException(String message) {

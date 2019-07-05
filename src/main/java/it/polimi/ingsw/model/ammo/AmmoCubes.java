@@ -50,9 +50,10 @@ public class AmmoCubes {
 
     /**
      * This constructor allows to specify the amount of cubes for each individual colour.
-     * @param red the amount of red cubes
+     *
+     * @param red    the amount of red cubes
      * @param yellow the amount of yellow cubes
-     * @param blue the amount of blue cubes
+     * @param blue   the amount of blue cubes
      * @throws IllegalArgumentException when trying to create an illegal number of cubes, such as beyond three, or a negative number.
      */
     public AmmoCubes(int red, int yellow, int blue) throws IllegalArgumentException {
@@ -66,6 +67,7 @@ public class AmmoCubes {
 
     /**
      * This factory method constructs an object with the properties found inside the JSON object passed as argument.
+     *
      * @param jAmmoCube the JSON object containing the desired properties.
      * @return an instance of this class in accordance with the specified properties.
      * @throws IllegalArgumentException when the properties include values not suitable for the explicit constructor.
@@ -95,6 +97,7 @@ public class AmmoCubes {
 
     /**
      * This method tells the amount of red cubes in the current set.
+     *
      * @return the amount of red cubes in the current set.
      */
     public int getRed() {
@@ -103,6 +106,7 @@ public class AmmoCubes {
 
     /**
      * This method tells the amount of yellow cubes in the current set.
+     *
      * @return the amount of yellow cubes in the current set.
      */
     public int getYellow() {
@@ -111,6 +115,7 @@ public class AmmoCubes {
 
     /**
      * This method tells the amount of blue cubes in the current set.
+     *
      * @return the amount of blue cubes in the current set.
      */
     public int getBlue() {
@@ -121,6 +126,7 @@ public class AmmoCubes {
      * This methods sums the values of two sets of {@code AmmoCubes}. The sum is evaluated on each colour individually
      * and differently coloured cubes do not interfere with each other or with the final result. Should any of the
      * colours end up having more than three cubes, the final result will be truncated to have at most that many.
+     *
      * @param ammoCubes the other set of {@code AmmoCubes} that needs to be summed with the current set.
      * @return a new object where each colour's amount is equal to the sum of that same colour's amounts in the addends, limited to three.
      */
@@ -135,6 +141,7 @@ public class AmmoCubes {
      * This methods subtracts the values of a sets of {@code AmmoCubes} from the values of another set. The difference is evaluated on each colour individually
      * and differently coloured cubes do not interfere with each other or with the final result. Should any of the
      * colours end up having a negative number of cubes, the operation is aborted and an exception is thrown.
+     *
      * @param ammoCubes the other set of {@code AmmoCubes} that needs to be subtracted from the current set.
      * @return a new object where each colour's amount is equal to the difference between that same colour's amount in the object this method was
      * called upon and that same colour's amount in the object passed as argument.
@@ -154,11 +161,12 @@ public class AmmoCubes {
     /**
      * Tells if a set of {@code AmmoCubes} covers a cost expressed in {@code AmmoCubes}.
      * The condition for coverage is having, for each colour, at least as many cubes of that colour as the cost.
+     *
      * @param cost the cost to cover.
      * @return whether or not the coverage condition is fulfilled.
      */
     public boolean covers(AmmoCubes cost) {
-        return  this.getRed() >= cost.getRed() &&
+        return this.getRed() >= cost.getRed() &&
                 this.getYellow() >= cost.getYellow() &&
                 this.getBlue() >= cost.getBlue();
     }
@@ -166,6 +174,7 @@ public class AmmoCubes {
     /**
      * Combines the purchasing power of a set of {@code AmmoCubes} with that of a list of {@link PowerUp}s.
      * This is because each {@link PowerUp} translates into a single {@code AmmoCubes} of a specific colour.
+     *
      * @param powerUps the {@link PowerUp}s to add to the set of {@code AmmoCubes}.
      * @return A new set of {@code AmmoCubes} equivalent to the combination of the current set with the list of {@link PowerUp}s.
      */
@@ -177,6 +186,7 @@ public class AmmoCubes {
 
     /**
      * Tells how far a set of {@code AmmoCubes} is from being able to cover a cost, passed in as argument.
+     *
      * @param cost the cost to cover.
      * @return A set of {@code AmmoCubes} containing, for each colour, the minimum amount of {@code AmmoCubes} of that colour that
      * would need to be added to the current set, in order to allow it to cover that cost.
@@ -193,8 +203,9 @@ public class AmmoCubes {
     /**
      * Filters a list of {@link PowerUp}s, allowing through only those {@link PowerUp}s that, should the current
      * set of {@code AmmoCubes} be augmented with, would reduce the difference from covering the cost passed as argument.
+     *
      * @param powerUps the list of {@link PowerUp}s from which to filter.
-     * @param cost the cost to cover.
+     * @param cost     the cost to cover.
      * @return the filtered list of {@link PowerUp}s.
      * @see AmmoCubes#augment(List)
      * @see AmmoCubes#differenceFromCovering(AmmoCubes)
@@ -210,6 +221,7 @@ public class AmmoCubes {
 
     /**
      * This method instantiates a set of {@code AmmoCubes} equivalent to a single red cube.
+     *
      * @return a set of {@code AmmoCubes} containing only a red cube.
      */
     public static AmmoCubes red() {
@@ -218,6 +230,7 @@ public class AmmoCubes {
 
     /**
      * This method instantiates a set of {@code AmmoCubes} equivalent to a single yellow cube.
+     *
      * @return a set of {@code AmmoCubes} containing only a yellow cube.
      */
     public static AmmoCubes yellow() {
@@ -226,6 +239,7 @@ public class AmmoCubes {
 
     /**
      * This method instantiates a set of {@code AmmoCubes} equivalent to a single blue cube.
+     *
      * @return a set of {@code AmmoCubes} containing only a blue cube.
      */
     public static AmmoCubes blue() {
@@ -237,6 +251,7 @@ public class AmmoCubes {
      * For this purpose, equal amounts of different colours are not comparable, implying that,
      * in order for two instances of this class to be considered equivalent, they must have equal amounts
      * of cubes for every colour.
+     *
      * @param object the set of {@code AmmoCubes} to compare with.
      * @return whether or not the object this method was called upon is equivalent to the one passed as argument.
      */
@@ -247,13 +262,14 @@ public class AmmoCubes {
         if(!(object instanceof AmmoCubes))
             return false;
         AmmoCubes ammoCubes = ((AmmoCubes) object);
-        return  this.getRed() == ammoCubes.getRed() &&
+        return this.getRed() == ammoCubes.getRed() &&
                 this.getYellow() == ammoCubes.getYellow() &&
                 this.getBlue() == ammoCubes.getBlue();
     }
 
     /**
      * This methods is used to inspect an object.
+     *
      * @return a summary of the object's attributes.
      */
     @Override
@@ -261,7 +277,7 @@ public class AmmoCubes {
         StringBuilder s = new StringBuilder();
         final int[] values = {red, yellow, blue};
         final String[] names = {"R", "Y", "B"};
-        for(int i = 0; i < 3; i ++) {
+        for(int i = 0; i < 3; i++) {
             s.append(names[i].repeat(Math.max(0, values[i])));
         }
         return s.toString();
@@ -269,6 +285,7 @@ public class AmmoCubes {
 
     /**
      * This methods is used to inspect a set of {@code AmmoCubes} containing exactly one cube.
+     *
      * @return the name of the colour of the only cube in the set (or the empty string, if the usage criterion is not met).
      */
     public String toStringAsColor() {
@@ -295,11 +312,11 @@ public class AmmoCubes {
 
     public List<ColoredString> toColoredStringsWithNumbers() {
         List<ColoredString> coloredStrings = new ArrayList<>();
-        coloredStrings.add(new ColoredString(" "+ red, Color.RESET));
+        coloredStrings.add(new ColoredString(" " + red, Color.RESET));
         coloredStrings.add(new ColoredString(UTF.block, Color.RED));
-        coloredStrings.add(new ColoredString(" "+ yellow, Color.RESET));
+        coloredStrings.add(new ColoredString(" " + yellow, Color.RESET));
         coloredStrings.add(new ColoredString(UTF.block, Color.YELLOW));
-        coloredStrings.add(new ColoredString(" "+ blue, Color.RESET));
+        coloredStrings.add(new ColoredString(" " + blue, Color.RESET));
         coloredStrings.add(new ColoredString(UTF.block, Color.BLUE));
         return coloredStrings;
     }
