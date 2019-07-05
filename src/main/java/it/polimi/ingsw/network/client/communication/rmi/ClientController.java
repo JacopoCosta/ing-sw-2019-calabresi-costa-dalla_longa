@@ -32,8 +32,6 @@ public class ClientController implements RMIController {
      */
     @Override
     public void notifyMessageReceived(NetworkMessage message) {
-        System.out.println("Received: " + message.getType());
-
         synchronized (messages) {
             messages.add(message);
         }

@@ -17,30 +17,67 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * This class implements {@link GraphicalInterface} to allow a {@code Client} to be executed via command line interface.
+ */
 @SuppressWarnings({"unchecked", "FieldCanBeLocal"})
 public class CLI implements GraphicalInterface {
+    /**
+     * The {@code List} of {@code Lobby} available for the {@code Client} to join.
+     */
     private final List<String> lobbies = Collections.synchronizedList(new ArrayList<>());
+
+    /**
+     * The {@code List} of {@code Client}s connected in the same {@code Lobby} of the current one. This collection can be
+     * empty if no {@code Client}a joined the actual {@code Lobby} yet.
+     */
     private List<String> opponents;
 
+    /**
+     * The standard input method used by this CLI application.
+     */
     private final Scanner in = new Scanner(System.in);
 
+    /**
+     * The {@link ScheduledExecutorService} responsible for all the periodical interrogations to the {@code Server}.
+     */
     private ScheduledExecutorService executor;
+
+    /**
+     * The {@link ScheduledFuture} used to control the {@code executor} tasks.
+     */
     private ScheduledFuture<?> futureUpdate;
 
+    /**
+     * The amount in seconds between successive {@link #executor} executions.
+     */
     private final int UPDATE_REQUEST_PERIOD = 5;
 
+    /**
+     * The {@link CommunicationHandler} responsible for the interaction with the remote {@code Server}.
+     */
     private CommunicationHandler communicationHandler;
 
+    /**
+     * A flag indicating whether it's necessary to wait for an incoming {@link Deliverable}. This happens if and only if
+     * this flag is set to {@code true}.
+     */
     private boolean keepAlive = true;
 
-    public CLI() {
-    }
-
+    /**
+     * Sets the {@link #communicationHandler} interface for this console, allowing the {@code Client} to communicate with
+     * the remote {@code Server}.
+     *
+     * @param communicationHandler the new {@link CommunicationHandler} of this graphical interface.
+     */
     @Override
     public void setCommunicationHandler(CommunicationHandler communicationHandler) {
         this.communicationHandler = communicationHandler;
     }
 
+    /**
+     * Starts the CLI command line application.
+     */
     @Override
     public void display() {
         //prints a welcome screen
@@ -87,7 +124,7 @@ public class CLI implements GraphicalInterface {
      *
      * @param deliverable the newly arrived {@link Deliverable}.
      * @throws ConnectionException when calling a {@link CommunicationHandler#deliver(Deliverable)} throws
-     * a {@link ConnectionException}.
+     *                             a {@link ConnectionException}.
      */
     private void manageArrivals(Deliverable deliverable) throws ConnectionException {
         switch (deliverable.getType()) {
@@ -125,6 +162,11 @@ public class CLI implements GraphicalInterface {
         }
     }
 
+    /**
+     * Request an input value to the user and return the equivalent {@code String} to the caller.
+     *
+     * @return the {@code String} containing the user input.
+     */
     private String in() {
         try {
             return in.nextLine();
@@ -134,7 +176,9 @@ public class CLI implements GraphicalInterface {
         }
     }
 
-    //register a Client into the Server
+    /**
+     * Registers the current {@code Client} to the {@code Server} global list
+     */
     private void register() {
         boolean valid = false;
 
@@ -154,7 +198,9 @@ public class CLI implements GraphicalInterface {
         } while (!valid);
     }
 
-    //unregister the Client from the Server global list
+    /**
+     * Unregisters the {@code Client} from the {@code Server} global list.
+     */
     private void unregister() {
         try {
             communicationHandler.unregister();
@@ -166,7 +212,10 @@ public class CLI implements GraphicalInterface {
         System.exit(0);
     }
 
-    //update the Lobby list and printOpponents them
+    /**
+     * Updates the local {@code Lobby} list: {@link #lobbies} with the most recent one, provided by the remote {@code Server}
+     * and prints it into the standard output.
+     */
     private void startLobbyUpdateAndPrint() {
         //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
         Runnable updateTask = () -> {
@@ -191,13 +240,17 @@ public class CLI implements GraphicalInterface {
         futureUpdate = executor.scheduleAtFixedRate(updateTask, 0, UPDATE_REQUEST_PERIOD, TimeUnit.SECONDS);
     }
 
-    //stops the update and printOpponents process
+    /**
+     * Stops the {@code Lobby} list update and print process.
+     */
     private void stopLobbyUpdateAndPrint() {
         if (!futureUpdate.isDone())
             futureUpdate.cancel(true);
     }
 
-    //create a new Lobby and login the Lobby author
+    /**
+     * Creates a new {@code Lobby} into the remote {@code Server} and logs the registered author in.
+     */
     private void initLobby() {
         boolean valid = false;
         do {
@@ -218,7 +271,11 @@ public class CLI implements GraphicalInterface {
         } while (!valid);
     }
 
-    //log a registered Client into a chosen Lobby
+    /**
+     * Logs a registered {@code Client} into the given {@code Lobby}, specified by {@code lobbyName}.
+     *
+     * @param lobbyName the name of the {@code Lobby} the user wants to join into.
+     */
     private void loginToLobby(String lobbyName) {
         String lobbyPassword = requestLobbyPassword();
 
@@ -238,6 +295,9 @@ public class CLI implements GraphicalInterface {
         }
     }
 
+    /**
+     * Logs the current user out from the {@code Lobby} he previously joined.
+     */
     private void logoutFromLobby() {
         try {
             communicationHandler.logout();
@@ -249,6 +309,11 @@ public class CLI implements GraphicalInterface {
         }
     }
 
+    /**
+     * Requests the user to provide a valid username. This method does not returns until a valid username has been inserted.
+     * A valid username must not be {@code null} or being made out of blank space characters only.
+     * @return the requested username.
+     */
     private String requestUsername() {
         String name;
         do {
@@ -258,7 +323,12 @@ public class CLI implements GraphicalInterface {
         return name;
     }
 
-    //request the new Lobby name
+    /**
+     * Requests the user to provide a valid name for the {@code Lobby} needed by the caller. This method does not returns
+     * until a valid {@code Lobby} name has been inserted.
+     * A valid {@code Lobby} name must not be {@code null} or being made out of blank space characters only.
+     * @return the requested {@code Lobby} name.
+     */
     private String requestLobbyName() {
         String name;
         do {
@@ -268,13 +338,22 @@ public class CLI implements GraphicalInterface {
         return name;
     }
 
-    //request a Lobby password
+    /**
+     * Requests the user to provide a valid password for the {@code Lobby} the caller chooses to create. Since passwords
+     * have no restrictions and does not servers for security purposes, any given input to this method is considered as valid.
+     * @return the requested password.
+     */
     private String requestLobbyPassword() {
         ColorPrinter.print("Password: ");
         return in();
     }
 
-    //return the client choice: 'n' or a valid Lobby name
+    /**
+     * Requests the user to provide a valid choice between the possible ones: 'n' representing the user decision to create
+     * a new {@code Lobby} or a number referenced in the {@link #lobbies} list representing the user decision to join a
+     * specified {@code Lobby}.
+     * @return the user input choice.
+     */
     private String requestChoice() {
         String choice; //the Client choice
         boolean valid = false;
@@ -297,13 +376,19 @@ public class CLI implements GraphicalInterface {
         return choice;
     }
 
-    //prints a welcome screen
+    /**
+     * This is the first interface the user comes in contact with. It displays a user friendly console header.
+     */
     private void printWelcomeScreen() {
         ColorPrinter.clear();
         ColorPrinter.println("Welcome to Adrenaline !");
     }
 
-    //printOpponents the given Lobbies and some other commands
+    /**
+     * Prints the given {@code Lobby} list to the console. After that prints the possibility for the user to create a new
+     * {@code Lobby}.
+     * @param lobbies the {@code Lobby} list to be printed.
+     */
     private void printAll(Map<String, String> lobbies) {
         ColorPrinter.clear();
 
@@ -318,6 +403,10 @@ public class CLI implements GraphicalInterface {
         ColorPrinter.print("Choice: ");
     }
 
+    /**
+     * Prints the last information before the {@code Game} starts. These includes the {@link #opponents} list and the
+     * time left before the game starts.
+     */
     private void printPreGameInfo() {
         NetworkMessage message;
         do {
@@ -349,6 +438,11 @@ public class CLI implements GraphicalInterface {
         stopCountDownPrint();
     }
 
+    /**
+     * Prints to the console the time left starting from the given {@code startingSeconds} down to zero. This procedure
+     * can be interrupted before the countdown reaches zero.
+     * @param startingSeconds the amount of seconds to start the countdown from.
+     */
     private void printCountDown(int startingSeconds) {
         futureUpdate.cancel(true);
 
@@ -365,17 +459,26 @@ public class CLI implements GraphicalInterface {
         futureUpdate = executor.scheduleAtFixedRate(printCountDownTask, 0, 1, TimeUnit.SECONDS);
     }
 
+    /**
+     * Stops the count down and print procedure.
+     */
     private void stopCountDownPrint() {
         futureUpdate.cancel(true);
         executor.shutdown();
     }
 
+    /**
+     * Prints a console message to indicate that the timer has been paused.
+     */
     private void printPauseMessage() {
         printOpponents();
         ColorPrinter.println("Too many players left the lobby, countdown suspended.");
         executor = Executors.newSingleThreadScheduledExecutor();
     }
 
+    /**
+     * Prints the {@link #opponents} list to the console after clearing the console output for better text formatting.
+     */
     private void printOpponents() {
         ColorPrinter.clear();
 
