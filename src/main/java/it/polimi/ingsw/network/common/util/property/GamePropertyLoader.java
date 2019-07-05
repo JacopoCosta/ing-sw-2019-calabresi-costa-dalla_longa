@@ -121,7 +121,7 @@ public class GamePropertyLoader {
      * @return the {@link GameProperty} read from the configuration file.
      * @throws InvalidPropertyException if some properties does not verify the corresponding requirements.
      */
-    public GameProperty readGameProperties() throws InvalidPropertyException {
+    public GameProperty loadGameProperties() throws InvalidPropertyException {
         while (this.scanner.hasNextLine()) {
             String line = this.scanner.nextLine();
 

@@ -61,6 +61,7 @@ public class CommunicationHub {
     private CommunicationHub() {
         this.players = new ConcurrentLinkedQueue<>();
         this.lobbyManager = new LobbyManager();
+        this.lobbyManager.loadProperties();
 
         this.connectionCheckTask = () -> {
             NetworkMessage ping = NetworkMessage.simpleServerMessage(MessageType.PING_MESSAGE);

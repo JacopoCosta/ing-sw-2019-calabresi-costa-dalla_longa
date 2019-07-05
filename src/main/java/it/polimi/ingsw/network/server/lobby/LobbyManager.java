@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.server.lobby;
 
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.util.property.GameProperty;
 import it.polimi.ingsw.network.common.util.property.GamePropertyLoader;
@@ -38,10 +39,15 @@ public class LobbyManager {
      */
     public LobbyManager() {
         this.lobbies = new ConcurrentLinkedQueue<>();
+    }
 
+    /**
+     * Loads the {@link Game} configuration from the {@code game.cfg} file.
+     */
+    public void loadProperties() {
         GamePropertyLoader loader = new GamePropertyLoader();
         try {
-            this.gameProperty = loader.readGameProperties();
+            this.gameProperty = loader.loadGameProperties();
         } catch (InvalidPropertyException e) {
             ColorPrinter.err(e.getMessage());
             System.exit(-1);

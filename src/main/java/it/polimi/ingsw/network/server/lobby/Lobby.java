@@ -436,7 +436,7 @@ public class Lobby implements Observer {
                     Dispatcher.ANSWER_TIME_LIMIT = this.gameProperty.turnDuration();
                     this.game = Game.load(this.players);
                     ColorPrinter.mexG("previous Game loaded from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
-                } catch (InvalidSaveStateException | UnmatchedSavedParticipantsException | NullPointerException ignored) {
+                } catch (InvalidSaveStateException | UnmatchedSavedParticipantsException ignored) {
                     this.game = Game.create(this.gameProperty.finalFrenzy(), this.gameProperty.roundsToPlay(),
                             this.gameProperty.boardType(), this.players);
                     ColorPrinter.stat("new Game started from Lobby \"" + this.name + "\" with Players " + Table.list(this.players));
