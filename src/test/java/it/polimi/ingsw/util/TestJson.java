@@ -12,14 +12,23 @@ import java.util.List;
 
 import static org.junit.Assert.fail;
 
+/**
+ * This test verifies the functioning JSON reading and writing routines.
+ */
 public class TestJson {
 
+    /**
+     * Tests the {@link Game#invalidateSaveState()} method.
+     */
     @Test
     public void invalidateSaveState() {
         Game game = Game.create(false ,2, 2, new ArrayList<>());
         game.invalidateSaveState();
     }
 
+    /**
+     * Tests the {@link Game#save()} method.
+     */
     @Test
     public void save() {
         List<Player> participants = new ArrayList<>();
@@ -69,6 +78,9 @@ public class TestJson {
         game.save();
     }
 
+    /**
+     * Tests the {@link Game#load(List)} method.
+     */
     @Test
     public void load() {
         List<Player> participants = new ArrayList<>();
@@ -80,7 +92,7 @@ public class TestJson {
         try {
             Game game = Game.create(false, 1, 2, participants);
             game.save();
-            Game loadedGame = Game.load(participants);
+            Game.load(participants);
         } catch (InvalidSaveStateException | UnmatchedSavedParticipantsException e) {
             fail();
         }

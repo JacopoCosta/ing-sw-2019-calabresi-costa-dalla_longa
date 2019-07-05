@@ -5,9 +5,9 @@ import it.polimi.ingsw.network.common.deliverable.*;
 import it.polimi.ingsw.network.common.exceptions.*;
 import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
+import it.polimi.ingsw.util.Dispatcher;
 import it.polimi.ingsw.util.printer.Color;
 import it.polimi.ingsw.util.printer.ColorPrinter;
-import it.polimi.ingsw.util.Dispatcher;
 import it.polimi.ingsw.view.remote.GraphicalInterface;
 
 import java.util.*;
@@ -16,8 +16,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.fusesource.jansi.AnsiConsole;
 
 @SuppressWarnings({"unchecked", "FieldCanBeLocal"})
 public class CLI implements GraphicalInterface {
@@ -83,15 +81,25 @@ public class CLI implements GraphicalInterface {
         unregister();
     }
 
+    /**
+     * Processes the newly arrived {@link Deliverable} and acts consequently, either by notifying the player,
+     * printing the {@code CLI} interface, or opening a request routine via the {@link Dispatcher}.
+     *
+     * @param deliverable the newly arrived {@link Deliverable}.
+     * @throws ConnectionException when calling a {@link CommunicationHandler#deliver(Deliverable)} throws
+     * a {@link ConnectionException}.
+     */
     private void manageArrivals(Deliverable deliverable) throws ConnectionException {
         switch (deliverable.getType()) {
             case INFO:
-                if(Arrays.asList(
+                if (Arrays.asList(
                         DeliverableEvent.UPDATE_TURN,
                         DeliverableEvent.UPDATE_DISCONNECT,
                         DeliverableEvent.UPDATE_WINNER
                 ).contains(deliverable.getEvent()))
                     ColorPrinter.println(deliverable.getMessage());
+                if (DeliverableEvent.UPDATE_WINNER.equals(deliverable.getEvent()))
+                    keepAlive = false;
                 break;
             case DUAL:
                 try {
