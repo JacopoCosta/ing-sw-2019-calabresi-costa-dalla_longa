@@ -2,6 +2,10 @@ package it.polimi.ingsw.network.common.util.property;
 
 import it.polimi.ingsw.network.common.exceptions.InvalidPropertyException;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
 import java.util.Scanner;
 
 /**
@@ -101,7 +105,15 @@ public class GamePropertyLoader {
      * read the configuration file.
      */
     public GamePropertyLoader() {
-        this.scanner = new Scanner(GamePropertyLoader.class.getResourceAsStream(CONFIG_FILE_PATH));
+        try {
+            this.scanner = new Scanner(new FileInputStream(
+                    new File(
+                            this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()
+                    ).getParentFile().toString() + CONFIG_FILE_PATH)
+            );
+        } catch (FileNotFoundException | URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -137,7 +149,6 @@ public class GamePropertyLoader {
                 }
             }
         }
-
         return new GameProperty(this.finalFrenzy, this.roundsToPlay, this.boardType, this.turnDuration);
     }
 

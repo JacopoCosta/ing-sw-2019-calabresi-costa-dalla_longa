@@ -6,6 +6,7 @@ import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.common.rmi.RMIController;
 import it.polimi.ingsw.network.server.communication.ClientCommunicationInterface;
 import it.polimi.ingsw.network.server.communication.CommunicationHub;
+import it.polimi.ingsw.util.printer.ColorPrinter;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -44,6 +45,9 @@ public class RMIServerController extends UnicastRemoteObject implements RMIContr
         if (message.getType().equals(MessageType.REGISTER_REQUEST)) {
             //reformat the message to add the proper information before forwarding it to the communicationHub
             String playerName = message.getAuthor();
+
+            ColorPrinter.log("Client \"" + playerName + "\" connected via RMI protocol");
+
             RMIController clientController = (RMIController) message.getContent();
 
             ClientCommunicationInterface clientInterface = new RMIClientCommunicationInterface(clientController);

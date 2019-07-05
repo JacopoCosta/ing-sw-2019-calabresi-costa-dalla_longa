@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client.executable;
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.util.printer.ColorPrinter;
 import it.polimi.ingsw.view.remote.GraphicsManager;
+import org.fusesource.jansi.AnsiConsole;
 
 /**
  * This class is used to properly launch a {@link Client} application. Its main purpose is to check whether the specific
@@ -54,7 +55,7 @@ public class ClientLauncher {
             "\tip address\tThe server IP address.\n" +
             "\tport\t\tThe server port.\n" +
             "\t-conn [s|r]\tThe connection protocol: socket or RMI. [Default: s].\n" +
-            "\t-int [c|g]\tThe draw method: CLI or GUI. [Default: g].\n";
+            "\t-int [c|g]\tThe draw method: CLI or GUI. [Default: c].\n";
 
     /**
      * Process the given set of {@code args} and return the desired {@link Configuration} to start the {@link Client} with.
@@ -63,6 +64,7 @@ public class ClientLauncher {
      * @return the corresponding {@link Client} {@link Configuration} or an error one if parameters are incorrect or missing.
      */
     private static Configuration config(String[] args) {
+        AnsiConsole.systemInstall();
         ColorPrinter.clear();
 
         if (args.length == 0) {

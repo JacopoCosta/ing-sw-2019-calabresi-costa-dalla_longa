@@ -36,7 +36,6 @@ public class CLI implements GraphicalInterface {
     private boolean keepAlive = true;
 
     public CLI() {
-        AnsiConsole.systemInstall();
     }
 
     @Override

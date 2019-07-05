@@ -5,6 +5,7 @@ import it.polimi.ingsw.network.common.message.MessageType;
 import it.polimi.ingsw.network.common.message.NetworkMessage;
 import it.polimi.ingsw.network.server.communication.ClientCommunicationInterface;
 import it.polimi.ingsw.network.server.communication.CommunicationHub;
+import it.polimi.ingsw.util.printer.ColorPrinter;
 
 import java.io.*;
 import java.net.Socket;
@@ -107,6 +108,9 @@ public class SocketClientHandler implements Runnable {
                     //reformat the message to add the proper information before forwarding it to the communicationHub
                     ClientCommunicationInterface clientInterface = new SocketClientCommunicationInterface(this.out);
                     String playerName = message.getAuthor();
+
+                    ColorPrinter.log("Client \"" + playerName + "\" connected via Socket protocol");
+
                     Player player = new Player(playerName);
                     player.setCommunicationInterface(clientInterface);
 
