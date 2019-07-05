@@ -85,15 +85,13 @@ public class CommunicationHub {
                             } catch (LobbyNotFoundException e) {
                                 ColorPrinter.log(e.getMessage());
                             } catch (PlayerNotFoundException | LobbyEmptyException e) {
-                                e.printStackTrace();
-                                //ColorPrinter.err(e.getMessage());
+                                ColorPrinter.err(e.getMessage());
                             }
                             ColorPrinter.log("unregistering Client \"" + player.getName() + "\"...");
                             this.unregister(player);
 
                         } catch (ClientNotRegisteredException e) {
-                            e.printStackTrace();
-                            //ColorPrinter.err(e.getMessage());
+                            ColorPrinter.err(e.getMessage());
                         }
                         ColorPrinter.log("Client \"" + player.getName() + "\" successfully unregistered");
                     }
@@ -256,8 +254,7 @@ public class CommunicationHub {
         try {
             player = (this.getPlayerByName(message.getAuthor()));
         } catch (PlayerNotFoundException e) {
-            e.printStackTrace();
-            //ColorPrinter.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             return;
         }
 
@@ -439,8 +436,7 @@ public class CommunicationHub {
         try {
             this.lobbyManager.notifyOpponentsUpdate(this.lobbyManager.getLobbyNameByPlayer(player));
         } catch (LobbyNotFoundException | PlayerNotFoundException e) {
-            //ColorPrinter.err(e.getMessage());
-            e.printStackTrace();
+            ColorPrinter.err(e.getMessage());
         }
     }
 
@@ -454,8 +450,7 @@ public class CommunicationHub {
         try {
             this.lobbyManager.notifyTimeUpdate(this.lobbyManager.getLobbyNameByPlayer(player));
         } catch (LobbyNotFoundException | PlayerNotFoundException e) {
-            //ColorPrinter.err(e.getMessage());
-            e.printStackTrace();
+            ColorPrinter.err(e.getMessage());
         }
     }
 
@@ -472,8 +467,7 @@ public class CommunicationHub {
         try {
             player = this.getPlayerByName(message.getAuthor());
         } catch (PlayerNotFoundException e) {
-            e.printStackTrace();
-            //ColorPrinter.err(e.getMessage());
+            ColorPrinter.err(e.getMessage());
             return;
         }
         player.notifyReceived(message);
@@ -490,8 +484,7 @@ public class CommunicationHub {
             player.sendMessage(message);
             ColorPrinter.mexS("message " + message.getType() + " sent to Client \"" + player.getName() + "\"");
         } catch (ConnectionException e) {
-            e.printStackTrace();
-            //ColorPrinter.err(e.getClass() + ": " + e.getMessage());
+            ColorPrinter.err(e.getClass() + ": " + e.getMessage());
         }
     }
 }

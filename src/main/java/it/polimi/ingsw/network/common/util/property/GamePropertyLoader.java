@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.common.util.property;
 
 import it.polimi.ingsw.network.common.exceptions.InvalidPropertyException;
+import it.polimi.ingsw.util.printer.ColorPrinter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -109,7 +110,7 @@ public class GamePropertyLoader {
             this.scanner = new Scanner(new FileInputStream(new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().toString() + CONFIG_FILE_PATH));
             //this.scanner = new Scanner(new FileInputStream(new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).toString() + CONFIG_FILE_PATH));
         } catch (FileNotFoundException | URISyntaxException e) {
-            e.printStackTrace();
+            ColorPrinter.err(e.getMessage());
             System.exit(-1);
         }
     }

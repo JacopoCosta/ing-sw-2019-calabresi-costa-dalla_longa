@@ -35,7 +35,7 @@ class CliPowerUps {
      * @param player the player.
      */
     static void build(Player player) {
-        for (int i = 0; i < player.getPowerUps().size(); i++)
+        for (int i = 0; i < player.getPowerUps().size() && i < 3; i++)
             writePowerUp(player.getPowerUps().get(i), i);
 
         if (player.getPowerUps().size() > 0)

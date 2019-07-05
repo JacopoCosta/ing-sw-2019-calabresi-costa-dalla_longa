@@ -109,7 +109,7 @@ public class CLI implements GraphicalInterface {
                 if (deliverable != null)
                     manageArrivals(deliverable);
             } catch (ConnectionException e) {
-                e.printStackTrace();
+                ColorPrinter.err(e.getMessage());
                 System.exit(-1);
             }
         }
@@ -188,8 +188,7 @@ public class CLI implements GraphicalInterface {
                 communicationHandler.register(username);
                 valid = true;
             } catch (ConnectionException e) {
-                //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
-                e.printStackTrace();
+                ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
                 System.exit(-1);
             } catch (ClientAlreadyRegisteredException e) {
                 ColorPrinter.err(e.getMessage());
@@ -205,8 +204,7 @@ public class CLI implements GraphicalInterface {
             communicationHandler.unregister();
             ColorPrinter.println("Unregistration success");
         } catch (ConnectionException | ClientNotRegisteredException e) {
-            //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
-            e.printStackTrace();
+            ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
             System.exit(-1);
         }
         System.exit(0);
@@ -225,8 +223,7 @@ public class CLI implements GraphicalInterface {
             try {
                 lobbyInfo = communicationHandler.requestLobbyUpdate();
             } catch (ConnectionException e) {
-                //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
-                e.printStackTrace();
+                ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
                 System.exit(-1);
                 return;
             }
@@ -262,8 +259,7 @@ public class CLI implements GraphicalInterface {
                 valid = true;
                 ColorPrinter.println("Lobby creation success!\n");
             } catch (ConnectionException e) {
-                //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
-                e.printStackTrace();
+                ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
                 System.exit(-1);
             } catch (LobbyAlreadyExistsException e) {
                 ColorPrinter.err(e.getMessage());
@@ -283,8 +279,7 @@ public class CLI implements GraphicalInterface {
             communicationHandler.login(lobbyName, lobbyPassword);
             ColorPrinter.println("Lobby login success!");
         } catch (ConnectionException e) {
-            //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
-            e.printStackTrace();
+            ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
             System.exit(-1);
         } catch (LobbyNotFoundException | LobbyFullException | InvalidPasswordException | PlayerAlreadyAddedException e) {
             ColorPrinter.err(e.getMessage());
@@ -303,8 +298,7 @@ public class CLI implements GraphicalInterface {
             communicationHandler.logout();
             ColorPrinter.println("Lobby logout success!");
         } catch (ConnectionException e) {
-            //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
-            e.printStackTrace();
+            ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
             System.exit(-1);
         }
     }
@@ -413,8 +407,7 @@ public class CLI implements GraphicalInterface {
             try {
                 message = communicationHandler.getPreGameInfoUpdate();
             } catch (ConnectionException e) {
-                //ColorPrinter.err(e.getMessage());
-                e.printStackTrace();
+                ColorPrinter.err(e.getMessage());
                 System.exit(-1);
                 return;
             }

@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.client.executable;
 
 import it.polimi.ingsw.network.client.communication.CommunicationHandler;
 import it.polimi.ingsw.network.common.exceptions.ConnectionException;
+import it.polimi.ingsw.util.printer.ColorPrinter;
 import it.polimi.ingsw.view.remote.GraphicsManager;
 
 
@@ -54,8 +55,7 @@ public class Client {
         try {
             communicationHandler = new CommunicationHandler(hostAddress, port, communicationInterface);
         } catch (ConnectionException e) {
-            //ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
-            e.printStackTrace();
+            ColorPrinter.err("connection to the server is lost, cause: " + e.getMessage());
             System.exit(-1);
             return;
         }

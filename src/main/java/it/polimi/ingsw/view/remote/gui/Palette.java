@@ -16,7 +16,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-class Palette {
+abstract class Palette {
     //colors
     static final Color ADRENALINE_DARK_GRAY_TRANSPARENT = Color.rgb(34, 42, 43, 0.8);
     static final Color ADRENALINE_DARK_GRAY_FILL = Color.rgb(34, 42, 43, 1);

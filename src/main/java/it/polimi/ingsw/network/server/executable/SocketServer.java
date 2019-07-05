@@ -53,8 +53,7 @@ public class SocketServer implements Runnable {
                 executor.execute(clientHandler); //execute the user thread
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            //ColorPrinter.err(e.getClass() + ": " + e.getMessage());
+            ColorPrinter.err(e.getClass() + ": " + e.getMessage());
         }
     }
 }

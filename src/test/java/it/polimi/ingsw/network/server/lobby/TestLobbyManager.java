@@ -71,7 +71,6 @@ public class TestLobbyManager {
             catchTaken = false;
         } catch (LobbyNotFoundException | InvalidPasswordException | PlayerAlreadyAddedException | LobbyFullException | GameAlreadyStartedException e) {
             catchTaken = true;
-            e.printStackTrace();
         }
         assertFalse(catchTaken);
 

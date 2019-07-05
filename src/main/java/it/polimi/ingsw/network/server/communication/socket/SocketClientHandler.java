@@ -62,8 +62,7 @@ public class SocketClientHandler implements Runnable {
             this.out = new ObjectOutputStream(this.socket.getOutputStream());
             this.in = new ObjectInputStream(this.socket.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
-            //this.console.err(e.getClass() + ": " + e.getMessage());
+            ColorPrinter.err(e.getClass() + ": " + e.getMessage());
             this.closeConnection();
         }
     }
@@ -122,8 +121,7 @@ public class SocketClientHandler implements Runnable {
         } catch (SocketException | EOFException e) {
             //Client unexpectedly quit: the CommunicationHub will unregister it
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            //ColorPrinter.err(e.getClass() + ": " + e.getMessage());
+            ColorPrinter.err(e.getClass() + ": " + e.getMessage());
         } finally {
             this.closeConnection();
         }

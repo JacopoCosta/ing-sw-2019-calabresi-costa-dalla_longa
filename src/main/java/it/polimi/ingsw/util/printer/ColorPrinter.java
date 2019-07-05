@@ -119,15 +119,6 @@ public abstract class ColorPrinter {
     }
 
     /**
-     * Prints the given {@code message} in the default console color and after a default prefix: {@code [GAME]}.
-     *
-     * @param message the {@code String} value to be printed.
-     */
-    public static void mexG(String message) {
-        println("[GAME] " + message);
-    }
-
-    /**
      * Prints the given {@code message} in a cyan color and after a default prefix: {@code [MESSAGE]}.
      *
      * @param message the {@code String} value to be printed.

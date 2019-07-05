@@ -32,7 +32,7 @@ public abstract class CliCommon {
     /**
      * The width of the interface, expressed in characters.
      */
-    private static final int canvasWidth = 175;
+    private static final int canvasWidth = 185;
 
     /**
      * The height of the interface, expressed in characters.

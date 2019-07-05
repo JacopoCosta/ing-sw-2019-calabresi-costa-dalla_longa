@@ -3,6 +3,8 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.util.printer.ColorPrinter;
 import org.fusesource.jansi.AnsiConsole;
 
+import java.io.File;
+
 /**
  * This class is used to properly launch a {@link Server} application. Its main purpose is to check whether the specific
  * parameters are correct and notify them to the {@link Server}, so that he can start as desired.

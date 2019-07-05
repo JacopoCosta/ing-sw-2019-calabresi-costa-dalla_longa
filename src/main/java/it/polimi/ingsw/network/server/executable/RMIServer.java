@@ -48,8 +48,7 @@ public class RMIServer implements Runnable {
         try {
             serverController = new RMIServerController();
         } catch (RemoteException e) {
-            e.printStackTrace();
-            //ColorPrinter.err(e.getClass() + ": " + e.getMessage());
+            ColorPrinter.err(e.getClass() + ": " + e.getMessage());
             System.exit(-1);
             return;
         }
@@ -61,8 +60,7 @@ public class RMIServer implements Runnable {
             registry = LocateRegistry.createRegistry(this.port);
             ColorPrinter.log("RMI registry started");
         } catch (RemoteException e) {
-            e.printStackTrace();
-            //ColorPrinter.err(e.getClass() + ": " + e.getMessage());
+            ColorPrinter.err(e.getClass() + ": " + e.getMessage());
             System.exit(-1);
             return;
         }
@@ -72,8 +70,7 @@ public class RMIServer implements Runnable {
         try {
             registry.rebind(bindingName, serverController);
         } catch (RemoteException e) {
-            e.printStackTrace();
-            //ColorPrinter.err(e.getClass() + ": " + e.getMessage());
+            ColorPrinter.err(e.getClass() + ": " + e.getMessage());
             System.exit(-1);
         }
         ColorPrinter.log("RMI done binding");
