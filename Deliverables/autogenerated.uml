@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>it.polimi.ingsw</OriginalElement>
+  <nodes>
+    <node x="0.0" y="2698.0">it.polimi.ingsw.model.weaponry.constraints.IdentityConstraint</node>
+    <node x="4108.0" y="4392.0">it.polimi.ingsw.model.weaponry.constraints.ConstraintType</node>
+    <node x="1992.0" y="4169.0">it.polimi.ingsw.network.server.communication.rmi.RMIServerController</node>
+    <node x="1031.0" y="4829.0">it.polimi.ingsw.model.exceptions.InvalidFilterInvocationException</node>
+    <node x="1847.0" y="4637.0">it.polimi.ingsw.util.TestJson</node>
+    <node x="3161.75" y="0.0">it.polimi.ingsw.model.cell.Cell</node>
+    <node x="4575.0" y="3268.0">it.polimi.ingsw.view.virtual.cli.CliBoard.WallType</node>
+    <node x="548.0" y="3600.0">it.polimi.ingsw.network.client.executable.ClientLauncher</node>
+    <node x="2255.0" y="3282.0">it.polimi.ingsw.network.common.deliverable.Info</node>
+    <node x="373.0" y="4057.0">it.polimi.ingsw.util.printer.Color</node>
+    <node x="3452.0" y="4057.0">it.polimi.ingsw.util.Dispatcher</node>
+    <node x="843.0" y="3600.0">it.polimi.ingsw.view.remote.gui.LobbyCell</node>
+    <node x="4482.0" y="4829.0">it.polimi.ingsw.model.exceptions.InvalidSaveStateException</node>
+    <node x="3395.0" y="4924.0">it.polimi.ingsw.model.exceptions.JullPointerException</node>
+    <node x="0.0" y="4829.0">it.polimi.ingsw.model.exceptions.WeaponAlreadyUnloadedException</node>
+    <node x="3522.5" y="2604.0">it.polimi.ingsw.model.weaponry.targets.TargetRoom</node>
+    <node x="1077.0" y="0.0">it.polimi.ingsw.network.common.deliverable.DeliverableEvent</node>
+    <node x="3554.0" y="3600.0">it.polimi.ingsw.network.server.lobby.LobbyManager</node>
+    <node x="2167.0" y="4057.0">it.polimi.ingsw.network.common.rmi.RMIController</node>
+    <node x="1600.0" y="2686.0">it.polimi.ingsw.model.weaponry.constraints.VisibilityConstraint</node>
+    <node x="0.0" y="4492.0">it.polimi.ingsw.network.server.communication.rmi.RMIClientCommunicationInterface</node>
+    <node x="2386.0" y="3736.0">it.polimi.ingsw.network.client.communication.rmi.RMIServerCommunicationInterface</node>
+    <node x="593.0" y="4924.0">it.polimi.ingsw.model.exceptions.SelfAdjacentCellException</node>
+    <node x="1752.0" y="4924.0">it.polimi.ingsw.network.common.exceptions.ClientTimeOutException</node>
+    <node x="2871.5" y="2339.0">it.polimi.ingsw.network.common.util.timer.CountDownTimer</node>
+    <node x="3373.0000000000005" y="3221.0">it.polimi.ingsw.network.common.deliverable.Response</node>
+    <node x="4401.0" y="3600.0">it.polimi.ingsw.view.virtual.cli.CliCommon</node>
+    <node x="0.0" y="3600.0">it.polimi.ingsw.util.json.DecoratedJsonObject</node>
+    <node x="2016.0" y="4829.0">it.polimi.ingsw.network.common.exceptions.ClientNotRegisteredException</node>
+    <node x="602.5" y="3845.0">it.polimi.ingsw.network.client.executable.ClientLauncher.Configuration</node>
+    <node x="778.0" y="4231.0">it.polimi.ingsw.model.player.Grab</node>
+    <node x="2242.0" y="2754.0">it.polimi.ingsw.model.weaponry.effects.Mark</node>
+    <node x="0.0" y="4924.0">it.polimi.ingsw.network.common.exceptions.PlayerNotFoundException</node>
+    <node x="2457.0000000000005" y="3221.0">it.polimi.ingsw.network.common.deliverable.Mapped</node>
+    <node x="1133.0" y="4637.0">it.polimi.ingsw.model.player.ActivityType</node>
+    <node x="2624.5" y="2508.0">it.polimi.ingsw.model.weaponry.effects.Move</node>
+    <node x="1076.0" y="4231.0">it.polimi.ingsw.model.player.Shoot</node>
+    <node x="3275.0" y="4829.0">it.polimi.ingsw.model.exceptions.TargetInheritanceException</node>
+    <node x="2315.0" y="4924.0">it.polimi.ingsw.model.exceptions.AbortedTurnException</node>
+    <node x="2590.0" y="4924.0">it.polimi.ingsw.network.common.exceptions.LobbyEmptyException</node>
+    <node x="1166.0" y="3895.0">it.polimi.ingsw.model.powerups.Teleport</node>
+    <node x="4537.0" y="2725.0">it.polimi.ingsw.network.client.communication.CommunicationHandler.Interface</node>
+    <node x="3007.0" y="654.0">it.polimi.ingsw.model.cell.SpawnCell</node>
+    <node x="3221.0" y="4392.0">it.polimi.ingsw.network.client.executable.Client</node>
+    <node x="3626.0" y="4637.0">it.polimi.ingsw.model.exceptions.CannotDiscardFirstCardOfDeckException</node>
+    <node x="2845.0" y="4207.0">it.polimi.ingsw.view.remote.GraphicsManager.Interface</node>
+    <node x="4561.0" y="4392.0">it.polimi.ingsw.network.server.Server</node>
+    <node x="2476.0" y="2754.0">it.polimi.ingsw.model.weaponry.effects.Damage</node>
+    <node x="1190.0" y="4231.0">it.polimi.ingsw.model.player.Reload</node>
+    <node x="0.0" y="2951.0">it.polimi.ingsw.model.ammo.AmmoCubes</node>
+    <node x="0.0" y="0.0">it.polimi.ingsw.network.server.VirtualClient</node>
+    <node x="4184.0" y="4829.0">it.polimi.ingsw.network.common.exceptions.LobbyNotFoundException</node>
+    <node x="2192.0" y="0.0">it.polimi.ingsw.model.weapons.TestWeapon</node>
+    <node x="3655.0" y="4924.0">it.polimi.ingsw.network.common.exceptions.LobbyFullException</node>
+    <node x="1552.0" y="0.0">it.polimi.ingsw.view.remote.GraphicalInterface</node>
+    <node x="4093.5" y="2604.0">it.polimi.ingsw.model.weaponry.targets.TargetPlayer</node>
+    <node x="4388.0" y="4924.0">it.polimi.ingsw.util.json.JsonPathGenerator</node>
+    <node x="1395.0" y="4392.0">it.polimi.ingsw.view.virtual.cli.CliToasters</node>
+    <node x="3168.0000000000005" y="3282.0">it.polimi.ingsw.network.common.deliverable.Dual</node>
+    <node x="3290.0" y="690.0">it.polimi.ingsw.model.cell.AmmoCell</node>
+    <node x="3482.0" y="4637.0">it.polimi.ingsw.view.remote.gui.Delta</node>
+    <node x="1308.0" y="4637.0">it.polimi.ingsw.model.powerups.PowerUpType</node>
+    <node x="693.0" y="4829.0">it.polimi.ingsw.model.exceptions.WeaponAlreadyLoadedException</node>
+    <node x="2548.0" y="0.0">it.polimi.ingsw.view.virtual.VirtualView</node>
+    <node x="2717.0" y="4057.0">it.polimi.ingsw.view.remote.GraphicsManager</node>
+    <node x="1334.0" y="4057.0">it.polimi.ingsw.network.common.util.property.GameProperty</node>
+    <node x="325.0" y="2698.0">it.polimi.ingsw.model.weaponry.constraints.RoomConstraint</node>
+    <node x="1466.0" y="4924.0">it.polimi.ingsw.network.common.exceptions.GameAlreadyStartedException</node>
+    <node x="1999.0" y="4392.0">it.polimi.ingsw.model.ammo.TestAmmoCubes</node>
+    <node x="2036.0" y="4924.0">it.polimi.ingsw.model.exceptions.CannotAffordException</node>
+    <node x="1640.0" y="4057.0">it.polimi.ingsw.view.virtual.cli.CliTracks</node>
+    <node x="2330.0" y="4392.0">it.polimi.ingsw.view.remote.gui.GameStage</node>
+    <node x="4807.0" y="4924.0">it.polimi.ingsw.model.board.TestDeck</node>
+    <node x="3880.0" y="0.0">it.polimi.ingsw.model.board.Board</node>
+    <node x="3131.0" y="4924.0">it.polimi.ingsw.model.exceptions.DeliverableException</node>
+    <node x="2389.5" y="2569.0">it.polimi.ingsw.model.weaponry.effects.OffensiveEffect</node>
+    <node x="2865.0" y="4924.0">it.polimi.ingsw.model.exceptions.EmptyDeckException</node>
+    <node x="2487.25" y="2191.0">it.polimi.ingsw.model.weaponry.effects.Effect</node>
+    <node x="638.0" y="4637.0">it.polimi.ingsw.network.server.executable.RMIServer</node>
+    <node x="1476.0" y="4637.0">it.polimi.ingsw.util.json.JsonObjectGenerator</node>
+    <node x="51.0" y="558.0">it.polimi.ingsw.model.player.Player</node>
+    <node x="1363.0" y="4829.0">it.polimi.ingsw.model.exceptions.InvalidConstraintTypeException</node>
+    <node x="586.0" y="4057.0">it.polimi.ingsw.util.UTF</node>
+    <node x="238.0" y="4392.0">it.polimi.ingsw.network.server.communication.ClientCommunicationInterface</node>
+    <node x="2800.0" y="4637.0">it.polimi.ingsw.network.common.exceptions.ConnectionException</node>
+    <node x="203.0" y="4637.0">it.polimi.ingsw.network.common.deliverable.DeliverableType</node>
+    <node x="369.0" y="4492.0">it.polimi.ingsw.network.server.communication.socket.SocketClientCommunicationInterface</node>
+    <node x="2478.0" y="4637.0">it.polimi.ingsw.model.weaponry.effects.EffectType</node>
+    <node x="885.0" y="4924.0">it.polimi.ingsw.network.common.exceptions.InvalidPropertyException</node>
+    <node x="1427.75" y="3600.0">it.polimi.ingsw.model.powerups.PowerUp</node>
+    <node x="4385.0" y="4637.0">it.polimi.ingsw.model.exceptions.UnauthoredAttackPatternException</node>
+    <node x="639.0" y="2698.0">it.polimi.ingsw.model.weaponry.constraints.AlignmentConstraint</node>
+    <node x="2654.0" y="4829.0">it.polimi.ingsw.network.common.exceptions.LobbyAlreadyExistsException</node>
+    <node x="2881.5" y="2191.0">it.polimi.ingsw.network.common.observer.Observable</node>
+    <node x="856.0" y="2951.0">it.polimi.ingsw.model.weaponry.AttackModule</node>
+    <node x="956.75" y="4057.0">it.polimi.ingsw.model.player.Activity</node>
+    <node x="3534.0" y="4392.0">it.polimi.ingsw.view.virtual.cli.CliPowerUps</node>
+    <node x="2882.5000000000005" y="2951.0">it.polimi.ingsw.network.common.deliverable.Deliverable</node>
+    <node x="352.0" y="4829.0">it.polimi.ingsw.network.common.exceptions.ClientAlreadyRegisteredException</node>
+    <node x="3817.5" y="2191.0">it.polimi.ingsw.model.weaponry.targets.Target</node>
+    <node x="861.0" y="4637.0">it.polimi.ingsw.model.TestGame</node>
+    <node x="0.0" y="4637.0">it.polimi.ingsw.network.server.ServerLauncher</node>
+    <node x="4164.0" y="4924.0">it.polimi.ingsw.model.exceptions.JsonException</node>
+    <node x="1952.0" y="2191.0">it.polimi.ingsw.network.common.message.MessageType</node>
+    <node x="3815.5" y="2604.0">it.polimi.ingsw.model.weaponry.targets.TargetCell</node>
+    <node x="1158.0" y="4392.0">it.polimi.ingsw.model.board.Room</node>
+    <node x="2733.0" y="3724.0">it.polimi.ingsw.network.client.communication.socket.SocketServerCommunicationInterface</node>
+    <node x="479.0" y="0.0">it.polimi.ingsw.view.remote.gui.Palette</node>
+    <node x="1757.0" y="184.5">it.polimi.ingsw.view.remote.cli.CLI</node>
+    <node x="4412.5" y="2191.0">it.polimi.ingsw.network.client.communication.CommunicationHandler</node>
+    <node x="1779.0" y="4392.0">it.polimi.ingsw.model.player.ScoreList</node>
+    <node x="1693.0" y="4829.0">it.polimi.ingsw.model.exceptions.InvalidPowerUpTypeException</node>
+    <node x="3090.0" y="4637.0">it.polimi.ingsw.network.common.util.timer.TestCountDownTimer</node>
+    <node x="2335.0" y="4829.0">it.polimi.ingsw.network.common.exceptions.PlayerAlreadyAddedException</node>
+    <node x="3881.0" y="3600.0">it.polimi.ingsw.network.common.message.NetworkMessage</node>
+    <node x="3176.5" y="2191.0">it.polimi.ingsw.model.Game</node>
+    <node x="358.0" y="3600.0">it.polimi.ingsw.model.cell.TestCell</node>
+    <node x="979.0" y="2686.0">it.polimi.ingsw.model.weaponry.constraints.DistanceConstraint</node>
+    <node x="4297.0" y="4392.0">it.polimi.ingsw.util.printer.ColoredString</node>
+    <node x="885.0" y="4206.0">it.polimi.ingsw.model.player.Move</node>
+    <node x="1347.0" y="124.0">it.polimi.ingsw.view.remote.gui.GUI</node>
+    <node x="3307.0" y="4637.0">it.polimi.ingsw.network.server.lobby.TestLobby</node>
+    <node x="2093.0" y="4637.0">it.polimi.ingsw.network.server.lobby.TestLobbyManager</node>
+    <node x="1768.0" y="3870.0">it.polimi.ingsw.model.powerups.Newton</node>
+    <node x="2639.0" y="4637.0">it.polimi.ingsw.model.weaponry.targets.TargetType</node>
+    <node x="1450.0" y="1042.0">it.polimi.ingsw.view.remote.gui.GUI.Layout</node>
+    <node x="3557.0" y="100.0">it.polimi.ingsw.network.server.lobby.Lobby</node>
+    <node x="2342.0" y="4157.0">it.polimi.ingsw.network.client.communication.rmi.ClientController</node>
+    <node x="1176.0" y="4924.0">it.polimi.ingsw.model.exceptions.NoValidTargetsException</node>
+    <node x="1371.0" y="3895.0">it.polimi.ingsw.model.powerups.Grenade</node>
+    <node x="2969.0" y="4829.0">it.polimi.ingsw.model.exceptions.InvalidTargetTypeException</node>
+    <node x="3121.0" y="3600.0">it.polimi.ingsw.model.board.Deck</node>
+    <node x="498.0" y="2951.0">it.polimi.ingsw.network.common.util.property.GamePropertyLoader</node>
+    <node x="1297.0" y="2686.0">it.polimi.ingsw.model.weaponry.constraints.OrderConstraint</node>
+    <node x="4598.0" y="4924.0">it.polimi.ingsw.model.board.TestBoard</node>
+    <node x="821.0" y="4392.0">it.polimi.ingsw.network.server.communication.socket.SocketClientHandler</node>
+    <node x="297.0" y="4924.0">it.polimi.ingsw.network.common.exceptions.InvalidPasswordException</node>
+    <node x="4423.0" y="2951.0">it.polimi.ingsw.view.virtual.cli.CliBoard</node>
+    <node x="2591.5" y="3600.0">it.polimi.ingsw.network.client.communication.ServerCommunicationInterface</node>
+    <node x="2791.0" y="4392.0">it.polimi.ingsw.util.json.DecoratedJsonArray</node>
+    <node x="2847.0000000000005" y="3257.0">it.polimi.ingsw.network.common.deliverable.Assets</node>
+    <node x="3912.0" y="4924.0">it.polimi.ingsw.model.exceptions.FullHandException</node>
+    <node x="399.0" y="4637.0">it.polimi.ingsw.network.server.executable.SocketServer</node>
+    <node x="3827.0" y="4392.0">it.polimi.ingsw.view.virtual.cli.CliWeapons</node>
+    <node x="1996.0" y="3600.0">it.polimi.ingsw.model.weaponry.AttackPattern</node>
+    <node x="3129.0" y="4057.0">it.polimi.ingsw.model.ammo.AmmoTile</node>
+    <node x="3580.0" y="4829.0">it.polimi.ingsw.model.exceptions.NullCellOperationException</node>
+    <node x="0.0" y="4057.0">it.polimi.ingsw.util.printer.ColorPrinter</node>
+    <node x="2296.0" y="4637.0">it.polimi.ingsw.network.common.message.MessageStatus</node>
+    <node x="770.0" y="2191.0">it.polimi.ingsw.model.weaponry.constraints.Constraint</node>
+    <node x="1465.0" y="2951.0">it.polimi.ingsw.network.server.communication.CommunicationHub</node>
+    <node x="3884.0" y="4829.0">it.polimi.ingsw.model.exceptions.InvalidEffectTypeException</node>
+    <node x="4007.0" y="2951.0">it.polimi.ingsw.controller.Controller</node>
+    <node x="1873.0" y="2951.0">it.polimi.ingsw.model.player.Execution</node>
+    <node x="3610.0" y="0.0">it.polimi.ingsw.network.common.observer.Observer</node>
+    <node x="3907.0" y="4057.0">it.polimi.ingsw.util.Table</node>
+    <node x="3563.0" y="2951.0">it.polimi.ingsw.model.weaponry.Weapon</node>
+    <node x="1577.0" y="3895.0">it.polimi.ingsw.model.powerups.Scope</node>
+    <node x="4009.0" y="4637.0">it.polimi.ingsw.model.exceptions.UnmatchedSavedParticipantsException</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="it.polimi.ingsw.network.client.executable.ClientLauncher.Configuration" target="it.polimi.ingsw.network.client.executable.ClientLauncher">
+      <point x="0.0" y="-73.0" />
+      <point x="0.0" y="97.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.powerups.Newton" target="it.polimi.ingsw.model.powerups.PowerUp">
+      <point x="0.0" y="-50.0" />
+      <point x="1859.5" y="3840.0" />
+      <point x="1664.875" y="3840.0" />
+      <point x="101.625" y="110.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.weaponry.effects.OffensiveEffect" target="it.polimi.ingsw.model.weaponry.effects.Effect">
+      <point x="0.0" y="-37.0" />
+      <point x="2497.0" y="2483.0" />
+      <point x="2549.25" y="2483.0" />
+      <point x="-62.0" y="133.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.powerups.Grenade" target="it.polimi.ingsw.model.powerups.PowerUp">
+      <point x="0.0" y="-25.0" />
+      <point x="1464.0" y="3850.0" />
+      <point x="1529.375" y="3850.0" />
+      <point x="-33.875" y="110.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.weaponry.effects.Damage" target="it.polimi.ingsw.model.weaponry.effects.OffensiveEffect">
+      <point x="0.0" y="-61.5" />
+      <point x="2645.0" y="2729.0" />
+      <point x="2550.75" y="2729.0" />
+      <point x="53.75" y="37.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.common.util.timer.CountDownTimer" target="it.polimi.ingsw.network.common.observer.Observable">
+      <point x="0.0" y="-242.0" />
+      <point x="0.0" y="49.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.weaponry.constraints.OrderConstraint" target="it.polimi.ingsw.model.weaponry.constraints.Constraint">
+      <point x="0.0" y="-110.0" />
+      <point x="1438.5" y="2656.0" />
+      <point x="1060.25" y="2656.0" />
+      <point x="96.75" y="217.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.communication.rmi.ClientController" target="it.polimi.ingsw.network.common.rmi.RMIController">
+      <point x="0.0" y="-62.0" />
+      <point x="2507.0" y="4132.0" />
+      <point x="2414.5" y="4132.0" />
+      <point x="82.5" y="25.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.weaponry.constraints.IdentityConstraint" target="it.polimi.ingsw.model.weaponry.constraints.Constraint">
+      <point x="0.0" y="-98.0" />
+      <point x="152.5" y="2646.0" />
+      <point x="802.25" y="2646.0" />
+      <point x="-161.25" y="217.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.player.Shoot" target="it.polimi.ingsw.model.player.Activity">
+      <point x="0.0" y="-25.0" />
+      <point x="1123.0" y="4186.0" />
+      <point x="1069.25" y="4186.0" />
+      <point x="22.5" y="49.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.weaponry.constraints.RoomConstraint" target="it.polimi.ingsw.model.weaponry.constraints.Constraint">
+      <point x="0.0" y="-98.0" />
+      <point x="472.0" y="2656.0" />
+      <point x="866.75" y="2656.0" />
+      <point x="-96.75" y="217.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.view.remote.GraphicsManager.Interface" target="it.polimi.ingsw.view.remote.GraphicsManager">
+      <point x="0.0" y="-37.0" />
+      <point x="0.0" y="50.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.weaponry.effects.Move" target="it.polimi.ingsw.model.weaponry.effects.Effect">
+      <point x="0.0" y="-98.0" />
+      <point x="2725.5" y="2483.0" />
+      <point x="2673.25" y="2483.0" />
+      <point x="62.0" y="133.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.weaponry.targets.TargetCell" target="it.polimi.ingsw.model.weaponry.targets.Target">
+      <point x="0.0" y="-98.0" />
+      <point x="0.0" y="181.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.cell.AmmoCell" target="it.polimi.ingsw.model.cell.Cell">
+      <point x="0.0" y="-62.0" />
+      <point x="3401.0" y="629.0" />
+      <point x="3323.75" y="629.0" />
+      <point x="54.0" y="302.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.weaponry.constraints.AlignmentConstraint" target="it.polimi.ingsw.model.weaponry.constraints.Constraint">
+      <point x="0.0" y="-98.0" />
+      <point x="799.0" y="2666.0" />
+      <point x="931.25" y="2666.0" />
+      <point x="-32.25" y="217.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.communication.CommunicationHandler.Interface" target="it.polimi.ingsw.network.client.communication.CommunicationHandler">
+      <point x="0.0" y="-37.0" />
+      <point x="0.0" y="242.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.common.deliverable.Assets" target="it.polimi.ingsw.network.common.deliverable.Deliverable">
+      <point x="0.0" y="-50.0" />
+      <point x="0.0" y="110.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.player.Player" target="it.polimi.ingsw.network.server.VirtualClient">
+      <point x="0.0" y="-794.0" />
+      <point x="0.0" y="254.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.common.deliverable.Mapped" target="it.polimi.ingsw.network.common.deliverable.Deliverable">
+      <point x="0.0" y="-86.0" />
+      <point x="2642.0000000000005" y="3201.0" />
+      <point x="2951.5000000000005" y="3201.0" />
+      <point x="-46.0" y="110.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.weaponry.constraints.DistanceConstraint" target="it.polimi.ingsw.model.weaponry.constraints.Constraint">
+      <point x="0.0" y="-110.0" />
+      <point x="1128.0" y="2666.0" />
+      <point x="995.75" y="2666.0" />
+      <point x="32.25" y="217.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.view.remote.cli.CLI" target="it.polimi.ingsw.view.remote.GraphicalInterface">
+      <point x="0.0" y="-373.5" />
+      <point x="1952.0" y="99.0" />
+      <point x="1844.5" y="99.0" />
+      <point x="97.5" y="37.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.common.deliverable.Dual" target="it.polimi.ingsw.network.common.deliverable.Deliverable">
+      <point x="0.0" y="-25.0" />
+      <point x="3260.5000000000005" y="3201.0" />
+      <point x="3043.5000000000005" y="3201.0" />
+      <point x="46.0" y="110.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.communication.rmi.RMIClientCommunicationInterface" target="it.polimi.ingsw.network.server.communication.ClientCommunicationInterface">
+      <point x="0.0" y="-50.0" />
+      <point x="174.5" y="4467.0" />
+      <point x="305.75" y="4467.0" />
+      <point x="-67.75" y="25.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.communication.socket.SocketServerCommunicationInterface" target="it.polimi.ingsw.network.client.communication.ServerCommunicationInterface">
+      <point x="0.0" y="-98.0" />
+      <point x="2904.5" y="3699.0" />
+      <point x="2794.75" y="3699.0" />
+      <point x="67.75" y="37.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.player.Grab" target="it.polimi.ingsw.model.player.Activity">
+      <point x="0.0" y="-25.0" />
+      <point x="821.5" y="4176.0" />
+      <point x="979.25" y="4176.0" />
+      <point x="-67.5" y="49.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.view.remote.gui.GUI" target="it.polimi.ingsw.view.remote.GraphicalInterface">
+      <point x="0.0" y="-434.0" />
+      <point x="1542.0" y="99.0" />
+      <point x="1649.5" y="99.0" />
+      <point x="-97.5" y="37.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.weaponry.targets.TargetPlayer" target="it.polimi.ingsw.model.weaponry.targets.Target">
+      <point x="0.0" y="-98.0" />
+      <point x="4230.5" y="2579.0" />
+      <point x="4029.1666666666665" y="2579.0" />
+      <point x="84.66666666666652" y="181.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.weaponry.constraints.VisibilityConstraint" target="it.polimi.ingsw.model.weaponry.constraints.Constraint">
+      <point x="0.0" y="-110.0" />
+      <point x="1753.5" y="2646.0" />
+      <point x="1124.75" y="2646.0" />
+      <point x="161.25" y="217.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.communication.socket.SocketClientCommunicationInterface" target="it.polimi.ingsw.network.server.communication.ClientCommunicationInterface">
+      <point x="0.0" y="-50.0" />
+      <point x="572.5" y="4467.0" />
+      <point x="441.25" y="4467.0" />
+      <point x="67.75" y="25.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.player.Move" target="it.polimi.ingsw.model.player.Activity">
+      <point x="0.0" y="-50.0" />
+      <point x="970.5" y="4186.0" />
+      <point x="1024.25" y="4186.0" />
+      <point x="-22.5" y="49.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.weaponry.targets.TargetRoom" target="it.polimi.ingsw.model.weaponry.targets.Target">
+      <point x="0.0" y="-98.0" />
+      <point x="3659.0" y="2579.0" />
+      <point x="3859.8333333333335" y="2579.0" />
+      <point x="-84.66666666666652" y="181.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.communication.rmi.RMIServerCommunicationInterface" target="it.polimi.ingsw.network.client.communication.ServerCommunicationInterface">
+      <point x="0.0" y="-86.0" />
+      <point x="2549.5" y="3699.0" />
+      <point x="2659.25" y="3699.0" />
+      <point x="-67.75" y="37.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.powerups.Scope" target="it.polimi.ingsw.model.powerups.PowerUp">
+      <point x="0.0" y="-25.0" />
+      <point x="1662.5" y="3850.0" />
+      <point x="1597.125" y="3850.0" />
+      <point x="33.875" y="110.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.common.deliverable.Info" target="it.polimi.ingsw.network.common.deliverable.Deliverable">
+      <point x="0.0" y="-25.0" />
+      <point x="2346.0" y="3191.0" />
+      <point x="2905.5000000000005" y="3191.0" />
+      <point x="-92.0" y="110.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.cell.SpawnCell" target="it.polimi.ingsw.model.cell.Cell">
+      <point x="0.0" y="-98.0" />
+      <point x="3138.5" y="629.0" />
+      <point x="3215.75" y="629.0" />
+      <point x="-54.0" y="302.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.powerups.Teleport" target="it.polimi.ingsw.model.powerups.PowerUp">
+      <point x="0.0" y="-25.0" />
+      <point x="1258.5" y="3840.0" />
+      <point x="1461.625" y="3840.0" />
+      <point x="-101.625" y="110.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.weaponry.effects.Mark" target="it.polimi.ingsw.model.weaponry.effects.OffensiveEffect">
+      <point x="0.0" y="-61.5" />
+      <point x="2349.0" y="2729.0" />
+      <point x="2443.25" y="2729.0" />
+      <point x="-53.75" y="37.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.view.virtual.cli.CliBoard.WallType" target="it.polimi.ingsw.view.virtual.cli.CliBoard">
+      <point x="0.0" y="-49.0" />
+      <point x="0.0" y="133.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.view.remote.gui.GUI.Layout" target="it.polimi.ingsw.view.remote.gui.GUI">
+      <point x="0.0" y="-49.0" />
+      <point x="0.0" y="434.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.player.Reload" target="it.polimi.ingsw.model.player.Activity">
+      <point x="1.1368683772161603E-13" y="-25.0" />
+      <point x="1239.5" y="4176.0" />
+      <point x="1114.25" y="4176.0" />
+      <point x="67.5" y="49.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.common.deliverable.Response" target="it.polimi.ingsw.network.common.deliverable.Deliverable">
+      <point x="0.0" y="-86.0" />
+      <point x="3445.5000000000005" y="3191.0" />
+      <point x="3089.5000000000005" y="3191.0" />
+      <point x="92.0" y="110.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.lobby.Lobby" target="it.polimi.ingsw.network.common.observer.Observer">
+      <point x="0.0" y="-350.0" />
+      <point x="0.0" y="25.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.communication.rmi.RMIServerController" target="it.polimi.ingsw.network.common.rmi.RMIController">
+      <point x="0.0" y="-50.0" />
+      <point x="2157.0" y="4132.0" />
+      <point x="2249.5" y="4132.0" />
+      <point x="-82.5" y="25.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.40000000000000013" x="3746.9999999999995" y="4340.75" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
