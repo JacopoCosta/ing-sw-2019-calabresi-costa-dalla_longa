@@ -174,9 +174,10 @@ public class AttackPattern {
      * Generates a list containing action descriptions, one for each action performable by the {@link Weapon}.
      * Each description is itself a list of string, where each element is a different line of the description.
      *
+     * @param lineLengthLimit the limit to the length of the longest line.
      * @return the list.
      */
-    public List<List<String>> getDescriptions() {
+    public List<List<String>> getDescriptions(int lineLengthLimit) {
         List<List<String>> descriptions = new ArrayList<>();
 
         List<AttackModule> showableModules = new ArrayList<>();
@@ -191,9 +192,9 @@ public class AttackPattern {
 
             List<String> brokenDescription = new ArrayList<>();
 
-            while(description.length() > CliWeapons.width - 4) {
-                int caret = CliWeapons.width - 4;
-                while(caret >= CliWeapons.width - 12 && description.charAt(caret) != ' ')
+            while(description.length() > lineLengthLimit) {
+                int caret = lineLengthLimit;
+                while(caret >= lineLengthLimit - 8 && description.charAt(caret) != ' ')
                     caret--;
                 brokenDescription.add(description.substring(0, caret));
                 if(caret + 1 < description.length())

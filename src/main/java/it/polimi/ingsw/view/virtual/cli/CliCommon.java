@@ -72,7 +72,7 @@ public abstract class CliCommon {
      * @param j the horizontal position, from the left.
      * @param message the string to write.
      */
-    public static void write(int i, int j, ColoredString message) {
+    static void write(int i, int j, ColoredString message) {
         for(int k = 0; k < message.content().length(); k ++) {
             canvas[i][j + k] = new ColoredString(message.content().substring(k, k + 1), message.color());
         }
@@ -85,7 +85,7 @@ public abstract class CliCommon {
      * @param message a collection of {@link ColoredString}s. These will be concatenated but each
      *                will retain its colour.
      */
-    public static void write(int i, int j, List<ColoredString> message) {
+    static void write(int i, int j, List<ColoredString> message) {
         int caret = 0;
         for(ColoredString cs : message) {
             for (int k = 0; k < cs.content().length(); k ++) {

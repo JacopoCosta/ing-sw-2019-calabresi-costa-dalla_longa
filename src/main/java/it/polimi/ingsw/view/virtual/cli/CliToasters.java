@@ -40,7 +40,7 @@ public abstract class CliToasters {
      * Depicts all the toasters, indicating which one belongs to a given {@link Player}.
      * @param player the player.
      */
-    public static void build(Player player) {
+    static void build(Player player) {
         for(Player p : player.getGame().getParticipants())
             writeToaster(p);
 

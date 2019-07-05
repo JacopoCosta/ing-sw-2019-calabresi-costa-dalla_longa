@@ -25,7 +25,7 @@ public abstract class CliWeapons {
     /**
      * The width of each card.
      */
-    public static final int width = 64;
+    private static final int width = 64;
 
     /**
      * The height of each card.
@@ -36,7 +36,7 @@ public abstract class CliWeapons {
      * Draws the hand of {@link Weapon} cards on {@link CliCommon}'s grid.
      * @param player the owner of the hand of cards.
      */
-    public static void build(Player player) {
+    static void build(Player player) {
         List<Weapon> weapons = player.getWeapons();
 
         for(int i = 0; i < weapons.size(); i ++)
@@ -61,7 +61,7 @@ public abstract class CliWeapons {
         CliCommon.write(top + index * height + 1, left + 2, weapon.toColoredStrings());
 
         List<List<ColoredString>> headers = weapon.getPattern().getHeaders();
-        List<List<String>> descriptions = weapon.getPattern().getDescriptions();
+        List<List<String>> descriptions = weapon.getPattern().getDescriptions(width - 2);
 
         int row = 2;
         for(int i = 0; i < headers.size(); i ++) {

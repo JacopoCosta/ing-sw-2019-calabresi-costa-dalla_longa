@@ -33,7 +33,7 @@ public class CliPowerUps {
      * Draws a {@link Player}'s {@link PowerUp} hand on {@link CliCommon}'s grid.
      * @param player the player.
      */
-    public static void build(Player player) {
+    static void build(Player player) {
         for(int i = 0; i < player.getPowerUps().size(); i ++)
             writePowerUp(player.getPowerUps().get(i), i);
 

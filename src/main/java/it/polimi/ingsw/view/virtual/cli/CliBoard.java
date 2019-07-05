@@ -58,7 +58,7 @@ public abstract class CliBoard {
      * Adds the board's area to the {@link CliCommon}'s grid.
      * @param board the {@link Board} to depict.
      */
-    public static void build(Board board) {
+    static void build(Board board) {
         for(Cell cell : board.getCells())
             writeCell(cell);
     }
@@ -140,7 +140,6 @@ public abstract class CliBoard {
      */
     private static WallType getWall(Cell cell, Cell neighbour) {
         try {
-            
             if (neighbour == null || !neighbour.isAdjacent(cell))
                 return WallType.FULL;
             if (!neighbour.getRoom().equals(cell.getRoom()))

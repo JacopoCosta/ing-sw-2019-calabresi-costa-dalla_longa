@@ -38,6 +38,12 @@
       <version>0.8.3</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.fusesource.jansi</groupId>
+      <artifactId>jansi</artifactId>
+      <version>1.18</version>
+    </dependency>
   </dependencies>
 
   <build>

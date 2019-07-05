@@ -39,7 +39,7 @@ public abstract class CliTracks {
      * Draws the two tracks on {@link CliCommon}'s grid.
      * @param game the {@link Game} described by the tracks.
      */
-    public static void build(Game game) {
+    static void build(Game game) {
         List<Player> doubleKillers = game.getBoard().getDoubleKillers();
 
         writeKillerTrack(game.getBoard().getKillers(), game.getRoundsLeft());
