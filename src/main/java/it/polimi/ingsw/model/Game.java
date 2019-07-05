@@ -186,6 +186,9 @@ public class Game {
         return this.started;
     }
 
+    /**
+     * Passes the turn on to the next {@link Player}.
+     */
     private void advanceTurn() {
         this.currentTurnPlayer = (this.currentTurnPlayer + 1) % this.participants.size(); // pass the turn on to the next player
     }
