@@ -285,28 +285,6 @@ public class Board {
     }
 
     /**
-     * Returns the width of the {@code Board} expressed as number of {@link Cell}s.
-     *
-     * @return the {@code Board} width.
-     */
-    public int getWidth() {
-        return cells.stream()
-                .map(Cell::getXCoord)
-                .reduce(0, Integer::max) + 1;
-    }
-
-    /**
-     * Returns the height of the {@code Board} expressed as number of {@link Cell}s.
-     *
-     * @return the {@code Board} height.
-     */
-    public int getHeight() {
-        return cells.stream()
-                .map(Cell::getYCoord)
-                .reduce(0, Integer::max) + 1;
-    }
-
-    /**
      * Returns the list of {@link Cell}s composing the {@code Board}.
      *
      * @return the list of {@link Cell}s composing the {@code Board}.

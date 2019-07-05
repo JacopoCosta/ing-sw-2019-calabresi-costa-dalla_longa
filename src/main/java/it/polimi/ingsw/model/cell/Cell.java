@@ -234,22 +234,6 @@ public abstract class Cell {
     }
 
     /**
-     * This method tells if a cell could be adjacent to another cell, if there were no walls between them.
-     * This implies a cell is not {@code ghostlyAdjacent} to itself, and two adjacent cells are also {@code ghostlyAdjacent}
-     * (while the vice versa may not be true).
-     * Note that, just like {@code isAdjacent} method, this relationship is symmetrical as well.
-     *
-     * @param cell te comparison cell
-     * @return whether or not the cell is ghostlyAdjacent to the given cell
-     * @see Cell#isAdjacent(Cell)
-     */
-    public boolean isGhostlyAdjacent(Cell cell) throws NullCellOperationException {
-        if(cell == null)
-            throw new NullCellOperationException("Attempted to measure ghostly adjacency with a null cell.");
-        return (Math.abs(xCoord - cell.getXCoord()) == 1) != (Math.abs(yCoord - cell.getYCoord()) == 1);
-    }
-
-    /**
      * This method tells if a cell is visible from another cell.
      * A cell can see another cell if and only if it belongs to a {@link Room} containing any of the first cell's neighbours.
      * A cell can always see itself.

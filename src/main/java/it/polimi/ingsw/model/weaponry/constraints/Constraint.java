@@ -290,7 +290,7 @@ public abstract class Constraint {
             targetTable.add(constraint.filterCells(context));
         }
 
-        Predicate<Cell> missingFromAtLeastOneList = c -> targetTable.stream()  // TODO does it work when targetTable contains zero lists?
+        Predicate<Cell> missingFromAtLeastOneList = c -> targetTable.stream()
                 .map(list -> !list.contains(c))
                 .reduce(false, (a, b) -> a || b);
 
