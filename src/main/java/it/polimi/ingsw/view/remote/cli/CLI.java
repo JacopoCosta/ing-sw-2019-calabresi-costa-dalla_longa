@@ -33,6 +33,8 @@ public class CLI implements GraphicalInterface {
 
     private CommunicationHandler communicationHandler;
 
+    private boolean keepAlive = true;
+
     public CLI() {
         AnsiConsole.systemInstall();
     }
@@ -67,8 +69,7 @@ public class CLI implements GraphicalInterface {
         //display the pre-game information: timer countdown and opponents list
         printPreGameInfo();
 
-        //here the game starts //TODO determine exit conditions
-        while (true) {
+        while (keepAlive) {
             try {
                 Deliverable deliverable = communicationHandler.nextDeliverable();
                 if (deliverable != null)
@@ -79,13 +80,18 @@ public class CLI implements GraphicalInterface {
             }
         }
 
-        /*logoutFromLobby();
-        unregister();*/
+        logoutFromLobby();
+        unregister();
     }
 
     private void manageArrivals(Deliverable deliverable) throws ConnectionException {
         switch (deliverable.getType()) {
             case INFO:
+                if(Arrays.asList(
+                        DeliverableEvent.UPDATE_TURN,
+                        DeliverableEvent.UPDATE_DISCONNECT,
+                        DeliverableEvent.UPDATE_WINNER
+                ).contains(deliverable.getEvent()))
                 ColorPrinter.println(deliverable.getMessage());
                 break;
             case DUAL:

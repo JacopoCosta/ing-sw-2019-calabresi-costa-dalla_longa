@@ -9,14 +9,26 @@ import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 import java.util.List;
 
 public class TargetRoom extends Target {
+    /**
+     * The chosen {@link Room}.
+     */
     private Room room;
 
+    /**
+     * This is the only constructor.
+     * @param message The message to be presented to the user when they need to choose their target.
+     * @param constraints The rules that a target needs to satisfy in order to be eligible.
+     */
     TargetRoom(String message, List<Constraint> constraints) {
         this.message = message;
         this.constraints = constraints;
         this.type = TargetType.ROOM;
     }
 
+    /**
+     * Sets the {@link #room} attribute.
+     * @param room the {@link Room} to set as the new value.
+     */
     public void setRoom(Room room) {
         if(room == null)
             throw new NullPointerException("Attempted to set target room to null.");

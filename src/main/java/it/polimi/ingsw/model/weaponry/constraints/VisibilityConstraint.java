@@ -170,6 +170,10 @@ public class VisibilityConstraint extends Constraint {
         throw new InvalidFilterInvocationException("This instance of constraint can't use a filter.");
     }
 
+    /**
+     * Generates a short human-readable string summarizing what the {@link Constraint} requires.
+     * @return the string.
+     */
     @Override
     public String toString() {
         String s = getHumanReadableName(sourceAttackModuleId, sourceTargetId) + " ";

@@ -8,14 +8,26 @@ import it.polimi.ingsw.model.weaponry.constraints.Constraint;
 import java.util.List;
 
 public class TargetPlayer extends Target {
+    /**
+     * The chosen {@link Player}.
+     */
     private Player player;
 
+    /**
+     * This is the only constructor.
+     * @param message The message to be presented to the user when they need to choose their target.
+     * @param constraints The rules that a target needs to satisfy in order to be eligible.
+     */
     public TargetPlayer(String message, List<Constraint> constraints) {
         this.message = message;
         this.constraints = constraints;
         this.type = TargetType.PLAYER;
     }
 
+    /**
+     * Sets the {@link #player} attribute.
+     * @param player the {@link Player} to set as the new value.
+     */
     public void setPlayer(Player player) {
         if(player == null)
             throw new NullPointerException("Attempted to set target player to null.");

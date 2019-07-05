@@ -8,7 +8,7 @@ public abstract class UTF {
     public static final String corner3 = "\u2557";
     public static final String corner4 = "\u2554";
     public static final String block = "\u25a0";
-    public static final String full = "\u25a0";
-    public static final String empty = "-";
-    public static final String skull = "*";
+    public static final String full = "\u2588";
+    public static final String empty = "\u2591";
+    public static final String skull = "\u256c";
 }

@@ -14,6 +14,11 @@ public class TargetCell extends Target {
      */
     private Cell cell;
 
+    /**
+     * This is the only constructor.
+     * @param message The message to be presented to the user when they need to choose their target.
+     * @param constraints The rules that a target needs to satisfy in order to be eligible.
+     */
     public TargetCell(String message, List<Constraint> constraints) {
         this.message = message;
         this.constraints = constraints;
@@ -21,9 +26,8 @@ public class TargetCell extends Target {
     }
 
     /**
-     * Sets the {@link Target}'s {@link TargetCell#cell}.
-     *
-     * @param cell the user's choice.
+     * Sets the {@link #cell} attribute.
+     * @param cell the {@link Cell} to set as the new value.
      */
     public void setCell(Cell cell) {
         if(cell == null)

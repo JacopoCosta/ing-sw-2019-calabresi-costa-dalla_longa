@@ -185,6 +185,10 @@ public class OrderConstraint extends Constraint {
         throw new InvalidFilterInvocationException("A room can't be \"between\".");
     }
 
+    /**
+     * Generates a short human-readable string summarizing what the {@link Constraint} requires.
+     * @return the string.
+     */
     @Override
     public String toString() {
         String s = getHumanReadableName(gateAttackModuleId, gateTargetId) + " ";

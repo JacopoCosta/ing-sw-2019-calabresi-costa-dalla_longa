@@ -155,6 +155,10 @@ public class DistanceConstraint extends Constraint {
         throw new InvalidFilterInvocationException("A room can't have \"distance\".");
     }
 
+    /**
+     * Generates a short human-readable string summarizing what the {@link Constraint} requires.
+     * @return the string.
+     */
     @Override
     public String toString() {
         String s = getHumanReadableName(sourceAttackModuleId, sourceTargetId) + " ";

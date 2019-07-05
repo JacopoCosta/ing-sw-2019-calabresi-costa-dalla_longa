@@ -135,6 +135,11 @@ public class AttackPattern {
         return s.toString();
     }
 
+    /**
+     * Generates a list containing colored headers, one for each action performable by the {@link Weapon}.
+     * Each header is itself a list of {@link ColoredString}s and includes the action's name and cost.
+     * @return the list.
+     */
     public List<List<ColoredString>> getHeaders() {
         List<List<ColoredString>> coloredStrings = new ArrayList<>();
 
@@ -157,6 +162,11 @@ public class AttackPattern {
         return coloredStrings;
     }
 
+    /**
+     * Generates a list containing action descriptions, one for each action performable by the {@link Weapon}.
+     * Each description is itself a list of string, where each element is a different line of the description.
+     * @return the list.
+     */
     public List<List<String>> getDescriptions() {
         List<List<String>> descriptions = new ArrayList<>();
 

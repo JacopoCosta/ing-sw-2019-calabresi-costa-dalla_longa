@@ -117,6 +117,10 @@ public class IdentityConstraint extends Constraint {
         throw new InvalidFilterInvocationException("A room can't be a player.");
     }
 
+    /**
+     * Generates a short human-readable string summarizing what the {@link Constraint} requires.
+     * @return the string.
+     */
     @Override
     public String toString() {
         String s = getHumanReadableName(sourceAttackModuleId, sourceTargetId) + " ";
