@@ -1,5 +1,6 @@
 package it.polimi.ingsw.util;
 
+import it.polimi.ingsw.network.client.executable.Client;
 import it.polimi.ingsw.network.common.exceptions.ClientTimeOutException;
 import it.polimi.ingsw.util.printer.ColorPrinter;
 
@@ -7,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * This class offers the final delivery of a message and/or a request to the end user.
@@ -15,8 +15,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * inputs a response that is considered valid.
  */
 public abstract class Dispatcher {
-    private static final int ANSWER_TIME_LIMIT = 12000;
+    /**
+     * The number of milliseconds a {@link Client} is allowed to answer a question.
+     */
+    public static int ANSWER_TIME_LIMIT = 12000;
+
+    /**
+     * The maximum time allowed to pass between the user's press of {@code enter} and the start of the input processing.
+     * Lowering this number too much may have an impact on performances.
+     */
     private static final int INTERVAL = 100;
+
+    /**
+     * The {@code BufferedReader} used to gather and process the user's input.
+     */
     private static final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
     /**
@@ -55,41 +67,6 @@ public abstract class Dispatcher {
             } catch (IOException ignored) { }
         }
         return null;
-
-        /*Thread timeout = new Thread(() -> {
-            try {
-                Thread.sleep(ANSWER_TIME_LIMIT); // wait a certain period of time
-                synchronized (open) {
-                    if(open.get()) { // if the timeout gets here first
-                        open.set(false); // unblock the request routine
-                        try {
-                            sendMessage("Timed out.");
-                            bufferedReader.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            } catch (InterruptedException ignored) { }
-        });
-
-        try {
-            responseString = null; // this indicates no action by the client
-            open.set(true);
-            String response = bufferedReader.readLine(); // wait for the client's response
-            synchronized (open) {
-                timeout.interrupt();
-                if(open.get()) { // if the reader gets here first
-                    open.set(false); // unblock the request routine
-                    responseString = response; // publish the response
-                }
-            }
-        } catch (IOException ignored) { }
-
-        timeout.start();
-
-        while(open.get()) // as soon as the first thread finishes
-            Thread.onSpinWait(); */
     }
 
     /**
@@ -119,6 +96,7 @@ public abstract class Dispatcher {
      * @param numbers A list containing the numerical labels. This list is expected to be as long as the {@code options} list.
      * @return The index of the selected option inside {@code options}. Please note that, in general, the number inputted by
      * the user and the number returned by this method are different.
+     * @throws ClientTimeOutException when the user takes too long to answer.
      */
     public static int requestMappedOption(String message, List<String> options, List<Integer> numbers) throws ClientTimeOutException {
         int length = options.size();
@@ -146,6 +124,7 @@ public abstract class Dispatcher {
      * or {@code n} (for "no").
      * @param message the question.
      * @return {@code true} if the answer is yes.
+     * @throws ClientTimeOutException when the user takes too long to answer.
      */
     public static boolean requestBoolean(String message) throws ClientTimeOutException {
         String s;

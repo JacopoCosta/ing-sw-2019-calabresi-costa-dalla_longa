@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.virtual.cli;
 
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.Board;
+import it.polimi.ingsw.model.board.Room;
 import it.polimi.ingsw.model.cell.AmmoCell;
 import it.polimi.ingsw.model.cell.Cell;
 import it.polimi.ingsw.model.cell.SpawnCell;
@@ -9,6 +10,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.weaponry.Weapon;
 import it.polimi.ingsw.util.printer.Color;
 import it.polimi.ingsw.util.printer.ColoredString;
+import it.polimi.ingsw.view.remote.cli.CLI;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,21 +20,53 @@ import java.util.List;
 import static it.polimi.ingsw.util.UTF.*;
 import static it.polimi.ingsw.view.virtual.cli.CliCommon.canvas;
 
+/**
+ * This class is responsible of depicting the {@link Board} on the {@link CLI} interface.
+ */
 public abstract class CliBoard {
+    /**
+     * The top margin of the top-left corner of this area.
+     */
     private static final int top = 3;
+
+    /**
+     * The left margin of the top-left corner of this area.
+     */
     private static final int left = 0;
 
+    /**
+     * The width, in characters, of each cell.
+     */
     private static final int cellWidth = 25;
+
+    /**
+     * The height, in characters, of each cell.
+     */
     private static final int cellHeight = 11;
-    
+
+    /**
+     * The width, in characters, of the gap left by a door.
+     */
     private static final int doorWidth = 9;
+
+    /**
+     * The height, in characters, of the gap left by a door.
+     */
     private static final int doorHeight = 3;
 
+    /**
+     * Adds the board's area to the {@link CliCommon}'s grid.
+     * @param board the {@link Board} to depict.
+     */
     public static void build(Board board) {
         for(Cell cell : board.getCells())
             writeCell(cell);
     }
 
+    /**
+     * Writes a single {@link Cell} on the grid.
+     * @param cell the cell.
+     */
     private static void writeCell(Cell cell) {
         int cellX = cell.getXCoord();
         int cellY = cell.getYCoord();
@@ -78,12 +112,32 @@ public abstract class CliBoard {
         }
     }
 
+    /**
+     * The possible types of walls separating two {@link Cell}s.
+     */
     private enum WallType {
+        /**
+         * Separating two {@link Cell}s that are not adjacent.
+         */
         FULL,
+
+        /**
+         * Separating two adjacent {@link Cell}s belonging to different {@link Room}s.
+         */
         DOOR,
+
+        /**
+         * Separating two adjacent {@link Cell}s in the same {@link Room}.
+         */
         OPEN
     }
-    
+
+    /**
+     * Returns the type of wall separating a {@link Cell} from its neighbour.
+     * @param cell the cell.
+     * @param neighbour its neighbouring cell.
+     * @return the appropriate {@link WallType}.
+     */
     private static WallType getWall(Cell cell, Cell neighbour) {
         try {
             
@@ -98,6 +152,15 @@ public abstract class CliBoard {
         }
     }
 
+    /**
+     * Builds the border of a {@link Cell}, minding the surroundings.
+     * @param cellX the {@link Cell}'s horizontal position.
+     * @param cellY the {@link Cell}'s vertical position.
+     * @param cornerId a number (1~4) identifying one of the corners. They are numbered in ascending order
+     *                 starting at the bottom-left corner and proceeding counter-clockwise.
+     * @param type the wall found next to the specified corner.
+     * @param color the çANSI escape for the {@link Cell}'s colour.
+     */
     private static void buildWallCounterclockwise(int cellX, int cellY, int cornerId, WallType type, String color) {
         int i = top + cellY * cellHeight + (cornerId == 1 || cornerId == 2 ? cellHeight - 1 : 0);
         int j = left + cellX * cellWidth + (cornerId == 2 || cornerId == 3 ? cellWidth - 1 : 0);

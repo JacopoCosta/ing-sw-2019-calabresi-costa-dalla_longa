@@ -878,8 +878,8 @@ public class VirtualView {
     }
 
     /**
-     * Broadcasts about a {@link Player}'s disconnection. This warns other players in the same {@link Game} that
-     * the disconnected player's turn will be prematurely ended and skipped.
+     * Broadcasts about an excessive number of {@link Player} disconnection. This warns other players in the same {@link Game} that
+     * the game will be prematurely ended.
      */
     public void announceInsufficientPlayers() {
         Deliverable deliverable = new Info(DeliverableEvent.UPDATE_DISCONNECT);

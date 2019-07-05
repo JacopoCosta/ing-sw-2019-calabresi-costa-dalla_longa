@@ -8,13 +8,34 @@ import it.polimi.ingsw.util.printer.ColoredString;
 
 import java.util.List;
 
+/**
+ * When drawing the {@link Player}'s hand, this class is responsible of drawing the {@link Weapon} cards.
+ */
 public abstract class CliWeapons {
+    /**
+     * The top margin of the first card.
+     */
     private static final int top = 0;
+
+    /**
+     * The left margin of the first card.
+     */
     private static final int left = 111;
 
+    /**
+     * The width of each card.
+     */
     public static final int width = 64;
+
+    /**
+     * The height of each card.
+     */
     private static final int height = 10;
 
+    /**
+     * Draws the hand of {@link Weapon} cards on {@link CliCommon}'s grid.
+     * @param player the owner of the hand of cards.
+     */
     public static void build(Player player) {
         List<Weapon> weapons = player.getWeapons();
 
@@ -25,6 +46,11 @@ public abstract class CliWeapons {
             CliCommon.write(top + 1, left - 9, new ColoredString("Weapons:", Color.RESET));
     }
 
+    /**
+     * Draws a single weapon.
+     * @param weapon the {@link Weapon} card.
+     * @param index the position of the card in the player's hand.
+     */
     private static void writeWeapon(Weapon weapon, int index) {
         String weaponColor = "";
         try {

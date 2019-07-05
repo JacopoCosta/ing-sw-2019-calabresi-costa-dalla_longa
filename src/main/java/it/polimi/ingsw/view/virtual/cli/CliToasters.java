@@ -12,13 +12,34 @@ import java.util.List;
 import static it.polimi.ingsw.util.UTF.*;
 import static it.polimi.ingsw.view.virtual.cli.CliCommon.canvas;
 
+/**
+ * This class is in charge of drawing the small status boards (also known as {@code Toaster}s) for each {@link Player}.
+ */
 public abstract class CliToasters {
+    /**
+     * The top margin of the first toaster.
+     */
     private static final int top = 37;
+
+    /**
+     * The left margin of the first toaster.
+     */
     private static final int left = 0;
 
+    /**
+     * The width, in characters, of each toaster.
+     */
     private static final int toasterWidth = 35;
+
+    /**
+     * The height, in characters, of each toaster.
+     */
     private static final int toasterHeight = 10;
 
+    /**
+     * Depicts all the toasters, indicating which one belongs to a given {@link Player}.
+     * @param player the player.
+     */
     public static void build(Player player) {
         for(Player p : player.getGame().getParticipants())
             writeToaster(p);
@@ -27,6 +48,10 @@ public abstract class CliToasters {
         CliCommon.write(top + toasterHeight, (player.getId() - 1) * toasterWidth + (toasterWidth - 1) / 2 - 5, new ColoredString("^^^ YOU ^^^", Color.RESET));
     }
 
+    /**
+     * Draws a single toaster, belonging to a player.
+     * @param player the player.
+     */
     private static void writeToaster(Player player) {
         int index = player.getId() - 1;
         String ansiColor = CliCommon.toAnsiColor(player);
@@ -72,6 +97,7 @@ public abstract class CliToasters {
         writeOnToaster(index, 8, deathTrack);
     }
 
+    // TODO remove this method - use CliCommon.write instead
     private static void writeOnToaster(int index, int row, List<ColoredString> coloredStrings) {
         int caret = 0;
 
