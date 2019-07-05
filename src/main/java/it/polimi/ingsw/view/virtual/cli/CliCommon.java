@@ -17,7 +17,7 @@ import static it.polimi.ingsw.util.UTF.horizontal;
  */
 public abstract class CliCommon {
     /**
-     * A list containing all the çANSI escape sequences corresponding to the five {@link Player} token colours.
+     * A list containing all the {@code ANSI} escape sequences corresponding to the five {@link Player} token colours.
      */
     private static final List<String> playerAnsiColors = Arrays.asList(
             Color.YELLOW, Color.CYAN, Color.GREEN, Color.WHITE, Color.PURPLE
@@ -47,7 +47,7 @@ public abstract class CliCommon {
     /**
      * Tells which colour a {@link Player}'s token is.
      * @param player the player.
-     * @return the çANSI escape sequence for that colour.
+     * @return the {@code ANSI} escape sequence for that colour.
      */
     static String toAnsiColor(Player player) {
         return playerAnsiColors.get((player.getId() - 1) % 5);
@@ -101,7 +101,7 @@ public abstract class CliCommon {
      * @param j the horizontal position, from the left, of the top-left corner of the frame.
      * @param width the external width of the frame, expressed in characters.
      * @param height the external height of the frame, expressed in characters.
-     * @param ansiColor the çANSI escape sequence of the colour to make the frame out of.
+     * @param ansiColor the {@code ANSI} escape sequence of the colour to make the frame out of.
      */
     static void frame(int i, int j, int width, int height, String ansiColor) {
         for(int cornerId = 1; cornerId <= 4; cornerId ++) {

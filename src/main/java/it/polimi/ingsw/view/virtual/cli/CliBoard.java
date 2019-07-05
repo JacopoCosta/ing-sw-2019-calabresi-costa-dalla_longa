@@ -159,7 +159,7 @@ public abstract class CliBoard {
      * @param cornerId a number (1~4) identifying one of the corners. They are numbered in ascending order
      *                 starting at the bottom-left corner and proceeding counter-clockwise.
      * @param type the wall found next to the specified corner.
-     * @param color the çANSI escape for the {@link Cell}'s colour.
+     * @param color the {@code ANSI} escape for the {@link Cell}'s colour.
      */
     private static void buildWallCounterclockwise(int cellX, int cellY, int cornerId, WallType type, String color) {
         int i = top + cellY * cellHeight + (cornerId == 1 || cornerId == 2 ? cellHeight - 1 : 0);

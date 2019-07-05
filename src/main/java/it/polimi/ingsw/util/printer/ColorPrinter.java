@@ -1,22 +1,45 @@
 package it.polimi.ingsw.util.printer;
 
+import it.polimi.ingsw.view.remote.cli.CLI;
+
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is a collection of console-like methods to print formatted and coloured messages, and the {@link CLI} interface.
+ */
 public abstract class ColorPrinter {
 
+    /**
+     * Prints a message on a new line.
+     * @param string the message.
+     */
     public static void println(String string) {
         System.out.println(string);
     }
 
+    /**
+     * Prints an inline message.
+     * @param line the message.
+     */
     public static void print(String line) {
         System.out.print(line);
     }
 
+    /**
+     * Prints a grid of {@link ColoredString}s.
+     * @param grid the grid.
+     */
     public static void print(ColoredString[][] grid) {
         printAccumulatedLines(accumulateLines(grid));
     }
 
+    /**
+     * This method is used to convert 2-dimensional grid of {@link ColoredString}s into a list of {@code String}s.
+     * This is to improve performance and minimize system calls.
+     * @param grid the grid.
+     * @return the list of {@code String}s.
+     */
     private static List<String> accumulateLines(ColoredString[][] grid) {
         List<String> lines = new ArrayList<>();
 
@@ -57,6 +80,10 @@ public abstract class ColorPrinter {
         return lines;
     }
 
+    /**
+     * Prints a series of messages, each on its line.
+     * @param lines the messages.
+     */
     private static void printAccumulatedLines(List<String> lines) {
         lines.forEach(System.out::println);
     }
