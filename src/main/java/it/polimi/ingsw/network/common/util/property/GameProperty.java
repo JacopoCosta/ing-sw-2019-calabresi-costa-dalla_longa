@@ -1,10 +1,11 @@
 package it.polimi.ingsw.network.common.util.property;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.util.Dispatcher;
 
 /**
  * This class contains all the properties needed in order to start a new {@link Game}. These properties can't
- * simply be coded into the {@link Game} logic, as they need to be changed between different executions.
+ * simply be coded into the {@link Game} logic, as they may be changed between different executions.
  *
  * @see Game
  */
@@ -29,7 +30,7 @@ public class GameProperty {
 
     /**
      * The {@code GameProperty} representing the maximum amount of time in seconds a {@link Game} turn can last,
-     * as described in the {@link Game} //TODO attribute.
+     * as described in the {@link Dispatcher#ANSWER_TIME_LIMIT} attribute.
      */
     private final int turnDuration;
 
