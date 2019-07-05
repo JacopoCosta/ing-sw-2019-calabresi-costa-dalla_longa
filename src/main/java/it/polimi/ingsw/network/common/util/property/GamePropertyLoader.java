@@ -107,10 +107,8 @@ public class GamePropertyLoader {
     public GamePropertyLoader() {
         try {
             this.scanner = new Scanner(new FileInputStream(
-                    new File(
-                            this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()
-                    ).getParentFile().toString() + CONFIG_FILE_PATH)
-            );
+                    new File(GamePropertyLoader.class.getResource(CONFIG_FILE_PATH).toURI())
+            ));
         } catch (FileNotFoundException | URISyntaxException e) {
             e.printStackTrace();
         }
