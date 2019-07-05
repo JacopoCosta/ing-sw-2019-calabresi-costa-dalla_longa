@@ -15,7 +15,8 @@ public class TargetPlayer extends Target {
 
     /**
      * This is the only constructor.
-     * @param message The message to be presented to the user when they need to choose their target.
+     *
+     * @param message     The message to be presented to the user when they need to choose their target.
      * @param constraints The rules that a target needs to satisfy in order to be eligible.
      */
     public TargetPlayer(String message, List<Constraint> constraints) {
@@ -26,6 +27,7 @@ public class TargetPlayer extends Target {
 
     /**
      * Sets the {@link #player} attribute.
+     *
      * @param player the {@link Player} to set as the new value.
      */
     public void setPlayer(Player player) {

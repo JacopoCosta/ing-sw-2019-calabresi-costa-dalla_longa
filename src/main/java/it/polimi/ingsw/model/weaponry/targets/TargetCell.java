@@ -16,7 +16,8 @@ public class TargetCell extends Target {
 
     /**
      * This is the only constructor.
-     * @param message The message to be presented to the user when they need to choose their target.
+     *
+     * @param message     The message to be presented to the user when they need to choose their target.
      * @param constraints The rules that a target needs to satisfy in order to be eligible.
      */
     public TargetCell(String message, List<Constraint> constraints) {
@@ -27,6 +28,7 @@ public class TargetCell extends Target {
 
     /**
      * Sets the {@link #cell} attribute.
+     *
      * @param cell the {@link Cell} to set as the new value.
      */
     public void setCell(Cell cell) {

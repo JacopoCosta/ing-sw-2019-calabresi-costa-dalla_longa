@@ -171,6 +171,7 @@ public class RoomConstraint extends Constraint {
 
     /**
      * Generates a short human-readable string summarizing what the {@link Constraint} requires.
+     *
      * @return the string.
      */
     @Override

@@ -16,7 +16,8 @@ public class TargetRoom extends Target {
 
     /**
      * This is the only constructor.
-     * @param message The message to be presented to the user when they need to choose their target.
+     *
+     * @param message     The message to be presented to the user when they need to choose their target.
      * @param constraints The rules that a target needs to satisfy in order to be eligible.
      */
     TargetRoom(String message, List<Constraint> constraints) {
@@ -27,6 +28,7 @@ public class TargetRoom extends Target {
 
     /**
      * Sets the {@link #room} attribute.
+     *
      * @param room the {@link Room} to set as the new value.
      */
     public void setRoom(Room room) {

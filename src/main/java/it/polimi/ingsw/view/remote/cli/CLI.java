@@ -92,7 +92,7 @@ public class CLI implements GraphicalInterface {
                         DeliverableEvent.UPDATE_DISCONNECT,
                         DeliverableEvent.UPDATE_WINNER
                 ).contains(deliverable.getEvent()))
-                ColorPrinter.println(deliverable.getMessage());
+                    ColorPrinter.println(deliverable.getMessage());
                 break;
             case DUAL:
                 try {

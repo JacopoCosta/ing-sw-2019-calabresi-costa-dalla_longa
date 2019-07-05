@@ -33,7 +33,8 @@ public class AttackPattern {
 
     /**
      * This is the only constructor.
-     * @param first the {@link AttackPattern#first} list.
+     *
+     * @param first   the {@link AttackPattern#first} list.
      * @param content the {@link AttackPattern#content} list.
      */
     public AttackPattern(List<Integer> first, List<AttackModule> content) {
@@ -43,6 +44,7 @@ public class AttackPattern {
 
     /**
      * This factory method instantiates and returns an {@code AttackPattern}, with the properties found inside the JSON object passed as argument.
+     *
      * @param jPattern the JSON object containing the desired properties.
      * @return an instance of this class in accordance with the specified properties.
      */
@@ -51,7 +53,7 @@ public class AttackPattern {
         List<AttackModule> attackModules = new ArrayList<>();
 
         try {
-            for(DecoratedJsonObject jId : jPattern.getArray("first").toList()) {
+            for (DecoratedJsonObject jId : jPattern.getArray("first").toList()) {
                 try {
                     ids.add(jId.getInt("id"));
                 } catch (JullPointerException e) {
@@ -78,6 +80,7 @@ public class AttackPattern {
 
     /**
      * Gets the {@link AttackModule} with a specified id.
+     *
      * @param index the id.
      * @return the {@link AttackModule}.
      */
@@ -87,6 +90,7 @@ public class AttackPattern {
 
     /**
      * Returns the {@code AttackPattern}'s {@link AttackPattern#first} list.
+     *
      * @return the list.
      */
     public List<Integer> getFirst() {
@@ -95,6 +99,7 @@ public class AttackPattern {
 
     /**
      * Signs all the attacks dealt through this {@link AttackPattern} by a {@link Player}.
+     *
      * @param author the attacker.
      */
     public void setAuthor(Player author) {
@@ -105,6 +110,7 @@ public class AttackPattern {
 
     /**
      * Returns the {@code AttackPattern}'s {@link AttackPattern#author}.
+     *
      * @return the {@link Player} by whom every attack dealt through this {@code AttackPatten} will be registered.
      */
     public Player getAuthor() {
@@ -120,6 +126,7 @@ public class AttackPattern {
 
     /**
      * Generates a string containing a small description of the {@code AttackPattern}.
+     *
      * @return the string.
      */
     @Override
@@ -138,6 +145,7 @@ public class AttackPattern {
     /**
      * Generates a list containing colored headers, one for each action performable by the {@link Weapon}.
      * Each header is itself a list of {@link ColoredString}s and includes the action's name and cost.
+     *
      * @return the list.
      */
     public List<List<ColoredString>> getHeaders() {
@@ -165,6 +173,7 @@ public class AttackPattern {
     /**
      * Generates a list containing action descriptions, one for each action performable by the {@link Weapon}.
      * Each description is itself a list of string, where each element is a different line of the description.
+     *
      * @return the list.
      */
     public List<List<String>> getDescriptions() {
@@ -184,8 +193,8 @@ public class AttackPattern {
 
             while(description.length() > CliWeapons.width - 4) {
                 int caret = CliWeapons.width - 4;
-                while (caret >= CliWeapons.width - 12 && description.charAt(caret) != ' ')
-                    caret --;
+                while(caret >= CliWeapons.width - 12 && description.charAt(caret) != ' ')
+                    caret--;
                 brokenDescription.add(description.substring(0, caret));
                 if(caret + 1 < description.length())
                     description = description.substring(caret + 1);
